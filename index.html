@@ -306,12 +306,22 @@ const popularItems = {
     "Top Up Mobile Legends 50 Diamond",          
     "Top Up PUBG Mobile 300 UC"          
   ]          
-};          function openPopular() {
+};          
+function openPopular() {
 const modal = document.getElementById('popularModal');
+
+console.log("openPopular jalan");
+
 modal.classList.remove('pointer-events-none', 'opacity-0');
-modal.querySelector('div').classList.remove('scale-95');
+
+const box = modal.querySelector('div');
+
+if(box){
+  box.classList.remove('scale-95');
+}
 
 const firstBtn = document.querySelector(".tab-btn:last-child");
+
 showPopular('all', firstBtn);
 }
 
@@ -324,13 +334,18 @@ modal.querySelector('div').classList.add('scale-95');
 function openPromo() {
 const modal = document.getElementById('promoModal');
 
+console.log("openPromo jalan");
+
 modal.classList.remove(
 'opacity-0',
 'pointer-events-none'
 );
 
-modal.querySelector('div')
-.classList.remove('scale-95');
+const box = modal.querySelector('div');
+
+if(box){
+  box.classList.remove('scale-95');
+}
 }
 
 function closePromo() {
@@ -377,12 +392,22 @@ if(btn) btn.classList.add("active");
 }
 
 function openHarga(){
+console.log("openHarga jalan");
+
 const m = document.getElementById("hargaModal");
+
 m.classList.remove("opacity-0","pointer-events-none");
-m.querySelector("div").classList.remove("scale-95");
-buildHargaData();
+
+const box = m.querySelector("div");
+
+if(box){
+  box.classList.remove("scale-95");
 }
 
+buildHargaData();
+}
+console.log("operators =", operators);
+console.log("games =", games);
 function closeHarga(){
 const m = document.getElementById("hargaModal");
 m.classList.add("opacity-0","pointer-events-none");

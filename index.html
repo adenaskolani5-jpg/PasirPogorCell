@@ -308,23 +308,12 @@ const popularItems = {
   ]          
 };          
 function openPopular(){
-alert("Populer diklik");
-}
-const modal = document.getElementById('popularModal');
-
-console.log("openPopular jalan");
-
-modal.classList.remove('pointer-events-none', 'opacity-0');
-
-const box = modal.querySelector('div');
-
-if(box){
-  box.classList.remove('scale-95');
-}
-
-const firstBtn = document.querySelector(".tab-btn:last-child");
-
-showPopular('all', firstBtn);
+  const modal = document.getElementById('popularModal');
+  modal.classList.remove('pointer-events-none', 'opacity-0');
+  const box = modal.querySelector('div');
+  if(box) box.classList.remove('scale-95');
+  const firstBtn = document.querySelector(".tab-btn:last-child");
+  showPopular('all', firstBtn);
 }
 
 function closePopular() {
@@ -334,22 +323,10 @@ modal.querySelector('div').classList.add('scale-95');
 }
 
 function openPromo(){
-alert("Info diklik");
-}
-const modal = document.getElementById('promoModal');
-
-console.log("openPromo jalan");
-
-modal.classList.remove(
-'opacity-0',
-'pointer-events-none'
-);
-
-const box = modal.querySelector('div');
-
-if(box){
-  box.classList.remove('scale-95');
-}
+  const modal = document.getElementById('promoModal');
+  modal.classList.remove('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if(box) box.classList.remove('scale-95');
 }
 
 function closePromo() {
@@ -396,21 +373,12 @@ if(btn) btn.classList.add("active");
 }
 
 function openHarga(){
-alert("Harga diklik");
-}
-console.log("openHarga jalan");
-
-const m = document.getElementById("hargaModal");
-
-m.classList.remove("opacity-0","pointer-events-none");
-
-const box = m.querySelector("div");
-
-if(box){
-  box.classList.remove("scale-95");
-}
-
-buildHargaData();
+  alert("Harga diklik");   // Boleh dihapus setelah testing
+  const m = document.getElementById("hargaModal");
+  m.classList.remove("opacity-0","pointer-events-none");
+  const box = m.querySelector("div");
+  if(box) box.classList.remove("scale-95");
+  buildHargaData();
 }
 console.log("operators =", operators);
 console.log("games =", games);

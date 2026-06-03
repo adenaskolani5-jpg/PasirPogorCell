@@ -306,14 +306,13 @@ const popularItems = {
     "Top Up Mobile Legends 50 Diamond",          
     "Top Up PUBG Mobile 300 UC"          
   ]          
-};          
-function openPopular(){
-  const modal = document.getElementById('popularModal');
-  modal.classList.remove('pointer-events-none', 'opacity-0');
-  const box = modal.querySelector('div');
-  if(box) box.classList.remove('scale-95');
-  const firstBtn = document.querySelector(".tab-btn:last-child");
-  showPopular('all', firstBtn);
+};          function openPopular() {
+const modal = document.getElementById('popularModal');
+modal.classList.remove('pointer-events-none', 'opacity-0');
+modal.querySelector('div').classList.remove('scale-95');
+
+const firstBtn = document.querySelector(".tab-btn:last-child");
+showPopular('all', firstBtn);
 }
 
 function closePopular() {
@@ -322,11 +321,16 @@ modal.classList.add('opacity-0', 'pointer-events-none');
 modal.querySelector('div').classList.add('scale-95');
 }
 
-function openPromo(){
-  const modal = document.getElementById('promoModal');
-  modal.classList.remove('opacity-0', 'pointer-events-none');
-  const box = modal.querySelector('div');
-  if(box) box.classList.remove('scale-95');
+function openPromo() {
+const modal = document.getElementById('promoModal');
+
+modal.classList.remove(
+'opacity-0',
+'pointer-events-none'
+);
+
+modal.querySelector('div')
+.classList.remove('scale-95');
 }
 
 function closePromo() {
@@ -373,15 +377,12 @@ if(btn) btn.classList.add("active");
 }
 
 function openHarga(){
-  alert("Harga diklik");   // Boleh dihapus setelah testing
-  const m = document.getElementById("hargaModal");
-  m.classList.remove("opacity-0","pointer-events-none");
-  const box = m.querySelector("div");
-  if(box) box.classList.remove("scale-95");
-  buildHargaData();
+const m = document.getElementById("hargaModal");
+m.classList.remove("opacity-0","pointer-events-none");
+m.querySelector("div").classList.remove("scale-95");
+buildHargaData();
 }
-console.log("operators =", operators);
-console.log("games =", games);
+
 function closeHarga(){
 const m = document.getElementById("hargaModal");
 m.classList.add("opacity-0","pointer-events-none");
@@ -406,166 +407,34 @@ ket:p.ket
 });
 });
 
-const popularItems = {
-  paket: [
-    "Freedom Mini 7GB 7 Hari Rp 26.000",
-    "Freedom Mini 5 GB 2 Hari Rp 13.000",
-    "Freedom Internet 10GB 28 Hari Rp 40.000",
-    "Freedom Mini 6GB 5 Hari Rp 20.000"
-  ],
-  game: [
-    "Top Up Free Fire 100 Diamond",
-    "Top Up Mobile Legends 50 Diamond",
-    "Top Up PUBG Mobile 300 UC"
-  ]
-};
-
-function openPopular() {
-  const modal = document.getElementById('popularModal');
-  modal.classList.remove('pointer-events-none', 'opacity-0');
-  const box = modal.querySelector('div');
-  if (box) box.classList.remove('scale-95');
-  const firstBtn = document.querySelector(".tab-btn:last-child");
-  showPopular('all', firstBtn);
-}
-
-function closePopular() {
-  const modal = document.getElementById('popularModal');
-  modal.classList.add('opacity-0', 'pointer-events-none');
-  modal.querySelector('div').classList.add('scale-95');
-}
-
-function openPromo() {
-  const modal = document.getElementById('promoModal');
-  modal.classList.remove('opacity-0', 'pointer-events-none');
-  const box = modal.querySelector('div');
-  if (box) box.classList.remove('scale-95');
-}
-
-function closePromo() {
-  const modal = document.getElementById('promoModal');
-  modal.classList.add('opacity-0', 'pointer-events-none');
-  modal.querySelector('div').classList.add('scale-95');
-}
-
-function showPopular(type, btn) {
-  const list = document.getElementById('popularList');
-  if (!list) return;
-  list.classList.add("fade-out");
-  setTimeout(() => {
-    list.innerHTML = "";
-    let items = [];
-    if (type === "paket") items = popularItems.paket;
-    else if (type === "game") items = popularItems.game;
-    else items = [...popularItems.paket, ...popularItems.game];
-    items.forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = item;
-      li.className = "tab-content";
-      list.appendChild(li);
-    });
-    list.classList.remove("fade-out");
-    list.classList.add("fade-in");
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-    if (btn) btn.classList.add("active");
-  }, 200);
-}
-
-function openHarga() {
-  const m = document.getElementById("hargaModal");
-  m.classList.remove("opacity-0", "pointer-events-none");
-  const box = m.querySelector("div");
-  if (box) box.classList.remove("scale-95");
-  buildHargaData();
-}
-
-function closeHarga() {
-  const m = document.getElementById("hargaModal");
-  m.classList.add("opacity-0", "pointer-events-none");
-  m.querySelector("div").classList.add("scale-95");
-}
-
-let hargaData = [];
-
-function buildHargaData() {
-  hargaData = [];
-  // data operators dan games akan diambil nanti setelah didefinisikan
-  // karena fungsi ini dipanggil saat modal dibuka, saat itu data sudah siap
-  if (typeof operators !== 'undefined') {
-    Object.keys(operators).forEach(op => {
-      Object.keys(operators[op]).forEach(cat => {
-        operators[op][cat].forEach(p => {
-          hargaData.push({
-            nama: p.nama,
-            harga: p.harga,
-            ket: p.ket
-          });
-        });
-      });
-    });
-  }
-  if (typeof games !== 'undefined') {
-    Object.keys(games).forEach(game => {
-      games[game].forEach(item => {
-        const split = item.split(" Rp ");
-        if (split.length === 2) {
-          hargaData.push({
-            nama: game + " - " + split[0],
-            harga: "Rp " + split[1],
-            ket: "Top Up Game"
-          });
-        }
-      });
-    });
-  }
-}
-
-// Pasang event listener pencarian setelah DOM siap
-document.addEventListener("DOMContentLoaded", function() {
-  const searchInput = document.getElementById("searchHarga");
-  if (searchInput) {
-    searchInput.addEventListener("input", function() {
-      const q = this.value.toLowerCase();
-      const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
-      const box = document.getElementById("hasilHarga");
-      if (!box) return;
-      box.innerHTML = "";
-      if (res.length === 0) {
-        box.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
-        return;
-      }
-      res.slice(0, 20).forEach(x => {
-        box.innerHTML += `
-          <div class="border border-green-500 rounded p-2">
-            <p class="text-green-400 font-semibold">${escapeHtml(x.nama)}</p>
-            <p>${escapeHtml(x.harga)}</p>
-            <p class="text-xs text-gray-400">${escapeHtml(x.ket)}</p>
-          </div>
-        `;
-      });
-    });
-  }
+// Ambil dari game
+Object.keys(games).forEach(game=>{
+games[game].forEach(item=>{
+const split=item.split(" Rp ");
+hargaData.push({
+nama: game+" - "+split[0],
+harga:"Rp "+split[1],
+ket:"Top Up Game"
 });
-
-// Fungsi kecil untuk mencegah XSS (optional)
-function escapeHtml(str) {
-  return str.replace(/[&<>]/g, function(m) {
-    if (m === '&') return '&amp;';
-    if (m === '<') return '&lt;';
-    if (m === '>') return '&gt;';
-    return m;
-  });
+});
+});
 }
 
-res.slice(0,20).forEach(x => {
-  box.innerHTML += `
-    <div class="border border-green-500 rounded p-2">
-      <p class="text-green-400 font-semibold">${x.nama}</p>
-      <p>${x.harga}</p>
-      <p class="text-xs text-gray-400">${x.ket}</p>
-    </div>
-  `;
-}); //
+document.getElementById("searchHarga").addEventListener("input",function(){
+const q=this.value.toLowerCase();
+const res=hargaData.filter(x=>x.nama.toLowerCase().includes(q));
+const box=document.getElementById("hasilHarga");
+box.innerHTML="";
+
+if(res.length===0){
+box.innerHTML="<p class='text-gray-400'>Tidak ditemukan</p>";
+return;
+}
+
+res.slice(0,20).forEach(x=>{
+box.innerHTML+=           <div class="border border-green-500 rounded p-2">           <p class="text-green-400 font-semibold">${x.nama}</p>           <p>${x.harga}</p>           <p class="text-xs text-gray-400">${x.ket}</p>           </div>;
+});
+});
 
 </script>        <!-- Kalkulator Modal -->        <div id="calculatorModal"          
 class="fixed inset-0 bg-black/70 flex items-center justify-center opacity-0 pointer-events-none z-50 transition-opacity duration-300">
@@ -880,323 +749,4 @@ const operators = {
   Telkomsel: {    
     "Paket Internet Harian": [    
       {nama: "Mini Data 1GB All 1 Hari", harga: "Rp 10.000", ket: "Internet harian"},    
-      {nama: "Mini Data 500MB All 3 Hari", harga: "Rp 10.000", ket: "Hemat singkat"},    
-      {nama: "Mini Data 1,5GB Semua 3 Hari (Non-Pamasuka)", harga: "Rp 13.000", ket: "Area non Pamasuka"},    
-      {nama: "Mini Data 1GB All 3 Hari", harga: "Rp 13.000", ket: "Browsing ringan"},    
-      {nama: "Mini Data 2,5GB Semua 5 Hari", harga: "Rp 15.000", ket: "Pemakaian normal"},    
-      {nama: "Mini Data 2GB All 3 Hari", harga: "Rp 15.000", ket: "Aktivitas singkat"},    
-      {nama: "Mini Data 2,5GB – 3GB Semua 5 Hari", harga: "Rp 16.000", ket: "Kuota fleksibel"},    
-      {nama: "Mini Data 4GB All 1 Hari", harga: "Rp 12.550", ket: "Internet cepat"},    
-      {nama: "Mini Data 6GB All 1 Hari", harga: "Rp 23.000", ket: "Streaming seharian"},    
-      {nama: "Mini Data 5GB Semua 1 Hari", harga: "Rp 25.000", ket: "Kuota besar harian"},    
-      {nama: "Mini Data 3GB Semua 3 Hari", harga: "Rp 27.000", ket: "Internet stabil"},    
-      {nama: "Mini Data 5GB Semua 3 Hari", harga: "Rp 34.000", ket: "Streaming & sosmed"},    
-      {nama: "Mini Data 8GB All 3 Hari", harga: "Rp 40.000", ket: "Kuota jumbo singkat"},    
-      {nama: "Mini Data 7GB All 3 Hari", harga: "Rp 50.000", ket: "Pemakaian intensif"},    
-      {nama: "Mini Data 17GB All 3 Hari", harga: "Rp 64.000", ket: "Kuota ekstrem"},    
-      {nama: "Mini Data 15GB All 3 Hari", harga: "Rp 66.000", ket: "Streaming berat"},    
-      {nama: "Mini Data 20GB All 3 Hari", harga: "Rp 74.000", ket: "Kuota super besar"},    
-      {nama: "Mini Data 10GB All 3 Hari", harga: "Rp 78.000", ket: "Penggunaan padat"}    
-    ],    
-    "Paket Internet Mingguan": [    
-      {nama: "Mini Data 50MB 7 Hari", harga: "Rp 4.000", ket: "Darurat"},    
-      {nama: "Mini Data 100MB 7 Hari", harga: "Rp 7.000", ket: "Cadangan"},    
-      {nama: "Mini Data 250MB 7 Hari", harga: "Rp 8.000", ket: "Ringan"},    
-      {nama: "Mini Data 500MB 7 Hari", harga: "Rp 10.000", ket: "Hemat mingguan"},    
-      {nama: "Mini Data 500MB Semua 7 Hari", harga: "Rp 11.000", ket: "All network"},    
-      {nama: "Mini Data 1GB All 7 Hari", harga: "Rp 13.000", ket: "Pemakaian normal"},    
-      {nama: "1GB Semua Jaringan 30 Hari", harga: "Rp 15.000", ket: "Paket spesial"},    
-      {nama: "Mini Data 750MB 7 Hari", harga: "Rp 18.000", ket: "Aktivitas ringan"},    
-      {nama: "Mini Data 2GB All 7 Hari", harga: "Rp 19.000", ket: "Streaming ringan"},    
-      {nama: "Mini Data 3GB Semua 7 Hari", harga: "Rp 24.000", ket: "Sosmed & browsing"},    
-      {nama: "Mini Data 2GB Semua 14 Hari", harga: "Rp 25.000", ket: "Masa aktif panjang"},    
-      {nama: "Mini Data 5GB Semua 7 Hari", harga: "Rp 29.000", ket: "Kuota besar"},    
-      {nama: "Mini Data 7GB Semua 7 Hari", harga: "Rp 30.000", ket: "Streaming aktif"},    
-      {nama: "Mini Data 17GB Semua 7 Hari", harga: "Rp 80.000", ket: "Kuota ekstrem mingguan"}    
-    ],    
-    "Data Mini Jabo - Banten": [    
-      {nama: "Paket Data 1,5GB 3 Hari", harga: "Rp 11.000", ket: "Area Jabo-Banten"},    
-      {nama: "Paket Data 2,5GB 5 Hari", harga: "Rp 14.000", ket: "Lokal hemat"},    
-      {nama: "Paket Data 3GB 3 Hari", harga: "Rp 15.000", ket: "Internet stabil"},    
-      {nama: "Paket Data 3GB 5 Hari", harga: "Rp 16.000", ket: "Kuota fleksibel"},    
-      {nama: "Paket Data 3,5GB 7 Hari", harga: "Rp 22.000", ket: "Aktivitas mingguan"},    
-      {nama: "Paket Data 4,5GB 5 Hari", harga: "Rp 23.000", ket: "Streaming ringan"},    
-      {nama: "Paket Data 5,5GB 5 Hari", harga: "Rp 27.000", ket: "Kuota sedang"},    
-      {nama: "Paket Data 5GB 7 Hari", harga: "Rp 29.000", ket: "Pemakaian normal"},    
-      {nama: "Paket Data 7GB 7 Hari", harga: "Rp 30.000", ket: "Kuota besar lokal"},    
-      {nama: "0,5GB All + 1,5GB Lokal + 2GB OMG 30 Hari", harga: "Rp 36.000", ket: "Combo OMG"},    
-      {nama: "Paket Data 10GB 7 Hari", harga: "Rp 39.000", ket: "Streaming aktif"},    
-      {nama: "Paket Data 12GB 7 Hari", harga: "Rp 44.000", ket: "Kuota besar"},    
-      {nama: "1,25GB All + 3,75GB Lokal + 2GB OMG 30 Hari", harga: "Rp 50.000", ket: "Combo lokal"},    
-      {nama: "2GB All + 6GB Lokal + 2GB OMG 30 Hari", harga: "Rp 65.000", ket: "Kuota besar lokal"},    
-      {nama: "3GB All + 9GB Lokal + 2GB OMG 30 Hari", harga: "Rp 74.000", ket: "Aktivitas padat"},    
-      {nama: "4,5GB All + 13,5GB Lokal + 2GB OMG 30 Hari", harga: "Rp 85.000", ket: "Kuota jumbo lokal"},    
-      {nama: "5GB + 37GB Lokal Jabo-Jabar 30 Hari", harga: "Rp 101.000", ket: "Lokal super besar"},    
-      {nama: "6GB + 54GB Lokal Jabo-Jabar 30 Hari", harga: "Rp 141.000", ket: "Pemakaian berat"},    
-      {nama: "9GB + 71GB Lokal Jabo-Jabar 30 Hari", harga: "Rp 170.000", ket: "Kuota ekstrem lokal"}    
-    ]    
-  },    
-    
-  byU: {    
-    "Paket Internet byU":[    
-      {nama: "1GB Semua + Bebas Tiktok 500MB / 1 Hari", harga: "Rp 8.000", ket: "Paket ByU harian"},    
-      {nama: "Kuota 2GB Semua 1 Hari", harga: "Rp 10.000", ket: "Internet cepat sehari"},    
-      {nama: "2GB Semua + Bebas Tiktok 500MB / 3 Hari", harga: "Rp 12.000", ket: "Bonus TikTok aktif"},    
-      {nama: "10GB Semua + Bebas Tiktok 500MB / 1 Hari", harga: "Rp 14.000", ket: "Kuota besar harian"},    
-      {nama: "Kuota 2,5GB Semua 5 Hari", harga: "Rp 14.000", ket: "Pemakaian normal"},    
-      {nama: "Kuota 3GB Semua 7 Hari", harga: "Rp 16.000", ket: "Mingguan hemat"},    
-      {nama: "ByU Yang Bikin Deket 3GB 1 Hari", harga: "Rp 21.000", ket: "Paket promo ByU"},    
-      {nama: "Kuota 5GB Semua 7 Hari", harga: "Rp 21.000", ket: "Streaming ringan"}    
-    ]    
-  }    
-};    
-      
-const games = {    
-  "Mobile Legends":[  "3 Diamond Rp 3.000",    
-  "19 (17+2) Diamond Rp 10.000",    
-  "28 (25+3) Diamond Rp 11.000",    
-  "36 (33+3) Diamond Rp 13.000",    
-  "44 (40+4) Diamond Rp 15.000",    
-  "56 (51+5) Diamond Rp 19.000",    
-  "59 (53+6) Diamond Rp 20.000",    
-  "74 (69+5) Diamond Rp 23.000",    
-  "85 (77+8) Diamond Rp 27.000",    
-  "86 (78+8) Diamond Rp 27.000",    
-  "100 Diamond Rp 31.000",    
-  "Weekly Diamond Pass 220 (80+20/Day) Rp 31.000",    
-  "112 (102+10) Diamond Rp 34.000",    
-  "144 (130+14) Diamond Rp 42.000",    
-  "170 (154+16) Diamond Rp 50.000",    
-  "172 (156+16) Diamond Rp 50.000",    
-  "185 (167+18) Diamond Rp 54.000",    
-  "2x Weekly Diamond Pass 440 (80+20/Day) Rp 60.000",    
-  "222 (200+22) Diamond Rp 63.000",    
-  "229 (207+22) Diamond Rp 66.000",    
-  "240 (217+23) Diamond Rp 69.000",    
-  "257 (234+23) Diamond Rp 72.000",    
-  "Pass Coupon Rp 76.000",    
-  "278 (251+27) Diamond Rp 79.000",    
-  "284 (254+30) Diamond Rp 80.000",    
-  "296 (256+40) Diamond Rp 82.000",    
-  "301 (261+40) Diamond Rp 84.000",    
-  "Starlight Membership Rp 85.000",    
-  "3x Weekly Diamond Pass 660 (80+20/Day) Rp 87.000",    
-  "344 (312+32) Diamond Rp 96.000",    
-  "345 (301+44) Diamond Rp 97.000",    
-  "355 (309+46) Diamond Rp 100.000",    
-  "374 (326+48) Diamond Rp 106.000",    
-  "381 (333+48) Diamond Rp 107.000",    
-  "384 Diamond Rp 110.000",    
-  "408 (367+41) Diamond Rp 114.000",    
-  "4x Weekly Diamond Pass 880 (80+20/Day) Rp 115.000",    
-  "429 (390+39) Diamond Rp 118.000",    
-  "425 (373+52) Diamond Rp 120.000",    
-  "448 Diamond Rp 137.000",    
-  "460 Diamond Rp 140.000",    
-  "514 (468+46) Diamond Rp 142.000",    
-  "5x Weekly Diamond Pass 1100 (80+20/Day) Rp 143.000",    
-  "522 (471+51) Diamond Rp 146.000",    
-  "500 Diamond Rp 150.000",    
-  "Twilight Pass Rp 155.000",    
-  "568 (503+65) Diamond Rp 155.000",    
-  "601 (533+68) Diamond Rp 165.000",    
-  "642 Diamond Rp 185.000",    
-  "706 (625+81) Diamond Rp 200.000",    
-  "712 (633+79) Diamond Rp 201.000",    
-  "717 (638+79) Diamond Rp 203.000",    
-  "Starlight Plus Member Rp 220.000",    
-  "875 (774+101) Diamond Rp 240.000",    
-  "965 (856+109) Diamond Rp 264.000",    
-  "963 (859+104) Diamond Rp 265.000",    
-  "977 (867+110) Diamond Rp 268.000"],    
-  "Free Fire":[  "5 (0+5) Diamond Rp 3.000",    
-  "12 (9+3) Diamond Rp 4.000",    
-  "50 (45+5) Diamond Rp 10.000",    
-  "70 (63+7) Diamond Rp 12.000",    
-  "100 (90+10) Diamond Rp 16.000",    
-  "Membership Level Up Pass Rp 17.000",    
-  "140 (126+14) Diamond Rp 21.000",    
-  "210 (189+21) Diamond Rp 30.000",    
-  "Membership Mingguan 50 Diamond Rp 31.000",    
-  "300 (270+30) Diamond Rp 43.000",    
-  "Booyah Pass (BP Card) Rp 45.000",    
-  "355 (320+35) Diamond Rp 50.000",    
-  "500 (450+50) Diamond Rp 70.000",    
-  "Membership Bulanan 50 Diamond Rp 86.000",    
-  "720 (648+72) Diamond Rp 92.000",    
-  "1000 (900+100) Diamond Rp 132.000",    
-  "1450 (1305+145) Diamond Rp 190.000",    
-  "2180 (1962+218) Diamond Rp 290.000",    
-  "3640 (3276+364) Diamond Rp 480.000",    
-  "4000 (3600+400) Diamond Rp 530.000",    
-  "7290 (6561+729) Diamond Rp 950.000"    
-],    
-  "PUBG Mobile": [    
-  "15 (14+1) UC Rp 11.000",    
-  "25 (22+3) UC Rp 12.000",    
-  "35 (31+4) UC Rp 18.000",    
-  "50 (45+5) UC Rp 18.000",    
-  "60 (54+6) UC Rp 18.000",    
-  "70 (63+7) UC Rp 30.000",    
-  "100 (90+10) UC Rp 34.000",    
-  "125 (113+12) UC Rp 48.000",    
-  "150 (135+15) UC Rp 48.000",    
-  "200 (180+20) UC Rp 63.000",    
-  "210 (189+21) UC Rp 63.000",    
-  "250 (225+25) UC Rp 78.000",    
-  "300 (270+30) UC Rp 79.000",    
-  "350 (315+35) UC Rp 94.000",    
-  "375 (338+37) UC Rp 93.000",    
-  "500 (450+50) UC Rp 127.000",    
-  "525 (473+52) UC Rp 138.000",    
-  "700 (630+70) UC Rp 172.000",    
-  "750 (675+75) UC Rp 187.000",    
-  "1000 (900+100) UC Rp 244.000",    
-  "1100 (990+110) UC Rp 258.000",    
-  "1250 (1125+125) UC Rp 302.000",    
-  "1500 (1350+150) UC Rp 347.000",    
-  "1750 (1575+175) UC Rp 378.000",    
-  "Elite Pass Plus + Kupon Peti Rp 432.000",    
-  "2500 (2250+250) UC Rp 539.000"    
-],    
-"Call Of Duty Mobile": [    
-  "63 (57+6) CP Rp 12.000",    
-  "128 (115+13) CP Rp 21.000",    
-  "321 (288+33) CP Rp 48.000",    
-  "645 (580+65) CP Rp 94.000",    
-  "645 (580+65) CP Rp 101.000",    
-  "800 (720+80) CP Rp 114.000",    
-  "1373 (1235+138) CP Rp 188.000",    
-  "2060 (1854+206) CP Rp 276.000",    
-  "2750 (2475+275) CP Rp 349.000",    
-  "3564 (3207+357) CP Rp 454.000",    
-  "5619 (5057+562) CP Rp 691.000",    
-  "7656 (6890+766) CP Rp 978.000"    
-],    
-"Honor Of Kings": [    
-  "16 (14+2) Tokens Rp 6.000",    
-  "80 (72+8) Tokens Rp 18.000",    
-  "240 (216+24) Tokens Rp 47.000",    
-  "400 (360+40) Tokens Rp 76.000",    
-  "560 (504+56) Tokens Rp 105.000",    
-  "800 + 30 Tokens Rp 150.000",    
-  "1200 + 45 Tokens Rp 225.000",    
-  "2400 + 108 Tokens Rp 442.000",    
-  "4000 + 180 Tokens Rp 808.000"    
-],    
-"Genshin Impact": [    
-  "60 (54+6) Crystals Rp 14.000",    
-  "60 (54+6) Chronal Nexus Rp 15.000",    
-  "Blessing Welkin Moon Rp 60.000",    
-  "300 + 30 Crystals Rp 60.000",    
-  "300 + 30 Chronal Nexus Rp 66.000",    
-  "Blessing Welkin Moon x2 Rp 117.000",    
-  "Blessing Welkin Moon x3 Rp 175.000",    
-  "980 + 110 Crystals Rp 180.000",    
-  "980 + 110 Chronal Nexus Rp 194.000",    
-  "Blessing Welkin Moon x4 Rp 229.000",    
-  "Limited Outfit Guaranteed 1420 Crystals Rp 234.000",    
-  "1280 + 140 Crystals Rp 234.000",    
-  "Blessing Welkin Moon x5 Rp 283.000",    
-  "1980 + 260 Crystals Rp 365.000",    
-  "Blessing Welkin Moon x6 Rp 378.000",    
-  "1980 + 260 Chronal Nexus Rp 409.000",    
-  "3280 + 600 Crystals Rp 623.000",    
-  "3280 + 600 Chronal Nexus Rp 656.000",    
-  "4260 + 710 Crystals Rp 841.000"    
-],    
-"Roblox": [    
-  "100 (90+10) Robux Rp 50.000",    
-  "200 (180+20) Robux Rp 50.000",    
-  "250 (225+25) Robux Rp 50.000",    
-  "Gift Card IDR 50K Rp 50.000",    
-  "Gift Card IDR 65K Rp 65.000",    
-  "Gift Card IDR 100K Rp 97.000",    
-  "800 (720+80) Robux Rp 156.000",    
-  "Roblox USD 10 Global Rp 168.000",    
-  "Gift Card IDR 200K Rp 194.000",    
-  "Gift Card IDR 300K Rp 285.000",    
-  "Gift Card IDR 380K Rp 371.000",    
-  "2000 (1800+200) Robux Rp 373.000",    
-  "Roblox USD 25 Global Rp 405.000",    
-  "Gift Card IDR 500K Rp 470.000",    
-  "4500 (4050+450) Robux Rp 829.000",    
-  "Roblox USD 50 Global Rp 873.000",    
-  "Gift Card IDR 950K Rp 997.000"    
-]    
-};    
-    
-//* ===== NAV ===== */    
-let historyStack=[];    
-function hideAll(){document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"))}    
-function back(){const f=historyStack.pop();if(f){hideAll();f();}}    
-function clearActive(){document.querySelectorAll(".menu-active").forEach(x=>x.classList.remove("menu-active"))}    
-    
-/* ===== INTERNET ===== */    
-function openInternet(b){    
- clearActive();b.classList.add("menu-active");    
- historyStack.push(()=>home.classList.remove("hidden"));    
- hideAll();internet.classList.remove("hidden");    
- operatorList.innerHTML="";    
- Object.keys(operators).forEach(o=>{    
-  operatorList.innerHTML+=`<div class="card" onclick="openTypes('${o}')">${o}</div>`;    
- });    
-}    
-function openTypes(op){    
- historyStack.push(()=>internet.classList.remove("hidden"));    
- hideAll();paketTypes.classList.remove("hidden");    
- paketTitle.innerText=op;    
- paketTypeList.innerHTML="";    
- Object.keys(operators[op]).forEach(t=>{    
-  paketTypeList.innerHTML+=`<div class="card" onclick="openPaket('${op}','${t}')">${t}</div>`;    
- });    
-}    
-function openPaket(op,cat){    
- historyStack.push(()=>paketTypes.classList.remove("hidden"));    
- hideAll();operatorDetail.classList.remove("hidden");    
- operatorTitle.innerText=op+" - "+cat;    
- paketList.innerHTML="";    
- operators[op][cat].forEach((p,i)=>{    
-  paketList.innerHTML+=`    
-  <div class="card">${p.nama} <span class="price">${p.harga}</span>    
-  <button class="ket-btn" onclick="toggleKet('${op}${cat}${i}')">✉</button></div>    
-  <div id="${op}${cat}${i}" class="ket-box">${p.ket}</div>`;    
- });    
-}    
-function toggleKet(id){    
- const e=document.getElementById(id);    
- e.style.display=e.style.display=="block"?"none":"block";    
-}    
-    
-/* ===== GAME ===== */    
-function openGame(b){    
- clearActive();b.classList.add("menu-active");    
- historyStack.push(()=>home.classList.remove("hidden"));    
- hideAll();game.classList.remove("hidden");    
- gameList.innerHTML="";    
- Object.keys(games).forEach(g=>{    
-  gameList.innerHTML+=`<div class="card" onclick="openGameDetail('${g}')">${g}</div>`;    
- });    
-}    
-function openGameDetail(g){    
-  historyStack.push(()=>game.classList.remove("hidden"));    
-  hideAll();    
-  gameDetail.classList.remove("hidden");    
-  gameTitle.innerText = g;    
-  topupList.innerHTML = "";    
-    
-  games[g].forEach(item=>{    
-    const harga = item.match(/Rp\s?[\d\.]+/);    
-    let text = item;    
-    
-    if(harga){    
-      text = item.replace(harga[0], `<span class="price">${harga[0]}</span>`);    
-    }    
-    
-    topupList.innerHTML += `<div class="card">${text}</div>`;    
-  });    
-}    
-</script>    
-    
-</body>    
-</html>
+      {nama: "Mini Data 500MB All 3 Hari", harg

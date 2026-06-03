@@ -406,28 +406,155 @@ ket:p.ket
 });
 });
 
-// Ambil dari game
-Object.keys(games).forEach(game=>{
-games[game].forEach(item=>{
-const split=item.split(" Rp ");
-hargaData.push({
-nama: game+" - "+split[0],
-harga:"Rp "+split[1],
-ket:"Top Up Game"
-});
-});
-});
+const popularItems = {
+  paket: [
+    "Freedom Mini 7GB 7 Hari Rp 26.000",
+    "Freedom Mini 5 GB 2 Hari Rp 13.000",
+    "Freedom Internet 10GB 28 Hari Rp 40.000",
+    "Freedom Mini 6GB 5 Hari Rp 20.000"
+  ],
+  game: [
+    "Top Up Free Fire 100 Diamond",
+    "Top Up Mobile Legends 50 Diamond",
+    "Top Up PUBG Mobile 300 UC"
+  ]
+};
+
+function openPopular() {
+  const modal = document.getElementById('popularModal');
+  modal.classList.remove('pointer-events-none', 'opacity-0');
+  const box = modal.querySelector('div');
+  if (box) box.classList.remove('scale-95');
+  const firstBtn = document.querySelector(".tab-btn:last-child");
+  showPopular('all', firstBtn);
 }
 
-document.getElementById("searchHarga").addEventListener("input",function(){
-const q=this.value.toLowerCase();
-const res=hargaData.filter(x=>x.nama.toLowerCase().includes(q));
-const box=document.getElementById("hasilHarga");
-box.innerHTML="";
+function closePopular() {
+  const modal = document.getElementById('popularModal');
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  modal.querySelector('div').classList.add('scale-95');
+}
 
-if(res.length===0){
-box.innerHTML="<p class='text-gray-400'>Tidak ditemukan</p>";
-return;
+function openPromo() {
+  const modal = document.getElementById('promoModal');
+  modal.classList.remove('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.remove('scale-95');
+}
+
+function closePromo() {
+  const modal = document.getElementById('promoModal');
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  modal.querySelector('div').classList.add('scale-95');
+}
+
+function showPopular(type, btn) {
+  const list = document.getElementById('popularList');
+  if (!list) return;
+  list.classList.add("fade-out");
+  setTimeout(() => {
+    list.innerHTML = "";
+    let items = [];
+    if (type === "paket") items = popularItems.paket;
+    else if (type === "game") items = popularItems.game;
+    else items = [...popularItems.paket, ...popularItems.game];
+    items.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      li.className = "tab-content";
+      list.appendChild(li);
+    });
+    list.classList.remove("fade-out");
+    list.classList.add("fade-in");
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+  }, 200);
+}
+
+function openHarga() {
+  const m = document.getElementById("hargaModal");
+  m.classList.remove("opacity-0", "pointer-events-none");
+  const box = m.querySelector("div");
+  if (box) box.classList.remove("scale-95");
+  buildHargaData();
+}
+
+function closeHarga() {
+  const m = document.getElementById("hargaModal");
+  m.classList.add("opacity-0", "pointer-events-none");
+  m.querySelector("div").classList.add("scale-95");
+}
+
+let hargaData = [];
+
+function buildHargaData() {
+  hargaData = [];
+  // data operators dan games akan diambil nanti setelah didefinisikan
+  // karena fungsi ini dipanggil saat modal dibuka, saat itu data sudah siap
+  if (typeof operators !== 'undefined') {
+    Object.keys(operators).forEach(op => {
+      Object.keys(operators[op]).forEach(cat => {
+        operators[op][cat].forEach(p => {
+          hargaData.push({
+            nama: p.nama,
+            harga: p.harga,
+            ket: p.ket
+          });
+        });
+      });
+    });
+  }
+  if (typeof games !== 'undefined') {
+    Object.keys(games).forEach(game => {
+      games[game].forEach(item => {
+        const split = item.split(" Rp ");
+        if (split.length === 2) {
+          hargaData.push({
+            nama: game + " - " + split[0],
+            harga: "Rp " + split[1],
+            ket: "Top Up Game"
+          });
+        }
+      });
+    });
+  }
+}
+
+// Pasang event listener pencarian setelah DOM siap
+document.addEventListener("DOMContentLoaded", function() {
+  const searchInput = document.getElementById("searchHarga");
+  if (searchInput) {
+    searchInput.addEventListener("input", function() {
+      const q = this.value.toLowerCase();
+      const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
+      const box = document.getElementById("hasilHarga");
+      if (!box) return;
+      box.innerHTML = "";
+      if (res.length === 0) {
+        box.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
+        return;
+      }
+      res.slice(0, 20).forEach(x => {
+        box.innerHTML += `
+          <div class="border border-green-500 rounded p-2">
+            <p class="text-green-400 font-semibold">${escapeHtml(x.nama)}</p>
+            <p>${escapeHtml(x.harga)}</p>
+            <p class="text-xs text-gray-400">${escapeHtml(x.ket)}</p>
+          </div>
+        `;
+      });
+    });
+  }
+});
+
+// Fungsi kecil untuk mencegah XSS (optional)
+function escapeHtml(str) {
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
 }
 
 res.slice(0,20).forEach(x => {

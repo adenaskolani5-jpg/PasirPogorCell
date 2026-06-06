@@ -407,6 +407,58 @@ box-shadow:0 0 15px rgba(34,197,94,.8);
   background: #22c55e;
   border-radius: 10px;
 }
+
+/* ===== STYLE MODAL CEK HARGA (CARI) ===== */
+#hargaModal > div {
+  border: 1px solid rgba(34, 197, 94, 0.5);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 0 40px rgba(34, 197, 94, 0.1);
+  backdrop-filter: blur(10px);
+  background: rgba(17, 24, 39, 0.9);
+}
+
+#hargaModal h2 {
+  text-shadow: 0 0 5px #22c55e;
+  letter-spacing: 1px;
+}
+
+#searchHarga {
+  border: 1px solid #22c55e;
+  background: rgba(0, 0, 0, 0.6);
+  transition: all 0.3s ease;
+  color: white;
+}
+
+#searchHarga:focus {
+  outline: none;
+  border-color: #4ade80;
+  box-shadow: 0 0 12px #22c55e;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+#searchHarga::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Tombol close (×) */
+#hargaModal button.absolute {
+  transition: all 0.2s;
+}
+#hargaModal button.absolute:hover {
+  text-shadow: 0 0 8px #22c55e;
+  transform: scale(1.1);
+}
+#hargaModal > div {
+  border-left: 4px solid #22c55e;
+  border-radius: 1rem;
+  animation: glowPulse 2s infinite;
+}
+
+@keyframes glowPulse {
+  0% { border-left-color: #22c55e; box-shadow: -2px 0 8px rgba(34,197,94,0.2); }
+  50% { border-left-color: #4ade80; box-shadow: -4px 0 20px rgba(34,197,94,0.6); }
+  100% { border-left-color: #22c55e; box-shadow: -2px 0 8px rgba(34,197,94,0.2); }
+}
 </style>        
 </head>        
 <body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">        

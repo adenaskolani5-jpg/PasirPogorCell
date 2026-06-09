@@ -735,7 +735,22 @@ function escapeHtml(str) {
 
 function sendToWhatsApp(nama, harga) {
   const nomorToko = "6283844843020";
-  const pesan = `Assalamualaikum, saya ingin memesan:
+  
+  // Deteksi apakah ini produk game (berdasarkan kata kunci)
+  const isGame = /(Top Up|Diamond|UC|CP|Tokens|Crystals|Robux|Mobile Legends|Free Fire|PUBG|Call Of Duty|Honor Of Kings|Genshin Impact|Roblox)/i.test(nama);
+  
+  let pesan = "";
+  if (isGame) {
+    pesan = `Assalamualaikum, saya ingin memesan:
+${nama}
+Harga: ${harga}
+
+ID Game: 
+Pembayaran: (transfer/QRIS)
+
+Terima kasih.`;
+  } else {
+    pesan = `Assalamualaikum, saya ingin memesan:
 ${nama}
 Harga: ${harga}
 
@@ -743,6 +758,8 @@ No. HP:
 Pembayaran: (transfer/QRIS)
 
 Terima kasih.`;
+  }
+  
   const url = `https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`;
   window.open(url, '_blank');
 }

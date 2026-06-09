@@ -735,7 +735,7 @@ function escapeHtml(str) {
 }
 
 function sendToWhatsApp(nama, harga) {
-  const nomorToko = "6283844843020"; // Nomor WhatsApp toko (tanpa 0 di depan)
+  const nomorToko = "6283844843020"; // nomor WA toko (tanpa 0 di depan)
   const pesan = `Halo PasirPogorCell, saya ingin membeli:%0A${nama} - ${harga}%0A%0ABisa dibantu?`;
   const url = `https://wa.me/${nomorToko}?text=${pesan}`;
   window.open(url, '_blank');
@@ -754,18 +754,18 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
       }
       res.slice(0, 20).forEach(x => {
-        box.innerHTML += `
-          <div class="harga-item">
-            <div class="harga-nama">
-              <span class="harga-nama-text">${escapeHtml(x.nama)}</span>
-              <span class="harga-harga">${escapeHtml(x.harga)}</span>
-            </div>
-            <div class="harga-ket">${escapeHtml(x.ket)}</div>
-          </div>
-        `;
-      });
-    });
-  }
+  box.innerHTML += `
+    <div class="harga-item">
+      <div class="harga-nama">
+        <span class="harga-nama-text">${escapeHtml(x.nama)}</span>
+        <span class="harga-harga">${escapeHtml(x.harga)}</span>
+      </div>
+      <div class="harga-ket">${escapeHtml(x.ket)}</div>
+      <div style="margin-top: 0.5rem; text-align: right;">
+        <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
+      </div>
+    </div>
+  `;
 });
 </script>        
 

@@ -734,8 +734,15 @@ function escapeHtml(str) {
 }
 
 function sendToWhatsApp(nama, harga) {
-  const nomorToko = "6283844843020"; // Nomor WhatsApp toko
-  const pesan = `Assalamualaikum, saya ingin memesan produk dari PasirPogorCell.%0A%0A📦 Detail Pesanan:%0A${nama}%0A💰 Harga: ${harga}%0A%0A📌 Informasi Tambahan:%0ANomor tujuan: (isi)%0AMetode pembayaran: (transfer/QRIS)%0A%0ATerima kasih. Mohon konfirmasi ketersediaan dan total biaya.`;
+  const nomorToko = "6283844843020";
+  const pesan = `Assalamualaikum, saya ingin memesan:
+${nama}
+Harga: ${harga}
+
+No. HP: 
+Pembayaran: (transfer/QRIS)
+
+Terima kasih.`;
   const url = `https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`;
   window.open(url, '_blank');
 }

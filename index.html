@@ -530,7 +530,21 @@ function showRekomendasiPaket(operator) {
   backBtn.onclick = () => openRekomendasi();
   menuDiv.appendChild(backBtn);
 }
+function openPromo() {
+  const modal = document.getElementById('promoModal');
+  if (!modal) return;
+  modal.classList.remove('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.remove('scale-95');
+}
 
+function closePromo() {
+  const modal = document.getElementById('promoModal');
+  if (!modal) return;
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.add('scale-95');
+}
 let hargaData = [];
 function buildHargaData() {
   hargaData = [];

@@ -393,7 +393,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 <div class="flex justify-center items-center gap-3 my-4">          
   <div class="flex flex-col items-center"><button onclick="openHarga()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">🔍 Cari</button></div>          
   <div class="flex flex-col items-center"><button onclick="openCalculator()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">Kalkulator 📟</button></div>          
-  <div class="flex flex-col items-center"><button onclick="openPopular()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">Populer 📊</button></div>          
+  <div class="flex flex-col items-center"><button onclick="openRekomendasi()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">⭐ Rekomendasi</button>          
   <div class="flex flex-col items-center justify-center"><button onclick="openPromo()" class="w-8 h-8 rounded-full border border-yellow-400 text-yellow-400 text-sm font-bold hover:bg-yellow-400 hover:text-black transition futuristic-btn futuristic-btn-info">ⓘ</button></div>      
 </div>
 
@@ -407,17 +407,14 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   </div>
 </div>     
 
-<!-- Modal Populer -->        
-<div id="popularModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-opacity duration-300">
-  <div class="relative bg-gray-900 text-white rounded-xl p-6 w-80 max-h-[80vh] overflow-auto transform scale-95 transition-transform duration-300">
-    <h2 class="text-xl font-bold mb-4">Paket & Game Populer</h2>
-    <div class="flex justify-center gap-2 mb-4">
-      <button onclick="showPopular('paket', this)" class="tab-btn px-3 py-1 rounded text-sm font-semibold border border-green-400">Paket</button>
-      <button onclick="showPopular('game', this)" class="tab-btn px-3 py-1 rounded text-sm font-semibold border border-yellow-400">Game</button>
-      <button onclick="showPopular('all', this)" class="tab-btn px-3 py-1 rounded text-sm font-semibold border border-blue-400">Semua</button>
+<!-- Modal Rekomendasi -->
+<div id="rekomendasiModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-opacity duration-300">
+  <div class="relative bg-gray-900 text-white rounded-xl p-6 w-80 max-h-[80vh] overflow-auto transform scale-95 transition-transform duration-300 border-l-4 border-green-500 shadow-2xl">
+    <h2 class="text-xl font-bold mb-4 text-green-400">⭐ Rekomendasi Paket</h2>
+    <div id="rekomendasiMenu" class="space-y-2">
+      <!-- Daftar operator akan dimuat di sini -->
     </div>
-    <ul id="popularList" class="list-disc pl-5 space-y-2"></ul>
-    <button onclick="closePopular()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-lg font-bold">×</button>
+    <button onclick="closeRekomendasi()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-lg font-bold">×</button>
   </div>
 </div>
 
@@ -455,63 +452,83 @@ const popularItems = {
   game: [ "Top Up Free Fire 100 Diamond", "Top Up Mobile Legends 50 Diamond", "Top Up PUBG Mobile 300 UC" ]          
 };          
 
-function openPopular() {
-  const modal = document.getElementById('popularModal');
+// Data rekomendasi paket per operator
+const rekomendasiData = {
+  "Indosat": [
+    { nama: "Freedom Mini 7GB 7 Hari", harga: "Rp 26.000", ket: "Kuota utama semua jaringan, masa 7 hari" },
+    { nama: "Freedom Internet 13GB 28 Hari", harga: "Rp 57.000", ket: "Kuota besar, zona plus 16GB, super plus 20GB" },
+    { nama: "Indosat Yellow 1GB 7 Hari", harga: "Rp 10.000", ket: "Paket harian murah" }
+  ],
+  "Axis": [
+    { nama: "Bronet 6GB + Bonus Aigo 30 Hari", harga: "Rp 32.000", ket: "Kuota 6GB + bonus AIGO" },
+    { nama: "Mini Axis 9GB 3 Hari", harga: "Rp 17.000", ket: "Kuota besar untuk 3 hari" }
+  ],
+  "XL": [
+    { nama: "XL Xtra On 2GB 30 Hari", harga: "Rp 26.000", ket: "Cocok untuk sosial media dan game" },
+    { nama: "XL Reguler 6GB 30 Hari", harga: "Rp 61.000", ket: "Kuota menengah" }
+  ],
+  "Tri": [
+    { nama: "Tri All Jaringan 10GB 30 Hari", harga: "Rp 38.000", ket: "Hemat per GB" },
+    { nama: "Tri Data Mini 12GB 7 Hari", harga: "Rp 33.000", ket: "Kuota besar mingguan" }
+  ],
+  "Telkomsel": [
+    { nama: "Mini Data 2GB 7 Hari", harga: "Rp 19.000", ket: "Jaringan luas" },
+    { nama: "Mini Data 10GB 3 Hari", harga: "Rp 78.000", ket: "Untuk penggunaan padat" }
+  ],
+  "byU": [
+    { nama: "Kuota 5GB Semua 7 Hari", harga: "Rp 21.000", ket: "Murah meriah" }
+  ]
+};
+
+function openRekomendasi() {
+  const modal = document.getElementById('rekomendasiModal');
   if (!modal) return;
   modal.classList.remove('pointer-events-none', 'opacity-0');
   const box = modal.querySelector('div');
   if (box) box.classList.remove('scale-95');
-  const firstBtn = document.querySelector(".tab-btn:last-child");
-  showPopular('all', firstBtn);
+  
+  const menuDiv = document.getElementById('rekomendasiMenu');
+  if (!menuDiv) return;
+  menuDiv.innerHTML = '';
+  for (let op in rekomendasiData) {
+    const btn = document.createElement('button');
+    btn.className = 'card w-full mb-2';
+    btn.innerHTML = op;
+    btn.onclick = (function(operator) {
+      return function() { showRekomendasiPaket(operator); };
+    })(op);
+    menuDiv.appendChild(btn);
+  }
 }
-function closePopular() {
-  const modal = document.getElementById('popularModal');
-  if (!modal) return;
-  modal.classList.add('opacity-0', 'pointer-events-none');
-  const box = modal.querySelector('div');
-  if (box) box.classList.add('scale-95');
-}
-function openPromo() {
-  const modal = document.getElementById('promoModal');
-  if (!modal) return;
-  modal.classList.remove('opacity-0', 'pointer-events-none');
-  const box = modal.querySelector('div');
-  if (box) box.classList.remove('scale-95');
-}
-function closePromo() {
-  const modal = document.getElementById('promoModal');
+
+function closeRekomendasi() {
+  const modal = document.getElementById('rekomendasiModal');
   if (!modal) return;
   modal.classList.add('opacity-0', 'pointer-events-none');
   const box = modal.querySelector('div');
   if (box) box.classList.add('scale-95');
 }
 
-function showPopular(type, btn) {
-  const list = document.getElementById('popularList');
-  if (!list) return;
-  list.classList.add("fade-out");
-  setTimeout(() => {
-    list.innerHTML = "";
-    let items = [];
-    if (type === "paket") items = popularItems.paket;
-    else if (type === "game") items = popularItems.game;
-    else items = [...popularItems.paket, ...popularItems.game];
-    items.forEach(item => {
-      let hargaMatch = item.match(/Rp\s?[\d\.]+/);
-      let harga = hargaMatch ? hargaMatch[0] : "";
-      let nama = item.replace(harga, "").trim();
-      let itemType = (type === "paket" || (type === "all" && popularItems.paket.includes(item))) ? "paket" : "game";
-      let icon = itemType === "paket" ? "📶" : "🎮";
-      const div = document.createElement("div");
-      div.className = `popular-item ${itemType}`;
-      div.innerHTML = `<div class="popular-icon">${icon}</div><div class="popular-text">${escapeHtml(item)}</div><button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(nama)}', '${harga}')">💬</button>`;
-      list.appendChild(div);
-    });
-    list.classList.remove("fade-out");
-    list.classList.add("fade-in");
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-    if (btn) btn.classList.add("active");
-  }, 200);
+function showRekomendasiPaket(operator) {
+  const menuDiv = document.getElementById('rekomendasiMenu');
+  const pakets = rekomendasiData[operator];
+  if (!pakets) return;
+  menuDiv.innerHTML = '';
+  pakets.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'card flex justify-between items-center';
+    div.innerHTML = `
+      <div style="flex:1">${p.nama} <span class="price">${p.harga}</span><div class="text-xs text-gray-400">${p.ket}</div></div>
+      <button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')">💬 Beli</button>
+    `;
+    menuDiv.appendChild(div);
+  });
+  // tombol kembali
+  const backBtn = document.createElement('button');
+  backBtn.className = 'back-btn mt-4 w-full';
+  backBtn.innerHTML = '← Kembali ke daftar operator';
+  backBtn.onclick = () => openRekomendasi();
+  menuDiv.appendChild(backBtn);
 }
 
 let hargaData = [];

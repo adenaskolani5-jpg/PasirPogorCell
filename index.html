@@ -409,6 +409,40 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   border-color: #4ade80;
   box-shadow: 0 0 18px rgba(34, 197, 94, 0.7);
 }
+/* Border di seluruh sisi untuk card di menu paket & game */
+#internet .card,
+#paketTypes .card,
+#operatorDetail .card,
+#game .card,
+#gameDetail .card {
+  border: 1.5px solid rgba(34, 197, 94, 0.7) !important;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);
+  transition: all 0.2s ease;
+  flex-direction: column;
+  align-items: stretch;
+}
+#internet .card:hover,
+#paketTypes .card:hover,
+#operatorDetail .card:hover,
+#game .card:hover,
+#gameDetail .card:hover {
+  border-color: #4ade80 !important;
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
+}
+/* Gaya untuk konten card */
+.card-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.card-detail {
+  margin-top: 0.6rem;
+  font-size: 0.7rem;
+  color: #9ca3af;
+  border-top: 1px dashed rgba(34,197,94,0.3);
+  padding-top: 0.5rem;
+}
 </style>        
 </head>        
 <body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">        
@@ -1382,13 +1416,13 @@ function openPaket(op, cat) {
   operators[op][cat].forEach((p, i) => {
     paketList.innerHTML += `
       <div class="card">
-        <div style="flex:1">${p.nama} <span class="price">${p.harga}</span></div>
-        <div style="display: flex; gap: 0.5rem;">
-          <button class="ket-btn" onclick="toggleKet('${op}${cat}${i}')">✉</button>
+        <div class="card-main">
+          <div style="flex:1; font-weight:600;">${p.nama}</div>
+          <span class="price">${p.harga}</span>
           <button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')">💬 Beli</button>
         </div>
+        <div class="card-detail">${p.ket}</div>
       </div>
-      <div id="${op}${cat}${i}" class="ket-box">${p.ket}</div>
     `;
   });
 }
@@ -1413,19 +1447,18 @@ function openGameDetail(g) {
   gameDetail.classList.remove("hidden");
   gameTitle.innerText = g;
   topupList.innerHTML = "";
-
-  games[g].forEach((item, idx) => {
+  games[g].forEach((item) => {
     const hargaMatch = item.match(/Rp\s?[\d\.]+/);
     let harga = hargaMatch ? hargaMatch[0] : "";
-    let namaItem = item;
-    let text = item;
-    if (hargaMatch) {
-      text = item.replace(hargaMatch[0], `<span class="price">${hargaMatch[0]}</span>`);
-    }
+    let namaItem = item.replace(harga, "").trim();
     topupList.innerHTML += `
       <div class="card">
-        <div style="flex:1">${text}</div>
-        <button class="whatsapp-btn" onclick="sendToWhatsApp('${g} - ${namaItem}', '${harga}')">💬 Beli</button>
+        <div class="card-main">
+          <div style="flex:1; font-weight:600;">${namaItem}</div>
+          <span class="price">${harga}</span>
+          <button class="whatsapp-btn" onclick="sendToWhatsApp('${g} - ${namaItem}', '${harga}')">💬 Beli</button>
+        </div>
+        <div class="card-detail">Top Up Game</div>
       </div>
     `;
   });

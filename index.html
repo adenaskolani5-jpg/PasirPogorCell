@@ -443,6 +443,32 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   border-top: 1px dashed rgba(34,197,94,0.3);
   padding-top: 0.5rem;
 }
+/* Tombol floating kembali */
+.floating-back {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: #22c55e;
+    color: #000;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(34,197,94,0.8);
+    transition: all 0.3s ease;
+    display: none; /* awal tersembunyi */
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+.floating-back:hover {
+    transform: scale(1.05);
+    background: #4ade80;
+    box-shadow: 0 0 25px rgba(34,197,94,1);
+}
 </style>        
 </head>        
 <body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">        
@@ -935,13 +961,15 @@ document.getElementById('toggleCalcModeBtn')?.addEventListener('click', toggleCa
 </section>    
 
 <!-- INTERNET -->    
-<section id="internet" class="hidden page p-6 max-w-6xl mx-auto"><button onclick="back()" class="back-btn mb-6">← Kembali</button><h2 class="text-2xl font-bold mb-4">Pilih Operator</h2><div id="operatorList" class="grid md:grid-cols-3 gap-4"></div></section>    
-<section id="paketTypes" class="hidden page p-6 max-w-6xl mx-auto"><button onclick="back()" class="back-btn mb-6">← Kembali</button><h2 id="paketTitle" class="text-2xl font-bold mb-4"></h2><div id="paketTypeList" class="grid md:grid-cols-3 gap-4"></div></section>    
-<section id="operatorDetail" class="hidden page p-6 max-w-6xl mx-auto"><button onclick="back()" class="back-btn mb-6">← Kembali</button><h2 id="operatorTitle" class="text-2xl font-bold mb-4"></h2><div id="paketList" class="space-y-3"></div></section>    
+<section id="internet" class="hidden page p-6 max-w-6xl mx-auto"><h2 class="text-2xl font-bold mb-4">Pilih Operator</h2><div id="operatorList" class="grid md:grid-cols-3 gap-4"></div></section>    
+<section id="paketTypes" class="hidden page p-6 max-w-6xl mx-auto"><h2 id="paketTitle" class="text-2xl font-bold mb-4"></h2><div id="paketTypeList" class="grid md:grid-cols-3 gap-4"></div></section>    
+<section id="operatorDetail" class="hidden page p-6 max-w-6xl mx-auto"><h2 id="operatorTitle" class="text-2xl font-bold mb-4"></h2><div id="paketList" class="space-y-3"></div></section>    
 
 <!-- GAME -->    
-<section id="game" class="hidden page p-6 max-w-6xl mx-auto"><button onclick="back()" class="back-btn mb-6">← Kembali</button><h2 class="text-2xl font-bold mb-4">Pilih Game</h2><div id="gameList" class="grid md:grid-cols-3 gap-4"></div></section>    
-<section id="gameDetail" class="hidden page p-6 max-w-6xl mx-auto"><button onclick="back()" class="back-btn mb-6">← Kembali</button><h2 id="gameTitle" class="text-2xl font-bold mb-4"></h2><div id="topupList" class="space-y-3"></div></section>    
+<section id="game" class="hidden page p-6 max-w-6xl mx-auto"><h2 class="text-2xl font-bold mb-4">Pilih Game</h2><div id="gameList" class="grid md:grid-cols-3 gap-4"></div></section>    
+<section id="gameDetail" class="hidden page p-6 max-w-6xl mx-auto"><h2 id="gameTitle" class="text-2xl font-bold mb-4"></h2><div id="topupList" class="space-y-3"></div></section>    
+
+<button id="floatingBackBtn" class="floating-back">← Kembali</button>
 
 <!-- FOOTER -->    
 <footer class="mt-20 p-6 text-center text-sm bg-black/60 space-y-3">    
@@ -1386,14 +1414,29 @@ const games = {
 //* ===== NAV ===== */    
 let historyStack=[];    
 function hideAll(){document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"))}    
-function back(){const f=historyStack.pop();if(f){hideAll();f();}}    
+function back(){
+    const f = historyStack.pop();
+    if(f){
+        hideAll();
+        f();
+        // Sembunyikan tombol floating jika kembali ke home
+        const homeSection = document.getElementById('home');
+        const floatingBtn = document.getElementById('floatingBackBtn');
+        if (homeSection && !homeSection.classList.contains('hidden') && floatingBtn) {
+            floatingBtn.style.display = 'none';
+        }
+    }
+}    
 function clearActive(){document.querySelectorAll(".menu-active").forEach(x=>x.classList.remove("menu-active"))}    
-    
+
 /* ===== INTERNET ===== */    
 function openInternet(b){    
  clearActive();b.classList.add("menu-active");    
  historyStack.push(()=>home.classList.remove("hidden"));    
- hideAll();internet.classList.remove("hidden");    
+ hideAll();internet.classList.remove("hidden");
+ // Tampilkan tombol floating
+ const floatingBtn = document.getElementById('floatingBackBtn');
+ if (floatingBtn) floatingBtn.style.display = 'flex';
  operatorList.innerHTML="";    
  Object.keys(operators).forEach(o=>{    
   operatorList.innerHTML+=`<div class="card" onclick="openTypes('${o}')">${o}</div>`;    
@@ -1401,7 +1444,10 @@ function openInternet(b){
 }    
 function openTypes(op){    
  historyStack.push(()=>internet.classList.remove("hidden"));    
- hideAll();paketTypes.classList.remove("hidden");    
+ hideAll();paketTypes.classList.remove("hidden");
+ // Tampilkan tombol floating
+ const floatingBtn = document.getElementById('floatingBackBtn');
+ if (floatingBtn) floatingBtn.style.display = 'flex';
  paketTitle.innerText=op;    
  paketTypeList.innerHTML="";    
  Object.keys(operators[op]).forEach(t=>{    
@@ -1413,6 +1459,9 @@ function openPaket(op, cat) {
   hideAll();
   operatorDetail.classList.remove("hidden");
   operatorTitle.innerText = op + " - " + cat;
+  // Tampilkan tombol floating
+  const floatingBtn = document.getElementById('floatingBackBtn');
+  if (floatingBtn) floatingBtn.style.display = 'flex';
   paketList.innerHTML = "";
   operators[op][cat].forEach((p, i) => {
     paketList.innerHTML += `
@@ -1436,7 +1485,10 @@ function toggleKet(id){
 function openGame(b){    
  clearActive();b.classList.add("menu-active");    
  historyStack.push(()=>home.classList.remove("hidden"));    
- hideAll();game.classList.remove("hidden");    
+ hideAll();game.classList.remove("hidden");
+ // Tampilkan tombol floating
+ const floatingBtn = document.getElementById('floatingBackBtn');
+ if (floatingBtn) floatingBtn.style.display = 'flex';
  gameList.innerHTML="";    
  Object.keys(games).forEach(g=>{    
   gameList.innerHTML+=`<div class="card" onclick="openGameDetail('${g}')">${g}</div>`;    
@@ -1447,6 +1499,9 @@ function openGameDetail(g) {
   hideAll();
   gameDetail.classList.remove("hidden");
   gameTitle.innerText = g;
+  // Tampilkan tombol floating
+  const floatingBtn = document.getElementById('floatingBackBtn');
+  if (floatingBtn) floatingBtn.style.display = 'flex';
   topupList.innerHTML = "";
   games[g].forEach((item) => {
     const hargaMatch = item.match(/Rp\s?[\d\.]+/);

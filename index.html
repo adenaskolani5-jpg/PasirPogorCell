@@ -376,6 +376,19 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 .table-wrapper {
   max-height: 160px;
 }
+/* Ubah tombol utama (Paket Internet & Top Up Game) menjadi border kiri bercahaya */
+#home .card {
+  border-left: 4px solid #22c55e;          /* garis hijau di kiri */
+  transition: all 0.3s ease;
+}
+#home .card::before {
+  display: none;                           /* hilangkan efek glow melingkar */
+}
+#home .card:hover {
+  transform: scale(1.02);                  /* sedikit membesar saat hover (opsional) */
+  border-left-color: #4ade80;              /* garis kiri lebih terang saat hover */
+  box-shadow: 0 0 20px rgba(34,197,94,0.6), -4px 0 20px rgba(34,197,94,0.5);
+}
 </style>        
 </head>        
 <body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">        

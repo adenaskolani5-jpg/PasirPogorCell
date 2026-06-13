@@ -582,8 +582,9 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   <p class="text-gray-300">Paket Internet & Top Up Game</p>          
 </header>        
 <!-- Tombol Baris Atas: Cari (lebar) dan Info (kanan) -->
-<div class="flex justify-between items-center my-4 px-4">
-  <button onclick="openHarga()" class="flex-1 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">🔍 Cari</button>
+<div class="my-4 px-4">
+  <input type="text" id="searchHarga" placeholder="Cari paket internet atau game..." class="w-full border border-green-400 bg-gray-900 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300 focus:ring-1 focus:ring-green-500 transition futuristic-btn">
+  <div id="hasilHarga" class="mt-3 space-y-2 max-h-80 overflow-y-auto"></div>
 </div>
 
 <!-- Modal Harga -->          
@@ -765,21 +766,6 @@ function buildHargaData() {
       });
     });
   }
-}
-function openHarga() {
-  const m = document.getElementById("hargaModal");
-  if (!m) return;
-  m.classList.remove("opacity-0", "pointer-events-none");
-  const box = m.querySelector("div");
-  if (box) box.classList.remove("scale-95");
-  buildHargaData();
-}
-function closeHarga() {
-  const m = document.getElementById("hargaModal");
-  if (!m) return;
-  m.classList.add("opacity-0", "pointer-events-none");
-  const box = m.querySelector("div");
-  if (box) box.classList.add("scale-95");
 }
 function escapeHtml(str) {
   if (!str) return '';

@@ -571,28 +571,49 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   </div>
 </div>
 
-<!-- Modal Promo (Info Toko) -->      
+<!-- Modal Promo (Info Toko) dengan gaya card seperti rekomendasi -->
 <div id="promoModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-opacity duration-300">
-  <div class="bg-gray-900 text-white rounded-xl p-6 w-80 max-h-[80vh] overflow-auto relative transform scale-95 transition-transform duration-300">
-    <h2 class="text-xl font-bold text-yellow-400 mb-4">Informasi Toko</h2>
+  <div class="bg-gray-900 text-white rounded-xl p-6 w-80 max-h-[80vh] overflow-auto relative transform scale-95 transition-transform duration-300 border-l-4 border-green-500 shadow-2xl">
+    <h2 class="text-xl font-bold text-green-400 mb-4">📋 Informasi Toko</h2>
     <div class="space-y-3 text-sm">
-      <div class="border border-green-500 rounded-lg p-3 bg-green-900/30">
-        <h3 class="font-semibold text-green-300">📱 Registrasi Kartu Indosat</h3>
-        <p class="text-xs text-gray-300 mb-2">Khusus pelanggan Indosat untuk registrasi kartu prabayar.</p>
-        <a href="https://registrasi.ioh.co.id" target="_blank" rel="noopener noreferrer" class="text-green-400 underline break-all font-mono text-sm">registrasi.ioh.co.id</a>
+      
+      <!-- Card 1: Registrasi Indosat -->
+      <div class="popular-item" style="flex-direction: column; align-items: stretch;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span class="popular-icon">📱</span>
+          <span class="popular-text" style="font-weight: 600;">Registrasi Kartu Indosat</span>
+        </div>
+        <div class="text-xs text-gray-400" style="margin-top: 0.25rem;">Khusus pelanggan Indosat untuk registrasi kartu prabayar.</div>
+        <a href="https://registrasi.ioh.co.id" target="_blank" rel="noopener noreferrer" class="text-green-400 underline break-all font-mono text-sm mt-2 inline-block">registrasi.ioh.co.id</a>
       </div>
-      <div class="border border-yellow-500 rounded-lg p-3">
-        <h3 class="font-semibold text-yellow-300">Paket internet lebih besar?</h3>
-        <p>Terkadang jumlah kuota yang terkirim lebih besar dari yang tertera! terutama untuk paket 20.000 dan 26.000</p>
+
+      <!-- Card 2: Paket internet lebih besar -->
+      <div class="popular-item" style="flex-direction: column; align-items: stretch;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span class="popular-icon">📦</span>
+          <span class="popular-text" style="font-weight: 600;">Paket internet lebih besar?</span>
+        </div>
+        <div class="text-xs text-gray-400" style="margin-top: 0.25rem;">Terkadang jumlah kuota yang terkirim lebih besar dari yang tertera! terutama untuk paket 20.000 dan 26.000</div>
       </div>
-      <div class="border border-yellow-500 rounded-lg p-3">
-        <h3 class="font-semibold text-yellow-300">bisa TopUp semua Game</h3>
-        <p>Kami menyediakan TopUp untuk berbagai jenis game, tetapi pilihan menu harga TopUp Game hanya tersedia untuk beberapa Game saja</p>
+
+      <!-- Card 3: Bisa TopUp semua Game -->
+      <div class="popular-item" style="flex-direction: column; align-items: stretch;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span class="popular-icon">🎮</span>
+          <span class="popular-text" style="font-weight: 600;">bisa TopUp semua Game</span>
+        </div>
+        <div class="text-xs text-gray-400" style="margin-top: 0.25rem;">Kami menyediakan TopUp untuk berbagai jenis game, tetapi pilihan menu harga TopUp Game hanya tersedia untuk beberapa Game saja</div>
       </div>
-      <div class="border border-yellow-500 rounded-lg p-3">
-        <h3 class="font-semibold text-yellow-300">Promo harga Kuota dan topUp Game</h3>
-        <p>Harga paket internet dan topUp game bisa lebih murah dari biasanya, pantau terus web PasirPogorCell untuk bisa mendapatkan update terkait harga!</p>
+
+      <!-- Card 4: Promo harga Kuota dan topUp Game -->
+      <div class="popular-item" style="flex-direction: column; align-items: stretch;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span class="popular-icon">💰</span>
+          <span class="popular-text" style="font-weight: 600;">Promo harga Kuota dan topUp Game</span>
+        </div>
+        <div class="text-xs text-gray-400" style="margin-top: 0.25rem;">Harga paket internet dan topUp game bisa lebih murah dari biasanya, pantau terus web PasirPogorCell untuk bisa mendapatkan update terkait harga!</div>
       </div>
+
     </div>
     <button onclick="closePromo()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-lg font-bold">×</button>
   </div>

@@ -1078,7 +1078,7 @@ document.getElementById('toggleCalcModeBtn')?.addEventListener('click', toggleCa
 /* ================= DATA ================= */    
 const operators = {    
   Indosat: {    
-    "Paket Internet Harian": [    
+    "Fredoom Mini Data (Kuota Harian)": [    
       {nama: "Indosat Yellow 1GB 2 Hari", harga: "Rp 9.000", ket: "Pastikan tidak ada paket internet yang masih aktif"},
       {nama: "Indosat Yellow 5GB 1 Hari", harga: "Rp 10.000", ket: "Pastikan tidak ada paket internet yang masih aktif"},        
       {nama: "Indosat Yellow 1GB 7 Hari", harga: "Rp 10.000", ket: "Pastikan tidak ada paket internet yang masih aktif"},
@@ -1107,7 +1107,7 @@ const operators = {
       {nama: "Freedom Mini 75GB 7 Hari", harga: "Rp 50.000", ket: "Kuota utama semua jaringan"},
       {nama: "Freedom Mini 25GB 14 Hari", harga: "Rp 51.000", ket: "Kuota utama semua jaringan"},    
     ],    
-    "Paket Internet Bulanan": [                
+    "Freedom Internet (Kuota Bulanan)": [                
       {nama: "Freedom Internet 3GB 20 Hari", harga: "Rp 25.000", ket: "-All Jaringan 24 jam -Menambah masa aktif"},    
       {nama: "Freedom Internet 3GB 28 Hari", harga: "Rp 31.000", ket: "All Jaringan 24 jam"},    
       {nama: "Freedom Internet 6GB 28 Hari", harga: "Rp 35.000", ket: "Freedom Internet Mobo"},    
@@ -1135,15 +1135,14 @@ const operators = {
       {nama: "Freedom Internet 200GB 180 Hari", harga: "Rp 450.000", ket: "Note: Tidak Menambah Masa Aktif Kartu Hanya Menambah Masa Aktif Kuota"},    
       {nama: "Freedom Internet 1024GB 360 Hari", harga: "Rp 1.000.000", ket: "Note: Tidak Menambah Masa Aktif Kartu Hanya Menambah Masa Aktif Kuota"},    
     ],    
-    "Paket Unlimited": [    
-      {nama: "1GB + 2GB + Aplikasi Unlimited 6 Hari", harga: "Rp 20.000", ket: "UNREG paket terlebih dahulu"},    
-      {nama: "1GB Semua + 2GB + Aplikasi Unlimited 6 Hari", harga: "Rp 21.000", ket: "-1GB All Jaringan -2GB Kuota Aplikasi -1GB+Unli App 7 Hari"},    
-      {nama: "1GB Semua + 4,5GB + Aplikasi Unlimited 28 Hari", harga: "Rp 36.000", ket: "-1GB Utama -4,5GB Kuota Apps: Facebook, Twitter, WhatsApp, dll"},    
-      {nama: "2GB Semua + 7,5–8GB + Aplikasi Unli 28 Hari", harga: "Rp 62.000", ket: "-2GB Kuota Utama All Jaringan -7,5-8GB Kuota Aplikasi"},    
-      {nama: "3GB Semua + 15–17GB + Aplikasi Tanpa Batas 28 Hari", harga: "Rp 85.000", ket: "-3GB All Jaringan -15-17GB Kuota Aplikasi"},    
-      {nama: "7GB Semua + 28GB + Aplikasi Unlimited 28 Hari", harga: "Rp 110.000", ket: "Kuota besar + unlimited"},    
-      {nama: "10GB Semua + 35GB + Aplikasi Tanpa Batas 28 Hari", harga: "Rp 120.000", ket: "Streaming & kerja"},    
-      {nama: "Unlimited 90GB + Unli App + Telp + SMS 28 Hari", harga: "Rp 156.000", ket: "-90 GB Kuota Utama All Jaringan -Unlimited Kuota Aplikasi"}    
+    "Freedom U Unlimited (Kuota Unlimited)": [    
+      {nama: "1GB + 2GB + Aplikasi Unlimited 6 Hari", harga: "Rp 20.000", ket: "-GB All Jaringan -2GB Kuota Aplikasi"},                                      
+      {nama: "1GB Semua + 4,5GB + Aplikasi Unlimited 28 Hari", harga: "Rp 36.000", ket: "-1GB Utama. -4,5GB Kuota Apps: Facebook, Twitter, WhatsApp, Line, Gojek Grab, Google Meet & Classroom, Zoom Webex, Ms teams, Skype, Spotify dan Joox. -Kecepatan saat kuota Apps habis, 64kbps"},    
+      {nama: "2GB Semua + 7,5-8GB + Aplikasi Unli 28 Hari", harga: "Rp 62.000", ket: "-2GB Kuota Utama All Jaringan -7,5-8GB Kuota Apps: Facebook, Twitter, WhatsApp, Line, Gojek Grab, Google Meet & Classroom, Zoom Webex, Ms teams, Skype, Spotify dan Joox. -Kecepatan saat kuota Apps habis, 64kbps"},    
+      {nama: "3GB Semua + 15-17GB + Aplikasi Tanpa Batas 28 Hari", harga: "Rp 85.000", ket: "-3GB All Jaringan -15-17GB Kuota Apps: Facebook, Twitter, WhatsApp, Line, Gojek Grab, Google Meet & Classroom, Zoom Webex, Ms teams, Skype, Spotify dan Joox. -Kecepatan saat kuota Apps habis, 64kbps"},    
+      {nama: "7GB Semua + 28GB + Aplikasi Unlimited 28 Hari", harga: "Rp 110.000", ket: "Kuota Apps: Facebook, Twitter, WhatsApp, Line, Gojek Grab, Google Meet & Classroom, Zoom Webex, Ms teams, Skype, Spotify dan Joox. -Kecepatan saat kuota Apps habis, 64kbps. -Aplikasi tertentu lainnya tetap dapat diakses saat kuota Apps dan Utama habis. - Unlimited SMS kesesama Indosat"},    
+      {nama: "10GB Semua + 35GB + Aplikasi Tanpa Batas 28 Hari", harga: "Rp 120.000", ket: "-10GB Kuota Utama All Jaringan. -35GB Kuota Apps, detail: Facebook, Twitter, WhatsApp, Line, Gojek Grab, Google Meet & Classroom, Zoom Webex, Ms teams, Skype, Spotify dan Joox. -Kecepatan saat kuota Apps habis, 64kbps. -Aplikasi tertentu lainnya tetap dapat diakses saat kuota Apps dan Utama habis. - Unlimited SMS kesesama Indosat"},    
+      {nama: "Unlimited 90GB + Unli App + Telp + SMS 28 Hari", harga: "Rp 156.000", ket: "-90 GB Kuota Utama All Jaringan -Unlimited Kuota Apps, detail: Facebook, Twitter, WhatsApp, Line, Gojek Grab, Google Meet & Classroom, Zoom Webex, Ms teams, Skype, Spotify dan Joox. -Kecepatan saat kuota Apps habis, 64kbps. -Aplikasi tertentu lainnya tetap dapat diakses saat kuota Apps dan Utama habis. - Unlimited SMS kesesama Indosat"}    
     ]    
   },    
   Axis: {    
@@ -1162,11 +1161,21 @@ const operators = {
       {nama: "Mini 5GB + Bonus Aigo 1 Hari", harga: "Rp 10.000", ket: "Bonus kuota sampai dengan 6GB berlaku di wilayah tertentu di Kota-mu"},    
       {nama: "Mini Axis 15GB 1 Hari", harga: "Rp 10.000", ket: "Bonus kuota sampai dengan 6GB berlaku di wilayah tertentu di Kota-mu"},    
       {nama: "Mini Axis 5GB + Bonus Aigo 2 Hari", harga: "Rp 12.000", ket: "- Berlaku masa aktif 48 jam (contoh transaksi tanggal 13 Feb Jam 13.00 akan berakhir 15 Feb Jam 13.00). - Bonus kuota sampai dengan 6GB berlaku di wilayah tertentu di Kota-mu"},    
-      {nama: "Mini Axis 7GB + Bonus Aigo 2 Hari", harga: "Rp 12.000", ket: "Bonus kuota sampai dengan 7,5GB berlaku di wilayah tertentu di Kota-mu. <a href='https://orderkuota.com/blog/detail-aigo-mini-jawa-sks-dan-west-channel' target='_blank' class='text-green-400 underline'>Info lengkap</a>"},    
-      {nama: "Mini Axis 3GB + Bonus Aigo 3 Hari", harga: "Rp 13.000", ket: "Kuota lebih lega"},    
-      {nama: "Mini Axis 4,5GB + Bonus Aigo 3 Hari", harga: "Rp 15.000", ket: "Streaming & sosmed"},    
-      {nama: "Mini Axis 9GB + Bonus Aigo 3 Hari", harga: "Rp 17.000", ket: "Kuota besar harian"},    
-      {nama: "Aigo Kuota Mini 1,5GB + Bonus 1GB 1 Hari", harga: "Rp 8.000", ket: "Bonus AIGO aktif"}    
+      {nama: "Mini Axis 7GB + Bonus Aigo 2 Hari", harga: "Rp 12.000", ket: "Bonus kuota sampai dengan 7,5GB berlaku di wilayah tertentu di Kota-mu."},    
+      {nama: "Paket Harian 3GB+ Lokal 3 Hari", harga: "Rp 13.000", ket: "Cek wilayah disini (cek detail)"},    
+      {nama: "Mini Axis 3GB + Bonus Aigo 3 Hari", harga: "Rp 13.000", ket: "Cek wilayah disini (cek detail)"},    
+      {nama: "Mini 5GB + Bonus Aigo 3 Hari", harga: "Rp 14.000", ket: "Bonus kuota sampai dengan 6GB berlaku di wilayah tertentu di Kota-mu (cek detail)"},    
+      {nama: "Paket Harian 5GB+ Lokal 3 Hari", harga: "Rp 14.000", ket: "Bonus kuota sampai dengan 6GB berlaku di wilayah tertentu di Kota-mu (cek detail)"}
+      {nama: "Paket Harian 7GB+ Lokal 3 Hari", harga: "Rp 16.000", ket: "Cek wilayah disini (cek detail)"}
+      {nama: "Mini Axis 13GB + Bonus Aigo 2 Hari", harga: "Rp 16.000", ket: "Bonus kuota sampai dengan 15GB berlaku di wilayah tertentu di Kota-mu (cek detail)"}
+       {nama: "Mini Axis 8,5GB + Bonus Aigo 3 Hari", harga: "Rp 16.000", ket: "Bonus kuota sampai dengan 10GB berlaku di wilayah tertentu di Kota-mu (cek detail)"}
+       {nama: "Mini Axis 2GB All 4 Hari", harga: "Rp 17.000", ket: "Kuota semua jaringan"}
+       {nama: "Mini Axis 8,5GB + Bonus Aigo 3 Hari", harga: "Rp 16.000", ket: "Bonus kuota sampai dengan 10GB berlaku di wilayah tertentu di Kota-mu (cek detail)"}
+        {nama: "Mini Axis 12,5GB + Bonus Aigo 3 Hari", harga: "Rp 19.000", ket: "Bonus kuota sampai dengan 14GB berlaku di wilayah tertentu di Kota-mu (cek detail)"}
+       {nama: "Mini Axis 17GB + Bonus Aigo 3 Hari", harga: "Rp 20.000", ket: "Bonus kuota sampai dengan 19GB berlaku di wilayah tertentu di Kota-mu (cek detail)"}
+       {nama: "Paket Harian 13GB+ Lokal 3 Hari", harga: "Rp 20.000", ket: "Cek wilayah disini (cek detail)"}
+       {nama: "Mini Axis 30GB + Bonus Aigo 3 Hari", harga: "Rp 20.000", ket: "Bonus kuota sampai dengan 30GB berlaku di wilayah tertentu di Kota-mu (cek detail)"}
+       {nama: "Mini Axis Aigo Unlimited 24 jam 1 Hari", harga: "Rp 20.000", ket: "Kuota Tanpa Batas"}  
     ],    
     "Paket Internet Bulanan": [    
       {nama: "Axis Data 1GB Semua 30 Hari", harga: "Rp 10.000", ket: "Paket dasar bulanan"},    

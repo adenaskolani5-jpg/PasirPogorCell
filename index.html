@@ -954,9 +954,8 @@ document.getElementById('toggleCalcModeBtn')?.addEventListener('click', toggleCa
   <div class="grid md:grid-cols-2 gap-6">
     <button onclick="openInternet(this)" class="card">📶 Paket Internet</button>
     <button onclick="openGame(this)" class="card">🎮 Top Up Game</button>
-  </div>
-  <div class="mt-6">
-    <button onclick="openHarga()" class="card w-full futuristic-btn">🔍 Cari</button>
+    <div></div> <!-- tempat kosong di kolom kiri agar tombol Cari masuk ke kolom kanan -->
+    <button onclick="openHarga()" class="w-full border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">🔍 Cari</button>
   </div>
 </section>    
 

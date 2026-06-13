@@ -1511,9 +1511,9 @@ const linkHtml = `<a href="${linkUrl}" target="_blank" class="text-green-400 und
 
 // Pilih salah satu opsi di bawah:
 
-// OPSI A: Semua paket di "Paket Internet Harian" Axis
-if (operators.Axis && operators.Axis['Paket Internet Harian']) {
-    operators.Axis['Paket Internet Harian'].forEach(p => {
+// OPSI A: Semua paket di "Aigo Kuota Mini (Paket Internet Harian)" Axis
+if (operators.Axis && operators.Axis['Aigo Kuota Mini (Paket Internet Harian)']) {
+    operators.Axis['Aigo Kuota Mini (Paket Internet Harian)'].forEach(p => {
         if (!p.ket.includes(linkUrl)) p.ket += ' ' + linkHtml;
     });
 }

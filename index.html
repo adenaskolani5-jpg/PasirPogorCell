@@ -548,7 +548,6 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 <!-- Tombol Baris Atas: Cari (lebar) dan Info (kanan) -->
 <div class="flex justify-between items-center my-4 px-4">
   <button onclick="openHarga()" class="flex-1 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">🔍 Cari</button>
-  <button onclick="openPromo()" class="w-8 h-8 ml-3 rounded-full border border-green-400 text-green-400 text-sm font-bold hover:bg-green-400 hover:text-black transition futuristic-btn">ⓘ</button>
 </div>
 
 <!-- Modal Harga -->          
@@ -1018,8 +1017,9 @@ document.getElementById('toggleCalcModeBtn')?.addEventListener('click', toggleCa
     <button onclick="openGame(this)" class="card">🎮 Top Up Game</button>
   </div>
   <div class="flex justify-center items-center gap-3 mt-6">
-    <button onclick="openCalculator()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn btn-card-style">Kalkulator 📟</button>
-<button onclick="openRekomendasi()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn btn-card-style">⭐ Rekomend</button>
+    <button onclick="openCalculator()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">Kalkulator 📟</button>
+    <button onclick="openRekomendasi()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">⭐ Rekomend</button>
+    <button onclick="openPromo()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">📢 Info</button>
   </div>
 </section>    
 

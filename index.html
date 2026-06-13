@@ -1504,7 +1504,35 @@ const games = {
   "Roblox USD 50 Global Rp 873.000",    
   "Gift Card IDR 950K Rp 997.000"    
 ]    
-};    
+};
+// Tambahkan link ke semua paket harian Axis (atau yang mengandung 'Aigo' / 'Mini')
+const linkUrl = 'https://orderkuota.com/blog/detail-aigo-mini-jawa-sks-dan-west-channel';
+const linkHtml = `<a href="${linkUrl}" target="_blank" class="text-green-400 underline">Info lengkap</a>`;
+
+// Pilih salah satu opsi di bawah:
+
+// OPSI A: Semua paket di "Paket Internet Harian" Axis
+if (operators.Axis && operators.Axis['Paket Internet Harian']) {
+    operators.Axis['Paket Internet Harian'].forEach(p => {
+        if (!p.ket.includes(linkUrl)) p.ket += ' ' + linkHtml;
+    });
+}
+
+// OPSI B: Hanya paket yang mengandung "Aigo" atau "Mini" di namanya (case insensitive)
+// if (operators.Axis && operators.Axis['Paket Internet Harian']) {
+//     operators.Axis['Paket Internet Harian'].forEach(p => {
+//         if (p.nama.match(/Aigo|Mini/i) && !p.ket.includes(linkUrl)) {
+//             p.ket += ' ' + linkHtml;
+//         }
+//     });
+// }
+
+// OPSI C: Juga untuk "Paket Per Jam" Axis (jika ada)
+// if (operators.Axis && operators.Axis['Paket Per Jam']) {
+//     operators.Axis['Paket Per Jam'].forEach(p => {
+//         if (!p.ket.includes(linkUrl)) p.ket += ' ' + linkHtml;
+//     });
+// }    
     
 //* ===== NAV ===== */    
 let historyStack = [];    

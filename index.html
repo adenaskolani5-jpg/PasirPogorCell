@@ -780,16 +780,23 @@ function sendToWhatsApp(nama, harga) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  // Muat data harga dari operators dan games
+  // Load data pencarian
   buildHargaData();
 
   const searchInput = document.getElementById("searchHarga");
   if (searchInput) {
     searchInput.addEventListener("input", function() {
       const q = this.value.toLowerCase().trim();
-      const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
       const box = document.getElementById("hasilHarga");
       if (!box) return;
+
+      // Jika input kosong, kosongkan area hasil dan hentikan
+      if (q === "") {
+        box.innerHTML = "";
+        return;
+      }
+
+      const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
       box.innerHTML = "";
       if (res.length === 0) {
         box.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";

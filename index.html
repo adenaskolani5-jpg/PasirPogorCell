@@ -635,7 +635,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 </div>
 
 <!-- SCRIPT PERTAMA (INTEGRASI VOUCHER DI KALKULATOR) -->
-<script>          
+<script>
 const popularItems = {          
   paket: [ "Freedom Mini 9GB 7 Hari Rp 26.000", "Freedom Mini 5 GB 2 Hari Rp 13.000", "Freedom Mini 6GB 5 Hari Rp 18.000", "Indosat Yellow 1GB 7 Hari Rp 10.000" ],          
   game: [ "Top Up Free Fire 100 Diamond", "Top Up Mobile Legends 50 Diamond", "Top Up PUBG Mobile 300 UC" ]          
@@ -712,13 +712,13 @@ function showRekomendasiPaket(operator) {
     `;
     menuDiv.appendChild(div);
   });
-  // tombol kembali
   const backBtn = document.createElement('button');
   backBtn.className = 'back-btn mt-4 w-full';
   backBtn.innerHTML = '← Kembali ke daftar operator';
   backBtn.onclick = () => openRekomendasi();
   menuDiv.appendChild(backBtn);
 }
+
 function openPromo() {
   const modal = document.getElementById('promoModal');
   if (!modal) return;
@@ -734,6 +734,7 @@ function closePromo() {
   const box = modal.querySelector('div');
   if (box) box.classList.add('scale-95');
 }
+
 let hargaData = [];
 function buildHargaData() {
   hargaData = [];
@@ -757,6 +758,7 @@ function buildHargaData() {
     });
   }
 }
+
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/[&<>]/g, function(m) {
@@ -766,10 +768,37 @@ function escapeHtml(str) {
     return m;
   });
 }
-// Variabel untuk menyimpan state modal
-let modalResolve = null;
-let modalPromise = null;
 
+// Mapping prefix per operator
+const operatorPrefixes = {
+  telkomsel: ['0811', '0812', '0813', '0821', '0822', '0823', '0851', '0852', '0853'],
+  indosat: ['0814', '0815', '0816', '0855', '0856', '0857', '0858'],
+  tri: ['0895', '0896', '0897', '0898', '0899'],
+  xl: ['0817', '0818', '0819', '0859', '0877', '0878'],
+  axis: ['0831', '0832', '0833', '0838'],
+  smartfren: ['0881', '0882', '0883', '0884', '0885', '0886', '0887', '0888', '0889']
+};
+
+function detectOperatorFromNama(nama) {
+  const lower = nama.toLowerCase();
+  if (lower.includes('telkomsel')) return 'telkomsel';
+  if (lower.includes('byu')) return 'telkomsel';
+  if (lower.includes('indosat')) return 'indosat';
+  if (lower.includes('tri')) return 'tri';
+  if (lower.includes('xl')) return 'xl';
+  if (lower.includes('axis')) return 'axis';
+  if (lower.includes('smartfren')) return 'smartfren';
+  return null;
+}
+
+function isValidPhoneForOperator(phone, operator) {
+  if (!operator) return /^\d{10,13}$/.test(phone);
+  const prefixes = operatorPrefixes[operator];
+  if (!prefixes) return false;
+  return prefixes.some(prefix => phone.startsWith(prefix));
+}
+
+// Modal input
 function showInputModal(title, placeholder, validator, infoText = '') {
   return new Promise((resolve) => {
     const modal = document.getElementById('inputModal');
@@ -779,11 +808,9 @@ function showInputModal(title, placeholder, validator, infoText = '') {
     const cancelBtn = document.getElementById('modalCancelBtn');
     const modalBody = modal.querySelector('div');
     
-    // Hapus info lama jika ada
     const oldInfo = modalBody.querySelector('.info-text');
     if (oldInfo) oldInfo.remove();
     
-    // Buat elemen info
     if (infoText) {
       const infoDiv = document.createElement('p');
       infoDiv.className = 'info-text text-xs text-gray-400 mt-2 mb-0';
@@ -848,22 +875,16 @@ function showInputModal(title, placeholder, validator, infoText = '') {
 async function sendToWhatsApp(nama, harga) {
   const nomorToko = "6283844843020";
   const isGame = /(Top Up|Diamond|UC|CP|Tokens|Crystals|Robux|Mobile Legends|Free Fire|PUBG|Call Of Duty|Honor Of Kings|Genshin Impact|Roblox)/i.test(nama);
+  const isMobileLegends = /Mobile Legends/i.test(nama);
   
   let userInput = null;
-  
-  // Deteksi apakah game Mobile Legends (untuk format ID khusus)
-  const isMobileLegends = /Mobile Legends/i.test(nama);
   
   if (isGame) {
     if (isMobileLegends) {
       userInput = await showInputModal(
         "Masukkan ID Game Mobile Legends",
         "Contoh: 12345678(1011)",
-        (val) => {
-          // Format: angka (bisa dengan atau tanpa kurung)
-          const regex = /^\d{5,15}(?:\(\d{4}\)|\d{4})?$/;
-          return regex.test(val);
-        },
+        (val) => /^\d{5,15}(?:\(\d{4}\)|\d{4})?$/.test(val),
         `<span class="text-yellow-300">📌 Informasi ID Game:</span><br>
          • Masukkan ID Mobile Legends Anda dengan format lengkap.<br>
          • Contoh ID: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
@@ -883,7 +904,6 @@ async function sendToWhatsApp(nama, harga) {
     }
     if (userInput === null) return;
   } else {
-    // Deteksi operator dari nama paket
     const operator = detectOperatorFromNama(nama);
     let validatorMessage = "Contoh: 081234567890 (10-13 digit angka)";
     let infoHtml = `<span class="text-yellow-300">📌 Informasi Penting:</span><br>
@@ -908,9 +928,7 @@ async function sendToWhatsApp(nama, harga) {
       validatorMessage,
       (val) => {
         if (!/^\d{10,13}$/.test(val)) return false;
-        if (operator) {
-          return isValidPhoneForOperator(val, operator);
-        }
+        if (operator) return isValidPhoneForOperator(val, operator);
         return true;
       },
       infoHtml
@@ -929,15 +947,14 @@ async function sendToWhatsApp(nama, harga) {
   window.open(url, '_blank');
 }
 
+// ========== DOMContentLoaded ==========
 document.addEventListener("DOMContentLoaded", function() {
-  // Load data pencarian
   buildHargaData();
 
   const searchInput = document.getElementById("searchHarga");
   const clearBtn = document.getElementById("clearSearchBtn");
   const hasilBox = document.getElementById("hasilHarga");
 
-  // Fungsi untuk toggle tombol clear (muncul/hilang)
   function toggleClearButton() {
     if (searchInput && clearBtn) {
       if (searchInput.value.trim() !== '') {
@@ -948,19 +965,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // Event listener untuk input pencarian (filter)
   if (searchInput) {
     searchInput.addEventListener("input", function() {
       const q = this.value.toLowerCase().trim();
-      
-      // Toggle tombol clear setiap kali input berubah
       toggleClearButton();
-
       if (q === "") {
         if (hasilBox) hasilBox.innerHTML = "";
         return;
       }
-
       const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
       if (hasilBox) {
         hasilBox.innerHTML = "";
@@ -983,7 +995,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  // Event listener untuk tombol clear (hapus teks)
   if (clearBtn) {
     clearBtn.addEventListener("click", function() {
       if (searchInput) {
@@ -991,12 +1002,14 @@ document.addEventListener("DOMContentLoaded", function() {
         if (hasilBox) hasilBox.innerHTML = "";
         toggleClearButton();
         searchInput.focus();
-        // Trigger event input agar filter terupdate (meski kosong)
         searchInput.dispatchEvent(new Event('input', { bubbles: true }));
       }
     });
   }
 
+  toggleClearButton();
+});
+</script>
 // Mapping prefix per operator
 const operatorPrefixes = {
   telkomsel: ['0811', '0812', '0813', '0821', '0822', '0823', '0851', '0852', '0853'],

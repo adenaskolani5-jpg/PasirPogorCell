@@ -934,34 +934,72 @@ document.addEventListener("DOMContentLoaded", function() {
   buildHargaData();
 
   const searchInput = document.getElementById("searchHarga");
+  const clearBtn = document.getElementById("clearSearchBtn");
+  const hasilBox = document.getElementById("hasilHarga");
+
+  // Fungsi untuk toggle tombol clear (muncul/hilang)
+  function toggleClearButton() {
+    if (searchInput && clearBtn) {
+      if (searchInput.value.trim() !== '') {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+    }
+  }
+
+  // Event listener untuk input pencarian (filter)
   if (searchInput) {
     searchInput.addEventListener("input", function() {
       const q = this.value.toLowerCase().trim();
-      const box = document.getElementById("hasilHarga");
-      if (!box) return;
+      
+      // Toggle tombol clear setiap kali input berubah
+      toggleClearButton();
 
       if (q === "") {
-        box.innerHTML = "";
+        if (hasilBox) hasilBox.innerHTML = "";
         return;
       }
-// Tombol clear (hapus teks pencarian)
-const searchInputClear = document.getElementById('searchHarga');
-const clearBtn = document.getElementById('clearSearchBtn');
 
-if (searchInputClear && clearBtn) {
-  function toggleClearButton() {
-    if (searchInputClear.value.trim() !== '') {
-      clearBtn.classList.remove('hidden');
-    } else {
-      clearBtn.classList.add('hidden');
-    }
+      const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
+      if (hasilBox) {
+        hasilBox.innerHTML = "";
+        if (res.length === 0) {
+          hasilBox.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
+          return;
+        }
+        res.slice(0, 20).forEach(x => {
+          hasilBox.innerHTML += `
+            <div class="harga-item">
+              <div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div>
+              <div class="harga-ket">${escapeHtml(x.ket)}</div>
+              <div style="margin-top: 0.5rem; text-align: right;">
+                <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
+              </div>
+            </div>
+          `;
+        });
+      }
+    });
   }
-  
-  // Toggle saat input berubah
-  searchInputClear.addEventListener('input', function() {
-    toggleClearButton();
-    // Note: event listener untuk pencarian sudah ada terpisah, tidak perlu diubah
-  });
+
+  // Event listener untuk tombol clear (hapus teks)
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function() {
+      if (searchInput) {
+        searchInput.value = "";
+        if (hasilBox) hasilBox.innerHTML = "";
+        toggleClearButton();
+        searchInput.focus();
+        // Trigger event input agar filter terupdate (meski kosong)
+        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    });
+  }
+
+  // Inisialisasi awal: cek apakah input sudah berisi (misal dari autofill)
+  toggleClearButton();
+});
   
   // Saat tombol diklik
   clearBtn.addEventListener('click', function() {

@@ -583,7 +583,10 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 </header>        
 <!-- Tombol Baris Atas: Cari (lebar) dan Info (kanan) -->
 <div class="my-4 px-4">
-  <input type="text" id="searchHarga" placeholder="Cari paket internet atau game..." class="w-full border border-green-400 bg-gray-900 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300 focus:ring-1 focus:ring-green-500 transition futuristic-btn">
+  <div class="relative">
+    <input type="text" id="searchHarga" placeholder="Cari paket internet atau game..." class="w-full border border-green-400 bg-gray-900 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300 focus:ring-1 focus:ring-green-500 transition futuristic-btn pr-8">
+    <button id="clearSearchBtn" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white text-lg font-bold hidden">&times;</button>
+  </div>
   <div id="hasilHarga" class="mt-3 space-y-2 max-h-80 overflow-y-auto"></div>
 </div>   
 
@@ -968,36 +971,64 @@ document.addEventListener("DOMContentLoaded", function() {
   buildHargaData();
 
   const searchInput = document.getElementById("searchHarga");
-  if (searchInput) {
-    searchInput.addEventListener("input", function() {
-      const q = this.value.toLowerCase().trim();
-      const box = document.getElementById("hasilHarga");
-      if (!box) return;
+  const clearBtn = document.getElementById("clearSearchBtn");
+  const hasilBox = document.getElementById("hasilHarga");
 
-      if (q === "") {
-        box.innerHTML = "";
-        return;
-      }
+  function toggleClearButton() {
+    if (searchInput.value.trim() !== "") {
+      clearBtn.classList.remove("hidden");
+    } else {
+      clearBtn.classList.add("hidden");
+    }
+  }
 
-      const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
-      box.innerHTML = "";
-      if (res.length === 0) {
-        box.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
-        return;
-      }
-      res.slice(0, 20).forEach(x => {
-        box.innerHTML += `
-          <div class="harga-item">
-            <div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div>
-            <div class="harga-ket">${escapeHtml(x.ket)}</div>
-            <div style="margin-top: 0.5rem; text-align: right;">
-              <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
-            </div>
+  function performSearch() {
+    const q = searchInput.value.toLowerCase().trim();
+    if (!hasilBox) return;
+    if (q === "") {
+      hasilBox.innerHTML = "";
+      return;
+    }
+    const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
+    hasilBox.innerHTML = "";
+    if (res.length === 0) {
+      hasilBox.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
+      return;
+    }
+    res.slice(0, 20).forEach(x => {
+      hasilBox.innerHTML += `
+        <div class="harga-item">
+          <div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div>
+          <div class="harga-ket">${escapeHtml(x.ket)}</div>
+          <div style="margin-top: 0.5rem; text-align: right;">
+            <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
           </div>
-        `;
-      });
+        </div>
+      `;
     });
   }
+
+  if (searchInput) {
+    // Event input
+    searchInput.addEventListener("input", function() {
+      toggleClearButton();
+      performSearch();
+    });
+    // Inisialisasi tombol
+    toggleClearButton();
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function() {
+      searchInput.value = "";
+      toggleClearButton();
+      performSearch();
+      searchInput.focus();
+    });
+  }
+
+  // Sisa kode DOMContentLoaded (misalnya untuk customerId jika ada) tetap di sini
+  // ... (jika ada kode lain seperti untuk customerId, letakkan di sini)
 });
 
 // ========== VOUCHER MODE DI KALKULATOR ==========

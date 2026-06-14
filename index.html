@@ -582,9 +582,9 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   <p class="text-gray-300">Paket Internet & Top Up Game</p>          
 </header>        
 <!-- Tombol Baris Atas: Cari (lebar) dan Info (kanan) -->
-<div class="my-4 px-4">
-  <input type="text" id="searchHarga" placeholder="Cari paket internet atau game..." class="w-full border border-green-400 bg-gray-900 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300 focus:ring-1 focus:ring-green-500 transition futuristic-btn">
-  <div id="hasilHarga" class="mt-3 space-y-2 max-h-80 overflow-y-auto"></div>
+<div class="my-4 px-4 relative">
+  <input type="text" id="searchHarga" placeholder="Cari paket internet atau game..." class="w-full border border-green-400 bg-gray-900 text-white text-sm py-2 px-3 pr-8 rounded-md focus:outline-none focus:border-green-300 focus:ring-1 focus:ring-green-500 transition futuristic-btn">
+  <button id="clearSearchBtn" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white text-lg font-bold hidden">&times;</button>
 </div>
 
 <!-- Modal Rekomendasi -->
@@ -944,6 +944,42 @@ document.addEventListener("DOMContentLoaded", function() {
         box.innerHTML = "";
         return;
       }
+// Tombol clear (hapus teks pencarian)
+const searchInputClear = document.getElementById('searchHarga');
+const clearBtn = document.getElementById('clearSearchBtn');
+
+if (searchInputClear && clearBtn) {
+  function toggleClearButton() {
+    if (searchInputClear.value.trim() !== '') {
+      clearBtn.classList.remove('hidden');
+    } else {
+      clearBtn.classList.add('hidden');
+    }
+  }
+  
+  // Toggle saat input berubah
+  searchInputClear.addEventListener('input', function() {
+    toggleClearButton();
+    // Note: event listener untuk pencarian sudah ada terpisah, tidak perlu diubah
+  });
+  
+  // Saat tombol diklik
+  clearBtn.addEventListener('click', function() {
+    searchInputClear.value = '';
+    // Kosongkan hasil pencarian
+    const hasilBox = document.getElementById('hasilHarga');
+    if (hasilBox) hasilBox.innerHTML = '';
+    toggleClearButton();
+    searchInputClear.focus();
+    
+    // Trigger event input agar hasil pencarian hilang (jika ada listener)
+    const inputEvent = new Event('input', { bubbles: true });
+    searchInputClear.dispatchEvent(inputEvent);
+  });
+  
+  // Inisialisasi (jika ada teks default)
+  toggleClearButton();
+}
 
       const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
       box.innerHTML = "";

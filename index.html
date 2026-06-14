@@ -766,36 +766,131 @@ function escapeHtml(str) {
     return m;
   });
 }
-function sendToWhatsApp(nama, harga) {
+// Variabel untuk menyimpan state modal
+let modalResolve = null;
+let modalPromise = null;
+
+function showInputModal(title, placeholder) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('inputModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalInput = document.getElementById('modalInput');
+    const confirmBtn = document.getElementById('modalConfirmBtn');
+    const cancelBtn = document.getElementById('modalCancelBtn');
+    
+    modalTitle.textContent = title;
+    modalInput.placeholder = placeholder;
+    modalInput.value = '';
+    
+    // Tampilkan modal
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.querySelector('div').classList.remove('scale-95');
+    modalInput.focus();
+    
+    function cleanup() {
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      modal.querySelector('div').classList.add('scale-95');
+      confirmBtn.removeEventListener('click', onConfirm);
+      cancelBtn.removeEventListener('click', onCancel);
+      modalInput.removeEventListener('keypress', onKeyPress);
+    }
+    
+    function onConfirm() {
+      const value = modalInput.value.trim();
+      if (value === "") {
+        alert("Data tidak boleh kosong!");
+        return;
+      }
+      cleanup();
+      resolve(value);
+    }
+    
+    function onCancel() {
+      cleanup();
+      resolve(null);
+    }
+    
+    function onKeyPress(e) {
+      if (e.key === 'Enter') onConfirm();
+    }
+    
+    confirmBtn.addEventListener('click', onConfirm);
+    cancelBtn.addEventListener('click', onCancel);
+    modalInput.addEventListener('keypress', onKeyPress);
+  });
+}
+
+// Mapping prefix per operator
+const operatorPrefixes = {
+  telkomsel: ['0811', '0812', '0813', '0821', '0822', '0823', '0851', '0852', '0853'],
+  indosat: ['0814', '0815', '0816', '0855', '0856', '0857', '0858'],
+  tri: ['0895', '0896', '0897', '0898', '0899'],
+  xl: ['0817', '0818', '0819', '0859', '0877', '0878'],
+  axis: ['0831', '0832', '0833', '0838'],
+  smartfren: ['0881', '0882', '0883', '0884', '0885', '0886', '0887', '0888', '0889']
+};
+
+// Fungsi untuk mendeteksi operator dari nama paket
+function detectOperatorFromNama(nama) {
+  const lower = nama.toLowerCase();
+  if (lower.includes('telkomsel')) return 'telkomsel';
+  if (lower.includes('byu')) return 'telkomsel'; // byU termasuk Telkomsel
+  if (lower.includes('indosat')) return 'indosat';
+  if (lower.includes('tri')) return 'tri';
+  if (lower.includes('xl')) return 'xl';
+  if (lower.includes('axis')) return 'axis';
+  if (lower.includes('smartfren')) return 'smartfren';
+  return null; // tidak terdeteksi
+}
+
+// Fungsi validasi nomor HP berdasarkan operator
+function isValidPhoneForOperator(phone, operator) {
+  if (!operator) {
+    // Jika operator tidak dikenali, hanya cek digit 10-13
+    return /^\d{10,13}$/.test(phone);
+  }
+  const prefixes = operatorPrefixes[operator];
+  if (!prefixes) return false;
+  // Cek apakah nomor dimulai dengan salah satu prefix yang valid
+  return prefixes.some(prefix => phone.startsWith(prefix));
+}
+
+async function sendToWhatsApp(nama, harga) {
   const nomorToko = "6283844843020";
   const isGame = /(Top Up|Diamond|UC|CP|Tokens|Crystals|Robux|Mobile Legends|Free Fire|PUBG|Call Of Duty|Honor Of Kings|Genshin Impact|Roblox)/i.test(nama);
   
-  let userInput = "";
-  let promptMessage = "";
+  let userInput = null;
   
   if (isGame) {
-    promptMessage = "Masukkan ID Game Anda:";
-    userInput = prompt(promptMessage, "");
-    if (userInput === null) return; // User membatalkan
-    userInput = userInput.trim();
-    if (userInput === "") {
-      alert("ID Game tidak boleh kosong!");
-      return;
-    }
-  } else {
-    promptMessage = "Masukkan nomor HP Anda (contoh: 081234567890):";
-    userInput = prompt(promptMessage, "");
+    userInput = await showInputModal(
+      "Masukkan ID Game Anda", 
+      "Contoh: Gamer123 (5-30 karakter, huruf/angka)", 
+      (val) => /^[A-Za-z0-9]{5,30}$/.test(val)
+    );
     if (userInput === null) return;
-    userInput = userInput.trim();
-    if (userInput === "") {
-      alert("Nomor HP tidak boleh kosong!");
-      return;
+  } else {
+    // Deteksi operator dari nama paket
+    const operator = detectOperatorFromNama(nama);
+    let validatorMessage = "Contoh: 081234567890 (10-13 digit angka)";
+    if (operator) {
+      const prefixList = operatorPrefixes[operator].join(', ');
+      validatorMessage = `Nomor harus diawali dengan prefix ${prefixList} (10-13 digit)`;
     }
-    // Validasi sederhana: minimal 10 digit, maksimal 13 digit, hanya angka
-    if (!/^\d{10,13}$/.test(userInput)) {
-      alert("Nomor HP tidak valid! Harus 10-13 digit angka.");
-      return;
-    }
+    
+    userInput = await showInputModal(
+      "Masukkan Nomor HP",
+      validatorMessage,
+      (val) => {
+        // Validasi dasar digit
+        if (!/^\d{10,13}$/.test(val)) return false;
+        // Validasi prefix berdasarkan operator
+        if (operator) {
+          return isValidPhoneForOperator(val, operator);
+        }
+        return true; // jika operator tidak dikenali, hanya validasi digit
+      }
+    );
+    if (userInput === null) return;
   }
   
   let pesan = "";
@@ -1842,6 +1937,17 @@ function openGameDetail(g) {
         setInterval(sendMonthlyReport, 30 * 24 * 60 * 60 * 1000);
     }, timeUntilNextMonth);
 })();
-</script>    
+</script>
+<!-- Modal Input untuk Nomor HP / ID Game -->
+<div id="inputModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
+  <div class="bg-gray-900 border border-green-500 rounded-xl p-6 w-80 relative transform scale-95 transition-all duration-300 shadow-2xl">
+    <h3 id="modalTitle" class="text-lg font-bold text-green-400 mb-4">Masukkan Data</h3>
+    <input type="text" id="modalInput" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300" placeholder="">
+    <div class="flex justify-end gap-3 mt-4">
+      <button id="modalCancelBtn" class="px-4 py-1 border border-gray-500 text-gray-300 rounded-md hover:bg-gray-700">Batal</button>
+      <button id="modalConfirmBtn" class="px-4 py-1 bg-green-500 text-black rounded-md font-semibold hover:bg-green-400">Kirim</button>
+    </div>
+  </div>
+</div>    
 </body>    
 </html>

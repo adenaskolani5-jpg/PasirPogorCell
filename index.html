@@ -766,36 +766,78 @@ function escapeHtml(str) {
     return m;
   });
 }
-function sendToWhatsApp(nama, harga) {
+// Variabel untuk menyimpan state modal
+let modalResolve = null;
+let modalPromise = null;
+
+function showInputModal(title, placeholder) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('inputModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalInput = document.getElementById('modalInput');
+    const confirmBtn = document.getElementById('modalConfirmBtn');
+    const cancelBtn = document.getElementById('modalCancelBtn');
+    
+    modalTitle.textContent = title;
+    modalInput.placeholder = placeholder;
+    modalInput.value = '';
+    
+    // Tampilkan modal
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.querySelector('div').classList.remove('scale-95');
+    modalInput.focus();
+    
+    function cleanup() {
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      modal.querySelector('div').classList.add('scale-95');
+      confirmBtn.removeEventListener('click', onConfirm);
+      cancelBtn.removeEventListener('click', onCancel);
+      modalInput.removeEventListener('keypress', onKeyPress);
+    }
+    
+    function onConfirm() {
+      const value = modalInput.value.trim();
+      if (value === "") {
+        alert("Data tidak boleh kosong!");
+        return;
+      }
+      cleanup();
+      resolve(value);
+    }
+    
+    function onCancel() {
+      cleanup();
+      resolve(null);
+    }
+    
+    function onKeyPress(e) {
+      if (e.key === 'Enter') onConfirm();
+    }
+    
+    confirmBtn.addEventListener('click', onConfirm);
+    cancelBtn.addEventListener('click', onCancel);
+    modalInput.addEventListener('keypress', onKeyPress);
+  });
+}
+
+async function sendToWhatsApp(nama, harga) {
   const nomorToko = "6283844843020";
   const isGame = /(Top Up|Diamond|UC|CP|Tokens|Crystals|Robux|Mobile Legends|Free Fire|PUBG|Call Of Duty|Honor Of Kings|Genshin Impact|Roblox)/i.test(nama);
   
-  let userInput = "";
-  let promptMessage = "";
+  let userInput = null;
   
   if (isGame) {
-    promptMessage = "Masukkan ID Game Anda:";
-    userInput = prompt(promptMessage, "");
-    if (userInput === null) return; // User membatalkan
-    userInput = userInput.trim();
-    if (userInput === "") {
-      alert("ID Game tidak boleh kosong!");
-      return;
-    }
+    userInput = await showInputModal("Masukkan ID Game Anda", "Contoh: 12345678");
   } else {
-    promptMessage = "Masukkan nomor HP Anda (contoh: 081234567890):";
-    userInput = prompt(promptMessage, "");
-    if (userInput === null) return;
-    userInput = userInput.trim();
-    if (userInput === "") {
-      alert("Nomor HP tidak boleh kosong!");
-      return;
-    }
-    // Validasi sederhana: minimal 10 digit, maksimal 13 digit, hanya angka
-    if (!/^\d{10,13}$/.test(userInput)) {
-      alert("Nomor HP tidak valid! Harus 10-13 digit angka.");
-      return;
-    }
+    userInput = await showInputModal("Masukkan Nomor HP", "Contoh: 081234567890");
+  }
+  
+  if (userInput === null) return; // User membatalkan
+  
+  // Validasi nomor HP (hanya angka, 10-13 digit)
+  if (!isGame && !/^\d{10,13}$/.test(userInput)) {
+    alert("Nomor HP tidak valid! Harus 10-13 digit angka.");
+    return;
   }
   
   let pesan = "";
@@ -808,6 +850,7 @@ function sendToWhatsApp(nama, harga) {
   const url = `https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`;
   window.open(url, '_blank');
 }
+
 document.addEventListener("DOMContentLoaded", function() {
   // Load data pencarian
   buildHargaData();
@@ -1841,6 +1884,17 @@ function openGameDetail(g) {
         setInterval(sendMonthlyReport, 30 * 24 * 60 * 60 * 1000);
     }, timeUntilNextMonth);
 })();
-</script>    
+</script>
+<!-- Modal Input untuk Nomor HP / ID Game -->
+<div id="inputModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
+  <div class="bg-gray-900 border border-green-500 rounded-xl p-6 w-80 relative transform scale-95 transition-all duration-300 shadow-2xl">
+    <h3 id="modalTitle" class="text-lg font-bold text-green-400 mb-4">Masukkan Data</h3>
+    <input type="text" id="modalInput" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300" placeholder="">
+    <div class="flex justify-end gap-3 mt-4">
+      <button id="modalCancelBtn" class="px-4 py-1 border border-gray-500 text-gray-300 rounded-md hover:bg-gray-700">Batal</button>
+      <button id="modalConfirmBtn" class="px-4 py-1 bg-green-500 text-black rounded-md font-semibold hover:bg-green-400">Kirim</button>
+    </div>
+  </div>
+</div>    
 </body>    
 </html>

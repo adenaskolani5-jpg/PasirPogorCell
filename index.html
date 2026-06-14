@@ -927,64 +927,6 @@ async function sendToWhatsApp(nama, harga) {
   window.open(url, '_blank');
 }
 
-// ========== DOMContentLoaded ==========
-document.addEventListener("DOMContentLoaded", function() {
-  buildHargaData();
-  const searchInput = document.getElementById("searchHarga");
-  const clearBtn = document.getElementById("clearSearchBtn");
-  const hasilBox = document.getElementById("hasilHarga");
-  function toggleClearButton() {
-    if (searchInput && clearBtn) {
-      if (searchInput.value.trim() !== '') {
-        clearBtn.classList.remove('hidden');
-      } else {
-        clearBtn.classList.add('hidden');
-      }
-    }
-  }
-  if (searchInput) {
-    searchInput.addEventListener("input", function() {
-      const q = this.value.toLowerCase().trim();
-      toggleClearButton();
-      if (q === "") {
-        if (hasilBox) hasilBox.innerHTML = "";
-        return;
-      }
-      const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
-      if (hasilBox) {
-        hasilBox.innerHTML = "";
-        if (res.length === 0) {
-          hasilBox.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
-          return;
-        }
-        res.slice(0, 20).forEach(x => {
-          hasilBox.innerHTML += `
-            <div class="harga-item">
-              <div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div>
-              <div class="harga-ket">${escapeHtml(x.ket)}</div>
-              <div style="margin-top: 0.5rem; text-align: right;">
-                <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
-              </div>
-            </div>
-          `;
-        });
-      }
-    });
-  }
-  if (clearBtn) {
-    clearBtn.addEventListener("click", function() {
-      if (searchInput) {
-        searchInput.value = "";
-        if (hasilBox) hasilBox.innerHTML = "";
-        toggleClearButton();
-        searchInput.focus();
-        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
-      }
-    });
-  }
-  toggleClearButton();
-});
-
 let voucherModeInitialized = false;
 function initVoucherInCalculator() {
   if (voucherModeInitialized) return;
@@ -1943,6 +1885,70 @@ function openGameDetail(g) {
       <button id="modalConfirmBtn" class="px-4 py-1 bg-green-500 text-black rounded-md font-semibold hover:bg-green-400">Kirim</button>
     </div>
   </div>
-</div>    
+</div>
+<script>
+// Inisialisasi pencarian setelah data siap
+document.addEventListener("DOMContentLoaded", function() {
+  buildHargaData();
+
+  const searchInput = document.getElementById("searchHarga");
+  const clearBtn = document.getElementById("clearSearchBtn");
+  const hasilBox = document.getElementById("hasilHarga");
+
+  function toggleClearButton() {
+    if (searchInput && clearBtn) {
+      if (searchInput.value.trim() !== '') {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+    }
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("input", function() {
+      const q = this.value.toLowerCase().trim();
+      toggleClearButton();
+      if (q === "") {
+        if (hasilBox) hasilBox.innerHTML = "";
+        return;
+      }
+      const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
+      if (hasilBox) {
+        hasilBox.innerHTML = "";
+        if (res.length === 0) {
+          hasilBox.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
+          return;
+        }
+        res.slice(0, 20).forEach(x => {
+          hasilBox.innerHTML += `
+            <div class="harga-item">
+              <div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div>
+              <div class="harga-ket">${escapeHtml(x.ket)}</div>
+              <div style="margin-top: 0.5rem; text-align: right;">
+                <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
+              </div>
+            </div>
+          `;
+        });
+      }
+    });
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function() {
+      if (searchInput) {
+        searchInput.value = "";
+        if (hasilBox) hasilBox.innerHTML = "";
+        toggleClearButton();
+        searchInput.focus();
+        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    });
+  }
+
+  toggleClearButton();
+});
+</script>    
 </body>    
 </html>

@@ -583,7 +583,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 </header>        
 <!-- Tombol Baris Atas: Cari (lebar) dan Info (kanan) -->
 <div class="my-4 px-4 relative">
-  <input type="text" id="searchHarga" placeholder="Cari paket internet atau game..." class="w-full border border-green-400 bg-gray-900 text-white text-sm py-2 px-3 pr-10 rounded-md focus:outline-none focus:border-green-300 focus:ring-1 focus:ring-green-500 transition futuristic-btn">
+  <input type="text" id="searchHarga" placeholder="Cari paket internet atau game..." class="w-full border border-green-400 bg-gray-900 text-white text-sm py-2 px-3 pr-8 rounded-md focus:outline-none focus:border-green-300 focus:ring-1 focus:ring-green-500 transition futuristic-btn">
   <button id="clearSearchBtn" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white text-lg font-bold hidden">&times;</button>
 </div>
 
@@ -1887,65 +1887,54 @@ function openGameDetail(g) {
   </div>
 </div>
 <script>
-// Inisialisasi pencarian setelah data siap
 document.addEventListener("DOMContentLoaded", function() {
-  buildHargaData();
+  // Panggil buildHargaData setelah data siap (data operators sudah ada di atas)
+  if (typeof buildHargaData === 'function') {
+    buildHargaData();
+  }
 
   const searchInput = document.getElementById("searchHarga");
   const clearBtn = document.getElementById("clearSearchBtn");
   const hasilBox = document.getElementById("hasilHarga");
 
+  if (!searchInput || !clearBtn || !hasilBox) return;
+
   function toggleClearButton() {
-    if (searchInput && clearBtn) {
-      if (searchInput.value.trim() !== '') {
-        clearBtn.classList.remove('hidden');
-      } else {
-        clearBtn.classList.add('hidden');
-      }
+    clearBtn.classList.toggle('hidden', searchInput.value.trim() === '');
+  }
+
+  searchInput.addEventListener("input", function() {
+    const q = this.value.toLowerCase().trim();
+    toggleClearButton();
+    if (!q) {
+      hasilBox.innerHTML = "";
+      return;
     }
-  }
-
-  if (searchInput) {
-    searchInput.addEventListener("input", function() {
-      const q = this.value.toLowerCase().trim();
-      toggleClearButton();
-      if (q === "") {
-        if (hasilBox) hasilBox.innerHTML = "";
-        return;
-      }
-      const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
-      if (hasilBox) {
-        hasilBox.innerHTML = "";
-        if (res.length === 0) {
-          hasilBox.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
-          return;
-        }
-        res.slice(0, 20).forEach(x => {
-          hasilBox.innerHTML += `
-            <div class="harga-item">
-              <div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div>
-              <div class="harga-ket">${escapeHtml(x.ket)}</div>
-              <div style="margin-top: 0.5rem; text-align: right;">
-                <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
-              </div>
-            </div>
-          `;
-        });
-      }
+    const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
+    hasilBox.innerHTML = "";
+    if (res.length === 0) {
+      hasilBox.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
+      return;
+    }
+    res.slice(0, 20).forEach(x => {
+      hasilBox.innerHTML += `
+        <div class="harga-item">
+          <div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div>
+          <div class="harga-ket">${escapeHtml(x.ket)}</div>
+          <div style="margin-top: 0.5rem; text-align: right;">
+            <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
+          </div>
+        </div>
+      `;
     });
-  }
+  });
 
-  if (clearBtn) {
-    clearBtn.addEventListener("click", function() {
-      if (searchInput) {
-        searchInput.value = "";
-        if (hasilBox) hasilBox.innerHTML = "";
-        toggleClearButton();
-        searchInput.focus();
-        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
-      }
-    });
-  }
+  clearBtn.addEventListener("click", function() {
+    searchInput.value = "";
+    hasilBox.innerHTML = "";
+    toggleClearButton();
+    searchInput.focus();
+  });
 
   toggleClearButton();
 });

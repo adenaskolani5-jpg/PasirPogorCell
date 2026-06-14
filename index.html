@@ -585,6 +585,11 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 <div class="my-4 px-4">
   <input type="text" id="searchHarga" placeholder="Cari paket internet atau game..." class="w-full border border-green-400 bg-gray-900 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300 focus:ring-1 focus:ring-green-500 transition futuristic-btn">
   <div id="hasilHarga" class="mt-3 space-y-2 max-h-80 overflow-y-auto"></div>
+</div>
+<!-- Input untuk nomor HP / ID Game -->
+<div class="my-3 px-4">
+  <label class="text-xs text-gray-400 block mb-1">📞 Nomor HP (untuk paket) atau 🎮 ID Game (untuk topup)</label>
+  <input type="text" id="customerId" placeholder="Contoh: 081234567890 atau ID Game Anda" class="w-full border border-green-400 bg-gray-900 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300">
 </div>     
 
 <!-- Modal Rekomendasi -->
@@ -769,12 +774,18 @@ function escapeHtml(str) {
 function sendToWhatsApp(nama, harga) {
   const nomorToko = "6283844843020";
   const isGame = /(Top Up|Diamond|UC|CP|Tokens|Crystals|Robux|Mobile Legends|Free Fire|PUBG|Call Of Duty|Honor Of Kings|Genshin Impact|Roblox)/i.test(nama);
+  
+  // Ambil nilai input dari elemen #customerId
+  const customerIdInput = document.getElementById('customerId');
+  const customerId = customerIdInput ? customerIdInput.value.trim() : '';
+  
   let pesan = "";
   if (isGame) {
-    pesan = `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nID Game: \nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
+    pesan = `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nID Game: ${customerId || '(isi ID game Anda)'}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
   } else {
-    pesan = `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nNo. HP: \nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
+    pesan = `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nNo. HP: ${customerId || '(isi nomor HP Anda)'}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
   }
+  
   const url = `https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`;
   window.open(url, '_blank');
 }
@@ -795,6 +806,17 @@ document.addEventListener("DOMContentLoaded", function() {
         box.innerHTML = "";
         return;
       }
+// Simpan nilai customerId ke localStorage
+const customerIdField = document.getElementById('customerId');
+if (customerIdField) {
+  // Muat data tersimpan
+  const savedId = localStorage.getItem('customerId');
+  if (savedId) customerIdField.value = savedId;
+  // Simpan saat berubah
+  customerIdField.addEventListener('input', function() {
+    localStorage.setItem('customerId', this.value);
+  });
+}
 
       const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
       box.innerHTML = "";

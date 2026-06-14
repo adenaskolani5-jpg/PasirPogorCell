@@ -773,7 +773,7 @@ function escapeHtml(str) {
 let modalResolve = null;
 let modalPromise = null;
 
-function showInputModal(title, placeholder, validator, infoText = '') {
+function showInputModal(title, placeholder, validator, infoText = '', storageKey = '') {
   return new Promise((resolve) => {
     const modal = document.getElementById('inputModal');
     const modalTitle = document.getElementById('modalTitle');
@@ -800,7 +800,14 @@ function showInputModal(title, placeholder, validator, infoText = '') {
     
     modalTitle.textContent = title;
     modalInput.placeholder = placeholder;
-    modalInput.value = '';
+    
+    // Muat data tersimpan dari localStorage jika ada
+    if (storageKey) {
+      const savedValue = localStorage.getItem(storageKey);
+      if (savedValue) modalInput.value = savedValue;
+    } else {
+      modalInput.value = '';
+    }
     
     modal.classList.remove('opacity-0', 'pointer-events-none');
     modal.querySelector('div').classList.remove('scale-95');
@@ -825,6 +832,12 @@ function showInputModal(title, placeholder, validator, infoText = '') {
       }
       errorMsg.classList.add('hidden');
       modalInput.classList.remove('border-red-500');
+      
+      // Simpan ke localStorage jika storageKey disediakan
+      if (storageKey && value) {
+        localStorage.setItem(storageKey, value);
+      }
+      
       cleanup();
       resolve(value);
     }
@@ -909,14 +922,39 @@ async function sendToWhatsApp(nama, harga) {
       );
     } else {
       userInput = await showInputModal(
-        "Masukkan ID Game Anda",
-        "Contoh: Gamer123 (5-30 karakter, huruf/angka)",
-        (val) => /^[A-Za-z0-9]{5,30}$/.test(val),
-        `<span class="text-yellow-300">📌 Informasi:</span><br>
-         • Masukkan ID Game Anda dengan benar.<br>
-         • Pastikan tidak ada kesalahan pengetikan, karena ID yang salah tidak dapat diproses.<br>
-         <span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input dari pelanggan.</span>`
-      );
+  "Masukkan ID Game Mobile Legends",
+  "Contoh: 12345678(1011)",
+  (val) => /^\d{5,15}(?:\(\d{4}\)|\d{4})?$/.test(val),
+  `<span class="text-yellow-300">📌 Informasi ID Game:</span><br>
+   • Masukkan ID Mobile Legends Anda dengan format lengkap.<br>
+   • Contoh ID: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
+   • Pastikan ID yang Anda masukkan sudah benar, karena kami tidak bertanggung jawab atas kesalahan pengetikan.<br>
+   <span class="text-green-300">💡 Tips: Cek ID di profil game Anda.</span>`,
+  'ml_id'  // storage key khusus untuk Mobile Legends
+);
+userInput = await showInputModal(
+  "Masukkan ID Game Anda",
+  "Contoh: Gamer123 (5-30 karakter, huruf/angka)",
+  (val) => /^[A-Za-z0-9]{5,30}$/.test(val),
+  `<span class="text-yellow-300">📌 Informasi:</span><br>
+   • Masukkan ID Game Anda dengan benar.<br>
+   • Pastikan tidak ada kesalahan pengetikan, karena ID yang salah tidak dapat diproses.<br>
+   <span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input dari pelanggan.</span>`,
+  'game_id'  // storage key untuk game umum
+);
+userInput = await showInputModal(
+  "Masukkan Nomor HP",
+  validatorMessage,
+  (val) => {
+    if (!/^\d{10,13}$/.test(val)) return false;
+    if (operator) {
+      return isValidPhoneForOperator(val, operator);
+    }
+    return true;
+  },
+  infoHtml,
+  'customer_phone'  // storage key untuk nomor HP
+);
     }
     if (userInput === null) return;
   } else {

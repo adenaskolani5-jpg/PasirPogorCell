@@ -791,7 +791,12 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
       const infoDiv = document.createElement('p');
       infoDiv.className = 'info-text text-xs text-gray-400 mt-2 mb-0';
       infoDiv.innerHTML = infoText;
-      modalBody.insertBefore(infoDiv, modalBody.querySelector('#modalInput')?.nextSibling);
+      const inputElement = modalBody.querySelector('#modalInput');
+      if (inputElement && inputElement.nextSibling) {
+        modalBody.insertBefore(infoDiv, inputElement.nextSibling);
+      } else {
+        modalBody.insertBefore(infoDiv, confirmBtn.parentNode);
+      }
     }
     
     const errorMsg = document.createElement('p');
@@ -819,7 +824,13 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
       confirmBtn.removeEventListener('click', onConfirm);
       cancelBtn.removeEventListener('click', onCancel);
       modalInput.removeEventListener('keypress', onKeyPress);
+      modalInput.removeEventListener('input', onInput);
       if (errorMsg) errorMsg.remove();
+    }
+    
+    function onInput() {
+      errorMsg.classList.add('hidden');
+      modalInput.classList.remove('border-red-500');
     }
     
     function onConfirm() {
@@ -854,45 +865,8 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
     confirmBtn.addEventListener('click', onConfirm);
     cancelBtn.addEventListener('click', onCancel);
     modalInput.addEventListener('keypress', onKeyPress);
-    modalInput.addEventListener('input', () => {
-      errorMsg.classList.add('hidden');
-      modalInput.classList.remove('border-red-500');
-    });
+    modalInput.addEventListener('input', onInput);
   });
-}
-// Mapping prefix per operator
-const operatorPrefixes = {
-  telkomsel: ['0811', '0812', '0813', '0821', '0822', '0823', '0851', '0852', '0853'],
-  indosat: ['0814', '0815', '0816', '0855', '0856', '0857', '0858'],
-  tri: ['0895', '0896', '0897', '0898', '0899'],
-  xl: ['0817', '0818', '0819', '0859', '0877', '0878'],
-  axis: ['0831', '0832', '0833', '0838'],
-  smartfren: ['0881', '0882', '0883', '0884', '0885', '0886', '0887', '0888', '0889']
-};
-
-// Fungsi untuk mendeteksi operator dari nama paket
-function detectOperatorFromNama(nama) {
-  const lower = nama.toLowerCase();
-  if (lower.includes('telkomsel')) return 'telkomsel';
-  if (lower.includes('byu')) return 'telkomsel'; // byU termasuk Telkomsel
-  if (lower.includes('indosat')) return 'indosat';
-  if (lower.includes('tri')) return 'tri';
-  if (lower.includes('xl')) return 'xl';
-  if (lower.includes('axis')) return 'axis';
-  if (lower.includes('smartfren')) return 'smartfren';
-  return null; // tidak terdeteksi
-}
-
-// Fungsi validasi nomor HP berdasarkan operator
-function isValidPhoneForOperator(phone, operator) {
-  if (!operator) {
-    // Jika operator tidak dikenali, hanya cek digit 10-13
-    return /^\d{10,13}$/.test(phone);
-  }
-  const prefixes = operatorPrefixes[operator];
-  if (!prefixes) return false;
-  // Cek apakah nomor dimulai dengan salah satu prefix yang valid
-  return prefixes.some(prefix => phone.startsWith(prefix));
 }
 
 async function sendToWhatsApp(nama, harga) {
@@ -910,7 +884,6 @@ async function sendToWhatsApp(nama, harga) {
         "Masukkan ID Game Mobile Legends",
         "Contoh: 12345678(1011)",
         (val) => {
-          // Format: angka (bisa dengan atau tanpa kurung)
           const regex = /^\d{5,15}(?:\(\d{4}\)|\d{4})?$/;
           return regex.test(val);
         },
@@ -918,43 +891,20 @@ async function sendToWhatsApp(nama, harga) {
          • Masukkan ID Mobile Legends Anda dengan format lengkap.<br>
          • Contoh ID: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
          • Pastikan ID yang Anda masukkan sudah benar, karena kami tidak bertanggung jawab atas kesalahan pengetikan.<br>
-         <span class="text-green-300">💡 Tips: Cek ID di profil game Anda.</span>`
+         <span class="text-green-300">💡 Tips: Cek ID di profil game Anda.</span>`,
+        'ml_id'
       );
     } else {
       userInput = await showInputModal(
-  "Masukkan ID Game Mobile Legends",
-  "Contoh: 12345678(1011)",
-  (val) => /^\d{5,15}(?:\(\d{4}\)|\d{4})?$/.test(val),
-  `<span class="text-yellow-300">📌 Informasi ID Game:</span><br>
-   • Masukkan ID Mobile Legends Anda dengan format lengkap.<br>
-   • Contoh ID: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
-   • Pastikan ID yang Anda masukkan sudah benar, karena kami tidak bertanggung jawab atas kesalahan pengetikan.<br>
-   <span class="text-green-300">💡 Tips: Cek ID di profil game Anda.</span>`,
-  'ml_id'  // storage key khusus untuk Mobile Legends
-);
-userInput = await showInputModal(
-  "Masukkan ID Game Anda",
-  "Contoh: Gamer123 (5-30 karakter, huruf/angka)",
-  (val) => /^[A-Za-z0-9]{5,30}$/.test(val),
-  `<span class="text-yellow-300">📌 Informasi:</span><br>
-   • Masukkan ID Game Anda dengan benar.<br>
-   • Pastikan tidak ada kesalahan pengetikan, karena ID yang salah tidak dapat diproses.<br>
-   <span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input dari pelanggan.</span>`,
-  'game_id'  // storage key untuk game umum
-);
-userInput = await showInputModal(
-  "Masukkan Nomor HP",
-  validatorMessage,
-  (val) => {
-    if (!/^\d{10,13}$/.test(val)) return false;
-    if (operator) {
-      return isValidPhoneForOperator(val, operator);
-    }
-    return true;
-  },
-  infoHtml,
-  'customer_phone'  // storage key untuk nomor HP
-);
+        "Masukkan ID Game Anda",
+        "Contoh: Gamer123 (5-30 karakter, huruf/angka)",
+        (val) => /^[A-Za-z0-9]{5,30}$/.test(val),
+        `<span class="text-yellow-300">📌 Informasi:</span><br>
+         • Masukkan ID Game Anda dengan benar.<br>
+         • Pastikan tidak ada kesalahan pengetikan, karena ID yang salah tidak dapat diproses.<br>
+         <span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input dari pelanggan.</span>`,
+        'game_id'
+      );
     }
     if (userInput === null) return;
   } else {
@@ -988,7 +938,8 @@ userInput = await showInputModal(
         }
         return true;
       },
-      infoHtml
+      infoHtml,
+      'customer_phone'
     );
     if (userInput === null) return;
   }

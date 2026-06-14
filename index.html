@@ -770,19 +770,35 @@ function escapeHtml(str) {
 let modalResolve = null;
 let modalPromise = null;
 
-function showInputModal(title, placeholder) {
+function showInputModal(title, placeholder, validator, infoText = '') {
   return new Promise((resolve) => {
     const modal = document.getElementById('inputModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalInput = document.getElementById('modalInput');
     const confirmBtn = document.getElementById('modalConfirmBtn');
     const cancelBtn = document.getElementById('modalCancelBtn');
+    const modalBody = modal.querySelector('div');
+    
+    // Hapus info lama jika ada
+    const oldInfo = modalBody.querySelector('.info-text');
+    if (oldInfo) oldInfo.remove();
+    
+    // Buat elemen info
+    if (infoText) {
+      const infoDiv = document.createElement('p');
+      infoDiv.className = 'info-text text-xs text-gray-400 mt-2 mb-0';
+      infoDiv.innerHTML = infoText;
+      modalBody.insertBefore(infoDiv, modalBody.querySelector('#modalInput')?.nextSibling);
+    }
+    
+    const errorMsg = document.createElement('p');
+    errorMsg.className = 'text-red-400 text-xs mt-2 hidden';
+    modalBody.appendChild(errorMsg);
     
     modalTitle.textContent = title;
     modalInput.placeholder = placeholder;
     modalInput.value = '';
     
-    // Tampilkan modal
     modal.classList.remove('opacity-0', 'pointer-events-none');
     modal.querySelector('div').classList.remove('scale-95');
     modalInput.focus();
@@ -793,14 +809,19 @@ function showInputModal(title, placeholder) {
       confirmBtn.removeEventListener('click', onConfirm);
       cancelBtn.removeEventListener('click', onCancel);
       modalInput.removeEventListener('keypress', onKeyPress);
+      if (errorMsg) errorMsg.remove();
     }
     
     function onConfirm() {
       const value = modalInput.value.trim();
-      if (value === "") {
-        alert("Data tidak boleh kosong!");
+      if (validator && !validator(value)) {
+        errorMsg.textContent = validator.errorMessage || 'Input tidak valid!';
+        errorMsg.classList.remove('hidden');
+        modalInput.classList.add('border-red-500');
         return;
       }
+      errorMsg.classList.add('hidden');
+      modalInput.classList.remove('border-red-500');
       cleanup();
       resolve(value);
     }
@@ -817,9 +838,12 @@ function showInputModal(title, placeholder) {
     confirmBtn.addEventListener('click', onConfirm);
     cancelBtn.addEventListener('click', onCancel);
     modalInput.addEventListener('keypress', onKeyPress);
+    modalInput.addEventListener('input', () => {
+      errorMsg.classList.add('hidden');
+      modalInput.classList.remove('border-red-500');
+    });
   });
 }
-
 // Mapping prefix per operator
 const operatorPrefixes = {
   telkomsel: ['0811', '0812', '0813', '0821', '0822', '0823', '0851', '0852', '0853'],
@@ -861,34 +885,69 @@ async function sendToWhatsApp(nama, harga) {
   
   let userInput = null;
   
+  // Deteksi apakah game Mobile Legends (untuk format ID khusus)
+  const isMobileLegends = /Mobile Legends/i.test(nama);
+  
   if (isGame) {
-    userInput = await showInputModal(
-      "Masukkan ID Game Anda", 
-      "Contoh: Gamer123 (5-30 karakter, huruf/angka)", 
-      (val) => /^[A-Za-z0-9]{5,30}$/.test(val)
-    );
+    if (isMobileLegends) {
+      userInput = await showInputModal(
+        "Masukkan ID Game Mobile Legends",
+        "Contoh: 12345678(1011)",
+        (val) => {
+          // Format: angka (bisa dengan atau tanpa kurung)
+          const regex = /^\d{5,15}(?:\(\d{4}\)|\d{4})?$/;
+          return regex.test(val);
+        },
+        `<span class="text-yellow-300">📌 Informasi ID Game:</span><br>
+         • Masukkan ID Mobile Legends Anda dengan format lengkap.<br>
+         • Contoh ID: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
+         • Pastikan ID yang Anda masukkan sudah benar, karena kami tidak bertanggung jawab atas kesalahan pengetikan.<br>
+         <span class="text-green-300">💡 Tips: Cek ID di profil game Anda.</span>`
+      );
+    } else {
+      userInput = await showInputModal(
+        "Masukkan ID Game Anda",
+        "Contoh: Gamer123 (5-30 karakter, huruf/angka)",
+        (val) => /^[A-Za-z0-9]{5,30}$/.test(val),
+        `<span class="text-yellow-300">📌 Informasi:</span><br>
+         • Masukkan ID Game Anda dengan benar.<br>
+         • Pastikan tidak ada kesalahan pengetikan, karena ID yang salah tidak dapat diproses.<br>
+         <span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input dari pelanggan.</span>`
+      );
+    }
     if (userInput === null) return;
   } else {
     // Deteksi operator dari nama paket
     const operator = detectOperatorFromNama(nama);
     let validatorMessage = "Contoh: 081234567890 (10-13 digit angka)";
+    let infoHtml = `<span class="text-yellow-300">📌 Informasi Penting:</span><br>
+     • Masukkan nomor HP aktif dengan benar.<br>
+     • Pastikan nomor yang Anda masukkan adalah milik Anda sendiri.<br>
+     • Kami tidak bertanggung jawab atas kesalahan pengetikan atau nomor yang tidak aktif.<br>
+     <span class="text-green-300">💡 Periksa kembali nomor sebelum mengirim.</span>`;
+    
     if (operator) {
       const prefixList = operatorPrefixes[operator].join(', ');
       validatorMessage = `Nomor harus diawali dengan prefix ${prefixList} (10-13 digit)`;
+      infoHtml = `<span class="text-yellow-300">📌 Informasi Penting:</span><br>
+       • Masukkan nomor HP Anda dengan benar.<br>
+       • Nomor harus diawali dengan prefix: <strong>${prefixList}</strong> (sesuai operator ${operator.toUpperCase()}).<br>
+       • Contoh: <strong>${operatorPrefixes[operator][0]}xxxxxxx</strong><br>
+       • Kami tidak bertanggung jawab atas kesalahan pengetikan atau nomor yang salah.<br>
+       <span class="text-green-300">💡 Periksa kembali nomor HP Anda sebelum melanjutkan.</span>`;
     }
     
     userInput = await showInputModal(
       "Masukkan Nomor HP",
       validatorMessage,
       (val) => {
-        // Validasi dasar digit
         if (!/^\d{10,13}$/.test(val)) return false;
-        // Validasi prefix berdasarkan operator
         if (operator) {
           return isValidPhoneForOperator(val, operator);
         }
-        return true; // jika operator tidak dikenali, hanya validasi digit
-      }
+        return true;
+      },
+      infoHtml
     );
     if (userInput === null) return;
   }

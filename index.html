@@ -641,7 +641,6 @@ const popularItems = {
   game: [ "Top Up Free Fire 100 Diamond", "Top Up Mobile Legends 50 Diamond", "Top Up PUBG Mobile 300 UC" ]          
 };          
 
-// Data rekomendasi paket per operator
 const rekomendasiData = {
   "Indosat": [
     { nama: "Freedom Mini 9GB 7 Hari", harga: "Rp 26.000", ket: "Kuota Utama 9GB 7 Hari. Zona Plus: 13GB. Zona Super Plus: 13GB" },
@@ -675,7 +674,6 @@ function openRekomendasi() {
   modal.classList.remove('pointer-events-none', 'opacity-0');
   const box = modal.querySelector('div');
   if (box) box.classList.remove('scale-95');
-  
   const menuDiv = document.getElementById('rekomendasiMenu');
   if (!menuDiv) return;
   menuDiv.innerHTML = '';
@@ -769,7 +767,6 @@ function escapeHtml(str) {
   });
 }
 
-// Mapping prefix per operator
 const operatorPrefixes = {
   telkomsel: ['0811', '0812', '0813', '0821', '0822', '0823', '0851', '0852', '0853'],
   indosat: ['0814', '0815', '0816', '0855', '0856', '0857', '0858'],
@@ -798,7 +795,6 @@ function isValidPhoneForOperator(phone, operator) {
   return prefixes.some(prefix => phone.startsWith(prefix));
 }
 
-// Modal input
 function showInputModal(title, placeholder, validator, infoText = '') {
   return new Promise((resolve) => {
     const modal = document.getElementById('inputModal');
@@ -807,29 +803,23 @@ function showInputModal(title, placeholder, validator, infoText = '') {
     const confirmBtn = document.getElementById('modalConfirmBtn');
     const cancelBtn = document.getElementById('modalCancelBtn');
     const modalBody = modal.querySelector('div');
-    
     const oldInfo = modalBody.querySelector('.info-text');
     if (oldInfo) oldInfo.remove();
-    
     if (infoText) {
       const infoDiv = document.createElement('p');
       infoDiv.className = 'info-text text-xs text-gray-400 mt-2 mb-0';
       infoDiv.innerHTML = infoText;
       modalBody.insertBefore(infoDiv, modalBody.querySelector('#modalInput')?.nextSibling);
     }
-    
     const errorMsg = document.createElement('p');
     errorMsg.className = 'text-red-400 text-xs mt-2 hidden';
     modalBody.appendChild(errorMsg);
-    
     modalTitle.textContent = title;
     modalInput.placeholder = placeholder;
     modalInput.value = '';
-    
     modal.classList.remove('opacity-0', 'pointer-events-none');
     modal.querySelector('div').classList.remove('scale-95');
     modalInput.focus();
-    
     function cleanup() {
       modal.classList.add('opacity-0', 'pointer-events-none');
       modal.querySelector('div').classList.add('scale-95');
@@ -838,7 +828,6 @@ function showInputModal(title, placeholder, validator, infoText = '') {
       modalInput.removeEventListener('keypress', onKeyPress);
       if (errorMsg) errorMsg.remove();
     }
-    
     function onConfirm() {
       const value = modalInput.value.trim();
       if (validator && !validator(value)) {
@@ -852,16 +841,13 @@ function showInputModal(title, placeholder, validator, infoText = '') {
       cleanup();
       resolve(value);
     }
-    
     function onCancel() {
       cleanup();
       resolve(null);
     }
-    
     function onKeyPress(e) {
       if (e.key === 'Enter') onConfirm();
     }
-    
     confirmBtn.addEventListener('click', onConfirm);
     cancelBtn.addEventListener('click', onCancel);
     modalInput.addEventListener('keypress', onKeyPress);
@@ -876,9 +862,7 @@ async function sendToWhatsApp(nama, harga) {
   const nomorToko = "6283844843020";
   const isGame = /(Top Up|Diamond|UC|CP|Tokens|Crystals|Robux|Mobile Legends|Free Fire|PUBG|Call Of Duty|Honor Of Kings|Genshin Impact|Roblox)/i.test(nama);
   const isMobileLegends = /Mobile Legends/i.test(nama);
-  
   let userInput = null;
-  
   if (isGame) {
     if (isMobileLegends) {
       userInput = await showInputModal(
@@ -911,7 +895,6 @@ async function sendToWhatsApp(nama, harga) {
      • Pastikan nomor yang Anda masukkan adalah milik Anda sendiri.<br>
      • Kami tidak bertanggung jawab atas kesalahan pengetikan atau nomor yang tidak aktif.<br>
      <span class="text-green-300">💡 Periksa kembali nomor sebelum mengirim.</span>`;
-    
     if (operator) {
       const prefixList = operatorPrefixes[operator].join(', ');
       validatorMessage = `Nomor harus diawali dengan prefix ${prefixList} (10-13 digit)`;
@@ -922,7 +905,6 @@ async function sendToWhatsApp(nama, harga) {
        • Kami tidak bertanggung jawab atas kesalahan pengetikan atau nomor yang salah.<br>
        <span class="text-green-300">💡 Periksa kembali nomor HP Anda sebelum melanjutkan.</span>`;
     }
-    
     userInput = await showInputModal(
       "Masukkan Nomor HP",
       validatorMessage,
@@ -935,14 +917,12 @@ async function sendToWhatsApp(nama, harga) {
     );
     if (userInput === null) return;
   }
-  
   let pesan = "";
   if (isGame) {
     pesan = `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nID Game: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
   } else {
     pesan = `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nNo. HP: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
   }
-  
   const url = `https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`;
   window.open(url, '_blank');
 }
@@ -950,11 +930,9 @@ async function sendToWhatsApp(nama, harga) {
 // ========== DOMContentLoaded ==========
 document.addEventListener("DOMContentLoaded", function() {
   buildHargaData();
-
   const searchInput = document.getElementById("searchHarga");
   const clearBtn = document.getElementById("clearSearchBtn");
   const hasilBox = document.getElementById("hasilHarga");
-
   function toggleClearButton() {
     if (searchInput && clearBtn) {
       if (searchInput.value.trim() !== '') {
@@ -964,7 +942,6 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
   }
-
   if (searchInput) {
     searchInput.addEventListener("input", function() {
       const q = this.value.toLowerCase().trim();
@@ -994,7 +971,6 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     });
   }
-
   if (clearBtn) {
     clearBtn.addEventListener("click", function() {
       if (searchInput) {
@@ -1006,43 +982,9 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     });
   }
+  toggleClearButton();
+});
 
-// Mapping prefix per operator
-const operatorPrefixes = {
-  telkomsel: ['0811', '0812', '0813', '0821', '0822', '0823', '0851', '0852', '0853'],
-  indosat: ['0814', '0815', '0816', '0855', '0856', '0857', '0858'],
-  tri: ['0895', '0896', '0897', '0898', '0899'],
-  xl: ['0817', '0818', '0819', '0859', '0877', '0878'],
-  axis: ['0831', '0832', '0833', '0838'],
-  smartfren: ['0881', '0882', '0883', '0884', '0885', '0886', '0887', '0888', '0889']
-};
-
-// Fungsi untuk mendeteksi operator dari nama paket
-function detectOperatorFromNama(nama) {
-  const lower = nama.toLowerCase();
-  if (lower.includes('telkomsel')) return 'telkomsel';
-  if (lower.includes('byu')) return 'telkomsel'; // byU termasuk Telkomsel
-  if (lower.includes('indosat')) return 'indosat';
-  if (lower.includes('tri')) return 'tri';
-  if (lower.includes('xl')) return 'xl';
-  if (lower.includes('axis')) return 'axis';
-  if (lower.includes('smartfren')) return 'smartfren';
-  return null; // tidak terdeteksi
-}
-
-// Fungsi validasi nomor HP berdasarkan operator
-function isValidPhoneForOperator(phone, operator) {
-  if (!operator) {
-    // Jika operator tidak dikenali, hanya cek digit 10-13
-    return /^\d{10,13}$/.test(phone);
-  }
-  const prefixes = operatorPrefixes[operator];
-  if (!prefixes) return false;
-  // Cek apakah nomor dimulai dengan salah satu prefix yang valid
-  return prefixes.some(prefix => phone.startsWith(prefix));
-}
-
-// ========== VOUCHER MODE DI KALKULATOR ==========
 let voucherModeInitialized = false;
 function initVoucherInCalculator() {
   if (voucherModeInitialized) return;
@@ -1051,72 +993,32 @@ function initVoucherInCalculator() {
   if (!container) return;
   container.innerHTML = `
     <div class="voucher-compact">
-      <!-- Stok Awal (tiga kolom horizontal) dengan efek glass -->
       <div class="glass-panel" style="padding:0.75rem; margin-bottom:0.75rem;">
-        <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;">
-          <span class="voucher-badge" style="font-size:0.8rem;">📦 STOK AWAL</span>
-          <span style="font-size:0.65rem; color:#9ca3af;">⬇️ sebelum terjual</span>
-        </div>
+        <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;"><span class="voucher-badge" style="font-size:0.8rem;">📦 STOK AWAL</span><span style="font-size:0.65rem; color:#9ca3af;">⬇️ sebelum terjual</span></div>
         <div style="display:flex; gap:0.75rem; justify-content:space-between;">
-          <div style="flex:1; text-align:center;">
-            <div class="voucher-badge" style="font-size:0.7rem;">💰 5.000</div>
-            <input type="number" id="vc_awal_5000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;">
-          </div>
-          <div style="flex:1; text-align:center;">
-            <div class="voucher-badge" style="font-size:0.7rem;">💰 3.000</div>
-            <input type="number" id="vc_awal_3000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;">
-          </div>
-          <div style="flex:1; text-align:center;">
-            <div class="voucher-badge" style="font-size:0.7rem;">💰 10.000</div>
-            <input type="number" id="vc_awal_10000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;">
-          </div>
+          <div style="flex:1; text-align:center;"><div class="voucher-badge" style="font-size:0.7rem;">💰 5.000</div><input type="number" id="vc_awal_5000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;"></div>
+          <div style="flex:1; text-align:center;"><div class="voucher-badge" style="font-size:0.7rem;">💰 3.000</div><input type="number" id="vc_awal_3000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;"></div>
+          <div style="flex:1; text-align:center;"><div class="voucher-badge" style="font-size:0.7rem;">💰 10.000</div><input type="number" id="vc_awal_10000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;"></div>
         </div>
       </div>
-      <!-- Stok Akhir (tiga kolom horizontal) dengan efek glass -->
       <div class="glass-panel" style="padding:0.75rem; margin-bottom:0.75rem;">
-        <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;">
-          <span class="voucher-badge" style="font-size:0.8rem;">📉 STOK AKHIR</span>
-          <span style="font-size:0.65rem; color:#9ca3af;">⬆️ setelah 2 minggu</span>
-        </div>
+        <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;"><span class="voucher-badge" style="font-size:0.8rem;">📉 STOK AKHIR</span><span style="font-size:0.65rem; color:#9ca3af;">⬆️ setelah 2 minggu</span></div>
         <div style="display:flex; gap:0.75rem; justify-content:space-between;">
-          <div style="flex:1; text-align:center;">
-            <div class="voucher-badge" style="font-size:0.7rem;">💰 5.000</div>
-            <input type="number" id="vc_akhir_5000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;">
-          </div>
-          <div style="flex:1; text-align:center;">
-            <div class="voucher-badge" style="font-size:0.7rem;">💰 3.000</div>
-            <input type="number" id="vc_akhir_3000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;">
-          </div>
-          <div style="flex:1; text-align:center;">
-            <div class="voucher-badge" style="font-size:0.7rem;">💰 10.000</div>
-            <input type="number" id="vc_akhir_10000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;">
-          </div>
+          <div style="flex:1; text-align:center;"><div class="voucher-badge" style="font-size:0.7rem;">💰 5.000</div><input type="number" id="vc_akhir_5000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;"></div>
+          <div style="flex:1; text-align:center;"><div class="voucher-badge" style="font-size:0.7rem;">💰 3.000</div><input type="number" id="vc_akhir_3000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;"></div>
+          <div style="flex:1; text-align:center;"><div class="voucher-badge" style="font-size:0.7rem;">💰 10.000</div><input type="number" id="vc_akhir_10000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;"></div>
         </div>
       </div>
-      <div style="display:flex; justify-content:center; margin:0.5rem 0;">
-        <button id="vc_resetBtn" class="btn-reset-voucher" style="display:flex; align-items:center; gap:0.5rem;">
-          🔄 Reset Semua Input
-        </button>
-      </div>
+      <div style="display:flex; justify-content:center; margin:0.5rem 0;"><button id="vc_resetBtn" class="btn-reset-voucher">🔄 Reset Semua Input</button></div>
       <div id="vc_statsContainer" class="stats-grid"></div>
-      <div class="table-wrapper">
-        <table id="vc_resultTable">
-          <thead><tr><th>Voucher</th><th>Terjual</th><th>Pendapatan</th><th>Keuntungan</th><th>Setor</th></tr></thead>
-          <tbody id="vc_tableBody"><tr><td colspan="5">✨ Masukkan stok awal & akhir ✨</td></tr></tbody>
-        </table>
-      </div>
-      <div class="footer-note" style="font-size:0.6rem; padding:0.5rem; text-align:center; background:rgba(0,0,0,0.3); border-radius:0.8rem; margin-top:0.5rem;">
-        💡 Keuntungan: Voucher 5.000 & 10.000 → Rp1.000/pcs | Voucher 3.000 → Rp500/pcs
-      </div>
+      <div class="table-wrapper"><table id="vc_resultTable"><thead><tr><th>Voucher</th><th>Terjual</th><th>Pendapatan</th><th>Keuntungan</th><th>Setor</th></tr></thead><tbody id="vc_tableBody"><tr><td colspan="5">✨ Masukkan stok awal & akhir ✨</td></tr></tbody></table></div>
+      <div class="footer-note" style="font-size:0.6rem; padding:0.5rem; text-align:center; background:rgba(0,0,0,0.3); border-radius:0.8rem; margin-top:0.5rem;">💡 Keuntungan: Voucher 5.000 & 10.000 → Rp1.000/pcs | Voucher 3.000 → Rp500/pcs</div>
     </div>
   `;
   attachVoucherCompactEvents();
   voucherCompactRender();
 }
-function getVcNumber(id) {
-  let val = parseInt(document.getElementById(id)?.value, 10);
-  return isNaN(val) || val < 0 ? 0 : val;
-}
+function getVcNumber(id) { let val = parseInt(document.getElementById(id)?.value, 10); return isNaN(val) || val < 0 ? 0 : val; }
 function voucherCompactCompute() {
   const items = [
     { nominal: 5000, profit: 1000, awalId: 'vc_awal_5000', akhirId: 'vc_akhir_5000', name: '5.000' },
@@ -1138,19 +1040,11 @@ function voucherCompactCompute() {
   }
   return { details, totalIncome, totalProfit, totalSetoran };
 }
-function formatRupiah(angka) {
-  return 'Rp ' + angka.toLocaleString('id-ID');
-}
+function formatRupiah(angka) { return 'Rp ' + angka.toLocaleString('id-ID'); }
 function voucherCompactRender() {
   const { details, totalIncome, totalProfit, totalSetoran } = voucherCompactCompute();
   const statsDiv = document.getElementById('vc_statsContainer');
-  if (statsDiv) {
-    statsDiv.innerHTML = `
-      <div class="stat-card"><div class="stat-label">PENDAPATAN</div><div class="stat-value">${formatRupiah(totalIncome)}</div></div>
-      <div class="stat-card"><div class="stat-label">KEUNTUNGAN</div><div class="stat-value">${formatRupiah(totalProfit)}</div></div>
-      <div class="stat-card"><div class="stat-label">SETOR</div><div class="stat-value">${formatRupiah(totalSetoran)}</div></div>
-    `;
-  }
+  if (statsDiv) statsDiv.innerHTML = `<div class="stat-card"><div class="stat-label">PENDAPATAN</div><div class="stat-value">${formatRupiah(totalIncome)}</div></div><div class="stat-card"><div class="stat-label">KEUNTUNGAN</div><div class="stat-value">${formatRupiah(totalProfit)}</div></div><div class="stat-card"><div class="stat-label">SETOR</div><div class="stat-value">${formatRupiah(totalSetoran)}</div></div>`;
   const tbody = document.getElementById('vc_tableBody');
   if (tbody) {
     tbody.innerHTML = '';
@@ -1198,7 +1092,7 @@ function toggleCalcMode() {
     currentMode = 'calc';
   }
 }
-</script>        
+</script>       
 
 <!-- Kalkulator Modal dengan Toggle Mode -->
 <div id="calculatorModal" class="fixed inset-0 bg-black/80 flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300 backdrop-blur-sm">

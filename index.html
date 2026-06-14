@@ -775,21 +775,44 @@ function sendToWhatsApp(nama, harga) {
   const nomorToko = "6283844843020";
   const isGame = /(Top Up|Diamond|UC|CP|Tokens|Crystals|Robux|Mobile Legends|Free Fire|PUBG|Call Of Duty|Honor Of Kings|Genshin Impact|Roblox)/i.test(nama);
   
-  // Ambil nilai input dari elemen #customerId
-  const customerIdInput = document.getElementById('customerId');
-  const customerId = customerIdInput ? customerIdInput.value.trim() : '';
+  let userInput = "";
+  let promptMessage = "";
+  
+  if (isGame) {
+    promptMessage = "Masukkan ID Game Anda:";
+    userInput = prompt(promptMessage, "");
+    if (userInput === null) return; // User membatalkan
+    userInput = userInput.trim();
+    if (userInput === "") {
+      alert("ID Game tidak boleh kosong!");
+      return;
+    }
+  } else {
+    promptMessage = "Masukkan nomor HP Anda (contoh: 081234567890):";
+    userInput = prompt(promptMessage, "");
+    if (userInput === null) return;
+    userInput = userInput.trim();
+    if (userInput === "") {
+      alert("Nomor HP tidak boleh kosong!");
+      return;
+    }
+    // Validasi sederhana: minimal 10 digit, maksimal 13 digit, hanya angka
+    if (!/^\d{10,13}$/.test(userInput)) {
+      alert("Nomor HP tidak valid! Harus 10-13 digit angka.");
+      return;
+    }
+  }
   
   let pesan = "";
   if (isGame) {
-    pesan = `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nID Game: ${customerId || '(isi ID game Anda)'}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
+    pesan = `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nID Game: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
   } else {
-    pesan = `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nNo. HP: ${customerId || '(isi nomor HP Anda)'}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
+    pesan = `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nNo. HP: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
   }
   
   const url = `https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`;
   window.open(url, '_blank');
 }
-
 document.addEventListener("DOMContentLoaded", function() {
   // Load data pencarian
   buildHargaData();

@@ -845,10 +845,26 @@ async function sendToWhatsApp(nama, harga) {
     );
     if (userInput === null) return;
   } else {
+    // Deteksi operator dari nama paket
+    const operator = detectOperatorFromNama(nama);
+    let validatorMessage = "Contoh: 081234567890 (10-13 digit angka)";
+    if (operator) {
+      const prefixList = operatorPrefixes[operator].join(', ');
+      validatorMessage = `Nomor harus diawali dengan prefix ${prefixList} (10-13 digit)`;
+    }
+    
     userInput = await showInputModal(
-      "Masukkan Nomor HP", 
-      "Contoh: 081234567890 (10-13 digit angka)", 
-      (val) => /^\d{10,13}$/.test(val)
+      "Masukkan Nomor HP",
+      validatorMessage,
+      (val) => {
+        // Validasi dasar digit
+        if (!/^\d{10,13}$/.test(val)) return false;
+        // Validasi prefix berdasarkan operator
+        if (operator) {
+          return isValidPhoneForOperator(val, operator);
+        }
+        return true; // jika operator tidak dikenali, hanya validasi digit
+      }
     );
     if (userInput === null) return;
   }
@@ -900,6 +916,40 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 });
+// Mapping prefix per operator
+const operatorPrefixes = {
+  telkomsel: ['0811', '0812', '0813', '0821', '0822', '0823', '0851', '0852', '0853'],
+  indosat: ['0814', '0815', '0816', '0855', '0856', '0857', '0858'],
+  tri: ['0895', '0896', '0897', '0898', '0899'],
+  xl: ['0817', '0818', '0819', '0859', '0877', '0878'],
+  axis: ['0831', '0832', '0833', '0838'],
+  smartfren: ['0881', '0882', '0883', '0884', '0885', '0886', '0887', '0888', '0889']
+};
+
+// Fungsi untuk mendeteksi operator dari nama paket
+function detectOperatorFromNama(nama) {
+  const lower = nama.toLowerCase();
+  if (lower.includes('telkomsel')) return 'telkomsel';
+  if (lower.includes('byu')) return 'telkomsel'; // byU termasuk Telkomsel
+  if (lower.includes('indosat')) return 'indosat';
+  if (lower.includes('tri')) return 'tri';
+  if (lower.includes('xl')) return 'xl';
+  if (lower.includes('axis')) return 'axis';
+  if (lower.includes('smartfren')) return 'smartfren';
+  return null; // tidak terdeteksi
+}
+
+// Fungsi validasi nomor HP berdasarkan operator
+function isValidPhoneForOperator(phone, operator) {
+  if (!operator) {
+    // Jika operator tidak dikenali, hanya cek digit 10-13
+    return /^\d{10,13}$/.test(phone);
+  }
+  const prefixes = operatorPrefixes[operator];
+  if (!prefixes) return false;
+  // Cek apakah nomor dimulai dengan salah satu prefix yang valid
+  return prefixes.some(prefix => phone.startsWith(prefix));
+}
 
 // ========== VOUCHER MODE DI KALKULATOR ==========
 let voucherModeInitialized = false;

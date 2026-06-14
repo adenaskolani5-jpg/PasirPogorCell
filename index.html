@@ -794,6 +794,18 @@ document.addEventListener("DOMContentLoaded", function() {
   // Load data pencarian
   buildHargaData();
 
+  // ===== KODE UNTUK CUSTOMER ID (NOMOR HP / ID GAME) =====
+  const customerIdField = document.getElementById('customerId');
+  if (customerIdField) {
+    // Muat data tersimpan dari localStorage
+    const savedId = localStorage.getItem('customerId');
+    if (savedId) customerIdField.value = savedId;
+    // Simpan setiap kali berubah
+    customerIdField.addEventListener('input', function() {
+      localStorage.setItem('customerId', this.value);
+    });
+  }
+
   const searchInput = document.getElementById("searchHarga");
   if (searchInput) {
     searchInput.addEventListener("input", function() {
@@ -801,22 +813,10 @@ document.addEventListener("DOMContentLoaded", function() {
       const box = document.getElementById("hasilHarga");
       if (!box) return;
 
-      // Jika input kosong, kosongkan area hasil dan hentikan
       if (q === "") {
         box.innerHTML = "";
         return;
       }
-// Simpan nilai customerId ke localStorage
-const customerIdField = document.getElementById('customerId');
-if (customerIdField) {
-  // Muat data tersimpan
-  const savedId = localStorage.getItem('customerId');
-  if (savedId) customerIdField.value = savedId;
-  // Simpan saat berubah
-  customerIdField.addEventListener('input', function() {
-    localStorage.setItem('customerId', this.value);
-  });
-}
 
       const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
       box.innerHTML = "";

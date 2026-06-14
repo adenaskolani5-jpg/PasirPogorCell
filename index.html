@@ -866,30 +866,33 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
     }
     
     function onConfirm() {
-      const value = modalInput.value.trim();
-      if (validator && !validator(value)) {
-        errorMsg.textContent = validator.errorMessage || 'Input tidak valid!';
-        errorMsg.classList.remove('hidden');
-        modalInput.classList.add('border-red-500');
-        return;
-      }
-      errorMsg.classList.add('hidden');
-      modalInput.classList.remove('border-red-500');
-      
-      // Simpan ke localStorage jika storageKey disediakan
-      if (storageKey && value) {
-        localStorage.setItem(storageKey, value);
-      }
-// Tampilkan toast notifikasi
-const toast = document.createElement('div');
-toast.textContent = '✅ Data tersimpan untuk kunjungan berikutnya';
-toast.className = 'fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50';
-document.body.appendChild(toast);
-setTimeout(() => toast.remove(), 2000);
-      
-      cleanup();
-      resolve(value);
-    }
+  const value = modalInput.value.trim();
+  if (validator && !validator(value)) {
+    errorMsg.textContent = validator.errorMessage || 'Input tidak valid!';
+    errorMsg.classList.remove('hidden');
+    modalInput.classList.add('border-red-500');
+    return;
+  }
+  errorMsg.classList.add('hidden');
+  modalInput.classList.remove('border-red-500');
+  
+  // Simpan ke localStorage jika storageKey disediakan
+  if (storageKey && value) {
+    localStorage.setItem(storageKey, value);
+    
+    // Tampilkan toast notifikasi (SEBELUM cleanup)
+    const toast = document.createElement('div');
+    toast.textContent = '✅ Data tersimpan untuk kunjungan berikutnya';
+    toast.className = 'fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50 shadow-lg';
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      if (toast && toast.remove) toast.remove();
+    }, 2000);
+  }
+  
+  cleanup();
+  resolve(value);
+}
     
     function onCancel() {
       cleanup();

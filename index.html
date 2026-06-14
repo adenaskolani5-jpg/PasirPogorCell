@@ -997,48 +997,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  // Inisialisasi awal: cek apakah input sudah berisi (misal dari autofill)
-  toggleClearButton();
-});
-  
-  // Saat tombol diklik
-  clearBtn.addEventListener('click', function() {
-    searchInputClear.value = '';
-    // Kosongkan hasil pencarian
-    const hasilBox = document.getElementById('hasilHarga');
-    if (hasilBox) hasilBox.innerHTML = '';
-    toggleClearButton();
-    searchInputClear.focus();
-    
-    // Trigger event input agar hasil pencarian hilang (jika ada listener)
-    const inputEvent = new Event('input', { bubbles: true });
-    searchInputClear.dispatchEvent(inputEvent);
-  });
-  
-  // Inisialisasi (jika ada teks default)
-  toggleClearButton();
-}
-
-      const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
-      box.innerHTML = "";
-      if (res.length === 0) {
-        box.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
-        return;
-      }
-      res.slice(0, 20).forEach(x => {
-        box.innerHTML += `
-          <div class="harga-item">
-            <div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div>
-            <div class="harga-ket">${escapeHtml(x.ket)}</div>
-            <div style="margin-top: 0.5rem; text-align: right;">
-              <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
-            </div>
-          </div>
-        `;
-      });
-    });
-  }
-});
 // Mapping prefix per operator
 const operatorPrefixes = {
   telkomsel: ['0811', '0812', '0813', '0821', '0822', '0823', '0851', '0852', '0853'],

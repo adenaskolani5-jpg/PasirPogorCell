@@ -874,8 +874,6 @@ async function sendToWhatsApp(nama, harga) {
   const isGame = /(Top Up|Diamond|UC|CP|Tokens|Crystals|Robux|Mobile Legends|Free Fire|PUBG|Call Of Duty|Honor Of Kings|Genshin Impact|Roblox)/i.test(nama);
   
   let userInput = null;
-  
-  // Deteksi apakah game Mobile Legends (untuk format ID khusus)
   const isMobileLegends = /Mobile Legends/i.test(nama);
   
   if (isGame) {
@@ -883,10 +881,7 @@ async function sendToWhatsApp(nama, harga) {
       userInput = await showInputModal(
         "Masukkan ID Game Mobile Legends",
         "Contoh: 12345678(1011)",
-        (val) => {
-          const regex = /^\d{5,15}(?:\(\d{4}\)|\d{4})?$/;
-          return regex.test(val);
-        },
+        (val) => /^\d{5,15}(?:\(\d{4}\)|\d{4})?$/.test(val),
         `<span class="text-yellow-300">📌 Informasi ID Game:</span><br>
          • Masukkan ID Mobile Legends Anda dengan format lengkap.<br>
          • Contoh ID: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
@@ -908,7 +903,6 @@ async function sendToWhatsApp(nama, harga) {
     }
     if (userInput === null) return;
   } else {
-    // Deteksi operator dari nama paket
     const operator = detectOperatorFromNama(nama);
     let validatorMessage = "Contoh: 081234567890 (10-13 digit angka)";
     let infoHtml = `<span class="text-yellow-300">📌 Informasi Penting:</span><br>
@@ -933,9 +927,7 @@ async function sendToWhatsApp(nama, harga) {
       validatorMessage,
       (val) => {
         if (!/^\d{10,13}$/.test(val)) return false;
-        if (operator) {
-          return isValidPhoneForOperator(val, operator);
-        }
+        if (operator) return isValidPhoneForOperator(val, operator);
         return true;
       },
       infoHtml,
@@ -944,15 +936,11 @@ async function sendToWhatsApp(nama, harga) {
     if (userInput === null) return;
   }
   
-  let pesan = "";
-  if (isGame) {
-    pesan = `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nID Game: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
-  } else {
-    pesan = `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nNo. HP: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
-  }
+  let pesan = isGame 
+    ? `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nID Game: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`
+    : `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nNo. HP: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
   
-  const url = `https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`;
-  window.open(url, '_blank');
+  window.open(`https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`, '_blank');
 }
 
 document.addEventListener("DOMContentLoaded", function() {

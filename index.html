@@ -973,31 +973,48 @@ async function sendToWhatsApp(nama, harga) {
      <span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input dari pelanggan.</span>`;
     
     if (isMobileLegends) {
-      gameStorageKey = 'ml_id';
-      gameTitle = "Masukkan ID Game Mobile Legends";
-      gamePlaceholder = "Contoh: 12345678(1011)";
-      gameValidator = (val) => /^\d{5,15}(?:\(\d{4}\)|\d{4})?$/.test(val);
-      gameInfoText = `<span class="text-yellow-300">📌 Informasi ID Game:</span><br>
-       • Masukkan ID Mobile Legends Anda dengan format lengkap.<br>
-       • Contoh ID: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
-       • Pastikan ID yang Anda masukkan sudah benar, karena kami tidak bertanggung jawab atas kesalahan pengetikan.<br>
-       <span class="text-green-300">💡 Tips: Cek ID di profil game Anda.</span>`;
-    } else if (isFreeFire) {
-      gameStorageKey = 'ff_id';
-      gameTitle = "Masukkan ID Free Fire";
-      gamePlaceholder = "Contoh: 123456789 (9-15 digit angka)";
-      gameValidator = (val) => /^\d{9,15}$/.test(val);
-    } else if (isPUBG) {
-      gameStorageKey = 'pubg_id';
-      gameTitle = "Masukkan ID PUBG Mobile";
-      gamePlaceholder = "Contoh: 1234567890 (10-15 digit angka)";
-      gameValidator = (val) => /^\d{10,15}$/.test(val);
-    } else if (isCOD) {
-      gameStorageKey = 'cod_id';
-      gameTitle = "Masukkan ID Call Of Duty Mobile";
-      gamePlaceholder = "Contoh: 123456789 (9-15 digit)";
-      gameValidator = (val) => /^\d{9,15}$/.test(val);
-    } else if (isHOK) {
+    gameStorageKey = 'ml_id';
+    gameTitle = "Masukkan ID Game Mobile Legends";
+    gamePlaceholder = "Contoh: 12345678(1011) atau 123456781011";
+    gameValidator = (val) => {
+        const result = validateMLBBID(val);
+        if (!result.valid) {
+            gameValidator.errorMessage = result.message;
+            return false;
+        }
+        return true;
+    };
+    gameInfoText = `<span class="text-yellow-300">📌 Informasi ID Mobile Legends:</span><br>
+     • Masukkan ID Mobile Legends Anda dengan format lengkap.<br>
+     • Contoh ID: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
+     • ⚠️ <strong class="text-red-400">Aturan ID MLBB:</strong><br>
+     &nbsp;&nbsp;- Panjang ID harus 4-10 digit (tidak boleh 1-3 digit atau 11+ digit)<br>
+     &nbsp;&nbsp;- Tidak boleh diawali angka 0<br>
+     • Pastikan ID yang Anda masukkan sudah benar, karena kami tidak bertanggung jawab atas kesalahan pengetikan.<br>
+     <span class="text-green-300">💡 Tips: Cek ID di profil game Anda.</span>`;
+}
+ else if (isFreeFire) {
+    gameStorageKey = 'ff_id';
+    gameTitle = "Masukkan ID Free Fire";
+    gamePlaceholder = "Contoh: 12345678 atau 12345678901 (8-11 digit angka)";
+    gameValidator = (val) => {
+        const result = validateFFID(val);
+        if (!result.valid) {
+            gameValidator.errorMessage = result.message;
+            return false;
+        }
+        return true;
+    };
+    gameInfoText = `<span class="text-yellow-300">📌 Informasi ID Free Fire:</span><br>
+     • Masukkan ID Free Fire Anda (8-11 digit angka).<br>
+     • Contoh ID: <strong>12345678</strong> atau <strong>12345678901</strong><br>
+     • ⚠️ <strong class="text-red-400">Aturan ID FF:</strong><br>
+     &nbsp;&nbsp;- Panjang ID harus 8-11 digit (tidak boleh 1-7 digit atau 12+ digit)<br>
+     &nbsp;&nbsp;- ID cantik seperti <strong>11111111, 12345678, 999999999</strong> tidak valid (di-blacklist sistem)<br>
+     • Pastikan ID yang Anda masukkan sudah benar, karena kami tidak bertanggung jawab atas kesalahan pengetikan.<br>
+     <span class="text-green-300">💡 Tips: Cek ID di Settings → Account.</span>`;
+}
+ else if (isHOK) {
       gameStorageKey = 'hok_id';
       gameTitle = "Masukkan ID Honor Of Kings";
       gamePlaceholder = "Contoh: 123456789 (9-15 digit)";
@@ -1136,6 +1153,62 @@ document.addEventListener("DOMContentLoaded", function() {
   // Sisa kode DOMContentLoaded (misalnya untuk customerId jika ada) tetap di sini
   // ... (jika ada kode lain seperti untuk customerId, letakkan di sini)
 });
+
+// ========== VALIDASI ID GAME MLBB & FF ==========
+function validateMLBBID(id) {
+    // Hilangkan tanda kurung untuk pengecekan panjang digit
+    let cleanId = id.replace(/[()]/g, '');
+    
+    // Cek panjang digit
+    if (cleanId.length < 4 || cleanId.length > 10) {
+        return { valid: false, message: "❌ ID Mobile Legends harus memiliki panjang 4-10 digit angka.\nID di bawah 4 digit atau di atas 10 digit tidak pernah ada." };
+    }
+    
+    // Cek diawali angka 0
+    if (cleanId[0] === '0') {
+        return { valid: false, message: "❌ ID Mobile Legends tidak boleh diawali angka 0.\nSistem database game tidak menggunakan angka 0 di depan sebagai digit pertama ID pemain." };
+    }
+    
+    // Cek hanya angka
+    if (!/^\d+$/.test(cleanId)) {
+        return { valid: false, message: "❌ ID Mobile Legends hanya boleh berisi angka." };
+    }
+    
+    return { valid: true, cleanId: cleanId };
+}
+
+function validateFFID(id) {
+    // Cek panjang digit
+    if (id.length < 8 || id.length > 11) {
+        return { valid: false, message: "❌ ID Free Fire harus memiliki panjang 8-11 digit angka.\nSaat FF rilis global, ID dimulai dari 8 digit. ID 1-7 digit tidak pernah ada untuk akun pemain umum.\nID 12 digit atau lebih belum mungkin ada saat ini." };
+    }
+    
+    // Cek hanya angka
+    if (!/^\d+$/.test(id)) {
+        return { valid: false, message: "❌ ID Free Fire hanya boleh berisi angka." };
+    }
+    
+    // Daftar ID "cantik" yang di-blacklist
+    const blacklistedIDs = [
+        '11111111', '111111111', '1111111111', '11111111111',
+        '22222222', '222222222', '2222222222', '22222222222',
+        '33333333', '333333333', '3333333333', '33333333333',
+        '44444444', '444444444', '4444444444', '44444444444',
+        '55555555', '555555555', '5555555555', '55555555555',
+        '66666666', '666666666', '6666666666', '66666666666',
+        '77777777', '777777777', '7777777777', '77777777777',
+        '88888888', '888888888', '8888888888', '88888888888',
+        '99999999', '999999999', '9999999999', '99999999999',
+        '12345678', '123456789', '1234567890', '12345678901',
+        '98765432', '987654321', '9876543210', '98765432101'
+    ];
+    
+    if (blacklistedIDs.includes(id)) {
+        return { valid: false, message: "❌ ID Free Fire tidak valid.\nID seperti ini di-blacklist atau disimpan sistem Garena, tidak mungkin dimiliki pemain biasa melalui registrasi normal." };
+    }
+    
+    return { valid: true, cleanId: id };
+}
 
 // ========== VOUCHER MODE DI KALKULATOR ==========
 let voucherModeInitialized = false;

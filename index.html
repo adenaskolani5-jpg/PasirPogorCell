@@ -2472,15 +2472,48 @@ function openGameDetail(g) {
       <h3 class="text-lg font-bold text-green-400">⚙️ Pengaturan</h3>
       <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
-    <div class="p-4">
-      <div onclick="openAdminPanel()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent">
+    <div class="p-4 space-y-2">
+      
+      <!-- Menu 1: Hubungi Admin -->
+      <div onclick="contactAdmin()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all">
+        <span class="text-xl">💬</span>
+        <div>
+          <div class="font-semibold text-white">Hubungi Admin</div>
+          <div class="text-xs text-gray-400">Chat via WhatsApp</div>
+        </div>
+        <span class="ml-auto text-gray-400 text-sm">→</span>
+      </div>
+      
+      <!-- Menu 2: Lokasi Toko -->
+      <div onclick="openLocation()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all">
+        <span class="text-xl">📍</span>
+        <div>
+          <div class="font-semibold text-white">Lokasi Toko</div>
+          <div class="text-xs text-gray-400">Buka Google Maps</div>
+        </div>
+        <span class="ml-auto text-gray-400 text-sm">→</span>
+      </div>
+      
+      <!-- Menu 3: Bagikan Website -->
+      <div onclick="shareWebsite()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all">
+        <span class="text-xl">📱</span>
+        <div>
+          <div class="font-semibold text-white">Bagikan Website</div>
+          <div class="text-xs text-gray-400">Kirim ke teman</div>
+        </div>
+        <span class="ml-auto text-gray-400 text-sm">→</span>
+      </div>
+      
+      <!-- Menu 4: Halaman Admin (tetap ada) -->
+      <div onclick="openAdminPanel()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all mt-4 border-t border-gray-700 pt-4">
         <span class="text-xl">👑</span>
         <div>
           <div class="font-semibold text-white">Halaman Admin</div>
-          <div class="text-xs text-gray-400">Akses panel administrasi</div>
+          <div class="text-xs text-gray-400">🔒 Akses terbatas</div>
         </div>
-        <span class="ml-auto text-gray-500">→</span>
+        <span class="ml-auto text-gray-400 text-sm">→</span>
       </div>
+      
     </div>
   </div>
 </div>
@@ -2517,5 +2550,58 @@ function openGameDetail(g) {
     </div>
   </div>
 </div>
+// ========== FUNGSI MENU SETTINGS ==========
+
+// Hubungi Admin via WhatsApp
+function contactAdmin() {
+    const nomorAdmin = "6283844843020";
+    const pesan = "Halo admin PasirPogorCell, saya ingin bertanya tentang...";
+    window.open(`https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`, '_blank');
+    closeSettingsModal();
+}
+
+// Buka Lokasi Toko di Google Maps (menggunakan link yang Anda berikan)
+function openLocation() {
+    const mapsUrl = "https://maps.app.goo.gl/YoTYYXkZpmHgyE9v9?g_st=ac";
+    window.open(mapsUrl, '_blank');
+    closeSettingsModal();
+}
+
+// Bagikan Website
+function shareWebsite() {
+    const url = window.location.href;
+    const text = "PasirPogorCell - Tempat top up game & paket internet termurah!";
+    
+    // Cek apakah perangkat support Web Share API (HP biasanya support)
+    if (navigator.share) {
+        navigator.share({
+            title: 'PasirPogorCell',
+            text: text,
+            url: url
+        }).catch((err) => {
+            console.log('Gagal share:', err);
+            // Fallback jika gagal
+            fallbackCopyUrl(url);
+        });
+    } else {
+        // Fallback untuk desktop: copy link ke clipboard
+        fallbackCopyUrl(url);
+    }
+    closeSettingsModal();
+}
+
+// Fallback copy URL ke clipboard
+function fallbackCopyUrl(url) {
+    navigator.clipboard.writeText(url).then(() => {
+        // Tampilkan notifikasi sukses
+        const toast = document.createElement('div');
+        toast.textContent = '✅ Link website telah disalin! Silakan bagikan ke teman Anda.';
+        toast.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50 shadow-lg animate-pulse';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }).catch(() => {
+        alert('✅ Link website: ' + url + '\nSilakan salin dan bagikan ke teman Anda.');
+    });
+}
 </body>    
 </html>

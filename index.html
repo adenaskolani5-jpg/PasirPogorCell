@@ -114,105 +114,123 @@
 body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 .page{ animation:fadeIn 0.2s ease; }
 @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
-/* PERBAIKAN LIGHT MODE - AGAR LEBIH NYAMAN DILIHAT */
+/* ===== LIGHT MODE - BIRU CERAH DENGAN AKSEN HIJAU TUA ===== */
 .light {
-  --bg: #f0f2f5;
+  --bg: #e0f2fe;        /* biru cerah lembut */
   --card: #ffffff;
-  --text: #1a1a2e;
-  --muted: #555555;
-  --accent: #059669;
-  --blue: #2563eb;
-  --yellow: #d97706;
+  --text: #1e293b;
+  --muted: #475569;
+  --accent: #166534;    /* hijau tua */
+  --blue: #0284c7;
+  --yellow: #ca8a04;
 }
 
 .light body { 
-  background: linear-gradient(135deg, #e8ecf2, #dce1e8); 
-  color: #1a1a2e;
+  background: linear-gradient(135deg, #bae6fd, #7dd3fc); /* biru cerah gradasi */
+  color: #1e293b;
 }
 
+/* Header */
+.light header { 
+  background: #ffffff; 
+  border-bottom-color: #cbd5e1;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.light header h1 { 
+  color: #0f172a; 
+}
+
+.light header p { 
+  color: #475569; 
+}
+
+/* Marquee */
+.light .marquee { 
+  background: #f0f9ff; 
+  border-color: #166534;
+}
+
+.light .marquee span { 
+  color: #0f172a; 
+  text-shadow: none;
+  font-weight: 600;
+}
+
+/* Card */
 .light .card { 
   background: #ffffff; 
-  color: #1a1a2e; 
-  border: 1px solid rgba(5, 150, 105, 0.3); 
+  color: #1e293b; 
+  border: 1px solid rgba(22, 101, 52, 0.3); 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .light .card .price { 
-  color: #059669; 
+  color: #166534; 
   text-shadow: none;
+  font-weight: 700;
 }
 
-.light header { 
-  background: #ffffff; 
-  border-bottom-color: #e0e0e0;
+.light .card::before { 
+  background: linear-gradient(120deg, #166534, #0284c7, #166534);
+  opacity: 0.4;
 }
 
-.light header h1 { 
-  color: #1a1a2e; 
-}
-
-.light header p { 
-  color: #555555; 
-}
-
-.light .marquee { 
-  background: #e2e8f0; 
-  border-color: #059669;
-}
-
-.light .marquee span { 
-  color: #1a1a2e; 
-  text-shadow: none;
-  font-weight: 500;
-}
-
-.light .price { 
-  color: #059669; 
-  text-shadow: none;
-}
-
+/* Search bar */
 .light #searchHarga { 
   background: #ffffff; 
-  color: #1a1a2e; 
-  border-color: #059669;
+  color: #1e293b; 
+  border-color: #166534;
 }
 
 .light #searchHarga::placeholder { 
-  color: #888888; 
+  color: #94a3b8; 
 }
 
 .light #searchHarga:focus { 
-  border-color: #10b981; 
-  box-shadow: 0 0 8px rgba(5, 150, 105, 0.4);
+  border-color: #0284c7; 
+  box-shadow: 0 0 8px rgba(2, 132, 199, 0.5);
 }
 
+/* Hasil pencarian */
 .light .harga-item { 
   background: #ffffff; 
-  border-left-color: #059669;
+  border-left-color: #166534;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .light .harga-nama-text { 
-  color: #1a1a2e; 
+  color: #1e293b; 
+}
+
+.light .harga-harga { 
+  background: rgba(22, 101, 52, 0.1);
+  color: #166534;
 }
 
 .light .harga-ket { 
-  color: #555555; 
-  border-top-color: rgba(5, 150, 105, 0.2);
+  color: #475569; 
+  border-top-color: rgba(22, 101, 52, 0.2);
 }
 
+/* Tombol WhatsApp */
 .light .whatsapp-btn { 
   background: #25D366; 
   color: white;
 }
 
+.light .whatsapp-btn:hover { 
+  background: #128C7E; 
+}
+
+/* Glow Card */
 .light .glow-card { 
-  background: #f8fafc; 
-  border-color: #059669;
+  background: #ffffff; 
+  border-color: #166534;
 }
 
 .light .glow-card h3 { 
-  color: #059669; 
+  color: #166534; 
 }
 
 .light .glow-card p { 
@@ -220,84 +238,110 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 }
 
 .light .glow-card a { 
-  color: #059669; 
+  color: #0284c7; 
 }
 
+/* Footer */
 .light footer { 
-  background: #e2e8f0; 
-  color: #334155;
+  background: #bae6fd; 
+  color: #1e293b;
 }
 
+.light footer .text-gray-300,
 .light footer .text-gray-400 { 
-  color: #555555; 
+  color: #334155 !important; 
 }
 
+/* Modal Settings & Admin */
 .light .settings-card { 
   background: #ffffff; 
-  border-color: #059669;
+  border-color: #166534;
+}
+
+.light .settings-card h3 { 
+  color: #166534 !important; 
 }
 
 .light .settings-menu-item .text-white { 
-  color: #1a1a2e; 
+  color: #1e293b !important; 
 }
 
 .light .settings-menu-item .text-gray-400 { 
-  color: #555555; 
+  color: #475569 !important; 
 }
 
 .light .settings-menu-item:hover { 
-  background: rgba(5, 150, 105, 0.1); 
+  background: rgba(22, 101, 52, 0.08); 
 }
 
 .light .admin-card { 
   background: #ffffff; 
-  border-left-color: #059669;
+  border-left-color: #166534;
 }
 
+/* Password Input */
 .light .password-input { 
-  background: #f1f5f9; 
-  border-color: #059669;
-  color: #1a1a2e;
+  background: #f8fafc; 
+  border-color: #166534;
+  color: #1e293b;
 }
 
 .light .password-input:focus { 
   background: #ffffff; 
+  border-color: #0284c7;
+  box-shadow: 0 0 8px rgba(2, 132, 199, 0.4);
 }
 
+/* Kalkulator */
 .light .calc-btn { 
   background: #f1f5f9; 
-  color: #1a1a2e; 
+  color: #1e293b; 
   border-color: #cbd5e1;
 }
 
-.light .calc-btn-op { 
+.light .calc-btn:hover { 
   background: #e2e8f0; 
-  color: #059669; 
-  border-color: #059669;
+}
+
+.light .calc-btn-op { 
+  background: #dcfce7; 
+  color: #166534; 
+  border-color: #166534;
+}
+
+.light .calc-btn-equal { 
+  background: #166534; 
+  color: white;
 }
 
 .light .calc-display { 
   background: #f8fafc; 
-  border-color: #059669;
+  border-color: #166534;
 }
 
 .light .calc-display input { 
-  color: #059669; 
+  color: #166534; 
 }
 
+/* Voucher Mode */
 .light .voucher-compact .input-mini { 
-  background: #f1f5f9; 
-  color: #1a1a2e; 
-  border-color: #059669;
+  background: #f8fafc; 
+  color: #1e293b; 
+  border-color: #166534;
+}
+
+.light .voucher-compact .input-mini:focus { 
+  background: #ffffff; 
+  border-color: #0284c7;
 }
 
 .light .voucher-compact .stat-card { 
   background: #f8fafc; 
-  border-color: #059669;
+  border-color: #166534;
 }
 
 .light .voucher-compact .stat-value { 
-  color: #059669; 
+  color: #166534; 
 }
 
 .light .voucher-compact .glass-panel { 
@@ -305,51 +349,124 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   backdrop-filter: blur(8px);
 }
 
-.light .modal-content, 
+.light .voucher-compact .btn-reset-voucher { 
+  background: #f1f5f9; 
+  border-color: #166534;
+  color: #1e293b;
+}
+
+.light .voucher-compact .btn-reset-voucher:hover { 
+  background: #e2e8f0; 
+}
+
+/* Modal umum */
 .light .bg-gray-900, 
 .light .bg-gray-900/95, 
-.light .bg-gray-900/90 { 
+.light .bg-gray-900/90,
+.light .bg-gray-900/80 { 
   background: #ffffff !important; 
 }
 
 .light .border-gray-700 { 
-  border-color: #e0e0e0 !important; 
+  border-color: #e2e8f0 !important; 
 }
 
 .light .text-gray-400, 
 .light .text-gray-300, 
 .light .text-gray-500 { 
-  color: #555555 !important; 
+  color: #475569 !important; 
 }
 
 .light .text-white { 
-  color: #1a1a2e !important; 
+  color: #1e293b !important; 
 }
 
-.light .bg-gray-800 { 
+.light .bg-gray-800,
+.light .bg-gray-800/50 { 
   background: #f1f5f9 !important; 
 }
 
 .light .border-green-400, 
 .light .border-green-500 { 
-  border-color: #059669 !important; 
+  border-color: #166534 !important; 
 }
 
 .light .text-green-400, 
 .light .text-green-500 { 
-  color: #059669 !important; 
+  color: #166534 !important; 
 }
 
 .light .bg-green-600 { 
-  background: #059669 !important; 
+  background: #166534 !important; 
 }
 
 .light .bg-green-600:hover { 
-  background: #047857 !important; 
+  background: #14532d !important; 
+}
+
+.light .bg-green-500 { 
+  background: #166534 !important; 
+}
+
+.light .bg-green-500:hover { 
+  background: #14532d !important; 
 }
 
 .light hr.border-gray-600 { 
-  border-color: #e0e0e0; 
+  border-color: #cbd5e1; 
+}
+
+.light .text-yellow-300,
+.light .text-yellow-400 { 
+  color: #ca8a04 !important; 
+}
+
+.light .text-red-400 { 
+  color: #dc2626 !important; 
+}
+
+.light .text-blue-400,
+.light .text-blue-500 { 
+  color: #0284c7 !important; 
+}
+
+/* Tombol back dan lainnya */
+.light .back-btn { 
+  background: #166534; 
+  color: white;
+}
+
+.light .back-btn:hover { 
+  background: #14532d; 
+}
+
+.light .futuristic-btn { 
+  border-color: #166534;
+  color: #166534;
+}
+
+.light .futuristic-btn:hover { 
+  background: #166534;
+  color: white;
+}
+
+/* Floating back button */
+.light .floating-back { 
+  background: #166534; 
+  color: white;
+}
+
+.light .floating-back:hover { 
+  background: #14532d; 
+}
+
+/* Toggle dark mode button di light mode */
+.light #darkModeToggle.bg-gray-600 {
+  background: #cbd5e1 !important;
+}
+
+.light #darkModeToggle.bg-green-500 {
+  background: #166534 !important;
 }
 .card{
   position:relative; background:var(--card); color:var(--text); padding:1.3rem; border-radius:1rem; font-weight:600;

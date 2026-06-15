@@ -1827,11 +1827,12 @@ function openPoinModal() {
     if (box) box.classList.remove('scale-95');
   }
   // Reset form
-  document.getElementById('poinCustomerId').value = '';
-  document.getElementById('poinHasil').classList.add('hidden');
-  document.getElementById('poinEmpty').classList.remove('hidden');
-  currentPoinCustomerId = null;
-  currentPoinCustomerData = null;
+  const input = document.getElementById('poinCustomerId');
+  if (input) input.value = '';
+  const hasil = document.getElementById('poinHasil');
+  if (hasil) hasil.classList.add('hidden');
+  const empty = document.getElementById('poinEmpty');
+  if (empty) empty.classList.remove('hidden');
 }
 
 function closePoinModal() {

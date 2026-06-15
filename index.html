@@ -3100,5 +3100,31 @@ function openGameDetail(g) {
     </div>
   </div>
 </div>
+<script>
+// Perbaikan tombol poin
+document.addEventListener('DOMContentLoaded', function() {
+    var poinBtn = document.querySelector('button[onclick="openPoinModal()"]');
+    if (poinBtn) {
+        console.log('Tombol poin ditemukan');
+    } else {
+        console.log('Tombol poin TIDAK ditemukan');
+    }
+    
+    // Pastikan fungsi openPoinModal tersedia
+    if (typeof openPoinModal === 'undefined') {
+        window.openPoinModal = function() {
+            var modal = document.getElementById('poinModal');
+            if (modal) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                var box = modal.querySelector('div');
+                if (box) box.classList.remove('scale-95');
+            } else {
+                alert('Modal poin tidak ditemukan!');
+            }
+        };
+        console.log('Fungsi openPoinModal dibuat ulang');
+    }
+});
+</script>
 </body>    
 </html>

@@ -985,13 +985,18 @@ async function sendToWhatsApp(nama, harga) {
         return true;
     };
     gameInfoText = `<span class="text-yellow-300">📌 Informasi ID Mobile Legends:</span><br>
-     • Masukkan ID Mobile Legends Anda dengan format lengkap.<br>
-     • Contoh ID: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
-     • ⚠️ <strong class="text-red-400">Aturan ID MLBB:</strong><br>
-     &nbsp;&nbsp;- Panjang ID harus 4-10 digit (tidak boleh 1-3 digit atau 11+ digit)<br>
-     &nbsp;&nbsp;- Tidak boleh diawali angka 0<br>
-     • Pastikan ID yang Anda masukkan sudah benar, karena kami tidak bertanggung jawab atas kesalahan pengetikan.<br>
-     <span class="text-green-300">💡 Tips: Cek ID di profil game Anda.</span>`;
+ • Masukkan ID Mobile Legends dengan format LENGKAP.<br>
+ • <strong>Format yang diterima:</strong><br>
+ &nbsp;&nbsp;• 12345678(1011) → User ID + Zone ID dalam kurung<br>
+ &nbsp;&nbsp;• 123456781011 → User ID + Zone ID tanpa pemisah<br>
+ • ⚠️ <strong class="text-red-400">Aturan ID MLBB:</strong><br>
+ &nbsp;&nbsp;• User ID: 4-10 digit (akun tertua 4-5 digit, akun normal 7-10 digit)<br>
+ &nbsp;&nbsp;• Zone ID: 4-5 digit (contoh: 2001, 12345)<br>
+ &nbsp;&nbsp;• TOTAL KESELURUHAN minimal 8 DIGIT<br>
+ &nbsp;&nbsp;• ID seperti "12345" (hanya 5 digit) <strong>TIDAK MUNGKIN VALID</strong><br>
+ &nbsp;&nbsp;• User ID tidak boleh diawali angka 0<br>
+ • Pastikan ID yang Anda masukkan sudah benar.<br>
+ <span class="text-green-300">💡 Cek ID di profil game Anda (User ID &amp; Zone ID/Server ID).</span>`;
 }
  else if (isFreeFire) {
     gameStorageKey = 'ff_id';
@@ -1156,35 +1161,74 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // ========== VALIDASI ID GAME MLBB & FF ==========
 function validateMLBBID(id) {
-    // Hilangkan tanda kurung untuk pengecekan panjang digit
-    let cleanId = id.replace(/[()]/g, '');
+    // Format yang diterima: 12345678(1011) atau 123456781011
+    let match = id.match(/^(\d+)\((\d+)\)$|^(\d+)(\d{4})$/);
     
-    // Cek panjang digit
-    if (cleanId.length < 4 || cleanId.length > 10) {
-        return { valid: false, message: "❌ ID Mobile Legends harus memiliki panjang 4-10 digit angka.\nID di bawah 4 digit atau di atas 10 digit tidak pernah ada." };
+    let userId, zoneId;
+    
+    if (match) {
+        if (match[1] && match[2]) {
+            // Format: 12345678(1011)
+            userId = match[1];
+            zoneId = match[2];
+        } else if (match[3] && match[4]) {
+            // Format: 123456781011 (userID + zoneID tanpa pemisah)
+            // zoneId selalu 4 digit terakhir
+            let fullNumber = match[3] + match[4];
+            zoneId = fullNumber.slice(-4);
+            userId = fullNumber.slice(0, -4);
+        }
+    } else {
+        // Coba parsing manual: cari 4 digit terakhir sebagai zoneId
+        let cleanId = id.replace(/[()]/g, '');
+        if (cleanId.length > 4) {
+            zoneId = cleanId.slice(-4);
+            userId = cleanId.slice(0, -4);
+        } else {
+            return { valid: false, message: "❌ Format ID Mobile Legends tidak valid.\n\nFormat yang benar:\n• 12345678(1011)\n• 123456781011\n\n(4 digit terakhir adalah Zone ID)" };
+        }
     }
     
-    // Cek diawali angka 0
-    if (cleanId[0] === '0') {
-        return { valid: false, message: "❌ ID Mobile Legends tidak boleh diawali angka 0.\nSistem database game tidak menggunakan angka 0 di depan sebagai digit pertama ID pemain." };
+    // Validasi User ID
+    if (userId.length < 4 || userId.length > 10) {
+        return { valid: false, message: "❌ User ID Mobile Legends harus memiliki panjang 4-10 digit angka.\n\nAkun tertua: 4-5 digit\nAkun normal: 7-10 digit" };
+    }
+    
+    // Validasi Zone ID
+    if (zoneId.length < 4 || zoneId.length > 5) {
+        return { valid: false, message: "❌ Zone ID Mobile Legends harus 4-5 digit angka.\nContoh Zone ID: 2001 (4 digit) atau 12345 (5 digit)" };
+    }
+    
+    // Cek User ID tidak diawali 0
+    if (userId[0] === '0') {
+        return { valid: false, message: "❌ User ID Mobile Legends tidak boleh diawali angka 0.\nSistem database game tidak menggunakan angka 0 di depan." };
+    }
+    
+    // Cek total digit keseluruhan minimal 8 digit
+    let totalLength = userId.length + zoneId.length;
+    if (totalLength < 8) {
+        return { valid: false, message: "❌ Total ID Mobile Legends (User ID + Zone ID) minimal 8 digit.\n\nContoh: User ID 5 digit + Zone ID 4 digit = total 9 digit\nID Anda hanya ${totalLength} digit, tidak mungkin valid." };
+    }
+    
+    // Cek hanya angka
+    if (!/^\d+$/.test(userId + zoneId)) {
+        return { valid: false, message: "❌ ID Mobile Legends hanya boleh berisi angka." };
+    }
+    
+    return { valid: true, cleanId: userId + zoneId, userId: userId, zoneId: zoneId };
+}
+
+function validateFFID(id) {
+    // Bersihkan dari spasi
+    let cleanId = id.trim();
+    
+    // Cek panjang digit (8-11 digit)
+    if (cleanId.length < 8 || cleanId.length > 11) {
+        return { valid: false, message: "❌ ID Free Fire harus memiliki panjang 8-11 digit angka.\n\n- Akun terlama (2017): 8 digit (contoh: 10000001)\n- Akun baru (2024-2026): 11 digit\n\nID 1-7 digit TIDAK PERNAH ADA.\nID 12 digit+ BELUM MUNGKIN ADA." };
     }
     
     // Cek hanya angka
     if (!/^\d+$/.test(cleanId)) {
-        return { valid: false, message: "❌ ID Mobile Legends hanya boleh berisi angka." };
-    }
-    
-    return { valid: true, cleanId: cleanId };
-}
-
-function validateFFID(id) {
-    // Cek panjang digit
-    if (id.length < 8 || id.length > 11) {
-        return { valid: false, message: "❌ ID Free Fire harus memiliki panjang 8-11 digit angka.\nSaat FF rilis global, ID dimulai dari 8 digit. ID 1-7 digit tidak pernah ada untuk akun pemain umum.\nID 12 digit atau lebih belum mungkin ada saat ini." };
-    }
-    
-    // Cek hanya angka
-    if (!/^\d+$/.test(id)) {
         return { valid: false, message: "❌ ID Free Fire hanya boleh berisi angka." };
     }
     
@@ -1203,11 +1247,11 @@ function validateFFID(id) {
         '98765432', '987654321', '9876543210', '98765432101'
     ];
     
-    if (blacklistedIDs.includes(id)) {
-        return { valid: false, message: "❌ ID Free Fire tidak valid.\nID seperti ini di-blacklist atau disimpan sistem Garena, tidak mungkin dimiliki pemain biasa melalui registrasi normal." };
+    if (blacklistedIDs.includes(cleanId)) {
+        return { valid: false, message: "❌ ID Free Fire tidak valid.\nID seperti ${cleanId} di-blacklist oleh sistem Garena dan tidak mungkin dimiliki pemain biasa melalui registrasi normal." };
     }
     
-    return { valid: true, cleanId: id };
+    return { valid: true, cleanId: cleanId };
 }
 
 // ========== VOUCHER MODE DI KALKULATOR ==========

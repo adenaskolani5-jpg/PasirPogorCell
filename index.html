@@ -568,6 +568,44 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   font-size: 0.85rem;
   line-height: 1.4;
 }
+/* ===== SETTINGS MODAL & ADMIN PANEL ===== */
+.settings-modal {
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(12px);
+}
+.settings-card {
+  background: linear-gradient(145deg, #111111, #0a0a0a);
+  border: 1px solid rgba(34,197,94,0.5);
+  box-shadow: 0 0 30px rgba(34,197,94,0.3);
+}
+.admin-card {
+  background: rgba(10,10,20,0.95);
+  border-left: 4px solid #22c55e;
+}
+
+/* Password input styling */
+.password-input {
+  background: #1a1a1a;
+  border: 1px solid #22c55e;
+  transition: all 0.3s ease;
+}
+.password-input:focus {
+  outline: none;
+  border-color: #4ade80;
+  box-shadow: 0 0 12px #22c55e;
+  background: #0a1f12;
+}
+
+/* Settings menu item */
+.settings-menu-item {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.settings-menu-item:hover {
+  background: rgba(34,197,94,0.15);
+  transform: translateX(5px);
+  border-left-color: #22c55e !important;
+}
 </style>        
 </head>        
 <body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">        
@@ -577,9 +615,19 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
     <span>[ Harga sewaktu waktu dapat berubah ]</span><span>[ Silahkan kunjungi langsung Gerai PasirPogorCell ]</span><span>[ semoga harimu menyenangkan ]</span><span>[ Harga sewaktu waktu dapat berubah ]</span><span>[ Silahkan kunjungi langsung Gerai PasirPogorCell ]</span><span>[ semoga harimu menyenangkan ]</span>
   </div>
 </div>
-<header class="p-6 text-center border-b border-gray-700">          
-  <h1 class="text-4xl font-bold">PasirPogorCell</h1>          
-  <p class="text-gray-300">Paket Internet & Top Up Game</p>          
+<header class="p-6 border-b border-gray-700 relative">          
+  <div class="flex justify-between items-center">
+    <div class="flex-1"></div>
+    <div class="text-center flex-1">
+      <h1 class="text-4xl font-bold">PasirPogorCell</h1>          
+      <p class="text-gray-300">Paket Internet & Top Up Game</p>
+    </div>
+    <div class="flex-1 flex justify-end">
+      <button onclick="openSettingsModal()" class="text-gray-400 hover:text-green-400 transition-all duration-300 text-2xl p-2 rounded-full hover:bg-gray-800" title="Pengaturan">
+        ⚙️
+      </button>
+    </div>
+  </div>
 </header>        
 <!-- Tombol Baris Atas: Cari (lebar) dan Info (kanan) -->
 <div class="my-4 px-4">
@@ -1547,6 +1595,83 @@ function clearCalc() { document.getElementById('calcDisplay').value = ''; }
 function backspace() { let d=document.getElementById('calcDisplay'); d.value = d.value.slice(0,-1); }    
 function calculate() { let d=document.getElementById('calcDisplay'); try { d.value = eval(d.value); } catch(e) { d.value = 'Error'; } }    
 document.getElementById('toggleCalcModeBtn')?.addEventListener('click', toggleCalcMode);
+// ========== FUNGSI SETTINGS & ADMIN PANEL ==========
+// Password admin (GANTI dengan password Anda)
+const ADMIN_PASSWORD = "admin123";
+
+function openSettingsModal() {
+  const modal = document.getElementById('settingsModal');
+  if (!modal) return;
+  modal.classList.remove('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.remove('scale-95');
+}
+
+function closeSettingsModal() {
+  const modal = document.getElementById('settingsModal');
+  if (!modal) return;
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.add('scale-95');
+}
+
+function openAdminPanel() {
+  // Tutup settings modal terlebih dahulu
+  closeSettingsModal();
+  // Buka modal login admin
+  const loginModal = document.getElementById('adminLoginModal');
+  if (!loginModal) return;
+  loginModal.classList.remove('opacity-0', 'pointer-events-none');
+  const box = loginModal.querySelector('div');
+  if (box) box.classList.remove('scale-95');
+  // Reset input password
+  document.getElementById('adminPassword').value = '';
+  document.getElementById('adminLoginError').classList.add('hidden');
+}
+
+function closeAdminLoginModal() {
+  const modal = document.getElementById('adminLoginModal');
+  if (!modal) return;
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.add('scale-95');
+}
+
+function verifyAdminPassword() {
+  const password = document.getElementById('adminPassword').value;
+  const errorDiv = document.getElementById('adminLoginError');
+  
+  if (password === ADMIN_PASSWORD) {
+    // Password benar, tutup login modal dan buka admin panel
+    closeAdminLoginModal();
+    openAdminPanelModal();
+  } else {
+    errorDiv.classList.remove('hidden');
+  }
+}
+
+function openAdminPanelModal() {
+  const modal = document.getElementById('adminPanelModal');
+  if (!modal) return;
+  modal.classList.remove('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.remove('scale-95');
+}
+
+function closeAdminPanelModal() {
+  const modal = document.getElementById('adminPanelModal');
+  if (!modal) return;
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.add('scale-95');
+}
+
+// Tekan Enter pada input password
+document.getElementById('adminPassword')?.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    verifyAdminPassword();
+  }
+});
 </script>    
 
 <section id="home" class="page p-6 max-w-4xl mx-auto mt-10">
@@ -2334,6 +2459,58 @@ function openGameDetail(g) {
     <div class="flex justify-end gap-3 mt-4">
       <button id="modalCancelBtn" class="px-4 py-1 border border-gray-500 text-gray-300 rounded-md hover:bg-gray-700">Batal</button>
       <button id="modalConfirmBtn" class="px-4 py-1 bg-green-500 text-black rounded-md font-semibold hover:bg-green-400">Kirim</button>
+    </div>
+  </div>
+</div>
+<!-- MODAL SETTINGS -->
+<div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300 settings-modal">
+  <div class="bg-gray-900/95 border border-green-500 rounded-xl w-80 max-w-[90%] overflow-hidden transform scale-95 transition-all duration-300 shadow-2xl settings-card">
+    <div class="flex justify-between items-center p-4 border-b border-gray-700">
+      <h3 class="text-lg font-bold text-green-400">⚙️ Pengaturan</h3>
+      <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+    </div>
+    <div class="p-4">
+      <div onclick="openAdminPanel()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent">
+        <span class="text-xl">👑</span>
+        <div>
+          <div class="font-semibold text-white">Halaman Admin</div>
+          <div class="text-xs text-gray-400">Akses panel administrasi</div>
+        </div>
+        <span class="ml-auto text-gray-500">→</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ADMIN PASSWORD (Login) -->
+<div id="adminLoginModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
+  <div class="bg-gray-900 border border-green-500 rounded-xl w-80 max-w-[90%] overflow-hidden transform scale-95 transition-all duration-300 shadow-2xl">
+    <div class="flex justify-between items-center p-4 border-b border-gray-700">
+      <h3 class="text-lg font-bold text-green-400">🔐 Login Admin</h3>
+      <button onclick="closeAdminLoginModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+    </div>
+    <div class="p-4">
+      <input type="password" id="adminPassword" placeholder="Masukkan password" class="password-input w-full px-3 py-2 rounded-lg text-white text-sm">
+      <div id="adminLoginError" class="text-red-400 text-xs mt-2 hidden">❌ Password salah!</div>
+      <button onclick="verifyAdminPassword()" class="w-full mt-4 bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL HALAMAN ADMIN (KOSONG UNTUK SEKARANG) -->
+<div id="adminPanelModal" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
+  <div class="bg-gray-900 border border-green-500 rounded-xl w-full max-w-2xl max-h-[85vh] overflow-auto transform scale-95 transition-all duration-300 shadow-2xl admin-card">
+    <div class="sticky top-0 bg-gray-900 flex justify-between items-center p-4 border-b border-gray-700 z-10">
+      <h3 class="text-lg font-bold text-green-400">👑 Admin Panel</h3>
+      <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+    </div>
+    <div class="p-6" id="adminPanelContent">
+      <!-- KONTEN ADMIN AKAN DITAMBAHKAN NANTI -->
+      <div class="text-center text-gray-400 py-10">
+        <div class="text-5xl mb-4">🚧</div>
+        <p class="text-lg">Halaman Admin sedang dalam pengembangan</p>
+        <p class="text-sm mt-2">Fitur akan segera hadir</p>
+      </div>
     </div>
   </div>
 </div>

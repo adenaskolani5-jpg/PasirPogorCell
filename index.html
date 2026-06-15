@@ -962,82 +962,98 @@ async function sendToWhatsApp(nama, harga) {
   const isRoblox = /Roblox/i.test(nama);
   
   if (isGame) {
-    // Tentukan storage key berdasarkan game
     let gameStorageKey = 'game_id';
     let gameTitle = "ID Game Anda";
     let gamePlaceholder = "Contoh: Gamer123 (5-30 karakter, huruf/angka)";
     let gameValidator = (val) => /^[A-Za-z0-9]{5,30}$/.test(val);
-    let gameInfoText = `<span class="text-yellow-300">📌 Informasi:</span><br>
-     • Masukkan ID Game Anda dengan benar.<br>
-     • Pastikan tidak ada kesalahan pengetikan, karena ID yang salah tidak dapat diproses.<br>
-     <span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input dari pelanggan.</span>`;
+    let gameInfoText = `<span class="text-yellow-300">📌 Informasi:</span><br>• Masukkan ID Game Anda dengan benar.<br>• Pastikan tidak ada kesalahan pengetikan.<br><span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input.</span>`;
     
     if (isMobileLegends) {
-    gameStorageKey = 'ml_id';
-    gameTitle = "Masukkan ID Game Mobile Legends";
-    gamePlaceholder = "Contoh: 12345678(1011) atau 123456781011";
-    gameValidator = (val) => {
-        const result = validateMLBBID(val);
-        if (!result.valid) {
-            gameValidator.errorMessage = result.message;
-            return false;
-        }
-        return true;
-    };
-    gameInfoText = `<span class="text-yellow-300">📌 Informasi ID Mobile Legends:</span><br>
- • Masukkan ID Mobile Legends dengan format LENGKAP.<br>
- • <strong>Format yang diterima:</strong><br>
- &nbsp;&nbsp;• Contoh : ID Game 12345678(1011) → Masukan ID menjadi 123456781011<br>
- • Demi kenyamanan bersama, mohon pastikan kembali ID Game Anda sudah benar sebelum transaksi. Kami tidak bertanggung jawab atas kesalahan kirim akibat salah ketik angka atau server.<br>
- <span class="text-green-300">💡 Cek ID di profil game Anda (User ID &amp; Zone ID/Server ID).</span>`;
-}
- else if (isFreeFire) {
-    gameStorageKey = 'ff_id';
-    gameTitle = "Masukkan ID Free Fire";
-    gamePlaceholder = "Contoh: 12345678 atau 12345678901 (8-11 digit angka)";
-    gameValidator = (val) => {
-        const result = validateFFID(val);
-        if (!result.valid) {
-            gameValidator.errorMessage = result.message;
-            return false;
-        }
-        return true;
-    };
-    gameInfoText = `<span class="text-yellow-300">📌 Informasi ID Free Fire:</span><br>
-     • Masukkan ID Free Fire Anda (8-11 digit angka).<br>
-     • Contoh ID: <strong>12345678</strong> atau <strong>12345678901</strong><br>
-     • ⚠️ <strong class="text-red-400">Aturan ID FF:</strong><br>
-     &nbsp;&nbsp;- Panjang ID harus 8-11 digit (tidak boleh 1-7 digit atau 12+ digit)<br>
-     • Demi kenyamanan bersama, mohon pastikan kembali ID Game Anda sudah benar sebelum transaksi. Kami tidak bertanggung jawab atas kesalahan kirim akibat salah ketik angka atau server.<br>
-     <span class="text-green-300">💡 Tips: Cek ID di Settings → Account.</span>`;
-}
- else if (isHOK) {
+      gameStorageKey = 'ml_id';
+      gameTitle = "Masukkan ID Mobile Legends";
+      gamePlaceholder = "Contoh: 12345678(1011) atau 123456781011";
+      gameValidator = (val) => { const r = validateMLBBID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Mobile Legends:</span><br>
+       • Format: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
+       • User ID: 4-10 digit | Zone ID: 4-5 digit<br>
+       • TOTAL minimal 8 digit (contoh: 10001+2001=100012001)<br>
+       • User ID TIDAK boleh diawali angka 0<br>
+       <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`;
+    }
+    else if (isFreeFire) {
+      gameStorageKey = 'ff_id';
+      gameTitle = "Masukkan ID Free Fire";
+      gamePlaceholder = "Contoh: 12345678 (8-11 digit)";
+      gameValidator = (val) => { const r = validateFFID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Free Fire:</span><br>
+       • Panjang ID: 8-11 digit<br>
+       • Akun terlama (2017): 8 digit<br>
+       • Akun baru (2024-2026): 11 digit<br>
+       • ID cantik (11111111, 12345678) TIDAK VALID<br>
+       <span class="text-green-300">💡 Cek ID di Settings → Account.</span>`;
+    }
+    else if (isPUBG) {
+      gameStorageKey = 'pubg_id';
+      gameTitle = "Masukkan ID PUBG Mobile";
+      gamePlaceholder = "Contoh: 512345678 (9 digit) atau 6198765432 (10 digit)";
+      gameValidator = (val) => { const r = validatePUBGID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID PUBG Mobile:</span><br>
+       • Panjang ID: 9-10 digit<br>
+       • Akun veteran (2018-2019): 9 digit, diawali 5<br>
+       • Akun baru: 10 digit, diawali 6 atau 7<br>
+       • ID diawali 0,1,2,3,4 TIDAK VALID<br>
+       <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`;
+    }
+    else if (isCOD) {
+      gameStorageKey = 'cod_id';
+      gameTitle = "Masukkan UID Call Of Duty Mobile";
+      gamePlaceholder = "Contoh: 6742910384756291029 (19 digit)";
+      gameValidator = (val) => { const r = validateCODMID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan UID Call of Duty Mobile:</span><br>
+       • Panjang UID: TEPAT 19 digit<br>
+       • ID pendek (5,8,10 digit) MUSTAHIL ADA untuk UID CODM<br>
+       • Yang Anda miliki jika pendek adalah OpenID atau Nickname<br>
+       <span class="text-green-300">💡 Cek UID di Settings → Legal & Privacy.</span>`;
+    }
+    else if (isHOK) {
       gameStorageKey = 'hok_id';
       gameTitle = "Masukkan ID Honor Of Kings";
-      gamePlaceholder = "Contoh: 123456789 (9-15 digit)";
-      gameValidator = (val) => /^\d{9,15}$/.test(val);
-    } else if (isGenshin) {
+      gamePlaceholder = "Contoh: 12345678901 (11-12 digit)";
+      gameValidator = (val) => { const r = validateHOKID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Honor of Kings:</span><br>
+       • Panjang ID: 11-12 digit (server Global)<br>
+       • ID kurang dari 11 digit TIDAK MUNGKIN ADA<br>
+       <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`;
+    }
+    else if (isGenshin) {
       gameStorageKey = 'genshin_id';
       gameTitle = "Masukkan UID Genshin Impact";
-      gamePlaceholder = "Contoh: 123456789 (9 digit angka)";
-      gameValidator = (val) => /^\d{9}$/.test(val);
-    } else if (isRoblox) {
+      gamePlaceholder = "Contoh: 712345678 (9 digit)";
+      gameValidator = (val) => { const r = validateGenshinID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan UID Genshin Impact:</span><br>
+       • Panjang UID: TEPAT 9 digit<br>
+       • Digit pertama = kode server:<br>
+       &nbsp;&nbsp;• 7 = Server Asia (Indonesia)<br>
+       &nbsp;&nbsp;• 5 = Amerika | 6 = Eropa | 8 = TW/HK/MO<br>
+       • Jika UID diawali selain 7 untuk server Asia, TIDAK VALID<br>
+       <span class="text-green-300">💡 Cek UID di pojok kanan bawah layar game.</span>`;
+    }
+    else if (isRoblox) {
       gameStorageKey = 'roblox_id';
-      gameTitle = "Masukkan Username Roblox";
-      gamePlaceholder = "Contoh: Gamer123 (3-20 karakter)";
-      gameValidator = (val) => /^[A-Za-z0-9_]{3,20}$/.test(val);
+      gameTitle = "Masukkan User ID Roblox";
+      gamePlaceholder = "Contoh: 3948576102 (angka dari URL profil)";
+      gameValidator = (val) => { const r = validateRobloxID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan User ID Roblox:</span><br>
+       • Cara dapatkan: buka profil → lihat URL<br>
+       • Contoh URL: roblox.com/users/3948576102/profile<br>
+       • 1-4 digit: Akun 2006 | 8-9 digit: 2015-2018 | 10 digit: 2020-sekarang<br>
+       • ID 11 digit+ BELUM MUNGKIN ADA<br>
+       <span class="text-green-300">💡 Ini ANGKA dari URL profil, BUKAN username.</span>`;
     }
     
-    userInput = await showInputModal(
-      gameTitle,
-      gamePlaceholder,
-      gameValidator,
-      gameInfoText,
-      gameStorageKey
-    );
+    userInput = await showInputModal(gameTitle, gamePlaceholder, gameValidator, gameInfoText, gameStorageKey);
     if (userInput === null) return;
   } else {
-    // Deteksi operator dari nama paket
     const operator = detectOperatorFromNama(nama);
     let operatorKey = 'customer_phone';
     let operatorDisplay = '';
@@ -1047,35 +1063,20 @@ async function sendToWhatsApp(nama, harga) {
       operatorDisplay = operator.toUpperCase();
     }
     
-    let validatorMessage = "Contoh: 081234567890 (10-13 digit angka)";
-    let infoHtml = `<span class="text-yellow-300">📌 Informasi Penting:</span><br>
-     • Masukkan nomor HP aktif dengan benar.<br>
-     • Pastikan nomor yang Anda masukkan adalah milik Anda sendiri.<br>
-     • Kami tidak bertanggung jawab atas kesalahan pengetikan atau nomor yang tidak aktif.<br>
-     <span class="text-green-300">💡 Periksa kembali nomor sebelum mengirim.</span>`;
+    let validatorMessage = "Contoh: 081234567890 (10-13 digit)";
+    let infoHtml = `<span class="text-yellow-300">📌 Informasi Penting:</span><br>• Masukkan nomor HP aktif.<br>• Kami tidak bertanggung jawab atas kesalahan input.<br><span class="text-green-300">💡 Periksa kembali nomor Anda.</span>`;
     
     if (operator) {
       const prefixList = operatorPrefixes[operator].join(', ');
-      validatorMessage = `Nomor harus diawali dengan prefix ${prefixList} (10-13 digit)`;
-      infoHtml = `<span class="text-yellow-300">📌 Informasi Penting:</span><br>
-       • Masukkan nomor HP Anda dengan benar (operator ${operatorDisplay}).<br>
-       • Nomor harus diawali dengan prefix: <strong>${prefixList}</strong>.<br>
-       • Contoh: <strong>${operatorPrefixes[operator][0]}xxxxxxx</strong><br>
-       • Data akan disimpan khusus untuk operator ${operatorDisplay}.<br>
-       <span class="text-green-300">💡 Periksa kembali nomor HP Anda sebelum melanjutkan.</span>`;
+      validatorMessage = `Nomor harus diawali ${prefixList} (10-13 digit)`;
+      infoHtml = `<span class="text-yellow-300">📌 Informasi (${operatorDisplay}):</span><br>• Nomor harus diawali: <strong>${prefixList}</strong><br>• Contoh: ${operatorPrefixes[operator][0]}xxxxxxx<br><span class="text-green-300">💡 Periksa kembali nomor Anda.</span>`;
     }
     
-    userInput = await showInputModal(
-      "Masukkan Nomor HP",
-      validatorMessage,
-      (val) => {
-        if (!/^\d{10,13}$/.test(val)) return false;
-        if (operator) return isValidPhoneForOperator(val, operator);
-        return true;
-      },
-      infoHtml,
-      operatorKey
-    );
+    userInput = await showInputModal("Masukkan Nomor HP", validatorMessage, (val) => {
+      if (!/^\d{10,13}$/.test(val)) return false;
+      if (operator) return isValidPhoneForOperator(val, operator);
+      return true;
+    }, infoHtml, operatorKey);
     if (userInput === null) return;
   }
   
@@ -1151,27 +1152,23 @@ document.addEventListener("DOMContentLoaded", function() {
   // ... (jika ada kode lain seperti untuk customerId, letakkan di sini)
 });
 
-// ========== VALIDASI ID GAME MLBB & FF ==========
+// ========== VALIDASI ID GAME MLBB & FF (SESUAI ATURAN) ==========
 function validateMLBBID(id) {
-    // Format yang diterima: 12345678(1011) atau 123456781011
+    // Format: 12345678(1011) atau 123456781011
     let match = id.match(/^(\d+)\((\d+)\)$|^(\d+)(\d{4})$/);
     
     let userId, zoneId;
     
     if (match) {
         if (match[1] && match[2]) {
-            // Format: 12345678(1011)
             userId = match[1];
             zoneId = match[2];
         } else if (match[3] && match[4]) {
-            // Format: 123456781011 (userID + zoneID tanpa pemisah)
-            // zoneId selalu 4 digit terakhir
             let fullNumber = match[3] + match[4];
             zoneId = fullNumber.slice(-4);
             userId = fullNumber.slice(0, -4);
         }
     } else {
-        // Coba parsing manual: cari 4 digit terakhir sebagai zoneId
         let cleanId = id.replace(/[()]/g, '');
         if (cleanId.length > 4) {
             zoneId = cleanId.slice(-4);
@@ -1181,50 +1178,41 @@ function validateMLBBID(id) {
         }
     }
     
-    // Validasi User ID
     if (userId.length < 4 || userId.length > 10) {
-        return { valid: false, message: "❌ User ID Mobile Legends harus memiliki panjang 4-10 digit angka.\n\nAkun tertua: 4-5 digit\nAkun normal: 7-10 digit" };
+        return { valid: false, message: "❌ User ID Mobile Legends harus 4-10 digit.\nAkun tertua: 4-5 digit | Akun normal: 7-10 digit" };
     }
     
-    // Validasi Zone ID
     if (zoneId.length < 4 || zoneId.length > 5) {
-        return { valid: false, message: "❌ Zone ID Mobile Legends harus 4-5 digit angka.\nContoh Zone ID: 2001 (4 digit) atau 12345 (5 digit)" };
+        return { valid: false, message: "❌ Zone ID harus 4-5 digit.\nContoh: 2001 atau 12345" };
     }
     
-    // Cek User ID tidak diawali 0
     if (userId[0] === '0') {
-        return { valid: false, message: "❌ User ID Mobile Legends tidak boleh diawali angka 0.\nSistem database game tidak menggunakan angka 0 di depan." };
+        return { valid: false, message: "❌ User ID tidak boleh diawali angka 0." };
     }
     
-    // Cek total digit keseluruhan minimal 8 digit
     let totalLength = userId.length + zoneId.length;
     if (totalLength < 8) {
-        return { valid: false, message: "❌ Total ID Mobile Legends (User ID + Zone ID) minimal 8 digit.\n\nContoh: User ID 5 digit + Zone ID 4 digit = total 9 digit\nID Anda hanya ${totalLength} digit, tidak mungkin valid." };
+        return { valid: false, message: `❌ Total ID (User ID + Zone ID) minimal 8 digit.\nID Anda hanya ${totalLength} digit, tidak mungkin valid.` };
     }
     
-    // Cek hanya angka
     if (!/^\d+$/.test(userId + zoneId)) {
-        return { valid: false, message: "❌ ID Mobile Legends hanya boleh berisi angka." };
+        return { valid: false, message: "❌ ID hanya boleh berisi angka." };
     }
     
-    return { valid: true, cleanId: userId + zoneId, userId: userId, zoneId: zoneId };
+    return { valid: true, cleanId: userId + zoneId };
 }
 
 function validateFFID(id) {
-    // Bersihkan dari spasi
     let cleanId = id.trim();
     
-    // Cek panjang digit (8-11 digit)
     if (cleanId.length < 8 || cleanId.length > 11) {
-        return { valid: false, message: "❌ ID Free Fire harus memiliki panjang 8-11 digit angka.\n\n- Akun terlama (2017): 8 digit (contoh: 10000001)\n- Akun baru (2024-2026): 11 digit\n\nID 1-7 digit TIDAK PERNAH ADA.\nID 12 digit+ BELUM MUNGKIN ADA." };
+        return { valid: false, message: "❌ ID Free Fire harus 8-11 digit.\n\n- Akun terlama (2017): 8 digit\n- Akun baru (2024-2026): 11 digit\n\nID 1-7 digit TIDAK PERNAH ADA.\nID 12 digit+ BELUM MUNGKIN ADA." };
     }
     
-    // Cek hanya angka
     if (!/^\d+$/.test(cleanId)) {
         return { valid: false, message: "❌ ID Free Fire hanya boleh berisi angka." };
     }
     
-    // Daftar ID "cantik" yang di-blacklist
     const blacklistedIDs = [
         '11111111', '111111111', '1111111111', '11111111111',
         '22222222', '222222222', '2222222222', '22222222222',
@@ -1235,12 +1223,102 @@ function validateFFID(id) {
         '77777777', '777777777', '7777777777', '77777777777',
         '88888888', '888888888', '8888888888', '88888888888',
         '99999999', '999999999', '9999999999', '99999999999',
-        '12345678', '123456789', '1234567890', '12345678901',
-        '98765432', '987654321', '9876543210', '98765432101'
+        '12345678', '123456789', '1234567890', '12345678901'
     ];
     
     if (blacklistedIDs.includes(cleanId)) {
-        return { valid: false, message: "❌ ID Free Fire tidak valid.\nID seperti ${cleanId} di-blacklist oleh sistem Garena dan tidak mungkin dimiliki pemain biasa melalui registrasi normal." };
+        return { valid: false, message: `❌ ID ${cleanId} di-blacklist sistem Garena, tidak mungkin dimiliki pemain biasa.` };
+    }
+    
+    return { valid: true, cleanId: cleanId };
+}
+
+// ========== VALIDASI PUBG MOBILE ==========
+function validatePUBGID(id) {
+    let cleanId = id.trim();
+    
+    if (cleanId.length < 9 || cleanId.length > 10) {
+        return { valid: false, message: "❌ ID PUBG Mobile harus 9-10 digit.\n\n- Akun veteran (2018-2019): 9 digit (diawali 5)\n- Akun baru: 10 digit (diawali 6 atau 7)\n\nID kurang dari 9 digit atau lebih dari 10 digit TIDAK PERNAH ADA." };
+    }
+    
+    if (!/^\d+$/.test(cleanId)) {
+        return { valid: false, message: "❌ ID PUBG Mobile hanya boleh berisi angka." };
+    }
+    
+    let firstDigit = cleanId[0];
+    if (!['5', '6', '7'].includes(firstDigit)) {
+        return { valid: false, message: "❌ ID PUBG Mobile harus diawali angka 5, 6, atau 7.\nAngka 0,1,2,3,4 untuk internal Tencent." };
+    }
+    
+    return { valid: true, cleanId: cleanId };
+}
+
+// ========== VALIDASI CALL OF DUTY MOBILE ==========
+function validateCODMID(id) {
+    let cleanId = id.trim();
+    
+    if (cleanId.length !== 19) {
+        return { valid: false, message: "❌ UID Call of Duty Mobile harus TEPAT 19 digit.\nSemua akun CODM memiliki panjang UID yang sama: 19 digit.\nContoh: 6742910384756291029" };
+    }
+    
+    if (!/^\d+$/.test(cleanId)) {
+        return { valid: false, message: "❌ UID Call of Duty Mobile hanya boleh berisi angka." };
+    }
+    
+    return { valid: true, cleanId: cleanId };
+}
+
+// ========== VALIDASI HONOR OF KINGS ==========
+function validateHOKID(id) {
+    let cleanId = id.trim();
+    
+    if (cleanId.length < 11 || cleanId.length > 12) {
+        return { valid: false, message: "❌ ID Honor of Kings harus 11-12 digit.\nID kurang dari 11 digit TIDAK MUNGKIN untuk server Global." };
+    }
+    
+    if (!/^\d+$/.test(cleanId)) {
+        return { valid: false, message: "❌ ID Honor of Kings hanya boleh berisi angka." };
+    }
+    
+    return { valid: true, cleanId: cleanId };
+}
+
+// ========== VALIDASI GENSHIN IMPACT ==========
+function validateGenshinID(id) {
+    let cleanId = id.trim();
+    
+    if (cleanId.length !== 9) {
+        return { valid: false, message: "❌ UID Genshin Impact harus TEPAT 9 digit.\nSemua akun Genshin Impact di dunia memiliki 9 digit UID." };
+    }
+    
+    if (!/^\d+$/.test(cleanId)) {
+        return { valid: false, message: "❌ UID Genshin Impact hanya boleh berisi angka." };
+    }
+    
+    let firstDigit = cleanId[0];
+    const serverMap = { '1':'China', '2':'China', '5':'Amerika', '6':'Eropa', '7':'Asia', '8':'TW/HK/MO' };
+    
+    if (!serverMap[firstDigit]) {
+        return { valid: false, message: `❌ Digit pertama "${firstDigit}" tidak dikenal.\nKode server valid: 1,2,5,6,7,8` };
+    }
+    
+    if (firstDigit !== '7') {
+        return { valid: false, message: `⚠️ UID Anda diawali ${firstDigit} (Server ${serverMap[firstDigit]}).\nJika main di Server Asia, UID harus diawali 7.` };
+    }
+    
+    return { valid: true, cleanId: cleanId };
+}
+
+// ========== VALIDASI ROBLOX ==========
+function validateRobloxID(id) {
+    let cleanId = id.trim();
+    
+    if (cleanId.length < 1 || cleanId.length > 10) {
+        return { valid: false, message: "❌ User ID Roblox harus 1-10 digit.\n\n- 1-4 digit: Akun 2006\n- 8-9 digit: Akun 2015-2018\n- 10 digit: Akun 2020-sekarang\n\nID 11 digit+ BELUM MUNGKIN ADA." };
+    }
+    
+    if (!/^\d+$/.test(cleanId)) {
+        return { valid: false, message: "❌ User ID Roblox hanya boleh berisi angka.\n\nIni ANGKA dari URL profil, BUKAN username." };
     }
     
     return { valid: true, cleanId: cleanId };

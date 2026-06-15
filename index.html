@@ -1425,121 +1425,18 @@ function openGameDetail(g) {
 }
 </script>    
 <script>
-    // ================= KONFIGURASI =================
-    const TELEGRAM_BOT_TOKEN = '8303767615:AAHIloX2OXO3imC3tVnjfN_W_n2joaNSnro';
-    const TELEGRAM_CHAT_ID = '5725724854';  // Chat ID Anda
-    const STORAGE_KEY = 'visitor_count';
-    // =================================================
-
-    async function sendTelegramMessage(message) {
-        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-        const payload = {
-            chat_id: TELEGRAM_CHAT_ID,
-            text: message,
-            parse_mode: 'HTML'
-        };
-        try {
-            await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            console.log('✅ Notifikasi Telegram terkirim');
-        } catch (error) {
-            console.error('❌ Gagal mengirim notifikasi:', error);
-        }
-    }
-
-    function recordVisitAndReport(sendNotif = true) {
-    let count = localStorage.getItem(STORAGE_KEY);
-    count = count ? parseInt(count) + 1 : 1;
-    localStorage.setItem(STORAGE_KEY, count);
-
-    if (sendNotif) {
-        const visitMessage = `
-<b>📊 KUNJUNGAN WEBSITE</b>
-<b>Waktu:</b> ${new Date().toLocaleString()}
-<b>Total bulan ini:</b> ${count}
-<b>Halaman:</b> ${document.title}
-<b>URL:</b> ${window.location.href}
-        `;
-        sendTelegramMessage(visitMessage);
-    }
-}
-
-    function resetMonthlyCounter() {
-        const today = new Date();
-        const lastReset = localStorage.getItem('lastReset');
-        if (!lastReset) {
-            localStorage.setItem('lastReset', today.toISOString());
-            return;
-        }
-        const lastResetDate = new Date(lastReset);
-        if (today.getMonth() !== lastResetDate.getMonth() || today.getFullYear() !== lastResetDate.getFullYear()) {
-            localStorage.setItem(STORAGE_KEY, '0');
-            localStorage.setItem('lastReset', today.toISOString());
-            console.log('🔄 Penghitung kunjungan direset untuk bulan baru.');
-        }
-    }
-
-    function sendMonthlyReport() {
-        const count = localStorage.getItem(STORAGE_KEY) || 0;
-        const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-        const date = new Date();
-        const monthName = monthNames[date.getMonth()];
-        const year = date.getFullYear();
-        const monthlyMessage = `
-<b>📈 LAPORAN BULANAN - ${monthName} ${year}</b>
-<b>Total Kunjungan:</b> ${count}
-        `;
-        sendTelegramMessage(monthlyMessage);
-    }
-
-    (function() {
-    resetMonthlyCounter();
-
-    // Deteksi apakah ini kunjungan baru di tab ini (bukan refresh)
-    const visitedBefore = sessionStorage.getItem('visited_this_tab');
-    if (!visitedBefore) {
-        // Ini kunjungan pertama di tab ini (klik link, buka baru, atau ketik URL)
-        sessionStorage.setItem('visited_this_tab', 'true');
-        recordVisitAndReport(true);  // Kirim notifikasi
-    } else {
-        // Ini refresh atau navigasi internal dalam tab yang sama
-        console.log('🔄 Refresh / navigasi internal, notifikasi tidak dikirim');
-        // Tetap update counter local storage (opsional: jika ingin tetap menghitung refresh)
-        let count = localStorage.getItem(STORAGE_KEY);
-        count = count ? parseInt(count) + 1 : 1;
-        localStorage.setItem(STORAGE_KEY, count);
-    }
-
-    // Laporan bulanan (tetap seperti semula)
-    const now = new Date();
-    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-    const timeUntilNextMonth = nextMonth - now;
-    setTimeout(() => {
-        sendMonthlyReport();
-        setInterval(sendMonthlyReport, 30 * 24 * 60 * 60 * 1000);
-    }, timeUntilNextMonth);
-})();
+let historyStack = [];
+function hideAll() { document.querySelectorAll("section").forEach(s => s.classList.add("hidden")); }
+function back() { const f = historyStack.pop(); if (f) { hideAll(); f(); } }
+function clearActive() { document.querySelectorAll(".menu-active").forEach(x => x.classList.remove("menu-active")); }
+function openInternet(b) { clearActive(); b.classList.add("menu-active"); historyStack.push(() => home.classList.remove("hidden")); hideAll(); internet.classList.remove("hidden"); operatorList.innerHTML = ""; Object.keys(operators).forEach(o => { operatorList.innerHTML += `<div class="card" onclick="openTypes('${o}')">${o}</div>`; }); }
+function openTypes(op) { historyStack.push(() => internet.classList.remove("hidden")); hideAll(); paketTypes.classList.remove("hidden"); paketTitle.innerText = op; paketTypeList.innerHTML = ""; Object.keys(operators[op]).forEach(t => { paketTypeList.innerHTML += `<div class="card" onclick="openPaket('${op}','${t}')">${t}</div>`; }); }
+function openPaket(op, cat) { historyStack.push(() => paketTypes.classList.remove("hidden")); hideAll(); operatorDetail.classList.remove("hidden"); operatorTitle.innerText = op + " - " + cat; paketList.innerHTML = ""; operators[op][cat].forEach(p => { paketList.innerHTML += `<div class="card"><div class="card-main"><div style="flex:1">${p.nama}</div><span class="price">${p.harga}</span><button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')">💬 Beli</button></div><div class="card-detail">${p.ket}</div></div>`; }); }
+function openGame(b) { clearActive(); b.classList.add("menu-active"); historyStack.push(() => home.classList.remove("hidden")); hideAll(); game.classList.remove("hidden"); gameList.innerHTML = ""; Object.keys(games).forEach(g => { gameList.innerHTML += `<div class="card" onclick="openGameDetail('${g}')">${g}</div>`; }); }
+function openGameDetail(g) { historyStack.push(() => game.classList.remove("hidden")); hideAll(); gameDetail.classList.remove("hidden"); gameTitle.innerText = g; topupList.innerHTML = ""; games[g].forEach(item => { const hargaMatch = item.match(/Rp\s?[\d\.]+/); let harga = hargaMatch ? hargaMatch[0] : ""; let namaItem = item.replace(harga, "").trim(); topupList.innerHTML += `<div class="card"><div class="card-main"><div style="flex:1">${namaItem}</div><span class="price">${harga}</span><button class="whatsapp-btn" onclick="sendToWhatsApp('${g} - ${namaItem}', '${harga}')">💬 Beli</button></div><div class="card-detail">Top Up Game</div></div>`; }); }
 </script>
-<!-- Modal Input untuk Nomor HP / ID Game -->
-<div id="inputModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
-  <div class="bg-gray-900 border border-green-500 rounded-xl p-6 w-80 relative transform scale-95 transition-all duration-300 shadow-2xl">
-    <h3 id="modalTitle" class="text-lg font-bold text-green-400 mb-4">Masukkan Data</h3>
-    <input type="text" id="modalInput" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300" placeholder="">
-    <!-- CHECKBOX SIMPAN -->
-    <div class="flex items-center gap-2 mt-3">
-      <input type="checkbox" id="modalSaveCheckbox" class="w-4 h-4 accent-green-500">
-      <label for="modalSaveCheckbox" class="text-xs text-gray-300">💾 Simpan data untuk kunjungan berikutnya</label>
-    </div>
-    <div class="flex justify-end gap-3 mt-4">
-      <button id="modalCancelBtn" class="px-4 py-1 border border-gray-500 text-gray-300 rounded-md hover:bg-gray-700">Batal</button>
-      <button id="modalConfirmBtn" class="px-4 py-1 bg-green-500 text-black rounded-md font-semibold hover:bg-green-400">Kirim</button>
-    </div>
-  </div>
-</div>
-<!-- MODAL SETTINGS -->
+
+<!-- MODAL SETTINGS, ADMIN LOGIN, ADMIN PANEL, MODAL POIN -->
 <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300 settings-modal">
   <div class="bg-gray-900/95 border border-green-500 rounded-xl w-80 max-w-[90%] overflow-hidden transform scale-95 transition-all duration-300 shadow-2xl settings-card">
     <div class="flex justify-between items-center p-4 border-b border-gray-700">
@@ -1547,52 +1444,14 @@ function openGameDetail(g) {
       <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
     <div class="p-4 space-y-2">
-      
-      <!-- Menu 1: Hubungi Admin -->
-      <div onclick="contactAdmin()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all">
-        <span class="text-xl">💬</span>
-        <div>
-          <div class="font-semibold text-white">Hubungi Admin</div>
-          <div class="text-xs text-gray-400">Chat via WhatsApp</div>
-        </div>
-        <span class="ml-auto text-gray-400 text-sm">→</span>
-      </div>
-      
-      <!-- Menu 2: Lokasi Toko -->
-      <div onclick="openLocation()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all">
-        <span class="text-xl">📍</span>
-        <div>
-          <div class="font-semibold text-white">Lokasi Toko</div>
-          <div class="text-xs text-gray-400">Buka Google Maps</div>
-        </div>
-        <span class="ml-auto text-gray-400 text-sm">→</span>
-      </div>
-      
-      <!-- Menu 3: Bagikan Website -->
-      <div onclick="shareWebsite()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all">
-        <span class="text-xl">📱</span>
-        <div>
-          <div class="font-semibold text-white">Bagikan Website</div>
-          <div class="text-xs text-gray-400">Kirim ke teman</div>
-        </div>
-        <span class="ml-auto text-gray-400 text-sm">→</span>
-      </div>
-      
-      <!-- Menu 4: Halaman Admin (tetap ada) -->
-      <div onclick="openAdminPanel()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all mt-4 border-t border-gray-700 pt-4">
-        <span class="text-xl">👑</span>
-        <div>
-          <div class="font-semibold text-white">Halaman Admin</div>
-          <div class="text-xs text-gray-400">🔒 Akses terbatas</div>
-        </div>
-        <span class="ml-auto text-gray-400 text-sm">→</span>
-      </div>
-      
+      <div onclick="contactAdmin()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all"><span class="text-xl">💬</span><div><div class="font-semibold text-white">Hubungi Admin</div><div class="text-xs text-gray-400">Chat via WhatsApp</div></div><span class="ml-auto text-gray-400 text-sm">→</span></div>
+      <div onclick="openLocation()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all"><span class="text-xl">📍</span><div><div class="font-semibold text-white">Lokasi Toko</div><div class="text-xs text-gray-400">Buka Google Maps</div></div><span class="ml-auto text-gray-400 text-sm">→</span></div>
+      <div onclick="shareWebsite()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all"><span class="text-xl">📱</span><div><div class="font-semibold text-white">Bagikan Website</div><div class="text-xs text-gray-400">Kirim ke teman</div></div><span class="ml-auto text-gray-400 text-sm">→</span></div>
+      <div onclick="openAdminPanel()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all mt-4 border-t border-gray-700 pt-4"><span class="text-xl">👑</span><div><div class="font-semibold text-white">Halaman Admin</div><div class="text-xs text-gray-400">🔒 Akses terbatas</div></div><span class="ml-auto text-gray-400 text-sm">→</span></div>
     </div>
   </div>
 </div>
 
-<!-- MODAL ADMIN PASSWORD (Login) -->
 <div id="adminLoginModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
   <div class="bg-gray-900 border border-green-500 rounded-xl w-80 max-w-[90%] overflow-hidden transform scale-95 transition-all duration-300 shadow-2xl">
     <div class="flex justify-between items-center p-4 border-b border-gray-700">
@@ -1607,52 +1466,33 @@ function openGameDetail(g) {
   </div>
 </div>
 
-<!-- MODAL HALAMAN ADMIN (KOSONG UNTUK SEKARANG) -->
 <div id="adminPanelModal" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
   <div class="bg-gray-900 border border-green-500 rounded-xl w-full max-w-2xl max-h-[85vh] overflow-auto transform scale-95 transition-all duration-300 shadow-2xl admin-card">
     <div class="sticky top-0 bg-gray-900 flex justify-between items-center p-4 border-b border-gray-700 z-10">
       <h3 class="text-lg font-bold text-green-400">👑 Admin Panel</h3>
       <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
-    <div class="p-6" id="adminPanelContent">
-  <div class="space-y-6">
-    <!-- Form Tambah Klaim -->
-    <div class="bg-gray-800/50 rounded-lg p-4">
-      <h4 class="text-green-400 font-bold mb-3">➕ Tambah Klaim untuk Pelanggan</h4>
-      <div class="grid gap-3">
-        <select id="adminIdType" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
-          <option value="phone">📱 Nomor HP</option>
-          <option value="game">🎮 ID Game</option>
-        </select>
-        <input type="text" id="adminCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
-        <button onclick="adminTambahKlaim()" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition">✅ Tambah Klaim (1 klaim = 100 poin)</button>
-      </div>
-    </div>
-    
-    <!-- Daftar Pelanggan -->
-    <div class="bg-gray-800/50 rounded-lg p-4">
-      <h4 class="text-green-400 font-bold mb-3">📋 Daftar Pelanggan</h4>
-      <div class="mb-3">
-        <input type="text" id="searchCustomer" placeholder="Cari ID..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
-      </div>
-      <div class="overflow-x-auto max-h-64 overflow-y-auto">
-        <table class="w-full text-sm">
-          <thead class="bg-gray-700 sticky top-0">
-            <tr>
-              <th class="p-2 text-left">ID</th>
-              <th class="p-2 text-center">Klaim</th>
-              <th class="p-2 text-center">Poin</th>
-            </tr>
-          </thead>
-          <tbody id="adminCustomerTable">
-            <tr><td colspan="3" class="text-center text-gray-400 p-4">Loading...</td></tr>
-          </tbody>
-        </table>
+    <div class="p-6">
+      <div class="space-y-6">
+        <div class="bg-gray-800/50 rounded-lg p-4">
+          <h4 class="text-green-400 font-bold mb-3">➕ Tambah Klaim untuk Pelanggan</h4>
+          <div class="grid gap-3">
+            <select id="adminIdType" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm"><option value="phone">📱 Nomor HP</option><option value="game">🎮 ID Game</option></select>
+            <input type="text" id="adminCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+            <button onclick="adminTambahKlaim()" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition">✅ Tambah Klaim (1 klaim = 100 poin)</button>
+          </div>
+        </div>
+        <div class="bg-gray-800/50 rounded-lg p-4">
+          <h4 class="text-green-400 font-bold mb-3">📋 Daftar Pelanggan</h4>
+          <div class="mb-3"><input type="text" id="searchCustomer" placeholder="Cari ID..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm"></div>
+          <div class="overflow-x-auto max-h-64 overflow-y-auto"><table class="w-full text-sm"><thead class="bg-gray-700 sticky top-0"><tr><th class="p-2 text-left">ID</th><th class="p-2 text-center">Klaim</th><th class="p-2 text-center">Poin</th></tr></thead><tbody id="adminCustomerTable"><tr><td colspan="3" class="text-center text-gray-400 p-4">Loading...</td></tr></tbody></table></div>
+        </div>
       </div>
     </div>
   </div>
 </div>
-<!-- MODAL KLAIM POIN PELANGGAN -->
+
+<!-- MODAL KLAIM POIN PELANGGAN (TERPISAH, LANGSUNG MUNCUL) -->
 <div id="poinModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
   <div class="bg-gray-900/95 border border-green-500 rounded-xl w-full max-w-md max-h-[85vh] overflow-auto transform scale-95 transition-all duration-300 shadow-2xl poin-card">
     <div class="sticky top-0 bg-gray-900 flex justify-between items-center p-4 border-b border-gray-700">
@@ -1660,90 +1500,41 @@ function openGameDetail(g) {
       <button onclick="closePoinModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
     <div class="p-5">
-      <!-- Pilih Tipe ID -->
       <div class="mb-4">
         <label class="text-sm text-gray-400 block mb-2">Tipe ID:</label>
         <div class="flex gap-4">
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="poinIdType" value="phone" checked onchange="togglePoinIdType()" class="accent-green-500"> 
-            <span>📱 Nomor HP</span>
-          </label>
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="poinIdType" value="game" onchange="togglePoinIdType()" class="accent-green-500"> 
-            <span>🎮 ID Game</span>
-          </label>
+          <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="poinIdType" value="phone" checked onchange="togglePoinIdType()" class="accent-green-500"><span>📱 Nomor HP</span></label>
+          <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="poinIdType" value="game" onchange="togglePoinIdType()" class="accent-green-500"><span>🎮 ID Game</span></label>
         </div>
       </div>
-      
-      <!-- Input ID -->
-      <div class="mb-4">
-        <input type="text" id="poinCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300">
-      </div>
-      
-      <!-- Tombol Cek -->
+      <div class="mb-4"><input type="text" id="poinCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300"></div>
       <button onclick="cekPoinPelanggan()" class="w-full bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition mb-4">🔍 Cek & Klaim</button>
-      
-      <!-- Hasil Cek Poin -->
       <div id="poinHasil" class="hidden">
         <div class="border-t border-gray-700 pt-4 mt-2">
-          <div class="text-center mb-3">
-            <div class="text-2xl font-bold text-green-400" id="poinDisplayId">-</div>
-            <div class="text-xs text-gray-400">Total Poin</div>
-          </div>
-          <div class="text-center mb-4">
-            <div class="text-sm text-gray-300">🎫 Klaim tersedia: <span id="poinKlaimTersedia" class="text-yellow-400 font-bold">0</span></div>
-          </div>
-          
-          <!-- Tombol Klaim Semua (jika ada klaim tersedia) -->
-          <div id="poinKlaimSection" class="hidden mb-4">
-            <button onclick="klaimSemuaPoin()" id="klaimBtn" class="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-2 rounded-lg transition">🎁 KLAIM SEMUA (0 klaim → 0 poin)</button>
-          </div>
-          
-          <!-- Progress Reward 1000 poin -->
+          <div class="text-center mb-3"><div class="text-2xl font-bold text-green-400" id="poinDisplayId">-</div><div class="text-xs text-gray-400">Total Poin</div></div>
+          <div class="text-center mb-4"><div class="text-sm text-gray-300">🎫 Klaim tersedia: <span id="poinKlaimTersedia" class="text-yellow-400 font-bold">0</span></div></div>
+          <div id="poinKlaimSection" class="hidden mb-4"><button onclick="klaimSemuaPoin()" id="klaimBtn" class="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-2 rounded-lg transition">🎁 KLAIM SEMUA</button></div>
           <div class="bg-gray-800 rounded-lg p-4 mt-4">
-            <div class="flex justify-between text-sm mb-2">
-              <span>🏆 Reward 1000 Poin</span>
-              <span id="poinProgressText">0 / 1000</span>
-            </div>
-            <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
-              <div id="poinProgressBar" class="poin-progress-bar h-3" style="width: 0%"></div>
-            </div>
+            <div class="flex justify-between text-sm mb-2"><span>🏆 Reward 1000 Poin</span><span id="poinProgressText">0 / 1000</span></div>
+            <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden"><div id="poinProgressBar" class="poin-progress-bar h-3" style="width:0%"></div></div>
             <button id="rewardBtn" onclick="klaimReward()" disabled class="w-full mt-3 poin-reward-btn text-green-400 text-sm py-2 rounded-lg transition">📨 Kirim Informasi ke Penjual (butuh 1000 poin)</button>
           </div>
         </div>
       </div>
-      
-      <div id="poinEmpty" class="text-center text-gray-400 py-8">
-        🔍 Masukkan ID Anda untuk melihat poin
-      </div>
+      <div id="poinEmpty" class="text-center text-gray-400 py-8">🔍 Masukkan ID Anda untuk melihat poin</div>
     </div>
   </div>
 </div>
-<script>
-// Perbaikan tombol poin
-document.addEventListener('DOMContentLoaded', function() {
-    var poinBtn = document.querySelector('button[onclick="openPoinModal()"]');
-    if (poinBtn) {
-        console.log('Tombol poin ditemukan');
-    } else {
-        console.log('Tombol poin TIDAK ditemukan');
-    }
-    
-    // Pastikan fungsi openPoinModal tersedia
-    if (typeof openPoinModal === 'undefined') {
-        window.openPoinModal = function() {
-            var modal = document.getElementById('poinModal');
-            if (modal) {
-                modal.classList.remove('opacity-0', 'pointer-events-none');
-                var box = modal.querySelector('div');
-                if (box) box.classList.remove('scale-95');
-            } else {
-                alert('Modal poin tidak ditemukan!');
-            }
-        };
-        console.log('Fungsi openPoinModal dibuat ulang');
-    }
-});
-</script>
-</body>    
+
+<!-- Modal Input untuk Nomor HP / ID Game -->
+<div id="inputModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
+  <div class="bg-gray-900 border border-green-500 rounded-xl p-6 w-80 relative transform scale-95 transition-all duration-300 shadow-2xl">
+    <h3 id="modalTitle" class="text-lg font-bold text-green-400 mb-4">Masukkan Data</h3>
+    <input type="text" id="modalInput" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300" placeholder="">
+    <div class="flex items-center gap-2 mt-3"><input type="checkbox" id="modalSaveCheckbox" class="w-4 h-4 accent-green-500"><label class="text-xs text-gray-300">💾 Simpan data untuk kunjungan berikutnya</label></div>
+    <div class="flex justify-end gap-3 mt-4"><button id="modalCancelBtn" class="px-4 py-1 border border-gray-500 text-gray-300 rounded-md hover:bg-gray-700">Batal</button><button id="modalConfirmBtn" class="px-4 py-1 bg-green-500 text-black rounded-md font-semibold hover:bg-green-400">Kirim</button></div>
+  </div>
+</div>
+
+</body>
 </html>

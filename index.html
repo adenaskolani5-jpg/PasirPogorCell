@@ -839,14 +839,26 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
     modalTitle.textContent = title;
     modalInput.placeholder = placeholder;
     
-    // Cek apakah ada data tersimpan
+    // Fungsi untuk mengecek apakah input valid
+    function isInputValid() {
+      const val = modalInput.value.trim();
+      if (validator) {
+        return validator(val);
+      }
+      return val !== '';
+    }
+    
+    // Cek apakah ada data tersimpan yang VALID
     let hasSavedData = false;
     if (storageKey) {
       const savedValue = localStorage.getItem(storageKey);
-      if (savedValue) {
+      if (savedValue && validator && validator(savedValue)) {
         modalInput.value = savedValue;
         hasSavedData = true;
-        // Jika ada data tersimpan, centang checkbox otomatis
+        modalCheckbox.checked = true;
+      } else if (savedValue && !validator) {
+        modalInput.value = savedValue;
+        hasSavedData = true;
         modalCheckbox.checked = true;
       } else {
         modalInput.value = '';
@@ -857,20 +869,22 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
       modalCheckbox.checked = false;
     }
     
-    // Fungsi untuk mengecek apakah input valid
-    function isInputValid() {
-      const val = modalInput.value.trim();
-      if (validator) {
-        return validator(val);
-      }
-      return val !== '';
-    }
-    
-    // Event listener untuk input: jika kosong atau tidak valid, checkbox otomatis tidak dicentang
-    modalInput.addEventListener('input', function() {
-      if (!isInputValid()) {
+    // Event listener untuk input: update status checkbox
+    function updateCheckboxState() {
+      if (isInputValid()) {
+        // Checkbox bisa dicentang/dicentang sesuai keinginan user
+        // TAPI jika input berubah menjadi valid, kita biarkan checkbox seperti sebelumnya
+        // Tidak otomatis mencentang
+      } else {
+        // Jika input tidak valid, checkbox otomatis tidak dicentang dan nonaktif
         modalCheckbox.checked = false;
       }
+    }
+    
+    modalInput.addEventListener('input', function() {
+      errorMsg.classList.add('hidden');
+      modalInput.classList.remove('border-red-500');
+      updateCheckboxState();
     });
     
     modal.classList.remove('opacity-0', 'pointer-events-none');
@@ -888,6 +902,7 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
     
     function onConfirm() {
       const value = modalInput.value.trim();
+      // Validasi input
       if (validator && !validator(value)) {
         errorMsg.textContent = validator.errorMessage || 'Input tidak valid!';
         errorMsg.classList.remove('hidden');
@@ -897,7 +912,7 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
       errorMsg.classList.add('hidden');
       modalInput.classList.remove('border-red-500');
       
-      // Simpan ke localStorage HANYA jika checkbox dicentang
+      // Simpan ke localStorage HANYA jika checkbox dicentang DAN input valid
       if (storageKey && modalCheckbox.checked && value) {
         localStorage.setItem(storageKey, value);
         // Tampilkan notifikasi singkat
@@ -927,6 +942,9 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
     confirmBtn.addEventListener('click', onConfirm);
     cancelBtn.addEventListener('click', onCancel);
     modalInput.addEventListener('keypress', onKeyPress);
+    
+    // Inisialisasi status checkbox
+    updateCheckboxState();
   });
 }
 

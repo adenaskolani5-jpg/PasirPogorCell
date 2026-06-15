@@ -114,19 +114,19 @@
 body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 .page{ animation:fadeIn 0.2s ease; }
 @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
-/* ===== LIGHT MODE - BIRU CERAH DENGAN AKSEN HIJAU TUA ===== */
+/* ===== LIGHT MODE - TEMA BIRU ===== */
 .light {
-  --bg: #e0f2fe;        /* biru cerah lembut */
+  --bg: #e0f2fe;
   --card: #ffffff;
   --text: #1e293b;
   --muted: #475569;
-  --accent: #166534;    /* hijau tua */
+  --accent: #0284c7;    /* biru cerah sebagai aksen utama */
   --blue: #0284c7;
   --yellow: #ca8a04;
 }
 
 .light body { 
-  background: linear-gradient(135deg, #bae6fd, #7dd3fc); /* biru cerah gradasi */
+  background: linear-gradient(135deg, #bfdbfe, #93c5fd); /* gradasi biru lembut */
   color: #1e293b;
 }
 
@@ -147,8 +147,8 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 
 /* Marquee */
 .light .marquee { 
-  background: #f0f9ff; 
-  border-color: #166534;
+  background: #eff6ff; 
+  border-color: #0284c7;
 }
 
 .light .marquee span { 
@@ -161,18 +161,18 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 .light .card { 
   background: #ffffff; 
   color: #1e293b; 
-  border: 1px solid rgba(22, 101, 52, 0.3); 
+  border: 1px solid rgba(2, 132, 199, 0.3); 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .light .card .price { 
-  color: #166534; 
+  color: #0284c7; 
   text-shadow: none;
   font-weight: 700;
 }
 
 .light .card::before { 
-  background: linear-gradient(120deg, #166534, #0284c7, #166534);
+  background: linear-gradient(120deg, #0284c7, #3b82f6, #0284c7);
   opacity: 0.4;
 }
 
@@ -180,7 +180,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 .light #searchHarga { 
   background: #ffffff; 
   color: #1e293b; 
-  border-color: #166534;
+  border-color: #0284c7;
 }
 
 .light #searchHarga::placeholder { 
@@ -188,14 +188,14 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 }
 
 .light #searchHarga:focus { 
-  border-color: #0284c7; 
-  box-shadow: 0 0 8px rgba(2, 132, 199, 0.5);
+  border-color: #3b82f6; 
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
 }
 
 /* Hasil pencarian */
 .light .harga-item { 
   background: #ffffff; 
-  border-left-color: #166534;
+  border-left-color: #0284c7;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
@@ -204,13 +204,13 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 }
 
 .light .harga-harga { 
-  background: rgba(22, 101, 52, 0.1);
-  color: #166534;
+  background: rgba(2, 132, 199, 0.1);
+  color: #0284c7;
 }
 
 .light .harga-ket { 
   color: #475569; 
-  border-top-color: rgba(22, 101, 52, 0.2);
+  border-top-color: rgba(2, 132, 199, 0.2);
 }
 
 /* Tombol WhatsApp */
@@ -226,11 +226,11 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 /* Glow Card */
 .light .glow-card { 
   background: #ffffff; 
-  border-color: #166534;
+  border-color: #0284c7;
 }
 
 .light .glow-card h3 { 
-  color: #166534; 
+  color: #0284c7; 
 }
 
 .light .glow-card p { 
@@ -238,12 +238,12 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 }
 
 .light .glow-card a { 
-  color: #0284c7; 
+  color: #3b82f6; 
 }
 
 /* Footer */
 .light footer { 
-  background: #bae6fd; 
+  background: #bfdbfe; 
   color: #1e293b;
 }
 
@@ -255,11 +255,11 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 /* Modal Settings & Admin */
 .light .settings-card { 
   background: #ffffff; 
-  border-color: #166534;
+  border-color: #0284c7;
 }
 
 .light .settings-card h3 { 
-  color: #166534 !important; 
+  color: #0284c7 !important; 
 }
 
 .light .settings-menu-item .text-white { 
@@ -271,25 +271,25 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 }
 
 .light .settings-menu-item:hover { 
-  background: rgba(22, 101, 52, 0.08); 
+  background: rgba(2, 132, 199, 0.08); 
 }
 
 .light .admin-card { 
   background: #ffffff; 
-  border-left-color: #166534;
+  border-left-color: #0284c7;
 }
 
 /* Password Input */
 .light .password-input { 
   background: #f8fafc; 
-  border-color: #166534;
+  border-color: #0284c7;
   color: #1e293b;
 }
 
 .light .password-input:focus { 
   background: #ffffff; 
-  border-color: #0284c7;
-  box-shadow: 0 0 8px rgba(2, 132, 199, 0.4);
+  border-color: #3b82f6;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
 }
 
 /* Kalkulator */
@@ -304,44 +304,44 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 }
 
 .light .calc-btn-op { 
-  background: #dcfce7; 
-  color: #166534; 
-  border-color: #166534;
+  background: #dbeafe; 
+  color: #0284c7; 
+  border-color: #0284c7;
 }
 
 .light .calc-btn-equal { 
-  background: #166534; 
+  background: #0284c7; 
   color: white;
 }
 
 .light .calc-display { 
   background: #f8fafc; 
-  border-color: #166534;
+  border-color: #0284c7;
 }
 
 .light .calc-display input { 
-  color: #166534; 
+  color: #0284c7; 
 }
 
 /* Voucher Mode */
 .light .voucher-compact .input-mini { 
   background: #f8fafc; 
   color: #1e293b; 
-  border-color: #166534;
+  border-color: #0284c7;
 }
 
 .light .voucher-compact .input-mini:focus { 
   background: #ffffff; 
-  border-color: #0284c7;
+  border-color: #3b82f6;
 }
 
 .light .voucher-compact .stat-card { 
   background: #f8fafc; 
-  border-color: #166534;
+  border-color: #0284c7;
 }
 
 .light .voucher-compact .stat-value { 
-  color: #166534; 
+  color: #0284c7; 
 }
 
 .light .voucher-compact .glass-panel { 
@@ -351,7 +351,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 
 .light .voucher-compact .btn-reset-voucher { 
   background: #f1f5f9; 
-  border-color: #166534;
+  border-color: #0284c7;
   color: #1e293b;
 }
 
@@ -388,28 +388,28 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 
 .light .border-green-400, 
 .light .border-green-500 { 
-  border-color: #166534 !important; 
+  border-color: #0284c7 !important; 
 }
 
 .light .text-green-400, 
 .light .text-green-500 { 
-  color: #166534 !important; 
+  color: #0284c7 !important; 
 }
 
 .light .bg-green-600 { 
-  background: #166534 !important; 
+  background: #0284c7 !important; 
 }
 
 .light .bg-green-600:hover { 
-  background: #14532d !important; 
+  background: #0369a1 !important; 
 }
 
 .light .bg-green-500 { 
-  background: #166534 !important; 
+  background: #0284c7 !important; 
 }
 
 .light .bg-green-500:hover { 
-  background: #14532d !important; 
+  background: #0369a1 !important; 
 }
 
 .light hr.border-gray-600 { 
@@ -427,46 +427,46 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 
 .light .text-blue-400,
 .light .text-blue-500 { 
-  color: #0284c7 !important; 
+  color: #3b82f6 !important; 
 }
 
 /* Tombol back dan lainnya */
 .light .back-btn { 
-  background: #166534; 
+  background: #0284c7; 
   color: white;
 }
 
 .light .back-btn:hover { 
-  background: #14532d; 
+  background: #0369a1; 
 }
 
 .light .futuristic-btn { 
-  border-color: #166534;
-  color: #166534;
+  border-color: #0284c7;
+  color: #0284c7;
 }
 
 .light .futuristic-btn:hover { 
-  background: #166534;
+  background: #0284c7;
   color: white;
 }
 
 /* Floating back button */
 .light .floating-back { 
-  background: #166534; 
+  background: #0284c7; 
   color: white;
 }
 
 .light .floating-back:hover { 
-  background: #14532d; 
+  background: #0369a1; 
 }
 
-/* Toggle dark mode button di light mode */
-.light #darkModeToggle.bg-gray-600 {
+/* Toggle mode button di light mode */
+.light #darkModeToggle {
   background: #cbd5e1 !important;
 }
 
 .light #darkModeToggle.bg-green-500 {
-  background: #166534 !important;
+  background: #0284c7 !important;
 }
 .card{
   position:relative; background:var(--card); color:var(--text); padding:1.3rem; border-radius:1rem; font-weight:600;

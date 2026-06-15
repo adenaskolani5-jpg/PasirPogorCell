@@ -2087,6 +2087,49 @@ if (typeof closePoinModal === 'undefined') {
         }
     };
 }
+// ========== PERBAIKAN MODAL POIN ==========
+// Pastikan fungsi openPoinModal berfungsi
+console.log('Memperbaiki fungsi poin...');
+
+// Definisikan ulang fungsi openPoinModal
+window.openPoinModal = function() {
+    console.log('openPoinModal dipanggil');
+    const modal = document.getElementById('poinModal');
+    console.log('Modal poin ditemukan:', modal);
+    if (modal) {
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        const box = modal.querySelector('div');
+        if (box) box.classList.remove('scale-95');
+        console.log('Modal poin dibuka');
+    } else {
+        console.error('Modal poin TIDAK ditemukan!');
+        alert('Fitur poin sedang dalam perbaikan. Silakan coba lagi nanti.');
+    }
+};
+
+window.closePoinModal = function() {
+    const modal = document.getElementById('poinModal');
+    if (modal) {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        const box = modal.querySelector('div');
+        if (box) box.classList.add('scale-95');
+    }
+};
+
+// Reset form saat modal dibuka
+const originalOpenPoinModal = window.openPoinModal;
+window.openPoinModal = function() {
+    originalOpenPoinModal();
+    // Reset form
+    const input = document.getElementById('poinCustomerId');
+    if (input) input.value = '';
+    const hasil = document.getElementById('poinHasil');
+    if (hasil) hasil.classList.add('hidden');
+    const empty = document.getElementById('poinEmpty');
+    if (empty) empty.classList.remove('hidden');
+};
+
+console.log('Fungsi poin siap, openPoinModal tersedia:', typeof openPoinModal);
 </script>    
 
 <section id="home" class="page p-6 max-w-4xl mx-auto mt-10">

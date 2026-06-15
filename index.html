@@ -1959,73 +1959,7 @@ async function klaimReward() {
     alert(result.message);
   }
 }
-// ========== FUNGSI ADMIN UNTUK POIN ==========
-function adminTambahKlaim() {
-  const idType = document.getElementById('adminIdType').value;
-  let customerId = document.getElementById('adminCustomerId').value.trim();
-  
-  if (!customerId) {
-    alert('Masukkan ID pelanggan!');
-    return;
-  }
-  
-  // Validasi sederhana
-  if (idType === 'phone') {
-    if (!/^\d{10,13}$/.test(customerId.replace(/\s/g, ''))) {
-      alert('Nomor HP harus 10-13 digit angka!');
-      return;
-    }
-  }
-  
-  const result = tambahKlaim(customerId, idType);
-  alert(`✅ Berhasil menambah klaim untuk ${customerId}\nKlaim tersedia sekarang: ${result.klaimTersedia}\nTotal poin: ${result.poin}`);
-  
-  document.getElementById('adminCustomerId').value = '';
-  adminRefreshTable();
-}
 
-function adminRefreshTable() {
-  const data = loadPoinData();
-  const customers = data.customers;
-  const searchTerm = document.getElementById('searchCustomer')?.value.toLowerCase() || '';
-  
-  const tableBody = document.getElementById('adminCustomerTable');
-  if (!tableBody) return;
-  
-  const entries = Object.entries(customers);
-  if (entries.length === 0) {
-    tableBody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-400 p-4">Belum ada data pelanggan</td></tr>';
-    return;
-  }
-  
-  let filtered = entries;
-  if (searchTerm) {
-    filtered = entries.filter(([id]) => id.includes(searchTerm));
-  }
-  
-  tableBody.innerHTML = filtered.map(([id, data]) => `
-    <tr class="border-b border-gray-700 hover:bg-gray-800">
-      <td class="p-2 text-xs break-all">${id}</td>
-      <td class="p-2 text-center text-yellow-400">${data.klaimTersedia}</td>
-      <td class="p-2 text-center text-green-400">${data.poin}</td>
-    </tr>
-  `).join('');
-}
-
-// Event listener untuk search customer
-document.addEventListener('DOMContentLoaded', function() {
-  const searchInput = document.getElementById('searchCustomer');
-  if (searchInput) {
-    searchInput.addEventListener('input', () => adminRefreshTable());
-  }
-});
-
-// Override openAdminPanelModal untuk refresh tabel
-const originalOpenAdminPanelModal = openAdminPanelModal;
-openAdminPanelModal = function() {
-  originalOpenAdminPanelModal();
-  setTimeout(() => adminRefreshTable(), 100);
-};
 // ========== FUNGSI ADMIN UNTUK POIN ==========
 function adminTambahKlaim() {
   const idType = document.getElementById('adminIdType').value;

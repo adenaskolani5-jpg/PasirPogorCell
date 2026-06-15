@@ -2058,6 +2058,34 @@ function shareWebsite() {
     }
     closeSettingsModal();
 }
+// Debug: pastikan fungsi poin tersedia
+console.log('Poin function ready:', typeof openPoinModal);
+console.log('Poin modal element:', document.getElementById('poinModal'));
+
+// Jika fungsi tidak ada, buat ulang
+if (typeof openPoinModal === 'undefined') {
+    window.openPoinModal = function() {
+        const modal = document.getElementById('poinModal');
+        if (modal) {
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            const box = modal.querySelector('div');
+            if (box) box.classList.remove('scale-95');
+        } else {
+            alert('Modal Poin tidak ditemukan!');
+        }
+    };
+}
+
+if (typeof closePoinModal === 'undefined') {
+    window.closePoinModal = function() {
+        const modal = document.getElementById('poinModal');
+        if (modal) {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            const box = modal.querySelector('div');
+            if (box) box.classList.add('scale-95');
+        }
+    };
+}
 </script>    
 
 <section id="home" class="page p-6 max-w-4xl mx-auto mt-10">

@@ -936,35 +936,85 @@ async function sendToWhatsApp(nama, harga) {
   
   let userInput = null;
   const isMobileLegends = /Mobile Legends/i.test(nama);
+  const isFreeFire = /Free Fire/i.test(nama);
+  const isPUBG = /PUBG Mobile/i.test(nama);
+  const isCOD = /Call Of Duty/i.test(nama);
+  const isHOK = /Honor Of Kings/i.test(nama);
+  const isGenshin = /Genshin Impact/i.test(nama);
+  const isRoblox = /Roblox/i.test(nama);
   
   if (isGame) {
+    // Tentukan storage key berdasarkan game
+    let gameStorageKey = 'game_id';
+    let gameTitle = "ID Game Anda";
+    let gamePlaceholder = "Contoh: Gamer123 (5-30 karakter, huruf/angka)";
+    let gameValidator = (val) => /^[A-Za-z0-9]{5,30}$/.test(val);
+    let gameInfoText = `<span class="text-yellow-300">📌 Informasi:</span><br>
+     • Masukkan ID Game Anda dengan benar.<br>
+     • Pastikan tidak ada kesalahan pengetikan, karena ID yang salah tidak dapat diproses.<br>
+     <span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input dari pelanggan.</span>`;
+    
     if (isMobileLegends) {
-      userInput = await showInputModal(
-        "Masukkan ID Game Mobile Legends",
-        "Contoh: 12345678(1011)",
-        (val) => /^\d{5,15}(?:\(\d{4}\)|\d{4})?$/.test(val),
-        `<span class="text-yellow-300">📌 Informasi ID Game:</span><br>
-         • Masukkan ID Mobile Legends Anda dengan format lengkap.<br>
-         • Contoh ID: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
-         • Pastikan ID yang Anda masukkan sudah benar, karena kami tidak bertanggung jawab atas kesalahan pengetikan.<br>
-         <span class="text-green-300">💡 Tips: Cek ID di profil game Anda.</span>`,
-        'ml_id'
-      );
-    } else {
-      userInput = await showInputModal(
-        "Masukkan ID Game Anda",
-        "Contoh: Gamer123 (5-30 karakter, huruf/angka)",
-        (val) => /^[A-Za-z0-9]{5,30}$/.test(val),
-        `<span class="text-yellow-300">📌 Informasi:</span><br>
-         • Masukkan ID Game Anda dengan benar.<br>
-         • Pastikan tidak ada kesalahan pengetikan, karena ID yang salah tidak dapat diproses.<br>
-         <span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input dari pelanggan.</span>`,
-        'game_id'
-      );
+      gameStorageKey = 'ml_id';
+      gameTitle = "Masukkan ID Game Mobile Legends";
+      gamePlaceholder = "Contoh: 12345678(1011)";
+      gameValidator = (val) => /^\d{5,15}(?:\(\d{4}\)|\d{4})?$/.test(val);
+      gameInfoText = `<span class="text-yellow-300">📌 Informasi ID Game:</span><br>
+       • Masukkan ID Mobile Legends Anda dengan format lengkap.<br>
+       • Contoh ID: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
+       • Pastikan ID yang Anda masukkan sudah benar, karena kami tidak bertanggung jawab atas kesalahan pengetikan.<br>
+       <span class="text-green-300">💡 Tips: Cek ID di profil game Anda.</span>`;
+    } else if (isFreeFire) {
+      gameStorageKey = 'ff_id';
+      gameTitle = "Masukkan ID Free Fire";
+      gamePlaceholder = "Contoh: 123456789 (9-15 digit angka)";
+      gameValidator = (val) => /^\d{9,15}$/.test(val);
+    } else if (isPUBG) {
+      gameStorageKey = 'pubg_id';
+      gameTitle = "Masukkan ID PUBG Mobile";
+      gamePlaceholder = "Contoh: 1234567890 (10-15 digit angka)";
+      gameValidator = (val) => /^\d{10,15}$/.test(val);
+    } else if (isCOD) {
+      gameStorageKey = 'cod_id';
+      gameTitle = "Masukkan ID Call Of Duty Mobile";
+      gamePlaceholder = "Contoh: 123456789 (9-15 digit)";
+      gameValidator = (val) => /^\d{9,15}$/.test(val);
+    } else if (isHOK) {
+      gameStorageKey = 'hok_id';
+      gameTitle = "Masukkan ID Honor Of Kings";
+      gamePlaceholder = "Contoh: 123456789 (9-15 digit)";
+      gameValidator = (val) => /^\d{9,15}$/.test(val);
+    } else if (isGenshin) {
+      gameStorageKey = 'genshin_id';
+      gameTitle = "Masukkan UID Genshin Impact";
+      gamePlaceholder = "Contoh: 123456789 (9 digit angka)";
+      gameValidator = (val) => /^\d{9}$/.test(val);
+    } else if (isRoblox) {
+      gameStorageKey = 'roblox_id';
+      gameTitle = "Masukkan Username Roblox";
+      gamePlaceholder = "Contoh: Gamer123 (3-20 karakter)";
+      gameValidator = (val) => /^[A-Za-z0-9_]{3,20}$/.test(val);
     }
+    
+    userInput = await showInputModal(
+      gameTitle,
+      gamePlaceholder,
+      gameValidator,
+      gameInfoText,
+      gameStorageKey
+    );
     if (userInput === null) return;
   } else {
+    // Deteksi operator dari nama paket
     const operator = detectOperatorFromNama(nama);
+    let operatorKey = 'customer_phone';
+    let operatorDisplay = '';
+    
+    if (operator) {
+      operatorKey = `customer_phone_${operator}`;
+      operatorDisplay = operator.toUpperCase();
+    }
+    
     let validatorMessage = "Contoh: 081234567890 (10-13 digit angka)";
     let infoHtml = `<span class="text-yellow-300">📌 Informasi Penting:</span><br>
      • Masukkan nomor HP aktif dengan benar.<br>
@@ -976,10 +1026,10 @@ async function sendToWhatsApp(nama, harga) {
       const prefixList = operatorPrefixes[operator].join(', ');
       validatorMessage = `Nomor harus diawali dengan prefix ${prefixList} (10-13 digit)`;
       infoHtml = `<span class="text-yellow-300">📌 Informasi Penting:</span><br>
-       • Masukkan nomor HP Anda dengan benar.<br>
-       • Nomor harus diawali dengan prefix: <strong>${prefixList}</strong> (sesuai operator ${operator.toUpperCase()}).<br>
+       • Masukkan nomor HP Anda dengan benar (operator ${operatorDisplay}).<br>
+       • Nomor harus diawali dengan prefix: <strong>${prefixList}</strong>.<br>
        • Contoh: <strong>${operatorPrefixes[operator][0]}xxxxxxx</strong><br>
-       • Kami tidak bertanggung jawab atas kesalahan pengetikan atau nomor yang salah.<br>
+       • Data akan disimpan khusus untuk operator ${operatorDisplay}.<br>
        <span class="text-green-300">💡 Periksa kembali nomor HP Anda sebelum melanjutkan.</span>`;
     }
     
@@ -992,7 +1042,7 @@ async function sendToWhatsApp(nama, harga) {
         return true;
       },
       infoHtml,
-      'customer_phone'
+      operatorKey
     );
     if (userInput === null) return;
   }

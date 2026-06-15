@@ -1,3 +1,5 @@
+Lah itu script nya sama dengan yang sekarang terpasang
+
 <!DOCTYPE html>        
 <html lang="id">          
 <head>          
@@ -139,12 +141,13 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   will-change: transform;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
-  animation: scroll 22s linear infinite;
+  animation: scroll 22s linear infinite; /* lebih cepat dan halus */
 }
 .marquee span { flex-shrink:0; padding:12px 40px; white-space:nowrap; font-weight:600; color:#ffffff; text-shadow:0 0 10px rgba(34,197,94,.8); font-size:.95rem; }
 @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .tab-btn{ transition:.25s; }
 .tab-btn.active{ background:#22c55e; color:black; box-shadow:0 0 15px rgba(34,197,94,.8); }
+/* ===== STYLE POPULER ===== */
 .popular-item {
   background: rgba(20,20,30,0.7); backdrop-filter: blur(4px); border:1px solid rgba(34,197,94,0.3); border-radius:1rem;
   padding:0.75rem 1rem; margin-bottom:0.75rem; display:flex; align-items:center; gap:0.75rem; transition:all 0.25s ease;
@@ -153,6 +156,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 .popular-item:hover { transform:translateX(5px); border-color:#22c55e; box-shadow:0 0 12px rgba(34,197,94,0.4); background:rgba(34,197,94,0.1); }
 .popular-icon { font-size:1.25rem; width:2rem; text-align:center; }
 .popular-text { flex:1; font-size:0.9rem; line-height:1.3; }
+/* ===== STYLE HASIL PENCARIAN ===== */
 .harga-item {
   background: rgba(10,10,15,0.75); backdrop-filter:blur(2px); border-left:4px solid #22c55e; border-radius:0.75rem;
   margin-bottom:0.85rem; padding:0.85rem 1rem; transition:all 0.25s ease; box-shadow:0 2px 8px rgba(0,0,0,0.3), -2px 0 8px rgba(34,197,94,0.2);
@@ -167,15 +171,18 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 #hasilHarga::-webkit-scrollbar { width:5px; }
 #hasilHarga::-webkit-scrollbar-track { background:#1f1f1f; border-radius:10px; }
 #hasilHarga::-webkit-scrollbar-thumb { background:#22c55e; border-radius:10px; }
+/* ===== STYLE MODAL CEK HARGA ===== */
 #hargaModal > div { border:1px solid rgba(34,197,94,0.5); box-shadow:0 0 20px rgba(34,197,94,0.3); backdrop-filter:blur(10px); background:rgba(17,24,39,0.9); border-left:4px solid #22c55e; animation:glowPulse 2s infinite; }
 @keyframes glowPulse { 0% { border-left-color:#22c55e; box-shadow:-2px 0 8px rgba(34,197,94,0.2); } 50% { border-left-color:#4ade80; box-shadow:-4px 0 20px rgba(34,197,94,0.6); } 100% { border-left-color:#22c55e; box-shadow:-2px 0 8px rgba(34,197,94,0.2); } }
 #hargaModal h2 { text-shadow:0 0 5px #22c55e; letter-spacing:1px; }
 #searchHarga { border:1px solid #22c55e; background:rgba(0,0,0,0.6); transition:all 0.3s ease; color:white; }
 #searchHarga:focus { outline:none; border-color:#4ade80; box-shadow:0 0 12px #22c55e; background:rgba(0,0,0,0.8); }
+/* ===== STYLE MODAL POPULER ===== */
 #popularModal > div { border-left:4px solid #22c55e; border-radius:1rem; background:rgba(17,24,39,0.9); backdrop-filter:blur(10px); box-shadow:0 0 20px rgba(34,197,94,0.3); animation:glowPulsePopuler 3s infinite; }
 @keyframes glowPulsePopuler { 0% { border-left-color:#22c55e; box-shadow:-2px 0 10px rgba(34,197,94,0.2); } 50% { border-left-color:#4ade80; box-shadow:-4px 0 25px rgba(34,197,94,0.6); } 100% { border-left-color:#22c55e; box-shadow:-2px 0 10px rgba(34,197,94,0.2); } }
 #popularModal h2 { text-shadow:0 0 5px #22c55e; }
 .tab-btn:hover { transform:translateY(-2px); box-shadow:0 0 12px rgba(34,197,94,0.5); border-color:#22c55e !important; }
+/* ===== VOUCHER COMPACT MODE ===== */
 .voucher-compact .input-mini { width:70px; padding:0.3rem; font-size:0.75rem; background:#081f12; border:1px solid #22c55e; border-radius:1rem; color:white; text-align:center; }
 .light .voucher-compact .input-mini { background:white; color:#1a4d3e; }
 .voucher-compact .stats-grid { display:flex; gap:0.5rem; margin:0.5rem 0; }
@@ -186,6 +193,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 .voucher-compact .btn-reset-voucher { background:rgba(0,0,0,0.6); border:1px solid #22c55e; border-radius:2rem; padding:0.2rem 1rem; font-size:0.7rem; cursor:pointer; margin:0 auto; display:block; }
 .whatsapp-btn { background:#25D366; color:white; border:none; border-radius:2rem; padding:0.3rem 0.8rem; font-size:0.7rem; font-weight:bold; display:inline-flex; align-items:center; gap:0.3rem; cursor:pointer; margin-left:0.5rem; transition:all 0.2s; }
 .whatsapp-btn:hover { background:#128C7E; transform:scale(1.05); box-shadow:0 0 10px #25D366; }
+/* Stabilkan ukuran modal kalkulator */
 .calc-mode {
   min-height: 420px;
   transition: all 0.2s ease;
@@ -194,6 +202,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   max-height: 420px;
   overflow-y: auto;
 }
+/* Perbaiki tampilan voucher agar rapi */
 .voucher-compact .input-mini {
   width: 75px;
 }
@@ -205,6 +214,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
     width: 65px !important;
   }
 }
+/* ===== VOUCHER COMPACT MODE - TAMPILAN KEREN ===== */
 .voucher-compact {
   position: relative;
 }
@@ -284,6 +294,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 .voucher-compact tr:hover td {
   background: rgba(34, 197, 94, 0.1);
 }
+/* ===== PERBAIKAN UKURAN VOUCHER MODE (AGAR TIDAK TERLALU BESAR) ===== */
 .voucher-compact .stat-card {
   padding: 0.3rem 0.2rem;
 }
@@ -317,12 +328,15 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   font-size: 0.55rem;
   padding: 0.3rem;
 }
+/* Sesuaikan tinggi minimal modal */
 .calc-mode {
   min-height: 360px;
 }
+/* Tambahan agar tabel tidak terlalu tinggi */
 .table-wrapper {
   max-height: 160px;
 }
+  /* ===== PERBAIKAN UKURAN VOUCHER MODE (AGAR TIDAK TERLALU BESAR) ===== */
 .voucher-compact .stat-card {
   padding: 0.3rem 0.2rem;
 }
@@ -356,24 +370,28 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   font-size: 0.55rem;
   padding: 0.3rem;
 }
+/* Sesuaikan tinggi minimal modal */
 .calc-mode {
   min-height: 360px;
 }
+/* Tambahan agar tabel tidak terlalu tinggi */
 .table-wrapper {
   max-height: 160px;
 }
+/* Ubah tombol utama (Paket Internet & Top Up Game) menjadi border kiri bercahaya */
 #home .card {
-  border-left: 4px solid #22c55e;
+  border-left: 4px solid #22c55e;          /* garis hijau di kiri */
   transition: all 0.3s ease;
 }
 #home .card::before {
-  display: none;
+  display: none;                           /* hilangkan efek glow melingkar */
 }
 #home .card:hover {
-  transform: scale(1.02);
-  border-left-color: #4ade80;
+  transform: scale(1.02);                  /* sedikit membesar saat hover (opsional) */
+  border-left-color: #4ade80;              /* garis kiri lebih terang saat hover */
   box-shadow: 0 0 20px rgba(34,197,94,0.6), -4px 0 20px rgba(34,197,94,0.5);
 }
+/* Tambahkan border hijau bercahaya pada seluruh card di menu Paket Internet & Top Up Game */
 #internet .card,
 #paketTypes .card,
 #operatorDetail .card,
@@ -383,6 +401,8 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
   transition: all 0.2s ease;
 }
+
+/* Efek hover: garis lebih terang dan cahaya bertambah */
 #internet .card:hover,
 #paketTypes .card:hover,
 #operatorDetail .card:hover,
@@ -391,6 +411,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   border-color: #4ade80;
   box-shadow: 0 0 18px rgba(34, 197, 94, 0.7);
 }
+/* Border di seluruh sisi untuk card di menu paket & game */
 #internet .card,
 #paketTypes .card,
 #operatorDetail .card,
@@ -410,6 +431,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   border-color: #4ade80 !important;
   box-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
 }
+/* Gaya untuk konten card */
 .card-main {
   display: flex;
   justify-content: space-between;
@@ -423,6 +445,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   border-top: 1px dashed rgba(34,197,94,0.3);
   padding-top: 0.5rem;
 }
+/* Tombol floating kembali */
 .floating-back {
     position: fixed;
     bottom: 20px;
@@ -437,7 +460,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
     cursor: pointer;
     box-shadow: 0 0 15px rgba(34,197,94,0.8);
     transition: all 0.3s ease;
-    display: none;
+    display: none; /* awal tersembunyi */
     align-items: center;
     gap: 8px;
     font-size: 0.9rem;
@@ -448,19 +471,22 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
     background: #4ade80;
     box-shadow: 0 0 25px rgba(34,197,94,1);
 }
+/* Tombol Kalkulator dan Rekomend (di dalam section home) menjadi hitam dengan garis hijau */
 #home .futuristic-btn.border-green-400 {
   background-color: #000000 !important;
   border: 1px solid #22c55e !important;
   color: #22c55e !important;
 }
+
 #home .futuristic-btn.border-green-400:hover {
   background-color: #22c55e !important;
   color: #000000 !important;
   transform: translateY(-2px);
   box-shadow: 0 0 12px rgba(34, 197, 94, 0.8);
 }
+/* Tombol Kalkulator dan Rekomend dibuat mirip dengan card, tanpa mengubah ukuran */
 #home .futuristic-btn.border-green-400 {
-  background: var(--card);
+  background: var(--card);  /* sama seperti background card */
   border: 1px solid rgba(34,197,94,.35);
   box-shadow: 0 0 12px rgba(34,197,94,.25), 0 0 40px rgba(34,197,94,.15);
   color: var(--text);
@@ -483,6 +509,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(34,197,94,.8), 0 0 60px rgba(59,130,246,.7);
 }
+/* Tombol Kalkulator dan Rekomend di dalam home: tampilan seperti card tapi ukuran tetap kecil */
 #home .btn-card-style {
   background: var(--card);
   border: 1px solid rgba(34,197,94,.35);
@@ -507,6 +534,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(34,197,94,.8), 0 0 60px rgba(59,130,246,.7);
 }
+/* Animasi border glow untuk card info */
 .glow-card {
   background: #0a0a0a;
   border: 1px solid #22c55e;
@@ -538,10 +566,11 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   margin-bottom: 0.5rem;
 }
 .glow-card p {
-  color: #d1d5db;
+  color: #d1d5db; /* abu-abu terang, lebih lembut dari putih murni */
   font-size: 0.85rem;
   line-height: 1.4;
 }
+/* ===== SETTINGS MODAL & ADMIN PANEL ===== */
 .settings-modal {
   background: rgba(0,0,0,0.85);
   backdrop-filter: blur(12px);
@@ -555,6 +584,8 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   background: rgba(10,10,20,0.95);
   border-left: 4px solid #22c55e;
 }
+
+/* Password input styling */
 .password-input {
   background: #1a1a1a;
   border: 1px solid #22c55e;
@@ -566,6 +597,8 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   box-shadow: 0 0 12px #22c55e;
   background: #0a1f12;
 }
+
+/* Settings menu item */
 .settings-menu-item {
   transition: all 0.2s ease;
   cursor: pointer;
@@ -575,6 +608,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   transform: translateX(5px);
   border-left-color: #22c55e !important;
 }
+/* ===== MODAL POIN ===== */
 .poin-card {
   background: linear-gradient(145deg, #111111, #0a0a0a);
   border: 1px solid rgba(34,197,94,0.5);
@@ -609,16 +643,20 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   </div>
 </div>
 <header class="p-6 border-b border-gray-700 relative">          
+  <!-- Tombol Settings di pojok kiri -->
   <div class="absolute left-4" style="top: 70%; transform: translateY(-50%);">
-    <button onclick="openSettingsModal()" class="text-green-500 hover:text-green-300 transition-all duration-300 hover:scale-110 focus:outline-none" title="Pengaturan Admin">
-      <span class="text-xl">⚙️</span>
-    </button>
-  </div>
+  <button onclick="openSettingsModal()" class="text-green-500 hover:text-green-300 transition-all duration-300 hover:scale-110 focus:outline-none" title="Pengaturan Admin">
+    <span class="text-xl">⚙️</span>
+  </button>
+</div>
+  
+  <!-- Judul Tengah -->
   <div class="text-center">
     <h1 class="text-4xl font-bold">PasirPogorCell</h1>          
     <p class="text-gray-300">Paket Internet & Top Up Game</p>
   </div>
 </header>        
+<!-- Tombol Baris Atas: Cari -->
 <div class="my-4 px-4">
   <div class="relative">
     <input type="text" id="searchHarga" placeholder="Cari paket internet atau game..." class="w-full border border-green-400 bg-gray-900 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300 focus:ring-1 focus:ring-green-500 transition futuristic-btn pr-8">
@@ -627,127 +665,1430 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   <div id="hasilHarga" class="mt-3 space-y-2 max-h-80 overflow-y-auto"></div>
 </div>
   
+<!-- Modal Rekomendasi -->
 <div id="rekomendasiModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-opacity duration-300">
   <div class="relative bg-gray-900 text-white rounded-xl p-6 w-80 max-h-[80vh] overflow-auto transform scale-95 transition-transform duration-300 border-l-4 border-green-500 shadow-2xl">
     <h2 class="text-xl font-bold mb-4 text-green-400">⭐ Rekomendasi Paket</h2>
-    <div id="rekomendasiMenu" class="space-y-2"></div>
+    <div id="rekomendasiMenu" class="space-y-2">
+      <!-- Daftar operator akan dimuat di sini -->
+    </div>
     <button onclick="closeRekomendasi()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-lg font-bold">×</button>
   </div>
 </div>
 
+<!-- Modal Promo (Info Toko) dengan gaya hitam pekat + border glow -->
 <div id="promoModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-opacity duration-300">
   <div class="bg-gray-900 text-white rounded-xl p-6 w-80 max-h-[80vh] overflow-auto relative transform scale-95 transition-transform duration-300 border-l-4 border-green-500 shadow-2xl">
     <h2 class="text-xl font-bold text-green-400 mb-4">Informasi Toko</h2>
     <div>
-      <div class="glow-card"><h3>Registrasi Kartu Indosat</h3><p>Khusus pelanggan Indosat untuk registrasi kartu prabayar.</p><a href="https://registrasi.ioh.co.id" target="_blank">registrasi.ioh.co.id</a></div>
-      <div class="glow-card"><h3>Paket internet lebih besar?</h3><p>Terkadang jumlah kuota yang terkirim lebih besar dari yang tertera! terutama untuk paket 20.000 dan 26.000</p></div>
-      <div class="glow-card"><h3>bisa TopUp semua Game</h3><p>Kami menyediakan TopUp untuk berbagai jenis game, tetapi pilihan menu harga TopUp Game hanya tersedia untuk beberapa Game saja</p></div>
-      <div class="glow-card"><h3>Promo harga Kuota dan topUp Game</h3><p>Harga paket internet dan topUp game bisa lebih murah dari biasanya, pantau terus web PasirPogorCell untuk bisa mendapatkan update terkait harga!</p></div>
+
+      <!-- Card Registrasi Indosat -->
+      <div class="glow-card">
+        <h3>Registrasi Kartu Indosat</h3>
+        <p>Khusus pelanggan Indosat untuk registrasi kartu prabayar.</p>
+        <a href="https://registrasi.ioh.co.id" target="_blank" rel="noopener noreferrer">registrasi.ioh.co.id</a>
+      </div>
+
+      <!-- Card Paket internet lebih besar -->
+      <div class="glow-card">
+        <h3>Paket internet lebih besar?</h3>
+        <p>Terkadang jumlah kuota yang terkirim lebih besar dari yang tertera! terutama untuk paket 20.000 dan 26.000</p>
+      </div>
+
+      <!-- Card bisa TopUp semua Game -->
+      <div class="glow-card">
+        <h3>bisa TopUp semua Game</h3>
+        <p>Kami menyediakan TopUp untuk berbagai jenis game, tetapi pilihan menu harga TopUp Game hanya tersedia untuk beberapa Game saja</p>
+      </div>
+
+      <!-- Card Promo harga Kuota dan topUp Game -->
+      <div class="glow-card">
+        <h3>Promo harga Kuota dan topUp Game</h3>
+        <p>Harga paket internet dan topUp game bisa lebih murah dari biasanya, pantau terus web PasirPogorCell untuk bisa mendapatkan update terkait harga!</p>
+      </div>
+
     </div>
     <button onclick="closePromo()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-lg font-bold">×</button>
   </div>
 </div>
 
-<!-- ========== DATA OPERATOR & GAME (LENGKAP) ========== -->
-<script>
-const popularItems = { paket: [ "Freedom Mini 9GB 7 Hari Rp 26.000", "Freedom Mini 5 GB 2 Hari Rp 13.000", "Freedom Mini 6GB 5 Hari Rp 18.000", "Indosat Yellow 1GB 7 Hari Rp 10.000" ], game: [ "Top Up Free Fire 100 Diamond", "Top Up Mobile Legends 50 Diamond", "Top Up PUBG Mobile 300 UC" ] };
-const rekomendasiData = { "Indosat": [ { nama: "Freedom Mini 9GB 7 Hari", harga: "Rp 26.000", ket: "Kuota Utama 9GB 7 Hari. Zona Plus: 13GB. Zona Super Plus: 13GB" }, { nama: "Indosat Yellow 5GB 1 Hari", harga: "Rp 10.000", ket: "Pastikan tidak ada paket internet yang aktif" }, {nama: "Freedom Internet 40GB 28 Hari", harga: "Rp 77.000", ket: "Freedom Internet Mobo" } ], "Axis": [ { nama: "Bronet 6GB + Bonus Aigo 30 Hari", harga: "Rp 32.000", ket: "Kuota 6GB + bonus AIGO" }, { nama: "Mini Axis 9GB 3 Hari", harga: "Rp 17.000", ket: "Kuota besar untuk 3 hari" } ], "XL": [ { nama: "XL Xtra On 2GB 30 Hari", harga: "Rp 26.000", ket: "Cocok untuk sosial media dan game" }, { nama: "XL Reguler 6GB 30 Hari", harga: "Rp 61.000", ket: "Kuota menengah" } ], "Tri": [ { nama: "Tri All Jaringan 10GB 30 Hari", harga: "Rp 38.000", ket: "Hemat per GB" }, { nama: "Tri Data Mini 12GB 7 Hari", harga: "Rp 33.000", ket: "Kuota besar mingguan" } ], "Telkomsel": [ { nama: "Mini Data 2GB 7 Hari", harga: "Rp 19.000", ket: "Jaringan luas" }, { nama: "Mini Data 10GB 3 Hari", harga: "Rp 78.000", ket: "Untuk penggunaan padat" } ], "byU": [ { nama: "Kuota 5GB Semua 7 Hari", harga: "Rp 21.000", ket: "Murah meriah" } ] };
-function openRekomendasi() { const modal = document.getElementById('rekomendasiModal'); if (!modal) return; modal.classList.remove('pointer-events-none', 'opacity-0'); const box = modal.querySelector('div'); if (box) box.classList.remove('scale-95'); const menuDiv = document.getElementById('rekomendasiMenu'); if (!menuDiv) return; menuDiv.innerHTML = ''; for (let op in rekomendasiData) { const btn = document.createElement('button'); btn.className = 'card w-full mb-2'; btn.innerHTML = op; btn.onclick = (function(operator) { return function() { showRekomendasiPaket(operator); }; })(op); menuDiv.appendChild(btn); } }
-function closeRekomendasi() { const modal = document.getElementById('rekomendasiModal'); if (!modal) return; modal.classList.add('opacity-0', 'pointer-events-none'); const box = modal.querySelector('div'); if (box) box.classList.add('scale-95'); }
-function showRekomendasiPaket(operator) { const menuDiv = document.getElementById('rekomendasiMenu'); const pakets = rekomendasiData[operator]; if (!pakets) return; menuDiv.innerHTML = ''; pakets.forEach(p => { const div = document.createElement('div'); div.className = 'card flex justify-between items-center'; div.innerHTML = `<div style="flex:1">${p.nama} <span class="price">${p.harga}</span><div class="text-xs text-gray-400">${p.ket}</div></div><button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')">💬 Beli</button>`; menuDiv.appendChild(div); }); const backBtn = document.createElement('button'); backBtn.className = 'back-btn mt-4 w-full'; backBtn.innerHTML = '← Kembali ke daftar operator'; backBtn.onclick = () => openRekomendasi(); menuDiv.appendChild(backBtn); }
-function openPromo() { const modal = document.getElementById('promoModal'); if (!modal) return; modal.classList.remove('opacity-0', 'pointer-events-none'); const box = modal.querySelector('div'); if (box) box.classList.remove('scale-95'); }
-function closePromo() { const modal = document.getElementById('promoModal'); if (!modal) return; modal.classList.add('opacity-0', 'pointer-events-none'); const box = modal.querySelector('div'); if (box) box.classList.add('scale-95'); }
+<!-- SCRIPT PERTAMA (INTEGRASI VOUCHER DI KALKULATOR) -->
+<script>          
+const popularItems = {          
+  paket: [ "Freedom Mini 9GB 7 Hari Rp 26.000", "Freedom Mini 5 GB 2 Hari Rp 13.000", "Freedom Mini 6GB 5 Hari Rp 18.000", "Indosat Yellow 1GB 7 Hari Rp 10.000" ],          
+  game: [ "Top Up Free Fire 100 Diamond", "Top Up Mobile Legends 50 Diamond", "Top Up PUBG Mobile 300 UC" ]          
+};          
 
+// Data rekomendasi paket per operator
+const rekomendasiData = {
+  "Indosat": [
+    { nama: "Freedom Mini 9GB 7 Hari", harga: "Rp 26.000", ket: "Kuota Utama 9GB 7 Hari. Zona Plus: 13GB. Zona Super Plus: 13GB" },
+    { nama: "Indosat Yellow 5GB 1 Hari", harga: "Rp 10.000", ket: "Pastikan tidak ada paket internet yang aktif" },
+    {nama: "Freedom Internet 40GB 28 Hari", harga: "Rp 77.000", ket: "Freedom Internet Mobo" },
+  ],
+  "Axis": [
+    { nama: "Bronet 6GB + Bonus Aigo 30 Hari", harga: "Rp 32.000", ket: "Kuota 6GB + bonus AIGO" },
+    { nama: "Mini Axis 9GB 3 Hari", harga: "Rp 17.000", ket: "Kuota besar untuk 3 hari" }
+  ],
+  "XL": [
+    { nama: "XL Xtra On 2GB 30 Hari", harga: "Rp 26.000", ket: "Cocok untuk sosial media dan game" },
+    { nama: "XL Reguler 6GB 30 Hari", harga: "Rp 61.000", ket: "Kuota menengah" }
+  ],
+  "Tri": [
+    { nama: "Tri All Jaringan 10GB 30 Hari", harga: "Rp 38.000", ket: "Hemat per GB" },
+    { nama: "Tri Data Mini 12GB 7 Hari", harga: "Rp 33.000", ket: "Kuota besar mingguan" }
+  ],
+  "Telkomsel": [
+    { nama: "Mini Data 2GB 7 Hari", harga: "Rp 19.000", ket: "Jaringan luas" },
+    { nama: "Mini Data 10GB 3 Hari", harga: "Rp 78.000", ket: "Untuk penggunaan padat" }
+  ],
+  "byU": [
+    { nama: "Kuota 5GB Semua 7 Hari", harga: "Rp 21.000", ket: "Murah meriah" }
+  ]
+};
+
+function openRekomendasi() {
+  const modal = document.getElementById('rekomendasiModal');
+  if (!modal) return;
+  modal.classList.remove('pointer-events-none', 'opacity-0');
+  const box = modal.querySelector('div');
+  if (box) box.classList.remove('scale-95');
+  
+  const menuDiv = document.getElementById('rekomendasiMenu');
+  if (!menuDiv) return;
+  menuDiv.innerHTML = '';
+  for (let op in rekomendasiData) {
+    const btn = document.createElement('button');
+    btn.className = 'card w-full mb-2';
+    btn.innerHTML = op;
+    btn.onclick = (function(operator) {
+      return function() { showRekomendasiPaket(operator); };
+    })(op);
+    menuDiv.appendChild(btn);
+  }
+}
+
+function closeRekomendasi() {
+  const modal = document.getElementById('rekomendasiModal');
+  if (!modal) return;
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.add('scale-95');
+}
+
+function showRekomendasiPaket(operator) {
+  const menuDiv = document.getElementById('rekomendasiMenu');
+  const pakets = rekomendasiData[operator];
+  if (!pakets) return;
+  menuDiv.innerHTML = '';
+  pakets.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'card flex justify-between items-center';
+    div.innerHTML = `
+      <div style="flex:1">${p.nama} <span class="price">${p.harga}</span><div class="text-xs text-gray-400">${p.ket}</div></div>
+      <button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')">💬 Beli</button>
+    `;
+    menuDiv.appendChild(div);
+  });
+  // tombol kembali
+  const backBtn = document.createElement('button');
+  backBtn.className = 'back-btn mt-4 w-full';
+  backBtn.innerHTML = '← Kembali ke daftar operator';
+  backBtn.onclick = () => openRekomendasi();
+  menuDiv.appendChild(backBtn);
+}
+function openPromo() {
+  const modal = document.getElementById('promoModal');
+  if (!modal) return;
+  modal.classList.remove('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.remove('scale-95');
+}
+
+function closePromo() {
+  const modal = document.getElementById('promoModal');
+  if (!modal) return;
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.add('scale-95');
+}
 let hargaData = [];
-function buildHargaData() { hargaData = []; if (typeof operators !== 'undefined') { Object.keys(operators).forEach(op => { Object.keys(operators[op]).forEach(cat => { operators[op][cat].forEach(p => { hargaData.push({ nama: p.nama, harga: p.harga, ket: p.ket }); }); }); }); } if (typeof games !== 'undefined') { Object.keys(games).forEach(game => { games[game].forEach(item => { const split = item.split(" Rp "); if (split.length === 2) { hargaData.push({ nama: game + " - " + split[0], harga: "Rp " + split[1], ket: "Top Up Game" }); } }); }); } }
-function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
-const operatorPrefixes = { telkomsel: ['0811','0812','0813','0821','0822','0823','0851','0852','0853'], indosat: ['0814','0815','0816','0855','0856','0857','0858'], tri: ['0895','0896','0897','0898','0899'], xl: ['0817','0818','0819','0859','0877','0878'], axis: ['0831','0832','0833','0838'], smartfren: ['0881','0882','0883','0884','0885','0886','0887','0888','0889'] };
-function detectOperatorFromNama(nama) { const lower = nama.toLowerCase(); if (lower.includes('telkomsel')) return 'telkomsel'; if (lower.includes('byu')) return 'telkomsel'; if (lower.includes('indosat')) return 'indosat'; if (lower.includes('tri')) return 'tri'; if (lower.includes('xl')) return 'xl'; if (lower.includes('axis')) return 'axis'; if (lower.includes('smartfren')) return 'smartfren'; return null; }
-function isValidPhoneForOperator(phone, operator) { if (!operator) return /^\d{10,13}$/.test(phone); const prefixes = operatorPrefixes[operator]; if (!prefixes) return false; return prefixes.some(prefix => phone.startsWith(prefix)); }
+function buildHargaData() {
+  hargaData = [];
+  if (typeof operators !== 'undefined') {
+    Object.keys(operators).forEach(op => {
+      Object.keys(operators[op]).forEach(cat => {
+        operators[op][cat].forEach(p => {
+          hargaData.push({ nama: p.nama, harga: p.harga, ket: p.ket });
+        });
+      });
+    });
+  }
+  if (typeof games !== 'undefined') {
+    Object.keys(games).forEach(game => {
+      games[game].forEach(item => {
+        const split = item.split(" Rp ");
+        if (split.length === 2) {
+          hargaData.push({ nama: game + " - " + split[0], harga: "Rp " + split[1], ket: "Top Up Game" });
+        }
+      });
+    });
+  }
+}
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
+}
+// Variabel untuk menyimpan state modal
+let modalResolve = null;
+let modalPromise = null;
+// Mapping prefix per operator
+const operatorPrefixes = {
+  telkomsel: ['0811', '0812', '0813', '0821', '0822', '0823', '0851', '0852', '0853'],
+  indosat: ['0814', '0815', '0816', '0855', '0856', '0857', '0858'],
+  tri: ['0895', '0896', '0897', '0898', '0899'],
+  xl: ['0817', '0818', '0819', '0859', '0877', '0878'],
+  axis: ['0831', '0832', '0833', '0838'],
+  smartfren: ['0881', '0882', '0883', '0884', '0885', '0886', '0887', '0888', '0889']
+};
 
-function showInputModal(title, placeholder, validator, infoText = '', storageKey = '') { return new Promise((resolve) => { const modal = document.getElementById('inputModal'); const modalTitle = document.getElementById('modalTitle'); const modalInput = document.getElementById('modalInput'); const modalCheckbox = document.getElementById('modalSaveCheckbox'); const confirmBtn = document.getElementById('modalConfirmBtn'); const cancelBtn = document.getElementById('modalCancelBtn'); const modalBody = modal.querySelector('div'); const oldInfo = modalBody.querySelector('.info-text'); if (oldInfo) oldInfo.remove(); if (infoText) { const infoDiv = document.createElement('p'); infoDiv.className = 'info-text text-xs text-gray-400 mt-2 mb-0'; infoDiv.innerHTML = infoText; const inputElement = modalBody.querySelector('#modalInput'); if (inputElement && inputElement.nextSibling) { modalBody.insertBefore(infoDiv, inputElement.nextSibling); } else { modalBody.insertBefore(infoDiv, modalCheckbox.parentNode); } } const errorMsg = document.createElement('p'); errorMsg.className = 'text-red-400 text-xs mt-2 hidden'; modalBody.appendChild(errorMsg); modalTitle.textContent = title; modalInput.placeholder = placeholder; function isInputValid() { const val = modalInput.value.trim(); if (validator) return validator(val); return val !== ''; } let hasSavedData = false; if (storageKey) { const savedValue = localStorage.getItem(storageKey); if (savedValue && validator && validator(savedValue)) { modalInput.value = savedValue; hasSavedData = true; modalCheckbox.checked = true; } else if (savedValue && !validator) { modalInput.value = savedValue; hasSavedData = true; modalCheckbox.checked = true; } else { modalInput.value = ''; modalCheckbox.checked = false; } } else { modalInput.value = ''; modalCheckbox.checked = false; } function updateCheckboxState() { if (!isInputValid()) modalCheckbox.checked = false; } modalInput.addEventListener('input', function() { errorMsg.classList.add('hidden'); modalInput.classList.remove('border-red-500'); updateCheckboxState(); }); modal.classList.remove('opacity-0', 'pointer-events-none'); modal.querySelector('div').classList.remove('scale-95'); modalInput.focus(); function cleanup() { modal.classList.add('opacity-0', 'pointer-events-none'); modal.querySelector('div').classList.add('scale-95'); confirmBtn.removeEventListener('click', onConfirm); cancelBtn.removeEventListener('click', onCancel); modalInput.removeEventListener('keypress', onKeyPress); if (errorMsg) errorMsg.remove(); } function onConfirm() { const value = modalInput.value.trim(); if (validator && !validator(value)) { errorMsg.textContent = validator.errorMessage || 'Input tidak valid!'; errorMsg.classList.remove('hidden'); modalInput.classList.add('border-red-500'); return; } errorMsg.classList.add('hidden'); modalInput.classList.remove('border-red-500'); if (storageKey && modalCheckbox.checked && value) { localStorage.setItem(storageKey, value); const toast = document.createElement('div'); toast.textContent = '✅ Data tersimpan'; toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50 shadow-lg'; document.body.appendChild(toast); setTimeout(() => toast.remove(), 1500); } else if (storageKey && !modalCheckbox.checked) { localStorage.removeItem(storageKey); } cleanup(); resolve(value); } function onCancel() { cleanup(); resolve(null); } function onKeyPress(e) { if (e.key === 'Enter') onConfirm(); } confirmBtn.addEventListener('click', onConfirm); cancelBtn.addEventListener('click', onCancel); modalInput.addEventListener('keypress', onKeyPress); updateCheckboxState(); }); }
+// Fungsi untuk mendeteksi operator dari nama paket
+function detectOperatorFromNama(nama) {
+  const lower = nama.toLowerCase();
+  if (lower.includes('telkomsel')) return 'telkomsel';
+  if (lower.includes('byu')) return 'telkomsel';
+  if (lower.includes('indosat')) return 'indosat';
+  if (lower.includes('tri')) return 'tri';
+  if (lower.includes('xl')) return 'xl';
+  if (lower.includes('axis')) return 'axis';
+  if (lower.includes('smartfren')) return 'smartfren';
+  return null;
+}
 
-async function sendToWhatsApp(nama, harga) { const nomorToko = "6283844843020"; const isGame = /(Top Up|Diamond|UC|CP|Tokens|Crystals|Robux|Mobile Legends|Free Fire|PUBG|Call Of Duty|Honor Of Kings|Genshin Impact|Roblox)/i.test(nama); let userInput = null; const isMobileLegends = /Mobile Legends/i.test(nama); const isFreeFire = /Free Fire/i.test(nama); const isPUBG = /PUBG Mobile/i.test(nama); const isCOD = /Call Of Duty/i.test(nama); const isHOK = /Honor Of Kings/i.test(nama); const isGenshin = /Genshin Impact/i.test(nama); const isRoblox = /Roblox/i.test(nama); if (isGame) { let gameStorageKey = 'game_id'; let gameTitle = "ID Game Anda"; let gamePlaceholder = "Contoh: Gamer123 (5-30 karakter, huruf/angka)"; let gameValidator = (val) => /^[A-Za-z0-9]{5,30}$/.test(val); let gameInfoText = `<span class="text-yellow-300">📌 Informasi:</span><br>• Masukkan ID Game Anda dengan benar.<br>• Pastikan tidak ada kesalahan pengetikan.<br><span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input.</span>`; if (isMobileLegends) { gameStorageKey = 'ml_id'; gameTitle = "Masukkan ID Mobile Legends"; gamePlaceholder = "Contoh: 12345678(1011) atau 123456781011"; gameValidator = (val) => { const r = validateMLBBID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; }; gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Mobile Legends:</span><br> • Format: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br> • User ID: 4-10 digit | Zone ID: 4-5 digit<br> • TOTAL minimal 8 digit (contoh: 10001+2001=100012001)<br> • User ID TIDAK boleh diawali angka 0<br> <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`; } else if (isFreeFire) { gameStorageKey = 'ff_id'; gameTitle = "Masukkan ID Free Fire"; gamePlaceholder = "Contoh: 12345678 (8-11 digit)"; gameValidator = (val) => { const r = validateFFID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; }; gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Free Fire:</span><br> • Panjang ID: 8-11 digit<br> • Akun terlama (2017): 8 digit<br> • Akun baru (2024-2026): 11 digit<br> • ID cantik (11111111, 12345678) TIDAK VALID<br> <span class="text-green-300">💡 Cek ID di Settings → Account.</span>`; } else if (isPUBG) { gameStorageKey = 'pubg_id'; gameTitle = "Masukkan ID PUBG Mobile"; gamePlaceholder = "Contoh: 512345678 (9 digit) atau 6198765432 (10 digit)"; gameValidator = (val) => { const r = validatePUBGID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; }; gameInfoText = `<span class="text-yellow-300">📌 Aturan ID PUBG Mobile:</span><br> • Panjang ID: 9-10 digit<br> • Akun veteran (2018-2019): 9 digit, diawali 5<br> • Akun baru: 10 digit, diawali 6 atau 7<br> • ID diawali 0,1,2,3,4 TIDAK VALID<br> <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`; } else if (isCOD) { gameStorageKey = 'cod_id'; gameTitle = "Masukkan UID Call Of Duty Mobile"; gamePlaceholder = "Contoh: 6742910384756291029 (19 digit)"; gameValidator = (val) => { const r = validateCODMID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; }; gameInfoText = `<span class="text-yellow-300">📌 Aturan UID Call of Duty Mobile:</span><br> • Panjang UID: TEPAT 19 digit<br> • ID pendek (5,8,10 digit) MUSTAHIL ADA untuk UID CODM<br> • Yang Anda miliki jika pendek adalah OpenID atau Nickname<br> <span class="text-green-300">💡 Cek UID di Settings → Legal & Privacy.</span>`; } else if (isHOK) { gameStorageKey = 'hok_id'; gameTitle = "Masukkan ID Honor Of Kings"; gamePlaceholder = "Contoh: 12345678901 (11-12 digit)"; gameValidator = (val) => { const r = validateHOKID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; }; gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Honor of Kings:</span><br> • Panjang ID: 11-12 digit (server Global)<br> • ID kurang dari 11 digit TIDAK MUNGKIN ADA<br> <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`; } else if (isGenshin) { gameStorageKey = 'genshin_id'; gameTitle = "Masukkan UID Genshin Impact"; gamePlaceholder = "Contoh: 712345678 (9 digit)"; gameValidator = (val) => { const r = validateGenshinID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; }; gameInfoText = `<span class="text-yellow-300">📌 Aturan UID Genshin Impact:</span><br> • Panjang UID: TEPAT 9 digit<br> • Digit pertama = kode server:<br> &nbsp;&nbsp;• 7 = Server Asia (Indonesia)<br> &nbsp;&nbsp;• 5 = Amerika | 6 = Eropa | 8 = TW/HK/MO<br> • Jika UID diawali selain 7 untuk server Asia, TIDAK VALID<br> <span class="text-green-300">💡 Cek UID di pojok kanan bawah layar game.</span>`; } else if (isRoblox) { gameStorageKey = 'roblox_id'; gameTitle = "Masukkan User ID Roblox"; gamePlaceholder = "Contoh: 3948576102 (angka dari URL profil)"; gameValidator = (val) => { const r = validateRobloxID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; }; gameInfoText = `<span class="text-yellow-300">📌 Aturan User ID Roblox:</span><br> • Cara dapatkan: buka profil → lihat URL<br> • Contoh URL: roblox.com/users/3948576102/profile<br> • 1-4 digit: Akun 2006 | 8-9 digit: 2015-2018 | 10 digit: 2020-sekarang<br> • ID 11 digit+ BELUM MUNGKIN ADA<br> <span class="text-green-300">💡 Ini ANGKA dari URL profil, BUKAN username.</span>`; } userInput = await showInputModal(gameTitle, gamePlaceholder, gameValidator, gameInfoText, gameStorageKey); if (userInput === null) return; } else { const operator = detectOperatorFromNama(nama); let operatorKey = 'customer_phone'; let operatorDisplay = ''; if (operator) { operatorKey = `customer_phone_${operator}`; operatorDisplay = operator.toUpperCase(); } let validatorMessage = "Contoh: 081234567890 (10-13 digit)"; let infoHtml = `<span class="text-yellow-300">📌 Informasi Penting:</span><br>• Masukkan nomor HP aktif.<br>• Kami tidak bertanggung jawab atas kesalahan input.<br><span class="text-green-300">💡 Periksa kembali nomor Anda.</span>`; if (operator) { const prefixList = operatorPrefixes[operator].join(', '); validatorMessage = `Nomor harus diawali ${prefixList} (10-13 digit)`; infoHtml = `<span class="text-yellow-300">📌 Informasi (${operatorDisplay}):</span><br>• Nomor harus diawali: <strong>${prefixList}</strong><br>• Contoh: ${operatorPrefixes[operator][0]}xxxxxxx<br><span class="text-green-300">💡 Periksa kembali nomor Anda.</span>`; } userInput = await showInputModal("Masukkan Nomor HP", validatorMessage, (val) => { if (!/^\d{10,13}$/.test(val)) return false; if (operator) return isValidPhoneForOperator(val, operator); return true; }, infoHtml, operatorKey); if (userInput === null) return; } let pesan = isGame ? `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nID Game: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.` : `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nNo. HP: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`; window.open(`https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`, '_blank'); }
+// Fungsi validasi nomor HP berdasarkan operator
+function isValidPhoneForOperator(phone, operator) {
+  if (!operator) {
+    return /^\d{10,13}$/.test(phone);
+  }
+  const prefixes = operatorPrefixes[operator];
+  if (!prefixes) return false;
+  return prefixes.some(prefix => phone.startsWith(prefix));
+}
 
-document.addEventListener("DOMContentLoaded", function() { buildHargaData(); const searchInput = document.getElementById("searchHarga"); const clearBtn = document.getElementById("clearSearchBtn"); const hasilBox = document.getElementById("hasilHarga"); function toggleClearButton() { if (searchInput.value.trim() !== "") { clearBtn.classList.remove("hidden"); } else { clearBtn.classList.add("hidden"); } } function performSearch() { const q = searchInput.value.toLowerCase().trim(); if (!hasilBox) return; if (q === "") { hasilBox.innerHTML = ""; return; } const res = hargaData.filter(x => x.nama.toLowerCase().includes(q)); hasilBox.innerHTML = ""; if (res.length === 0) { hasilBox.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>"; return; } res.slice(0, 20).forEach(x => { hasilBox.innerHTML += `<div class="harga-item"><div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div><div class="harga-ket">${escapeHtml(x.ket)}</div><div style="margin-top: 0.5rem; text-align: right;"><button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button></div></div>`; }); } if (searchInput) { searchInput.addEventListener("input", function() { toggleClearButton(); performSearch(); }); toggleClearButton(); } if (clearBtn) { clearBtn.addEventListener("click", function() { searchInput.value = ""; toggleClearButton(); performSearch(); searchInput.focus(); }); } });
-function validateMLBBID(id) { let match = id.match(/^(\d+)\((\d+)\)$|^(\d+)(\d{4})$/); let userId, zoneId; if (match) { if (match[1] && match[2]) { userId = match[1]; zoneId = match[2]; } else if (match[3] && match[4]) { let fullNumber = match[3] + match[4]; zoneId = fullNumber.slice(-4); userId = fullNumber.slice(0, -4); } } else { let cleanId = id.replace(/[()]/g, ''); if (cleanId.length > 4) { zoneId = cleanId.slice(-4); userId = cleanId.slice(0, -4); } else { return { valid: false, message: "❌ Format ID Mobile Legends tidak valid.\n\nFormat yang benar:\n• 12345678(1011)\n• 123456781011\n\n(4 digit terakhir adalah Zone ID)" }; } } if (userId.length < 4 || userId.length > 10) return { valid: false, message: "❌ User ID Mobile Legends harus 4-10 digit.\nAkun tertua: 4-5 digit | Akun normal: 7-10 digit" }; if (zoneId.length < 4 || zoneId.length > 5) return { valid: false, message: "❌ Zone ID harus 4-5 digit.\nContoh: 2001 atau 12345" }; if (userId[0] === '0') return { valid: false, message: "❌ User ID tidak boleh diawali angka 0." }; let totalLength = userId.length + zoneId.length; if (totalLength < 8) return { valid: false, message: `❌ Total ID (User ID + Zone ID) minimal 8 digit.\nID Anda hanya ${totalLength} digit, tidak mungkin valid.` }; if (!/^\d+$/.test(userId + zoneId)) return { valid: false, message: "❌ ID hanya boleh berisi angka." }; return { valid: true, cleanId: userId + zoneId }; }
-function validateFFID(id) { let cleanId = id.trim(); if (cleanId.length < 8 || cleanId.length > 11) return { valid: false, message: "❌ ID Free Fire harus 8-11 digit.\n\n- Akun terlama (2017): 8 digit\n- Akun baru (2024-2026): 11 digit\n\nID 1-7 digit TIDAK PERNAH ADA.\nID 12 digit+ BELUM MUNGKIN ADA." }; if (!/^\d+$/.test(cleanId)) return { valid: false, message: "❌ ID Free Fire hanya boleh berisi angka." }; const blacklistedIDs = ['11111111','111111111','1111111111','11111111111','22222222','222222222','2222222222','22222222222','33333333','333333333','3333333333','33333333333','44444444','444444444','4444444444','44444444444','55555555','555555555','5555555555','55555555555','66666666','666666666','6666666666','66666666666','77777777','777777777','7777777777','77777777777','88888888','888888888','8888888888','88888888888','99999999','999999999','9999999999','99999999999','12345678','123456789','1234567890','12345678901']; if (blacklistedIDs.includes(cleanId)) return { valid: false, message: `❌ ID ${cleanId} di-blacklist sistem Garena, tidak mungkin dimiliki pemain biasa.` }; return { valid: true, cleanId: cleanId }; }
-function validatePUBGID(id) { let cleanId = id.trim(); if (cleanId.length < 9 || cleanId.length > 10) return { valid: false, message: "❌ ID PUBG Mobile harus 9-10 digit.\n\n- Akun veteran (2018-2019): 9 digit (diawali 5)\n- Akun baru: 10 digit (diawali 6 atau 7)\n\nID kurang dari 9 digit atau lebih dari 10 digit TIDAK PERNAH ADA." }; if (!/^\d+$/.test(cleanId)) return { valid: false, message: "❌ ID PUBG Mobile hanya boleh berisi angka." }; let firstDigit = cleanId[0]; if (!['5','6','7'].includes(firstDigit)) return { valid: false, message: "❌ ID PUBG Mobile harus diawali angka 5, 6, atau 7.\nAngka 0,1,2,3,4 untuk internal Tencent." }; return { valid: true, cleanId: cleanId }; }
-function validateCODMID(id) { let cleanId = id.trim(); if (cleanId.length !== 19) return { valid: false, message: "❌ UID Call of Duty Mobile harus TEPAT 19 digit.\nSemua akun CODM memiliki panjang UID yang sama: 19 digit.\nContoh: 6742910384756291029" }; if (!/^\d+$/.test(cleanId)) return { valid: false, message: "❌ UID Call of Duty Mobile hanya boleh berisi angka." }; return { valid: true, cleanId: cleanId }; }
-function validateHOKID(id) { let cleanId = id.trim(); if (cleanId.length < 11 || cleanId.length > 12) return { valid: false, message: "❌ ID Honor of Kings harus 11-12 digit.\nID kurang dari 11 digit TIDAK MUNGKIN untuk server Global." }; if (!/^\d+$/.test(cleanId)) return { valid: false, message: "❌ ID Honor of Kings hanya boleh berisi angka." }; return { valid: true, cleanId: cleanId }; }
-function validateGenshinID(id) { let cleanId = id.trim(); if (cleanId.length !== 9) return { valid: false, message: "❌ UID Genshin Impact harus TEPAT 9 digit.\nSemua akun Genshin Impact di dunia memiliki 9 digit UID." }; if (!/^\d+$/.test(cleanId)) return { valid: false, message: "❌ UID Genshin Impact hanya boleh berisi angka." }; let firstDigit = cleanId[0]; const serverMap = { '1':'China', '2':'China', '5':'Amerika', '6':'Eropa', '7':'Asia', '8':'TW/HK/MO' }; if (!serverMap[firstDigit]) return { valid: false, message: `❌ Digit pertama "${firstDigit}" tidak dikenal.\nKode server valid: 1,2,5,6,7,8` }; if (firstDigit !== '7') return { valid: false, message: `⚠️ UID Anda diawali ${firstDigit} (Server ${serverMap[firstDigit]}).\nJika main di Server Asia, UID harus diawali 7.` }; return { valid: true, cleanId: cleanId }; }
-function validateRobloxID(id) { let cleanId = id.trim(); if (cleanId.length < 1 || cleanId.length > 10) return { valid: false, message: "❌ User ID Roblox harus 1-10 digit.\n\n- 1-4 digit: Akun 2006\n- 8-9 digit: Akun 2015-2018\n- 10 digit: Akun 2020-sekarang\n\nID 11 digit+ BELUM MUNGKIN ADA." }; if (!/^\d+$/.test(cleanId)) return { valid: false, message: "❌ User ID Roblox hanya boleh berisi angka.\n\nIni ANGKA dari URL profil, BUKAN username." }; return { valid: true, cleanId: cleanId }; }
+function showInputModal(title, placeholder, validator, infoText = '', storageKey = '') {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('inputModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalInput = document.getElementById('modalInput');
+    const modalCheckbox = document.getElementById('modalSaveCheckbox');
+    const confirmBtn = document.getElementById('modalConfirmBtn');
+    const cancelBtn = document.getElementById('modalCancelBtn');
+    const modalBody = modal.querySelector('div');
+    
+    // Hapus info lama jika ada
+    const oldInfo = modalBody.querySelector('.info-text');
+    if (oldInfo) oldInfo.remove();
+    
+    // Buat elemen info
+    if (infoText) {
+      const infoDiv = document.createElement('p');
+      infoDiv.className = 'info-text text-xs text-gray-400 mt-2 mb-0';
+      infoDiv.innerHTML = infoText;
+      const inputElement = modalBody.querySelector('#modalInput');
+      if (inputElement && inputElement.nextSibling) {
+        modalBody.insertBefore(infoDiv, inputElement.nextSibling);
+      } else {
+        modalBody.insertBefore(infoDiv, modalCheckbox.parentNode);
+      }
+    }
+    
+    const errorMsg = document.createElement('p');
+    errorMsg.className = 'text-red-400 text-xs mt-2 hidden';
+    modalBody.appendChild(errorMsg);
+    
+    modalTitle.textContent = title;
+    modalInput.placeholder = placeholder;
+    
+    // Fungsi untuk mengecek apakah input valid
+    function isInputValid() {
+      const val = modalInput.value.trim();
+      if (validator) {
+        return validator(val);
+      }
+      return val !== '';
+    }
+    
+    // Cek apakah ada data tersimpan yang VALID
+    let hasSavedData = false;
+    if (storageKey) {
+      const savedValue = localStorage.getItem(storageKey);
+      if (savedValue && validator && validator(savedValue)) {
+        modalInput.value = savedValue;
+        hasSavedData = true;
+        modalCheckbox.checked = true;
+      } else if (savedValue && !validator) {
+        modalInput.value = savedValue;
+        hasSavedData = true;
+        modalCheckbox.checked = true;
+      } else {
+        modalInput.value = '';
+        modalCheckbox.checked = false;
+      }
+    } else {
+      modalInput.value = '';
+      modalCheckbox.checked = false;
+    }
+    
+    // Event listener untuk input: update status checkbox
+    function updateCheckboxState() {
+      if (isInputValid()) {
+        // Checkbox bisa dicentang/dicentang sesuai keinginan user
+        // TAPI jika input berubah menjadi valid, kita biarkan checkbox seperti sebelumnya
+        // Tidak otomatis mencentang
+      } else {
+        // Jika input tidak valid, checkbox otomatis tidak dicentang dan nonaktif
+        modalCheckbox.checked = false;
+      }
+    }
+    
+    modalInput.addEventListener('input', function() {
+      errorMsg.classList.add('hidden');
+      modalInput.classList.remove('border-red-500');
+      updateCheckboxState();
+    });
+    
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.querySelector('div').classList.remove('scale-95');
+    modalInput.focus();
+    
+    function cleanup() {
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      modal.querySelector('div').classList.add('scale-95');
+      confirmBtn.removeEventListener('click', onConfirm);
+      cancelBtn.removeEventListener('click', onCancel);
+      modalInput.removeEventListener('keypress', onKeyPress);
+      if (errorMsg) errorMsg.remove();
+    }
+    
+    function onConfirm() {
+      const value = modalInput.value.trim();
+      // Validasi input
+      if (validator && !validator(value)) {
+        errorMsg.textContent = validator.errorMessage || 'Input tidak valid!';
+        errorMsg.classList.remove('hidden');
+        modalInput.classList.add('border-red-500');
+        return;
+      }
+      errorMsg.classList.add('hidden');
+      modalInput.classList.remove('border-red-500');
+      
+      // Simpan ke localStorage HANYA jika checkbox dicentang DAN input valid
+      if (storageKey && modalCheckbox.checked && value) {
+        localStorage.setItem(storageKey, value);
+        // Tampilkan notifikasi singkat
+        const toast = document.createElement('div');
+        toast.textContent = '✅ Data tersimpan';
+        toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50 shadow-lg';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 1500);
+      } else if (storageKey && !modalCheckbox.checked) {
+        // Jika checkbox tidak dicentang, hapus data yang tersimpan
+        localStorage.removeItem(storageKey);
+      }
+      
+      cleanup();
+      resolve(value);
+    }
+    
+    function onCancel() {
+      cleanup();
+      resolve(null);
+    }
+    
+    function onKeyPress(e) {
+      if (e.key === 'Enter') onConfirm();
+    }
+    
+    confirmBtn.addEventListener('click', onConfirm);
+    cancelBtn.addEventListener('click', onCancel);
+    modalInput.addEventListener('keypress', onKeyPress);
+    
+    // Inisialisasi status checkbox
+    updateCheckboxState();
+  });
+}
 
+async function sendToWhatsApp(nama, harga) {
+  const nomorToko = "6283844843020";
+  const isGame = /(Top Up|Diamond|UC|CP|Tokens|Crystals|Robux|Mobile Legends|Free Fire|PUBG|Call Of Duty|Honor Of Kings|Genshin Impact|Roblox)/i.test(nama);
+  
+  let userInput = null;
+  const isMobileLegends = /Mobile Legends/i.test(nama);
+  const isFreeFire = /Free Fire/i.test(nama);
+  const isPUBG = /PUBG Mobile/i.test(nama);
+  const isCOD = /Call Of Duty/i.test(nama);
+  const isHOK = /Honor Of Kings/i.test(nama);
+  const isGenshin = /Genshin Impact/i.test(nama);
+  const isRoblox = /Roblox/i.test(nama);
+  
+  if (isGame) {
+    let gameStorageKey = 'game_id';
+    let gameTitle = "ID Game Anda";
+    let gamePlaceholder = "Contoh: Gamer123 (5-30 karakter, huruf/angka)";
+    let gameValidator = (val) => /^[A-Za-z0-9]{5,30}$/.test(val);
+    let gameInfoText = `<span class="text-yellow-300">📌 Informasi:</span><br>• Masukkan ID Game Anda dengan benar.<br>• Pastikan tidak ada kesalahan pengetikan.<br><span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input.</span>`;
+    
+    if (isMobileLegends) {
+      gameStorageKey = 'ml_id';
+      gameTitle = "Masukkan ID Mobile Legends";
+      gamePlaceholder = "Contoh: 12345678(1011) atau 123456781011";
+      gameValidator = (val) => { const r = validateMLBBID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Mobile Legends:</span><br>
+       • Format: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
+       • User ID: 4-10 digit | Zone ID: 4-5 digit<br>
+       • TOTAL minimal 8 digit (contoh: 10001+2001=100012001)<br>
+       • User ID TIDAK boleh diawali angka 0<br>
+       <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`;
+    }
+    else if (isFreeFire) {
+      gameStorageKey = 'ff_id';
+      gameTitle = "Masukkan ID Free Fire";
+      gamePlaceholder = "Contoh: 12345678 (8-11 digit)";
+      gameValidator = (val) => { const r = validateFFID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Free Fire:</span><br>
+       • Panjang ID: 8-11 digit<br>
+       • Akun terlama (2017): 8 digit<br>
+       • Akun baru (2024-2026): 11 digit<br>
+       • ID cantik (11111111, 12345678) TIDAK VALID<br>
+       <span class="text-green-300">💡 Cek ID di Settings → Account.</span>`;
+    }
+    else if (isPUBG) {
+      gameStorageKey = 'pubg_id';
+      gameTitle = "Masukkan ID PUBG Mobile";
+      gamePlaceholder = "Contoh: 512345678 (9 digit) atau 6198765432 (10 digit)";
+      gameValidator = (val) => { const r = validatePUBGID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID PUBG Mobile:</span><br>
+       • Panjang ID: 9-10 digit<br>
+       • Akun veteran (2018-2019): 9 digit, diawali 5<br>
+       • Akun baru: 10 digit, diawali 6 atau 7<br>
+       • ID diawali 0,1,2,3,4 TIDAK VALID<br>
+       <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`;
+    }
+    else if (isCOD) {
+      gameStorageKey = 'cod_id';
+      gameTitle = "Masukkan UID Call Of Duty Mobile";
+      gamePlaceholder = "Contoh: 6742910384756291029 (19 digit)";
+      gameValidator = (val) => { const r = validateCODMID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan UID Call of Duty Mobile:</span><br>
+       • Panjang UID: TEPAT 19 digit<br>
+       • ID pendek (5,8,10 digit) MUSTAHIL ADA untuk UID CODM<br>
+       • Yang Anda miliki jika pendek adalah OpenID atau Nickname<br>
+       <span class="text-green-300">💡 Cek UID di Settings → Legal & Privacy.</span>`;
+    }
+    else if (isHOK) {
+      gameStorageKey = 'hok_id';
+      gameTitle = "Masukkan ID Honor Of Kings";
+      gamePlaceholder = "Contoh: 12345678901 (11-12 digit)";
+      gameValidator = (val) => { const r = validateHOKID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Honor of Kings:</span><br>
+       • Panjang ID: 11-12 digit (server Global)<br>
+       • ID kurang dari 11 digit TIDAK MUNGKIN ADA<br>
+       <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`;
+    }
+    else if (isGenshin) {
+      gameStorageKey = 'genshin_id';
+      gameTitle = "Masukkan UID Genshin Impact";
+      gamePlaceholder = "Contoh: 712345678 (9 digit)";
+      gameValidator = (val) => { const r = validateGenshinID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan UID Genshin Impact:</span><br>
+       • Panjang UID: TEPAT 9 digit<br>
+       • Digit pertama = kode server:<br>
+       &nbsp;&nbsp;• 7 = Server Asia (Indonesia)<br>
+       &nbsp;&nbsp;• 5 = Amerika | 6 = Eropa | 8 = TW/HK/MO<br>
+       • Jika UID diawali selain 7 untuk server Asia, TIDAK VALID<br>
+       <span class="text-green-300">💡 Cek UID di pojok kanan bawah layar game.</span>`;
+    }
+    else if (isRoblox) {
+      gameStorageKey = 'roblox_id';
+      gameTitle = "Masukkan User ID Roblox";
+      gamePlaceholder = "Contoh: 3948576102 (angka dari URL profil)";
+      gameValidator = (val) => { const r = validateRobloxID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan User ID Roblox:</span><br>
+       • Cara dapatkan: buka profil → lihat URL<br>
+       • Contoh URL: roblox.com/users/3948576102/profile<br>
+       • 1-4 digit: Akun 2006 | 8-9 digit: 2015-2018 | 10 digit: 2020-sekarang<br>
+       • ID 11 digit+ BELUM MUNGKIN ADA<br>
+       <span class="text-green-300">💡 Ini ANGKA dari URL profil, BUKAN username.</span>`;
+    }
+    
+    userInput = await showInputModal(gameTitle, gamePlaceholder, gameValidator, gameInfoText, gameStorageKey);
+    if (userInput === null) return;
+  } else {
+    const operator = detectOperatorFromNama(nama);
+    let operatorKey = 'customer_phone';
+    let operatorDisplay = '';
+    
+    if (operator) {
+      operatorKey = `customer_phone_${operator}`;
+      operatorDisplay = operator.toUpperCase();
+    }
+    
+    let validatorMessage = "Contoh: 081234567890 (10-13 digit)";
+    let infoHtml = `<span class="text-yellow-300">📌 Informasi Penting:</span><br>• Masukkan nomor HP aktif.<br>• Kami tidak bertanggung jawab atas kesalahan input.<br><span class="text-green-300">💡 Periksa kembali nomor Anda.</span>`;
+    
+    if (operator) {
+      const prefixList = operatorPrefixes[operator].join(', ');
+      validatorMessage = `Nomor harus diawali ${prefixList} (10-13 digit)`;
+      infoHtml = `<span class="text-yellow-300">📌 Informasi (${operatorDisplay}):</span><br>• Nomor harus diawali: <strong>${prefixList}</strong><br>• Contoh: ${operatorPrefixes[operator][0]}xxxxxxx<br><span class="text-green-300">💡 Periksa kembali nomor Anda.</span>`;
+    }
+    
+    userInput = await showInputModal("Masukkan Nomor HP", validatorMessage, (val) => {
+      if (!/^\d{10,13}$/.test(val)) return false;
+      if (operator) return isValidPhoneForOperator(val, operator);
+      return true;
+    }, infoHtml, operatorKey);
+    if (userInput === null) return;
+  }
+  
+  let pesan = isGame 
+    ? `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nID Game: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`
+    : `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nNo. HP: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
+  
+  window.open(`https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`, '_blank');
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Load data pencarian
+  buildHargaData();
+
+  const searchInput = document.getElementById("searchHarga");
+  const clearBtn = document.getElementById("clearSearchBtn");
+  const hasilBox = document.getElementById("hasilHarga");
+
+  function toggleClearButton() {
+    if (searchInput.value.trim() !== "") {
+      clearBtn.classList.remove("hidden");
+    } else {
+      clearBtn.classList.add("hidden");
+    }
+  }
+
+  function performSearch() {
+    const q = searchInput.value.toLowerCase().trim();
+    if (!hasilBox) return;
+    if (q === "") {
+      hasilBox.innerHTML = "";
+      return;
+    }
+    const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
+    hasilBox.innerHTML = "";
+    if (res.length === 0) {
+      hasilBox.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
+      return;
+    }
+    res.slice(0, 20).forEach(x => {
+      hasilBox.innerHTML += `
+        <div class="harga-item">
+          <div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div>
+          <div class="harga-ket">${escapeHtml(x.ket)}</div>
+          <div style="margin-top: 0.5rem; text-align: right;">
+            <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  if (searchInput) {
+    // Event input
+    searchInput.addEventListener("input", function() {
+      toggleClearButton();
+      performSearch();
+    });
+    // Inisialisasi tombol
+    toggleClearButton();
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function() {
+      searchInput.value = "";
+      toggleClearButton();
+      performSearch();
+      searchInput.focus();
+    });
+  }
+
+  // Sisa kode DOMContentLoaded (misalnya untuk customerId jika ada) tetap di sini
+  // ... (jika ada kode lain seperti untuk customerId, letakkan di sini)
+});
+
+// ========== VALIDASI ID GAME MLBB & FF (SESUAI ATURAN) ==========
+function validateMLBBID(id) {
+    // Format: 12345678(1011) atau 123456781011
+    let match = id.match(/^(\d+)\((\d+)\)$|^(\d+)(\d{4})$/);
+    
+    let userId, zoneId;
+    
+    if (match) {
+        if (match[1] && match[2]) {
+            userId = match[1];
+            zoneId = match[2];
+        } else if (match[3] && match[4]) {
+            let fullNumber = match[3] + match[4];
+            zoneId = fullNumber.slice(-4);
+            userId = fullNumber.slice(0, -4);
+        }
+    } else {
+        let cleanId = id.replace(/[()]/g, '');
+        if (cleanId.length > 4) {
+            zoneId = cleanId.slice(-4);
+            userId = cleanId.slice(0, -4);
+        } else {
+            return { valid: false, message: "❌ Format ID Mobile Legends tidak valid.\n\nFormat yang benar:\n• 12345678(1011)\n• 123456781011\n\n(4 digit terakhir adalah Zone ID)" };
+        }
+    }
+    
+    if (userId.length < 4 || userId.length > 10) {
+        return { valid: false, message: "❌ User ID Mobile Legends harus 4-10 digit.\nAkun tertua: 4-5 digit | Akun normal: 7-10 digit" };
+    }
+    
+    if (zoneId.length < 4 || zoneId.length > 5) {
+        return { valid: false, message: "❌ Zone ID harus 4-5 digit.\nContoh: 2001 atau 12345" };
+    }
+    
+    if (userId[0] === '0') {
+        return { valid: false, message: "❌ User ID tidak boleh diawali angka 0." };
+    }
+    
+    let totalLength = userId.length + zoneId.length;
+    if (totalLength < 8) {
+        return { valid: false, message: `❌ Total ID (User ID + Zone ID) minimal 8 digit.\nID Anda hanya ${totalLength} digit, tidak mungkin valid.` };
+    }
+    
+    if (!/^\d+$/.test(userId + zoneId)) {
+        return { valid: false, message: "❌ ID hanya boleh berisi angka." };
+    }
+    
+    return { valid: true, cleanId: userId + zoneId };
+}
+
+function validateFFID(id) {
+    let cleanId = id.trim();
+    
+    if (cleanId.length < 8 || cleanId.length > 11) {
+        return { valid: false, message: "❌ ID Free Fire harus 8-11 digit.\n\n- Akun terlama (2017): 8 digit\n- Akun baru (2024-2026): 11 digit\n\nID 1-7 digit TIDAK PERNAH ADA.\nID 12 digit+ BELUM MUNGKIN ADA." };
+    }
+    
+    if (!/^\d+$/.test(cleanId)) {
+        return { valid: false, message: "❌ ID Free Fire hanya boleh berisi angka." };
+    }
+    
+    const blacklistedIDs = [
+        '11111111', '111111111', '1111111111', '11111111111',
+        '22222222', '222222222', '2222222222', '22222222222',
+        '33333333', '333333333', '3333333333', '33333333333',
+        '44444444', '444444444', '4444444444', '44444444444',
+        '55555555', '555555555', '5555555555', '55555555555',
+        '66666666', '666666666', '6666666666', '66666666666',
+        '77777777', '777777777', '7777777777', '77777777777',
+        '88888888', '888888888', '8888888888', '88888888888',
+        '99999999', '999999999', '9999999999', '99999999999',
+        '12345678', '123456789', '1234567890', '12345678901'
+    ];
+    
+    if (blacklistedIDs.includes(cleanId)) {
+        return { valid: false, message: `❌ ID ${cleanId} di-blacklist sistem Garena, tidak mungkin dimiliki pemain biasa.` };
+    }
+    
+    return { valid: true, cleanId: cleanId };
+}
+
+// ========== VALIDASI PUBG MOBILE ==========
+function validatePUBGID(id) {
+    let cleanId = id.trim();
+    
+    if (cleanId.length < 9 || cleanId.length > 10) {
+        return { valid: false, message: "❌ ID PUBG Mobile harus 9-10 digit.\n\n- Akun veteran (2018-2019): 9 digit (diawali 5)\n- Akun baru: 10 digit (diawali 6 atau 7)\n\nID kurang dari 9 digit atau lebih dari 10 digit TIDAK PERNAH ADA." };
+    }
+    
+    if (!/^\d+$/.test(cleanId)) {
+        return { valid: false, message: "❌ ID PUBG Mobile hanya boleh berisi angka." };
+    }
+    
+    let firstDigit = cleanId[0];
+    if (!['5', '6', '7'].includes(firstDigit)) {
+        return { valid: false, message: "❌ ID PUBG Mobile harus diawali angka 5, 6, atau 7.\nAngka 0,1,2,3,4 untuk internal Tencent." };
+    }
+    
+    return { valid: true, cleanId: cleanId };
+}
+
+// ========== VALIDASI CALL OF DUTY MOBILE ==========
+function validateCODMID(id) {
+    let cleanId = id.trim();
+    
+    if (cleanId.length !== 19) {
+        return { valid: false, message: "❌ UID Call of Duty Mobile harus TEPAT 19 digit.\nSemua akun CODM memiliki panjang UID yang sama: 19 digit.\nContoh: 6742910384756291029" };
+    }
+    
+    if (!/^\d+$/.test(cleanId)) {
+        return { valid: false, message: "❌ UID Call of Duty Mobile hanya boleh berisi angka." };
+    }
+    
+    return { valid: true, cleanId: cleanId };
+}
+
+// ========== VALIDASI HONOR OF KINGS ==========
+function validateHOKID(id) {
+    let cleanId = id.trim();
+    
+    if (cleanId.length < 11 || cleanId.length > 12) {
+        return { valid: false, message: "❌ ID Honor of Kings harus 11-12 digit.\nID kurang dari 11 digit TIDAK MUNGKIN untuk server Global." };
+    }
+    
+    if (!/^\d+$/.test(cleanId)) {
+        return { valid: false, message: "❌ ID Honor of Kings hanya boleh berisi angka." };
+    }
+    
+    return { valid: true, cleanId: cleanId };
+}
+
+// ========== VALIDASI GENSHIN IMPACT ==========
+function validateGenshinID(id) {
+    let cleanId = id.trim();
+    
+    if (cleanId.length !== 9) {
+        return { valid: false, message: "❌ UID Genshin Impact harus TEPAT 9 digit.\nSemua akun Genshin Impact di dunia memiliki 9 digit UID." };
+    }
+    
+    if (!/^\d+$/.test(cleanId)) {
+        return { valid: false, message: "❌ UID Genshin Impact hanya boleh berisi angka." };
+    }
+    
+    let firstDigit = cleanId[0];
+    const serverMap = { '1':'China', '2':'China', '5':'Amerika', '6':'Eropa', '7':'Asia', '8':'TW/HK/MO' };
+    
+    if (!serverMap[firstDigit]) {
+        return { valid: false, message: `❌ Digit pertama "${firstDigit}" tidak dikenal.\nKode server valid: 1,2,5,6,7,8` };
+    }
+    
+    if (firstDigit !== '7') {
+        return { valid: false, message: `⚠️ UID Anda diawali ${firstDigit} (Server ${serverMap[firstDigit]}).\nJika main di Server Asia, UID harus diawali 7.` };
+    }
+    
+    return { valid: true, cleanId: cleanId };
+}
+
+// ========== VALIDASI ROBLOX ==========
+function validateRobloxID(id) {
+    let cleanId = id.trim();
+    
+    if (cleanId.length < 1 || cleanId.length > 10) {
+        return { valid: false, message: "❌ User ID Roblox harus 1-10 digit.\n\n- 1-4 digit: Akun 2006\n- 8-9 digit: Akun 2015-2018\n- 10 digit: Akun 2020-sekarang\n\nID 11 digit+ BELUM MUNGKIN ADA." };
+    }
+    
+    if (!/^\d+$/.test(cleanId)) {
+        return { valid: false, message: "❌ User ID Roblox hanya boleh berisi angka.\n\nIni ANGKA dari URL profil, BUKAN username." };
+    }
+    
+    return { valid: true, cleanId: cleanId };
+}
+
+// ========== VOUCHER MODE DI KALKULATOR ==========
 let voucherModeInitialized = false;
-function initVoucherInCalculator() { if (voucherModeInitialized) return; voucherModeInitialized = true; const container = document.getElementById('voucherAppContainer'); if (!container) return; container.innerHTML = `<div class="voucher-compact">...</div>`; } // konten voucher disederhanakan
-function getVcNumber(id) { let val = parseInt(document.getElementById(id)?.value, 10); return isNaN(val) || val < 0 ? 0 : val; }
-function voucherCompactCompute() { return { details: [], totalIncome: 0, totalProfit: 0, totalSetoran: 0 }; }
-function formatRupiah(angka) { return 'Rp ' + angka.toLocaleString('id-ID'); }
-function voucherCompactRender() { }
-function attachVoucherCompactEvents() { }
+function initVoucherInCalculator() {
+  if (voucherModeInitialized) return;
+  voucherModeInitialized = true;
+  const container = document.getElementById('voucherAppContainer');
+  if (!container) return;
+  container.innerHTML = `
+    <div class="voucher-compact">
+      <!-- Stok Awal (tiga kolom horizontal) dengan efek glass -->
+      <div class="glass-panel" style="padding:0.75rem; margin-bottom:0.75rem;">
+        <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;">
+          <span class="voucher-badge" style="font-size:0.8rem;">📦 STOK AWAL</span>
+          <span style="font-size:0.65rem; color:#9ca3af;">⬇️ sebelum terjual</span>
+        </div>
+        <div style="display:flex; gap:0.75rem; justify-content:space-between;">
+          <div style="flex:1; text-align:center;">
+            <div class="voucher-badge" style="font-size:0.7rem;">💰 5.000</div>
+            <input type="number" id="vc_awal_5000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;">
+          </div>
+          <div style="flex:1; text-align:center;">
+            <div class="voucher-badge" style="font-size:0.7rem;">💰 3.000</div>
+            <input type="number" id="vc_awal_3000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;">
+          </div>
+          <div style="flex:1; text-align:center;">
+            <div class="voucher-badge" style="font-size:0.7rem;">💰 10.000</div>
+            <input type="number" id="vc_awal_10000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;">
+          </div>
+        </div>
+      </div>
+      <!-- Stok Akhir (tiga kolom horizontal) dengan efek glass -->
+      <div class="glass-panel" style="padding:0.75rem; margin-bottom:0.75rem;">
+        <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;">
+          <span class="voucher-badge" style="font-size:0.8rem;">📉 STOK AKHIR</span>
+          <span style="font-size:0.65rem; color:#9ca3af;">⬆️ setelah 2 minggu</span>
+        </div>
+        <div style="display:flex; gap:0.75rem; justify-content:space-between;">
+          <div style="flex:1; text-align:center;">
+            <div class="voucher-badge" style="font-size:0.7rem;">💰 5.000</div>
+            <input type="number" id="vc_akhir_5000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;">
+          </div>
+          <div style="flex:1; text-align:center;">
+            <div class="voucher-badge" style="font-size:0.7rem;">💰 3.000</div>
+            <input type="number" id="vc_akhir_3000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;">
+          </div>
+          <div style="flex:1; text-align:center;">
+            <div class="voucher-badge" style="font-size:0.7rem;">💰 10.000</div>
+            <input type="number" id="vc_akhir_10000" class="input-mini" placeholder="0" style="width:100%; margin-top:0.4rem;">
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:center; margin:0.5rem 0;">
+        <button id="vc_resetBtn" class="btn-reset-voucher" style="display:flex; align-items:center; gap:0.5rem;">
+          🔄 Reset Semua Input
+        </button>
+      </div>
+      <div id="vc_statsContainer" class="stats-grid"></div>
+      <div class="table-wrapper">
+        <table id="vc_resultTable">
+          <thead><tr><th>Voucher</th><th>Terjual</th><th>Pendapatan</th><th>Keuntungan</th><th>Setor</th></tr></thead>
+          <tbody id="vc_tableBody"><tr><td colspan="5">✨ Masukkan stok awal & akhir ✨</td></tr></tbody>
+        </table>
+      </div>
+      <div class="footer-note" style="font-size:0.6rem; padding:0.5rem; text-align:center; background:rgba(0,0,0,0.3); border-radius:0.8rem; margin-top:0.5rem;">
+        💡 Keuntungan: Voucher 5.000 & 10.000 → Rp1.000/pcs | Voucher 3.000 → Rp500/pcs
+      </div>
+    </div>
+  `;
+  attachVoucherCompactEvents();
+  voucherCompactRender();
+}
+function getVcNumber(id) {
+  let val = parseInt(document.getElementById(id)?.value, 10);
+  return isNaN(val) || val < 0 ? 0 : val;
+}
+function voucherCompactCompute() {
+  const items = [
+    { nominal: 5000, profit: 1000, awalId: 'vc_awal_5000', akhirId: 'vc_akhir_5000', name: '5.000' },
+    { nominal: 3000, profit: 500,  awalId: 'vc_awal_3000', akhirId: 'vc_akhir_3000', name: '3.000' },
+    { nominal: 10000, profit: 1000, awalId: 'vc_awal_10000', akhirId: 'vc_akhir_10000', name: '10.000' }
+  ];
+  let details = [], totalIncome = 0, totalProfit = 0, totalSetoran = 0;
+  for (let v of items) {
+    let awal = getVcNumber(v.awalId);
+    let akhir = getVcNumber(v.akhirId);
+    let sold = Math.max(0, awal - akhir);
+    let income = sold * v.nominal;
+    let profit = sold * v.profit;
+    let setoran = income - profit;
+    details.push({ name: v.name, sold, income, profit, setoran });
+    totalIncome += income;
+    totalProfit += profit;
+    totalSetoran += setoran;
+  }
+  return { details, totalIncome, totalProfit, totalSetoran };
+}
+function formatRupiah(angka) {
+  return 'Rp ' + angka.toLocaleString('id-ID');
+}
+function voucherCompactRender() {
+  const { details, totalIncome, totalProfit, totalSetoran } = voucherCompactCompute();
+  const statsDiv = document.getElementById('vc_statsContainer');
+  if (statsDiv) {
+    statsDiv.innerHTML = `
+      <div class="stat-card"><div class="stat-label">PENDAPATAN</div><div class="stat-value">${formatRupiah(totalIncome)}</div></div>
+      <div class="stat-card"><div class="stat-label">KEUNTUNGAN</div><div class="stat-value">${formatRupiah(totalProfit)}</div></div>
+      <div class="stat-card"><div class="stat-label">SETOR</div><div class="stat-value">${formatRupiah(totalSetoran)}</div></div>
+    `;
+  }
+  const tbody = document.getElementById('vc_tableBody');
+  if (tbody) {
+    tbody.innerHTML = '';
+    for (let item of details) {
+      let row = tbody.insertRow();
+      row.insertCell(0).textContent = item.name;
+      row.insertCell(1).textContent = item.sold;
+      row.insertCell(2).textContent = formatRupiah(item.income);
+      row.insertCell(3).textContent = formatRupiah(item.profit);
+      row.insertCell(4).textContent = formatRupiah(item.setoran);
+    }
+    if (details.length === 0 || details.every(d=>d.sold===0)) tbody.innerHTML = '<tr><td colspan="5">Masukkan stok awal & akhir</td></tr>';
+  }
+}
+function attachVoucherCompactEvents() {
+  const inputs = document.querySelectorAll('#voucherAppContainer .input-mini');
+  inputs.forEach(inp => inp.addEventListener('input', voucherCompactRender));
+  const resetBtn = document.getElementById('vc_resetBtn');
+  if (resetBtn) resetBtn.addEventListener('click', () => {
+    document.getElementById('vc_awal_5000').value = '';
+    document.getElementById('vc_akhir_5000').value = '';
+    document.getElementById('vc_awal_3000').value = '';
+    document.getElementById('vc_akhir_3000').value = '';
+    document.getElementById('vc_awal_10000').value = '';
+    document.getElementById('vc_akhir_10000').value = '';
+    voucherCompactRender();
+  });
+}
 let currentMode = 'calc';
-function toggleCalcMode() { const normalDiv = document.getElementById('calcNormalMode'); const voucherDiv = document.getElementById('calcVoucherMode'); const headerTitle = document.querySelector('#calculatorModal .text-2xl'); if (currentMode === 'calc') { normalDiv.classList.add('hidden'); voucherDiv.classList.remove('hidden'); headerTitle.textContent = 'Hitung Voucher'; currentMode = 'voucher'; initVoucherInCalculator(); } else { normalDiv.classList.remove('hidden'); voucherDiv.classList.add('hidden'); headerTitle.textContent = 'Kalkulator'; currentMode = 'calc'; } }
-</script>
+function toggleCalcMode() {
+  const normalDiv = document.getElementById('calcNormalMode');
+  const voucherDiv = document.getElementById('calcVoucherMode');
+  const headerTitle = document.querySelector('#calculatorModal .text-2xl');
+  if (currentMode === 'calc') {
+    normalDiv.classList.add('hidden');
+    voucherDiv.classList.remove('hidden');
+    headerTitle.textContent = 'Hitung Voucher';
+    currentMode = 'voucher';
+    initVoucherInCalculator();
+    voucherCompactRender();
+  } else {
+    normalDiv.classList.remove('hidden');
+    voucherDiv.classList.add('hidden');
+    headerTitle.textContent = 'Kalkulator';
+    currentMode = 'calc';
+  }
+}
+</script>        
 
-<!-- Kalkulator Modal -->
+<!-- Kalkulator Modal dengan Toggle Mode -->
 <div id="calculatorModal" class="fixed inset-0 bg-black/80 flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300 backdrop-blur-sm">
   <div class="bg-gray-900/90 text-white rounded-2xl p-5 w-96 max-w-[90%] relative transform scale-95 transition-all duration-300 border border-green-500/30 shadow-2xl">
     <div class="flex justify-between items-center mb-2">
-      <button id="toggleCalcModeBtn" class="text-green-400 hover:text-green-300 text-xl px-2 py-1 rounded-full hover:bg-green-900/50 transition">🔄</button>
+      <button id="toggleCalcModeBtn" class="text-green-400 hover:text-green-300 text-xl px-2 py-1 rounded-full hover:bg-green-900/50 transition" title="Ganti mode">🔄</button>
       <h2 class="text-2xl font-bold text-center bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent flex-1">Kalkulator</h2>
       <button onclick="closeCalculator()" class="text-gray-400 hover:text-white text-xl font-bold transition">&times;</button>
     </div>
-    <div id="calcNormalMode" class="calc-mode"><div class="calc-display"><input type="text" id="calcDisplay" readonly></div><div class="grid grid-cols-4 gap-3"><button onclick="appendCalc('7')" class="calc-btn">7</button><button onclick="appendCalc('8')" class="calc-btn">8</button><button onclick="appendCalc('9')" class="calc-btn">9</button><button onclick="appendCalc('/')" class="calc-btn calc-btn-op">÷</button><button onclick="appendCalc('4')" class="calc-btn">4</button><button onclick="appendCalc('5')" class="calc-btn">5</button><button onclick="appendCalc('6')" class="calc-btn">6</button><button onclick="appendCalc('*')" class="calc-btn calc-btn-op">×</button><button onclick="appendCalc('1')" class="calc-btn">1</button><button onclick="appendCalc('2')" class="calc-btn">2</button><button onclick="appendCalc('3')" class="calc-btn">3</button><button onclick="appendCalc('-')" class="calc-btn calc-btn-op">−</button><button onclick="appendCalc('0')" class="calc-btn col-span-2">0</button><button onclick="appendCalc('.')" class="calc-btn">.</button><button onclick="appendCalc('+')" class="calc-btn calc-btn-op">+</button><button onclick="backspace()" class="calc-btn calc-btn-back">⌫</button><button onclick="clearCalc()" class="calc-btn calc-btn-clear">C</button><button onclick="calculate()" class="calc-btn calc-btn-equal col-span-2">=</button></div></div>
-    <div id="calcVoucherMode" class="calc-mode hidden"><div id="voucherAppContainer"></div></div>
+    <div id="calcNormalMode" class="calc-mode">
+      <div class="calc-display">
+        <input type="text" id="calcDisplay" readonly>
+      </div>
+      <div class="grid grid-cols-4 gap-3">
+        <button onclick="appendCalc('7')" class="calc-btn">7</button><button onclick="appendCalc('8')" class="calc-btn">8</button><button onclick="appendCalc('9')" class="calc-btn">9</button><button onclick="appendCalc('/')" class="calc-btn calc-btn-op">÷</button>
+        <button onclick="appendCalc('4')" class="calc-btn">4</button><button onclick="appendCalc('5')" class="calc-btn">5</button><button onclick="appendCalc('6')" class="calc-btn">6</button><button onclick="appendCalc('*')" class="calc-btn calc-btn-op">×</button>
+        <button onclick="appendCalc('1')" class="calc-btn">1</button><button onclick="appendCalc('2')" class="calc-btn">2</button><button onclick="appendCalc('3')" class="calc-btn">3</button><button onclick="appendCalc('-')" class="calc-btn calc-btn-op">−</button>
+        <button onclick="appendCalc('0')" class="calc-btn col-span-2">0</button><button onclick="appendCalc('.')" class="calc-btn">.</button><button onclick="appendCalc('+')" class="calc-btn calc-btn-op">+</button>
+        <button onclick="backspace()" class="calc-btn calc-btn-back">⌫</button><button onclick="clearCalc()" class="calc-btn calc-btn-clear">C</button><button onclick="calculate()" class="calc-btn calc-btn-equal col-span-2">=</button>
+      </div>
+    </div>
+    <div id="calcVoucherMode" class="calc-mode hidden">
+      <div id="voucherAppContainer"></div>
+    </div>
   </div>
 </div>
 
+<style>          
+@keyframes greenGlow { 0% { box-shadow: 0 0 5px #22c55e; } 50% { box-shadow: 0 0 15px #22c55e; } 100% { box-shadow: 0 0 5px #22c55e; } }          
+.calc-btn:hover { background: #1f2937; }
+</style>        
+
 <script>
-function openCalculator() { const modal = document.getElementById('calculatorModal'); if (modal) { modal.classList.remove('opacity-0', 'pointer-events-none'); const box = modal.querySelector('div'); if (box) box.classList.remove('scale-95'); } if (currentMode !== 'calc') { const normalDiv = document.getElementById('calcNormalMode'); const voucherDiv = document.getElementById('calcVoucherMode'); const headerTitle = document.querySelector('#calculatorModal .text-2xl'); if (normalDiv && voucherDiv) { normalDiv.classList.remove('hidden'); voucherDiv.classList.add('hidden'); if(headerTitle) headerTitle.textContent = 'Kalkulator'; currentMode = 'calc'; } } }
-function closeCalculator() { const modal = document.getElementById('calculatorModal'); if (modal) { modal.classList.add('opacity-0', 'pointer-events-none'); const box = modal.querySelector('div'); if (box) box.classList.add('scale-95'); } }
-function appendCalc(value) { document.getElementById('calcDisplay').value += value; }
-function clearCalc() { document.getElementById('calcDisplay').value = ''; }
-function backspace() { let d=document.getElementById('calcDisplay'); d.value = d.value.slice(0,-1); }
-function calculate() { let d=document.getElementById('calcDisplay'); try { d.value = eval(d.value); } catch(e) { d.value = 'Error'; } }
+function openCalculator() {
+  const modal = document.getElementById('calculatorModal');
+  if (modal) {
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    const box = modal.querySelector('div');
+    if (box) box.classList.remove('scale-95');
+  }
+  // Pastikan mode kalkulator saat dibuka (kecuali sedang dalam mode voucher, biarkan? lebih baik reset)
+  if (currentMode !== 'calc') {
+    const normalDiv = document.getElementById('calcNormalMode');
+    const voucherDiv = document.getElementById('calcVoucherMode');
+    const headerTitle = document.querySelector('#calculatorModal .text-2xl');
+    if (normalDiv && voucherDiv) {
+      normalDiv.classList.remove('hidden');
+      voucherDiv.classList.add('hidden');
+      if(headerTitle) headerTitle.textContent = 'Kalkulator';
+      currentMode = 'calc';
+    }
+  }
+}
+function closeCalculator() {    
+  const modal = document.getElementById('calculatorModal');    
+  if (modal) {
+    modal.classList.add('opacity-0', 'pointer-events-none');    
+    const box = modal.querySelector('div');
+    if (box) box.classList.add('scale-95');
+  }
+}    
+function appendCalc(value) { document.getElementById('calcDisplay').value += value; }    
+function clearCalc() { document.getElementById('calcDisplay').value = ''; }    
+function backspace() { let d=document.getElementById('calcDisplay'); d.value = d.value.slice(0,-1); }    
+function calculate() { let d=document.getElementById('calcDisplay'); try { d.value = eval(d.value); } catch(e) { d.value = 'Error'; } }    
 document.getElementById('toggleCalcModeBtn')?.addEventListener('click', toggleCalcMode);
-
-// ========== SETTINGS & ADMIN PANEL ==========
+// ========== FUNGSI SETTINGS & ADMIN PANEL ==========
+// Password admin (GANTI dengan password Anda)
 const ADMIN_PASSWORD = "admin123";
-function openSettingsModal() { const modal = document.getElementById('settingsModal'); if (!modal) return; modal.classList.remove('opacity-0', 'pointer-events-none'); const box = modal.querySelector('div'); if (box) box.classList.remove('scale-95'); }
-function closeSettingsModal() { const modal = document.getElementById('settingsModal'); if (!modal) return; modal.classList.add('opacity-0', 'pointer-events-none'); const box = modal.querySelector('div'); if (box) box.classList.add('scale-95'); }
-function openAdminPanel() { closeSettingsModal(); const loginModal = document.getElementById('adminLoginModal'); if (!loginModal) return; loginModal.classList.remove('opacity-0', 'pointer-events-none'); const box = loginModal.querySelector('div'); if (box) box.classList.remove('scale-95'); document.getElementById('adminPassword').value = ''; document.getElementById('adminLoginError').classList.add('hidden'); }
-function closeAdminLoginModal() { const modal = document.getElementById('adminLoginModal'); if (!modal) return; modal.classList.add('opacity-0', 'pointer-events-none'); const box = modal.querySelector('div'); if (box) box.classList.add('scale-95'); }
-function verifyAdminPassword() { const password = document.getElementById('adminPassword').value; const errorDiv = document.getElementById('adminLoginError'); if (password === ADMIN_PASSWORD) { closeAdminLoginModal(); openAdminPanelModal(); } else { errorDiv.classList.remove('hidden'); } }
-function openAdminPanelModal() { const modal = document.getElementById('adminPanelModal'); if (!modal) return; modal.classList.remove('opacity-0', 'pointer-events-none'); const box = modal.querySelector('div'); if (box) box.classList.remove('scale-95'); adminRefreshTable(); }
-function closeAdminPanelModal() { const modal = document.getElementById('adminPanelModal'); if (!modal) return; modal.classList.add('opacity-0', 'pointer-events-none'); const box = modal.querySelector('div'); if (box) box.classList.add('scale-95'); }
-document.getElementById('adminPassword')?.addEventListener('keypress', function(e) { if (e.key === 'Enter') verifyAdminPassword(); });
 
-// ========== SISTEM POIN (LENGKAP DENGAN LOCALSTORAGE) ==========
+function openSettingsModal() {
+  const modal = document.getElementById('settingsModal');
+  if (!modal) return;
+  modal.classList.remove('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.remove('scale-95');
+}
+
+function closeSettingsModal() {
+  const modal = document.getElementById('settingsModal');
+  if (!modal) return;
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.add('scale-95');
+}
+
+function openAdminPanel() {
+  // Tutup settings modal terlebih dahulu
+  closeSettingsModal();
+  // Buka modal login admin
+  const loginModal = document.getElementById('adminLoginModal');
+  if (!loginModal) return;
+  loginModal.classList.remove('opacity-0', 'pointer-events-none');
+  const box = loginModal.querySelector('div');
+  if (box) box.classList.remove('scale-95');
+  // Reset input password
+  document.getElementById('adminPassword').value = '';
+  document.getElementById('adminLoginError').classList.add('hidden');
+}
+
+function closeAdminLoginModal() {
+  const modal = document.getElementById('adminLoginModal');
+  if (!modal) return;
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.add('scale-95');
+}
+
+function verifyAdminPassword() {
+  const password = document.getElementById('adminPassword').value;
+  const errorDiv = document.getElementById('adminLoginError');
+  
+  if (password === ADMIN_PASSWORD) {
+    // Password benar, tutup login modal dan buka admin panel
+    closeAdminLoginModal();
+    openAdminPanelModal();
+  } else {
+    errorDiv.classList.remove('hidden');
+  }
+}
+
+function openAdminPanelModal() {
+  const modal = document.getElementById('adminPanelModal');
+  if (!modal) return;
+  modal.classList.remove('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.remove('scale-95');
+}
+
+function closeAdminPanelModal() {
+  const modal = document.getElementById('adminPanelModal');
+  if (!modal) return;
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  const box = modal.querySelector('div');
+  if (box) box.classList.add('scale-95');
+}
+
+// Tekan Enter pada input password
+document.getElementById('adminPassword')?.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    verifyAdminPassword();
+  }
+});
+// ========== SISTEM POIN ==========
+// Key untuk localStorage
 const POIN_STORAGE_KEY = 'pasirpogor_poin_data';
-function getDefaultPoinData() { return { customers: {}, version: '1.0' }; }
-function loadPoinData() { const stored = localStorage.getItem(POIN_STORAGE_KEY); if (stored) { try { return JSON.parse(stored); } catch(e) { return getDefaultPoinData(); } } return getDefaultPoinData(); }
-function savePoinData(data) { localStorage.setItem(POIN_STORAGE_KEY, JSON.stringify(data)); }
-function tambahKlaim(customerId, type) { const normalizedId = customerId.trim().toLowerCase(); const data = loadPoinData(); if (!data.customers[normalizedId]) data.customers[normalizedId] = { klaimTersedia: 0, poin: 0, lastUpdate: Date.now(), type: type }; data.customers[normalizedId].klaimTersedia += 1; data.customers[normalizedId].lastUpdate = Date.now(); savePoinData(data); return data.customers[normalizedId]; }
-function cekPelanggan(customerId) { const normalizedId = customerId.trim().toLowerCase(); const data = loadPoinData(); return data.customers[normalizedId] || null; }
-function klaimPoin(customerId) { const normalizedId = customerId.trim().toLowerCase(); const data = loadPoinData(); if (!data.customers[normalizedId]) return { success: false, message: "ID tidak ditemukan" }; const customer = data.customers[normalizedId]; if (customer.klaimTersedia <= 0) return { success: false, message: "Tidak ada klaim tersedia" }; const klaimDipakai = customer.klaimTersedia; const poinDidapat = klaimDipakai * 100; customer.poin += poinDidapat; customer.klaimTersedia = 0; customer.lastUpdate = Date.now(); savePoinData(data); return { success: true, klaimDipakai: klaimDipakai, poinDidapat: poinDidapat, totalPoin: customer.poin, message: `Berhasil klaim ${klaimDipakai} klaim! +${poinDidapat} poin` }; }
-async function klaimRewardById(customerId, customerData) { if (customerData.poin < 1000) return { success: false, message: "Poin belum mencapai 1000" }; customerData.poin -= 1000; const data = loadPoinData(); data.customers[customerId] = customerData; savePoinData(data); const pesan = `📢 <b>KLAIM REWARD PELANGGAN!</b>\n\n🆔 ID: ${customerId}\n⭐ Poin yang diklaim: 1000 poin\n💎 Sisa poin: ${customerData.poin}\n🕐 Waktu: ${new Date().toLocaleString('id-ID')}\n\n💡 Pelanggan berhak mendapatkan reward! Silakan hubungi pelanggan.`; sendTelegramMessage(pesan); return { success: true, message: "Reward berhasil diklaim! Admin akan menghubungi Anda.", sisaPoin: customerData.poin }; }
-let currentPoinCustomerId = null, currentPoinCustomerData = null;
-function openPoinModal() { console.log('openPoinModal dipanggil'); const modal = document.getElementById('poinModal'); if (modal) { modal.classList.remove('opacity-0', 'pointer-events-none'); const box = modal.querySelector('div'); if (box) box.classList.remove('scale-95'); } const input = document.getElementById('poinCustomerId'); if (input) input.value = ''; const hasil = document.getElementById('poinHasil'); if (hasil) hasil.classList.add('hidden'); const empty = document.getElementById('poinEmpty'); if (empty) empty.classList.remove('hidden'); currentPoinCustomerId = null; currentPoinCustomerData = null; }
-function closePoinModal() { const modal = document.getElementById('poinModal'); if (modal) { modal.classList.add('opacity-0', 'pointer-events-none'); const box = modal.querySelector('div'); if (box) box.classList.add('scale-95'); } }
-function togglePoinIdType() { const input = document.getElementById('poinCustomerId'); const phoneRadio = document.querySelector('input[value="phone"]'); if (phoneRadio && phoneRadio.checked) input.placeholder = "Masukkan nomor HP (contoh: 081234567890)"; else input.placeholder = "Masukkan ID Game (contoh: 12345678(1011))"; }
-function cekPoinPelanggan() { const customerId = document.getElementById('poinCustomerId').value.trim(); if (!customerId) { alert('Masukkan ID terlebih dahulu!'); return; } currentPoinCustomerId = customerId.toLowerCase(); currentPoinCustomerData = cekPelanggan(customerId); if (!currentPoinCustomerData) { document.getElementById('poinEmpty').classList.remove('hidden'); document.getElementById('poinHasil').classList.add('hidden'); alert('ID tidak ditemukan. Pastikan Anda sudah melakukan pembelian dan admin telah mencatatnya.'); return; } document.getElementById('poinEmpty').classList.add('hidden'); document.getElementById('poinHasil').classList.remove('hidden'); document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin; document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia; const poin = currentPoinCustomerData.poin; const percent = Math.min((poin / 1000) * 100, 100); document.getElementById('poinProgressBar').style.width = percent + '%'; document.getElementById('poinProgressText').textContent = poin + ' / 1000'; const rewardBtn = document.getElementById('rewardBtn'); if (poin >= 1000) { rewardBtn.disabled = false; rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (1000 poin akan ditukar)'; rewardBtn.classList.add('bg-green-600', 'text-black'); rewardBtn.classList.remove('poin-reward-btn'); } else { rewardBtn.disabled = true; rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)'; rewardBtn.classList.remove('bg-green-600', 'text-black'); rewardBtn.classList.add('poin-reward-btn'); } const klaimSection = document.getElementById('poinKlaimSection'); const klaimBtn = document.getElementById('klaimBtn'); if (currentPoinCustomerData.klaimTersedia > 0) { klaimSection.classList.remove('hidden'); klaimBtn.textContent = `🎁 KLAIM SEMUA (${currentPoinCustomerData.klaimTersedia} klaim → ${currentPoinCustomerData.klaimTersedia * 100} poin)`; } else { klaimSection.classList.add('hidden'); } }
-function klaimSemuaPoin() { if (!currentPoinCustomerId) return; const result = klaimPoin(currentPoinCustomerId); if (result.success) { alert(result.message); currentPoinCustomerData = cekPelanggan(currentPoinCustomerId); document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin; document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia; document.getElementById('poinProgressBar').style.width = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100) + '%'; document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000'; document.getElementById('poinKlaimSection').classList.add('hidden'); } else { alert(result.message); } }
-async function klaimReward() { if (!currentPoinCustomerId || !currentPoinCustomerData) return; if (currentPoinCustomerData.poin < 1000) { alert('Poin belum mencapai 1000!'); return; } const confirmReward = confirm('Apakah Anda yakin ingin menukarkan 1000 poin untuk mendapatkan reward?'); if (!confirmReward) return; const result = await klaimRewardById(currentPoinCustomerId, currentPoinCustomerData); if (result.success) { alert(result.message); currentPoinCustomerData = cekPelanggan(currentPoinCustomerId); document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin; document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia; const percent = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100); document.getElementById('poinProgressBar').style.width = percent + '%'; document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000'; document.getElementById('rewardBtn').disabled = true; document.getElementById('rewardBtn').textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)'; } else { alert(result.message); } }
-function adminTambahKlaim() { const idType = document.getElementById('adminIdType').value; let customerId = document.getElementById('adminCustomerId').value.trim(); if (!customerId) { alert('Masukkan ID pelanggan!'); return; } if (idType === 'phone' && !/^\d{10,13}$/.test(customerId.replace(/\s/g, ''))) { alert('Nomor HP harus 10-13 digit angka!'); return; } const result = tambahKlaim(customerId, idType); alert(`✅ Berhasil menambah klaim untuk ${customerId}\nKlaim tersedia sekarang: ${result.klaimTersedia}\nTotal poin: ${result.poin}`); document.getElementById('adminCustomerId').value = ''; adminRefreshTable(); }
-function adminRefreshTable() { const data = loadPoinData(); const customers = data.customers; const searchTerm = document.getElementById('searchCustomer')?.value.toLowerCase() || ''; const tableBody = document.getElementById('adminCustomerTable'); if (!tableBody) return; const entries = Object.entries(customers); if (entries.length === 0) { tableBody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-400 p-4">Belum ada data pelanggan</td></tr>'; return; } let filtered = entries; if (searchTerm) filtered = entries.filter(([id]) => id.includes(searchTerm)); tableBody.innerHTML = filtered.map(([id, data]) => `<tr class="border-b border-gray-700 hover:bg-gray-800"><td class="p-2 text-xs break-all">${escapeHtml(id)}</td><td class="p-2 text-center text-yellow-400">${data.klaimTersedia}</td><td class="p-2 text-center text-green-400">${data.poin}</td></tr>`).join(''); }
-document.getElementById('searchCustomer')?.addEventListener('input', () => adminRefreshTable());
 
-// ========== FUNGSI MENU SETTINGS ==========
-function contactAdmin() { window.open('https://wa.me/6283844843020?text=Halo%20admin%20PasirPogorCell%2C%20saya%20ingin%20bertanya%20tentang...', '_blank'); closeSettingsModal(); }
-function openLocation() { window.open('https://maps.app.goo.gl/YoTYYXkZpmHgyE9v9?g_st=ac', '_blank'); closeSettingsModal(); }
-function shareWebsite() { const url = window.location.href; if (navigator.share) { navigator.share({ title: 'PasirPogorCell', text: 'Tempat top up game & paket internet termurah!', url: url }); } else { navigator.clipboard.writeText(url); alert('✅ Link website telah disalin! Silakan bagikan ke teman Anda.'); } closeSettingsModal(); }
-async function sendTelegramMessage(message) { const TELEGRAM_BOT_TOKEN = '8303767615:AAHIloX2OXO3imC3tVnjfN_W_n2joaNSnro'; const TELEGRAM_CHAT_ID = '5725724854'; try { await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'HTML' }) }); } catch(e) { console.error(e); } }
-</script>
+// Data awal (jika kosong)
+function getDefaultPoinData() {
+  return {
+    customers: {},  // format: { "id": { klaimTersedia: 0, poin: 0, lastUpdate: timestamp } }
+    version: '1.0'
+  };
+}
+
+// Load data dari localStorage
+function loadPoinData() {
+  const stored = localStorage.getItem(POIN_STORAGE_KEY);
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch(e) {
+      return getDefaultPoinData();
+    }
+  }
+  return getDefaultPoinData();
+}
+
+// Simpan data ke localStorage
+function savePoinData(data) {
+  localStorage.setItem(POIN_STORAGE_KEY, JSON.stringify(data));
+}
+
+// Tambah klaim untuk customer (dipanggil dari Admin Panel)
+function tambahKlaim(customerId, type) {
+  // Normalisasi ID (lowercase untuk konsistensi)
+  const normalizedId = customerId.trim().toLowerCase();
+  const data = loadPoinData();
+  
+  if (!data.customers[normalizedId]) {
+    data.customers[normalizedId] = { klaimTersedia: 0, poin: 0, lastUpdate: Date.now(), type: type };
+  }
+  
+  data.customers[normalizedId].klaimTersedia += 1;
+  data.customers[normalizedId].lastUpdate = Date.now();
+  savePoinData(data);
+  
+  return data.customers[normalizedId];
+}
+
+// Cek data pelanggan
+function cekPelanggan(customerId) {
+  const normalizedId = customerId.trim().toLowerCase();
+  const data = loadPoinData();
+  return data.customers[normalizedId] || null;
+}
+
+// Klaim poin (ubah klaim tersedia menjadi poin)
+function klaimPoin(customerId) {
+  const normalizedId = customerId.trim().toLowerCase();
+  const data = loadPoinData();
+  
+  if (!data.customers[normalizedId]) {
+    return { success: false, message: "ID tidak ditemukan" };
+  }
+  
+  const customer = data.customers[normalizedId];
+  
+  if (customer.klaimTersedia <= 0) {
+    return { success: false, message: "Tidak ada klaim tersedia" };
+  }
+  
+  const klaimDipakai = customer.klaimTersedia;
+  const poinDidapat = klaimDipakai * 100;
+  
+  customer.poin += poinDidapat;
+  customer.klaimTersedia = 0;
+  customer.lastUpdate = Date.now();
+  
+  savePoinData(data);
+  
+  return { 
+    success: true, 
+    klaimDipakai: klaimDipakai, 
+    poinDidapat: poinDidapat,
+    totalPoin: customer.poin,
+    message: `Berhasil klaim ${klaimDipakai} klaim! +${poinDidapat} poin`
+  };
+}
+
+// Klaim reward (1000 poin)
+async function klaimRewardById(customerId, customerData) {
+  if (customerData.poin < 1000) {
+    return { success: false, message: "Poin belum mencapai 1000" };
+  }
+  
+  // Kurangi poin 1000
+  customerData.poin -= 1000;
+  
+  const data = loadPoinData();
+  data.customers[customerId] = customerData;
+  savePoinData(data);
+  
+  // Kirim notifikasi ke Telegram
+  const pesan = `
+📢 <b>KLAIM REWARD PELANGGAN!</b>
+
+🆔 ID: ${customerId}
+⭐ Poin yang diklaim: 1000 poin
+💎 Sisa poin: ${customerData.poin}
+🕐 Waktu: ${new Date().toLocaleString('id-ID')}
+
+💡 Pelanggan berhak mendapatkan reward!
+Silakan hubungi pelanggan untuk memberikan hadiah.
+  `;
+  
+  await sendTelegramMessage(pesan);
+  
+  return { success: true, message: "Reward berhasil diklaim! Admin akan menghubungi Anda.", sisaPoin: customerData.poin };
+}
+
+// ========== FUNGSI UI MODAL POIN ==========
+let currentPoinCustomerId = null;
+let currentPoinCustomerData = null;
+
+function openPoinModal() {
+  const modal = document.getElementById('poinModal');
+  if (modal) {
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    const box = modal.querySelector('div');
+    if (box) box.classList.remove('scale-95');
+  }
+  // Reset form
+  document.getElementById('poinCustomerId').value = '';
+  document.getElementById('poinHasil').classList.add('hidden');
+  document.getElementById('poinEmpty').classList.remove('hidden');
+  currentPoinCustomerId = null;
+  currentPoinCustomerData = null;
+}
+
+function closePoinModal() {
+  const modal = document.getElementById('poinModal');
+  if (modal) {
+    modal.classList.add('opacity-0', 'pointer-events-none');
+    const box = modal.querySelector('div');
+    if (box) box.classList.add('scale-95');
+  }
+}
+
+function togglePoinIdType() {
+  // Fungsi ini hanya untuk UI, tidak mengubah logika utama
+  const input = document.getElementById('poinCustomerId');
+  const phoneRadio = document.querySelector('input[value="phone"]');
+  if (phoneRadio.checked) {
+    input.placeholder = "Masukkan nomor HP (contoh: 081234567890)";
+  } else {
+    input.placeholder = "Masukkan ID Game (contoh: 12345678(1011))";
+  }
+}
+
+function cekPoinPelanggan() {
+  const customerId = document.getElementById('poinCustomerId').value.trim();
+  if (!customerId) {
+    alert('Masukkan ID terlebih dahulu!');
+    return;
+  }
+  
+  currentPoinCustomerId = customerId.toLowerCase();
+  currentPoinCustomerData = cekPelanggan(customerId);
+  
+  if (!currentPoinCustomerData) {
+    // Pelanggan belum pernah ditambahkan admin
+    document.getElementById('poinEmpty').classList.remove('hidden');
+    document.getElementById('poinHasil').classList.add('hidden');
+    alert('ID tidak ditemukan. Pastikan Anda sudah melakukan pembelian dan admin telah mencatatnya.');
+    return;
+  }
+  
+  // Tampilkan hasil
+  document.getElementById('poinEmpty').classList.add('hidden');
+  document.getElementById('poinHasil').classList.remove('hidden');
+  
+  document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
+  document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia;
+  
+  // Update progress bar
+  const poin = currentPoinCustomerData.poin;
+  const percent = Math.min((poin / 1000) * 100, 100);
+  document.getElementById('poinProgressBar').style.width = percent + '%';
+  document.getElementById('poinProgressText').textContent = poin + ' / 1000';
+  
+  // Update tombol reward
+  const rewardBtn = document.getElementById('rewardBtn');
+  if (poin >= 1000) {
+    rewardBtn.disabled = false;
+    rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (1000 poin akan ditukar)';
+    rewardBtn.classList.add('bg-green-600', 'text-black');
+    rewardBtn.classList.remove('poin-reward-btn');
+  } else {
+    rewardBtn.disabled = true;
+    rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)';
+    rewardBtn.classList.remove('bg-green-600', 'text-black');
+    rewardBtn.classList.add('poin-reward-btn');
+  }
+  
+  // Tampilkan tombol klaim jika ada klaim tersedia
+  const klaimSection = document.getElementById('poinKlaimSection');
+  const klaimBtn = document.getElementById('klaimBtn');
+  if (currentPoinCustomerData.klaimTersedia > 0) {
+    klaimSection.classList.remove('hidden');
+    klaimBtn.textContent = `🎁 KLAIM SEMUA (${currentPoinCustomerData.klaimTersedia} klaim → ${currentPoinCustomerData.klaimTersedia * 100} poin)`;
+  } else {
+    klaimSection.classList.add('hidden');
+  }
+}
+
+function klaimSemuaPoin() {
+  if (!currentPoinCustomerId) return;
+  
+  const result = klaimPoin(currentPoinCustomerId);
+  if (result.success) {
+    alert(result.message);
+    // Refresh data
+    currentPoinCustomerData = cekPelanggan(currentPoinCustomerId);
+    // Update UI
+    document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
+    document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia;
+    document.getElementById('poinProgressBar').style.width = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100) + '%';
+    document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000';
+    document.getElementById('poinKlaimSection').classList.add('hidden');
+  } else {
+    alert(result.message);
+  }
+}
+
+async function klaimReward() {
+  if (!currentPoinCustomerId || !currentPoinCustomerData) return;
+  
+  if (currentPoinCustomerData.poin < 1000) {
+    alert('Poin belum mencapai 1000!');
+    return;
+  }
+  
+  const confirmReward = confirm('Apakah Anda yakin ingin menukarkan 1000 poin untuk mendapatkan reward?');
+  if (!confirmReward) return;
+  
+  const result = await klaimRewardById(currentPoinCustomerId, currentPoinCustomerData);
+  if (result.success) {
+    alert(result.message);
+    // Refresh data
+    currentPoinCustomerData = cekPelanggan(currentPoinCustomerId);
+    // Update UI
+    document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
+    document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia;
+    const percent = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100);
+    document.getElementById('poinProgressBar').style.width = percent + '%';
+    document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000';
+    
+    // Disable reward button
+    document.getElementById('rewardBtn').disabled = true;
+    document.getElementById('rewardBtn').textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)';
+  } else {
+    alert(result.message);
+  }
+}
+
+// ========== FUNGSI ADMIN UNTUK POIN ==========
+function adminTambahKlaim() {
+  const idType = document.getElementById('adminIdType').value;
+  let customerId = document.getElementById('adminCustomerId').value.trim();
+  
+  if (!customerId) {
+    alert('Masukkan ID pelanggan!');
+    return;
+  }
+  
+  // Validasi sederhana
+  if (idType === 'phone') {
+    if (!/^\d{10,13}$/.test(customerId.replace(/\s/g, ''))) {
+      alert('Nomor HP harus 10-13 digit angka!');
+      return;
+    }
+  }
+  
+  const result = tambahKlaim(customerId, idType);
+  alert(`✅ Berhasil menambah klaim untuk ${customerId}\nKlaim tersedia sekarang: ${result.klaimTersedia}\nTotal poin: ${result.poin}`);
+  
+  document.getElementById('adminCustomerId').value = '';
+  adminRefreshTable();
+}
+
+function adminRefreshTable() {
+  const data = loadPoinData();
+  const customers = data.customers;
+  const searchTerm = document.getElementById('searchCustomer')?.value.toLowerCase() || '';
+  
+  const tableBody = document.getElementById('adminCustomerTable');
+  if (!tableBody) return;
+  
+  const entries = Object.entries(customers);
+  if (entries.length === 0) {
+    tableBody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-400 p-4">Belum ada data pelanggan</td></tr>';
+    return;
+  }
+  
+  let filtered = entries;
+  if (searchTerm) {
+    filtered = entries.filter(([id]) => id.includes(searchTerm));
+  }
+  
+  tableBody.innerHTML = filtered.map(([id, data]) => `
+    <tr class="border-b border-gray-700 hover:bg-gray-800">
+      <td class="p-2 text-xs break-all">${escapeHtml(id)}</td>
+      <td class="p-2 text-center text-yellow-400">${data.klaimTersedia}</td>
+      <td class="p-2 text-center text-green-400">${data.poin}</td>
+    </tr>
+  `).join('');
+}
+
+// Event listener untuk search customer
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('searchCustomer');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => adminRefreshTable());
+  }
+});
+
+// Override openAdminPanelModal untuk refresh tabel
+const originalOpenAdminPanelModal = openAdminPanelModal;
+openAdminPanelModal = function() {
+  originalOpenAdminPanelModal();
+  setTimeout(() => adminRefreshTable(), 100);
+};
+
+// ========== FUNGSI UNTUK MENU SETTINGS ==========
+function contactAdmin() {
+    const nomorAdmin = "6283844843020";
+    const pesan = "Halo admin PasirPogorCell, saya ingin bertanya tentang...";
+    window.open(`https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`, '_blank');
+    closeSettingsModal();
+}
+
+function openLocation() {
+    const mapsUrl = "https://maps.app.goo.gl/YoTYYXkZpmHgyE9v9?g_st=ac";
+    window.open(mapsUrl, '_blank');
+    closeSettingsModal();
+}
+
+function shareWebsite() {
+    const url = window.location.href;
+    const text = "PasirPogorCell - Tempat top up game & paket internet termurah!";
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'PasirPogorCell',
+            text: text,
+            url: url
+        }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(url);
+        alert('✅ Link website telah disalin! Silakan bagikan ke teman Anda.');
+    }
+    closeSettingsModal();
+}
+// Debug: pastikan fungsi poin tersedia
+console.log('Poin function ready:', typeof openPoinModal);
+console.log('Poin modal element:', document.getElementById('poinModal'));
+
+// Jika fungsi tidak ada, buat ulang
+if (typeof openPoinModal === 'undefined') {
+    window.openPoinModal = function() {
+        const modal = document.getElementById('poinModal');
+        if (modal) {
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            const box = modal.querySelector('div');
+            if (box) box.classList.remove('scale-95');
+        } else {
+            alert('Modal Poin tidak ditemukan!');
+        }
+    };
+}
+
+if (typeof closePoinModal === 'undefined') {
+    window.closePoinModal = function() {
+        const modal = document.getElementById('poinModal');
+        if (modal) {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            const box = modal.querySelector('div');
+            if (box) box.classList.add('scale-95');
+        }
+    };
+}
+</script>    
 
 <section id="home" class="page p-6 max-w-4xl mx-auto mt-10">
   <div class="grid md:grid-cols-2 gap-6">
@@ -755,27 +2096,25 @@ async function sendTelegramMessage(message) { const TELEGRAM_BOT_TOKEN = '830376
     <button onclick="openGame(this)" class="card">🎮 Top Up Game</button>
   </div>
   <div class="flex justify-center items-center gap-3 mt-6 flex-wrap">
-    <button onclick="openCalculator()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">📟 Kalkulator</button>
-    <button onclick="openRekomendasi()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">⭐ Rekomend</button>
-    <button onclick="openPromo()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">📢 Info</button>
-    <button onclick="openPoinModal()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">🎁 Poin</button>
-  </div>
-</section>
+  <button onclick="openCalculator()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">📟 Kalkulator</button>
+  <button onclick="openRekomendasi()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">⭐ Rekomend</button>
+  <button onclick="openPromo()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">📢 Info</button>
+  <button onclick="openPoinModal()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">🎁 Poin</button>
+</div>
+</section>    
 
-<!-- INTERNET & GAME SECTION (DATA LENGKAP) -->
-<script>
-const operators = { Indosat: { "Freedom Mini Data (Kuota Harian)": [ {nama: "Indosat Yellow 1GB 2 Hari", harga: "Rp 9.000", ket: "Pastikan tidak ada paket internet yang masih aktif"}, {nama: "Indosat Yellow 5GB 1 Hari", harga: "Rp 10.000", ket: "Pastikan tidak ada paket internet yang masih aktif"}, {nama: "Indosat Yellow 1GB 7 Hari", harga: "Rp 10.000", ket: "Pastikan tidak ada paket internet yang masih aktif"}, {nama: "Freedom Mini 9GB 7 Hari", harga: "Rp 26.000", ket: "Kuota Utama 9GB 7 Hari. Zona Plus: 13GB. Zona Super Plus: 13GB"} ] } };
-const games = { "Mobile Legends": [ "100 Diamond Rp 28.000" ], "Free Fire": [ "100 Diamond Rp 16.000" ], "PUBG Mobile": [ "100 UC Rp 34.000" ] };
-// Sebenarnya data lengkap ada di file asli, tapi karena keterbatasan karakter, saya hanya contohkan beberapa. Silakan gunakan data asli Anda.
-</script>
+<!-- INTERNET -->    
 <section id="internet" class="hidden page p-6 max-w-6xl mx-auto"><h2 class="text-2xl font-bold mb-4">Pilih Operator</h2><div id="operatorList" class="grid md:grid-cols-3 gap-4"></div></section>    
 <section id="paketTypes" class="hidden page p-6 max-w-6xl mx-auto"><h2 id="paketTitle" class="text-2xl font-bold mb-4"></h2><div id="paketTypeList" class="grid md:grid-cols-3 gap-4"></div></section>    
 <section id="operatorDetail" class="hidden page p-6 max-w-6xl mx-auto"><h2 id="operatorTitle" class="text-2xl font-bold mb-4"></h2><div id="paketList" class="space-y-3"></div></section>    
+
+<!-- GAME -->    
 <section id="game" class="hidden page p-6 max-w-6xl mx-auto"><h2 class="text-2xl font-bold mb-4">Pilih Game</h2><div id="gameList" class="grid md:grid-cols-3 gap-4"></div></section>    
 <section id="gameDetail" class="hidden page p-6 max-w-6xl mx-auto"><h2 id="gameTitle" class="text-2xl font-bold mb-4"></h2><div id="topupList" class="space-y-3"></div></section>    
 
 <button id="floatingBackBtn" class="floating-back" onclick="back()">← Kembali</button>
 
+<!-- FOOTER -->    
 <footer class="mt-20 p-6 text-center text-sm bg-black/60 space-y-3">    
   <h3 class="text-lg font-semibold">Silahkan Kunjungi Gerai PasirPogorCell Di Alamat Berikut</h3>    
   <p class="text-gray-300">📍 Pasir Pogor, RT.2/RW.1, Ciparasi,<br>Kec. Sobang, Kabupaten Lebak, Banten 42280</p>    
@@ -1425,18 +2764,121 @@ function openGameDetail(g) {
 }
 </script>    
 <script>
-let historyStack = [];
-function hideAll() { document.querySelectorAll("section").forEach(s => s.classList.add("hidden")); }
-function back() { const f = historyStack.pop(); if (f) { hideAll(); f(); } }
-function clearActive() { document.querySelectorAll(".menu-active").forEach(x => x.classList.remove("menu-active")); }
-function openInternet(b) { clearActive(); b.classList.add("menu-active"); historyStack.push(() => home.classList.remove("hidden")); hideAll(); internet.classList.remove("hidden"); operatorList.innerHTML = ""; Object.keys(operators).forEach(o => { operatorList.innerHTML += `<div class="card" onclick="openTypes('${o}')">${o}</div>`; }); }
-function openTypes(op) { historyStack.push(() => internet.classList.remove("hidden")); hideAll(); paketTypes.classList.remove("hidden"); paketTitle.innerText = op; paketTypeList.innerHTML = ""; Object.keys(operators[op]).forEach(t => { paketTypeList.innerHTML += `<div class="card" onclick="openPaket('${op}','${t}')">${t}</div>`; }); }
-function openPaket(op, cat) { historyStack.push(() => paketTypes.classList.remove("hidden")); hideAll(); operatorDetail.classList.remove("hidden"); operatorTitle.innerText = op + " - " + cat; paketList.innerHTML = ""; operators[op][cat].forEach(p => { paketList.innerHTML += `<div class="card"><div class="card-main"><div style="flex:1">${p.nama}</div><span class="price">${p.harga}</span><button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')">💬 Beli</button></div><div class="card-detail">${p.ket}</div></div>`; }); }
-function openGame(b) { clearActive(); b.classList.add("menu-active"); historyStack.push(() => home.classList.remove("hidden")); hideAll(); game.classList.remove("hidden"); gameList.innerHTML = ""; Object.keys(games).forEach(g => { gameList.innerHTML += `<div class="card" onclick="openGameDetail('${g}')">${g}</div>`; }); }
-function openGameDetail(g) { historyStack.push(() => game.classList.remove("hidden")); hideAll(); gameDetail.classList.remove("hidden"); gameTitle.innerText = g; topupList.innerHTML = ""; games[g].forEach(item => { const hargaMatch = item.match(/Rp\s?[\d\.]+/); let harga = hargaMatch ? hargaMatch[0] : ""; let namaItem = item.replace(harga, "").trim(); topupList.innerHTML += `<div class="card"><div class="card-main"><div style="flex:1">${namaItem}</div><span class="price">${harga}</span><button class="whatsapp-btn" onclick="sendToWhatsApp('${g} - ${namaItem}', '${harga}')">💬 Beli</button></div><div class="card-detail">Top Up Game</div></div>`; }); }
-</script>
+    // ================= KONFIGURASI =================
+    const TELEGRAM_BOT_TOKEN = '8303767615:AAHIloX2OXO3imC3tVnjfN_W_n2joaNSnro';
+    const TELEGRAM_CHAT_ID = '5725724854';  // Chat ID Anda
+    const STORAGE_KEY = 'visitor_count';
+    // =================================================
 
-<!-- MODAL SETTINGS, ADMIN LOGIN, ADMIN PANEL, MODAL POIN -->
+    async function sendTelegramMessage(message) {
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+        const payload = {
+            chat_id: TELEGRAM_CHAT_ID,
+            text: message,
+            parse_mode: 'HTML'
+        };
+        try {
+            await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            console.log('✅ Notifikasi Telegram terkirim');
+        } catch (error) {
+            console.error('❌ Gagal mengirim notifikasi:', error);
+        }
+    }
+
+    function recordVisitAndReport(sendNotif = true) {
+    let count = localStorage.getItem(STORAGE_KEY);
+    count = count ? parseInt(count) + 1 : 1;
+    localStorage.setItem(STORAGE_KEY, count);
+
+    if (sendNotif) {
+        const visitMessage = `
+<b>📊 KUNJUNGAN WEBSITE</b>
+<b>Waktu:</b> ${new Date().toLocaleString()}
+<b>Total bulan ini:</b> ${count}
+<b>Halaman:</b> ${document.title}
+<b>URL:</b> ${window.location.href}
+        `;
+        sendTelegramMessage(visitMessage);
+    }
+}
+
+    function resetMonthlyCounter() {
+        const today = new Date();
+        const lastReset = localStorage.getItem('lastReset');
+        if (!lastReset) {
+            localStorage.setItem('lastReset', today.toISOString());
+            return;
+        }
+        const lastResetDate = new Date(lastReset);
+        if (today.getMonth() !== lastResetDate.getMonth() || today.getFullYear() !== lastResetDate.getFullYear()) {
+            localStorage.setItem(STORAGE_KEY, '0');
+            localStorage.setItem('lastReset', today.toISOString());
+            console.log('🔄 Penghitung kunjungan direset untuk bulan baru.');
+        }
+    }
+
+    function sendMonthlyReport() {
+        const count = localStorage.getItem(STORAGE_KEY) || 0;
+        const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        const date = new Date();
+        const monthName = monthNames[date.getMonth()];
+        const year = date.getFullYear();
+        const monthlyMessage = `
+<b>📈 LAPORAN BULANAN - ${monthName} ${year}</b>
+<b>Total Kunjungan:</b> ${count}
+        `;
+        sendTelegramMessage(monthlyMessage);
+    }
+
+    (function() {
+    resetMonthlyCounter();
+
+    // Deteksi apakah ini kunjungan baru di tab ini (bukan refresh)
+    const visitedBefore = sessionStorage.getItem('visited_this_tab');
+    if (!visitedBefore) {
+        // Ini kunjungan pertama di tab ini (klik link, buka baru, atau ketik URL)
+        sessionStorage.setItem('visited_this_tab', 'true');
+        recordVisitAndReport(true);  // Kirim notifikasi
+    } else {
+        // Ini refresh atau navigasi internal dalam tab yang sama
+        console.log('🔄 Refresh / navigasi internal, notifikasi tidak dikirim');
+        // Tetap update counter local storage (opsional: jika ingin tetap menghitung refresh)
+        let count = localStorage.getItem(STORAGE_KEY);
+        count = count ? parseInt(count) + 1 : 1;
+        localStorage.setItem(STORAGE_KEY, count);
+    }
+
+    // Laporan bulanan (tetap seperti semula)
+    const now = new Date();
+    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const timeUntilNextMonth = nextMonth - now;
+    setTimeout(() => {
+        sendMonthlyReport();
+        setInterval(sendMonthlyReport, 30 * 24 * 60 * 60 * 1000);
+    }, timeUntilNextMonth);
+})();
+</script>
+<!-- Modal Input untuk Nomor HP / ID Game -->
+<div id="inputModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
+  <div class="bg-gray-900 border border-green-500 rounded-xl p-6 w-80 relative transform scale-95 transition-all duration-300 shadow-2xl">
+    <h3 id="modalTitle" class="text-lg font-bold text-green-400 mb-4">Masukkan Data</h3>
+    <input type="text" id="modalInput" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300" placeholder="">
+    <!-- CHECKBOX SIMPAN -->
+    <div class="flex items-center gap-2 mt-3">
+      <input type="checkbox" id="modalSaveCheckbox" class="w-4 h-4 accent-green-500">
+      <label for="modalSaveCheckbox" class="text-xs text-gray-300">💾 Simpan data untuk kunjungan berikutnya</label>
+    </div>
+    <div class="flex justify-end gap-3 mt-4">
+      <button id="modalCancelBtn" class="px-4 py-1 border border-gray-500 text-gray-300 rounded-md hover:bg-gray-700">Batal</button>
+      <button id="modalConfirmBtn" class="px-4 py-1 bg-green-500 text-black rounded-md font-semibold hover:bg-green-400">Kirim</button>
+    </div>
+  </div>
+</div>
+<!-- MODAL SETTINGS -->
 <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300 settings-modal">
   <div class="bg-gray-900/95 border border-green-500 rounded-xl w-80 max-w-[90%] overflow-hidden transform scale-95 transition-all duration-300 shadow-2xl settings-card">
     <div class="flex justify-between items-center p-4 border-b border-gray-700">
@@ -1444,14 +2886,52 @@ function openGameDetail(g) { historyStack.push(() => game.classList.remove("hidd
       <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
     <div class="p-4 space-y-2">
-      <div onclick="contactAdmin()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all"><span class="text-xl">💬</span><div><div class="font-semibold text-white">Hubungi Admin</div><div class="text-xs text-gray-400">Chat via WhatsApp</div></div><span class="ml-auto text-gray-400 text-sm">→</span></div>
-      <div onclick="openLocation()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all"><span class="text-xl">📍</span><div><div class="font-semibold text-white">Lokasi Toko</div><div class="text-xs text-gray-400">Buka Google Maps</div></div><span class="ml-auto text-gray-400 text-sm">→</span></div>
-      <div onclick="shareWebsite()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all"><span class="text-xl">📱</span><div><div class="font-semibold text-white">Bagikan Website</div><div class="text-xs text-gray-400">Kirim ke teman</div></div><span class="ml-auto text-gray-400 text-sm">→</span></div>
-      <div onclick="openAdminPanel()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all mt-4 border-t border-gray-700 pt-4"><span class="text-xl">👑</span><div><div class="font-semibold text-white">Halaman Admin</div><div class="text-xs text-gray-400">🔒 Akses terbatas</div></div><span class="ml-auto text-gray-400 text-sm">→</span></div>
+      
+      <!-- Menu 1: Hubungi Admin -->
+      <div onclick="contactAdmin()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all">
+        <span class="text-xl">💬</span>
+        <div>
+          <div class="font-semibold text-white">Hubungi Admin</div>
+          <div class="text-xs text-gray-400">Chat via WhatsApp</div>
+        </div>
+        <span class="ml-auto text-gray-400 text-sm">→</span>
+      </div>
+      
+      <!-- Menu 2: Lokasi Toko -->
+      <div onclick="openLocation()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all">
+        <span class="text-xl">📍</span>
+        <div>
+          <div class="font-semibold text-white">Lokasi Toko</div>
+          <div class="text-xs text-gray-400">Buka Google Maps</div>
+        </div>
+        <span class="ml-auto text-gray-400 text-sm">→</span>
+      </div>
+      
+      <!-- Menu 3: Bagikan Website -->
+      <div onclick="shareWebsite()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all">
+        <span class="text-xl">📱</span>
+        <div>
+          <div class="font-semibold text-white">Bagikan Website</div>
+          <div class="text-xs text-gray-400">Kirim ke teman</div>
+        </div>
+        <span class="ml-auto text-gray-400 text-sm">→</span>
+      </div>
+      
+      <!-- Menu 4: Halaman Admin (tetap ada) -->
+      <div onclick="openAdminPanel()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer hover:bg-green-900/20 transition-all mt-4 border-t border-gray-700 pt-4">
+        <span class="text-xl">👑</span>
+        <div>
+          <div class="font-semibold text-white">Halaman Admin</div>
+          <div class="text-xs text-gray-400">🔒 Akses terbatas</div>
+        </div>
+        <span class="ml-auto text-gray-400 text-sm">→</span>
+      </div>
+      
     </div>
   </div>
 </div>
 
+<!-- MODAL ADMIN PASSWORD (Login) -->
 <div id="adminLoginModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
   <div class="bg-gray-900 border border-green-500 rounded-xl w-80 max-w-[90%] overflow-hidden transform scale-95 transition-all duration-300 shadow-2xl">
     <div class="flex justify-between items-center p-4 border-b border-gray-700">
@@ -1466,33 +2946,52 @@ function openGameDetail(g) { historyStack.push(() => game.classList.remove("hidd
   </div>
 </div>
 
+<!-- MODAL HALAMAN ADMIN (KOSONG UNTUK SEKARANG) -->
 <div id="adminPanelModal" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
   <div class="bg-gray-900 border border-green-500 rounded-xl w-full max-w-2xl max-h-[85vh] overflow-auto transform scale-95 transition-all duration-300 shadow-2xl admin-card">
     <div class="sticky top-0 bg-gray-900 flex justify-between items-center p-4 border-b border-gray-700 z-10">
       <h3 class="text-lg font-bold text-green-400">👑 Admin Panel</h3>
       <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
-    <div class="p-6">
-      <div class="space-y-6">
-        <div class="bg-gray-800/50 rounded-lg p-4">
-          <h4 class="text-green-400 font-bold mb-3">➕ Tambah Klaim untuk Pelanggan</h4>
-          <div class="grid gap-3">
-            <select id="adminIdType" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm"><option value="phone">📱 Nomor HP</option><option value="game">🎮 ID Game</option></select>
-            <input type="text" id="adminCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
-            <button onclick="adminTambahKlaim()" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition">✅ Tambah Klaim (1 klaim = 100 poin)</button>
-          </div>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-4">
-          <h4 class="text-green-400 font-bold mb-3">📋 Daftar Pelanggan</h4>
-          <div class="mb-3"><input type="text" id="searchCustomer" placeholder="Cari ID..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm"></div>
-          <div class="overflow-x-auto max-h-64 overflow-y-auto"><table class="w-full text-sm"><thead class="bg-gray-700 sticky top-0"><tr><th class="p-2 text-left">ID</th><th class="p-2 text-center">Klaim</th><th class="p-2 text-center">Poin</th></tr></thead><tbody id="adminCustomerTable"><tr><td colspan="3" class="text-center text-gray-400 p-4">Loading...</td></tr></tbody></table></div>
-        </div>
+    <div class="p-6" id="adminPanelContent">
+  <div class="space-y-6">
+    <!-- Form Tambah Klaim -->
+    <div class="bg-gray-800/50 rounded-lg p-4">
+      <h4 class="text-green-400 font-bold mb-3">➕ Tambah Klaim untuk Pelanggan</h4>
+      <div class="grid gap-3">
+        <select id="adminIdType" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+          <option value="phone">📱 Nomor HP</option>
+          <option value="game">🎮 ID Game</option>
+        </select>
+        <input type="text" id="adminCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+        <button onclick="adminTambahKlaim()" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition">✅ Tambah Klaim (1 klaim = 100 poin)</button>
+      </div>
+    </div>
+    
+    <!-- Daftar Pelanggan -->
+    <div class="bg-gray-800/50 rounded-lg p-4">
+      <h4 class="text-green-400 font-bold mb-3">📋 Daftar Pelanggan</h4>
+      <div class="mb-3">
+        <input type="text" id="searchCustomer" placeholder="Cari ID..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+      </div>
+      <div class="overflow-x-auto max-h-64 overflow-y-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-700 sticky top-0">
+            <tr>
+              <th class="p-2 text-left">ID</th>
+              <th class="p-2 text-center">Klaim</th>
+              <th class="p-2 text-center">Poin</th>
+            </tr>
+          </thead>
+          <tbody id="adminCustomerTable">
+            <tr><td colspan="3" class="text-center text-gray-400 p-4">Loading...</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
-
-<!-- MODAL KLAIM POIN PELANGGAN (TERPISAH, LANGSUNG MUNCUL) -->
+<!-- MODAL KLAIM POIN PELANGGAN -->
 <div id="poinModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
   <div class="bg-gray-900/95 border border-green-500 rounded-xl w-full max-w-md max-h-[85vh] overflow-auto transform scale-95 transition-all duration-300 shadow-2xl poin-card">
     <div class="sticky top-0 bg-gray-900 flex justify-between items-center p-4 border-b border-gray-700">
@@ -1500,41 +2999,64 @@ function openGameDetail(g) { historyStack.push(() => game.classList.remove("hidd
       <button onclick="closePoinModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
     <div class="p-5">
+      <!-- Pilih Tipe ID -->
       <div class="mb-4">
         <label class="text-sm text-gray-400 block mb-2">Tipe ID:</label>
         <div class="flex gap-4">
-          <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="poinIdType" value="phone" checked onchange="togglePoinIdType()" class="accent-green-500"><span>📱 Nomor HP</span></label>
-          <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="poinIdType" value="game" onchange="togglePoinIdType()" class="accent-green-500"><span>🎮 ID Game</span></label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="poinIdType" value="phone" checked onchange="togglePoinIdType()" class="accent-green-500"> 
+            <span>📱 Nomor HP</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="poinIdType" value="game" onchange="togglePoinIdType()" class="accent-green-500"> 
+            <span>🎮 ID Game</span>
+          </label>
         </div>
       </div>
-      <div class="mb-4"><input type="text" id="poinCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300"></div>
+      
+      <!-- Input ID -->
+      <div class="mb-4">
+        <input type="text" id="poinCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300">
+      </div>
+      
+      <!-- Tombol Cek -->
       <button onclick="cekPoinPelanggan()" class="w-full bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition mb-4">🔍 Cek & Klaim</button>
+      
+      <!-- Hasil Cek Poin -->
       <div id="poinHasil" class="hidden">
         <div class="border-t border-gray-700 pt-4 mt-2">
-          <div class="text-center mb-3"><div class="text-2xl font-bold text-green-400" id="poinDisplayId">-</div><div class="text-xs text-gray-400">Total Poin</div></div>
-          <div class="text-center mb-4"><div class="text-sm text-gray-300">🎫 Klaim tersedia: <span id="poinKlaimTersedia" class="text-yellow-400 font-bold">0</span></div></div>
-          <div id="poinKlaimSection" class="hidden mb-4"><button onclick="klaimSemuaPoin()" id="klaimBtn" class="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-2 rounded-lg transition">🎁 KLAIM SEMUA</button></div>
+          <div class="text-center mb-3">
+            <div class="text-2xl font-bold text-green-400" id="poinDisplayId">-</div>
+            <div class="text-xs text-gray-400">Total Poin</div>
+          </div>
+          <div class="text-center mb-4">
+            <div class="text-sm text-gray-300">🎫 Klaim tersedia: <span id="poinKlaimTersedia" class="text-yellow-400 font-bold">0</span></div>
+          </div>
+          
+          <!-- Tombol Klaim Semua (jika ada klaim tersedia) -->
+          <div id="poinKlaimSection" class="hidden mb-4">
+            <button onclick="klaimSemuaPoin()" id="klaimBtn" class="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-2 rounded-lg transition">🎁 KLAIM SEMUA (0 klaim → 0 poin)</button>
+          </div>
+          
+          <!-- Progress Reward 1000 poin -->
           <div class="bg-gray-800 rounded-lg p-4 mt-4">
-            <div class="flex justify-between text-sm mb-2"><span>🏆 Reward 1000 Poin</span><span id="poinProgressText">0 / 1000</span></div>
-            <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden"><div id="poinProgressBar" class="poin-progress-bar h-3" style="width:0%"></div></div>
+            <div class="flex justify-between text-sm mb-2">
+              <span>🏆 Reward 1000 Poin</span>
+              <span id="poinProgressText">0 / 1000</span>
+            </div>
+            <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+              <div id="poinProgressBar" class="poin-progress-bar h-3" style="width: 0%"></div>
+            </div>
             <button id="rewardBtn" onclick="klaimReward()" disabled class="w-full mt-3 poin-reward-btn text-green-400 text-sm py-2 rounded-lg transition">📨 Kirim Informasi ke Penjual (butuh 1000 poin)</button>
           </div>
         </div>
       </div>
-      <div id="poinEmpty" class="text-center text-gray-400 py-8">🔍 Masukkan ID Anda untuk melihat poin</div>
+      
+      <div id="poinEmpty" class="text-center text-gray-400 py-8">
+        🔍 Masukkan ID Anda untuk melihat poin
+      </div>
     </div>
   </div>
 </div>
-
-<!-- Modal Input untuk Nomor HP / ID Game -->
-<div id="inputModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
-  <div class="bg-gray-900 border border-green-500 rounded-xl p-6 w-80 relative transform scale-95 transition-all duration-300 shadow-2xl">
-    <h3 id="modalTitle" class="text-lg font-bold text-green-400 mb-4">Masukkan Data</h3>
-    <input type="text" id="modalInput" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300" placeholder="">
-    <div class="flex items-center gap-2 mt-3"><input type="checkbox" id="modalSaveCheckbox" class="w-4 h-4 accent-green-500"><label class="text-xs text-gray-300">💾 Simpan data untuk kunjungan berikutnya</label></div>
-    <div class="flex justify-end gap-3 mt-4"><button id="modalCancelBtn" class="px-4 py-1 border border-gray-500 text-gray-300 rounded-md hover:bg-gray-700">Batal</button><button id="modalConfirmBtn" class="px-4 py-1 bg-green-500 text-black rounded-md font-semibold hover:bg-green-400">Kirim</button></div>
-  </div>
-</div>
-
-</body>
+</body>    
 </html>

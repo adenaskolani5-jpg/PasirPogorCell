@@ -114,6 +114,243 @@
 body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 .page{ animation:fadeIn 0.2s ease; }
 @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
+/* PERBAIKAN LIGHT MODE - AGAR LEBIH NYAMAN DILIHAT */
+.light {
+  --bg: #f0f2f5;
+  --card: #ffffff;
+  --text: #1a1a2e;
+  --muted: #555555;
+  --accent: #059669;
+  --blue: #2563eb;
+  --yellow: #d97706;
+}
+
+.light body { 
+  background: linear-gradient(135deg, #e8ecf2, #dce1e8); 
+  color: #1a1a2e;
+}
+
+.light .card { 
+  background: #ffffff; 
+  color: #1a1a2e; 
+  border: 1px solid rgba(5, 150, 105, 0.3); 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.light .card .price { 
+  color: #059669; 
+  text-shadow: none;
+}
+
+.light header { 
+  background: #ffffff; 
+  border-bottom-color: #e0e0e0;
+}
+
+.light header h1 { 
+  color: #1a1a2e; 
+}
+
+.light header p { 
+  color: #555555; 
+}
+
+.light .marquee { 
+  background: #e2e8f0; 
+  border-color: #059669;
+}
+
+.light .marquee span { 
+  color: #1a1a2e; 
+  text-shadow: none;
+  font-weight: 500;
+}
+
+.light .price { 
+  color: #059669; 
+  text-shadow: none;
+}
+
+.light #searchHarga { 
+  background: #ffffff; 
+  color: #1a1a2e; 
+  border-color: #059669;
+}
+
+.light #searchHarga::placeholder { 
+  color: #888888; 
+}
+
+.light #searchHarga:focus { 
+  border-color: #10b981; 
+  box-shadow: 0 0 8px rgba(5, 150, 105, 0.4);
+}
+
+.light .harga-item { 
+  background: #ffffff; 
+  border-left-color: #059669;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.light .harga-nama-text { 
+  color: #1a1a2e; 
+}
+
+.light .harga-ket { 
+  color: #555555; 
+  border-top-color: rgba(5, 150, 105, 0.2);
+}
+
+.light .whatsapp-btn { 
+  background: #25D366; 
+  color: white;
+}
+
+.light .glow-card { 
+  background: #f8fafc; 
+  border-color: #059669;
+}
+
+.light .glow-card h3 { 
+  color: #059669; 
+}
+
+.light .glow-card p { 
+  color: #334155; 
+}
+
+.light .glow-card a { 
+  color: #059669; 
+}
+
+.light footer { 
+  background: #e2e8f0; 
+  color: #334155;
+}
+
+.light footer .text-gray-400 { 
+  color: #555555; 
+}
+
+.light .settings-card { 
+  background: #ffffff; 
+  border-color: #059669;
+}
+
+.light .settings-menu-item .text-white { 
+  color: #1a1a2e; 
+}
+
+.light .settings-menu-item .text-gray-400 { 
+  color: #555555; 
+}
+
+.light .settings-menu-item:hover { 
+  background: rgba(5, 150, 105, 0.1); 
+}
+
+.light .admin-card { 
+  background: #ffffff; 
+  border-left-color: #059669;
+}
+
+.light .password-input { 
+  background: #f1f5f9; 
+  border-color: #059669;
+  color: #1a1a2e;
+}
+
+.light .password-input:focus { 
+  background: #ffffff; 
+}
+
+.light .calc-btn { 
+  background: #f1f5f9; 
+  color: #1a1a2e; 
+  border-color: #cbd5e1;
+}
+
+.light .calc-btn-op { 
+  background: #e2e8f0; 
+  color: #059669; 
+  border-color: #059669;
+}
+
+.light .calc-display { 
+  background: #f8fafc; 
+  border-color: #059669;
+}
+
+.light .calc-display input { 
+  color: #059669; 
+}
+
+.light .voucher-compact .input-mini { 
+  background: #f1f5f9; 
+  color: #1a1a2e; 
+  border-color: #059669;
+}
+
+.light .voucher-compact .stat-card { 
+  background: #f8fafc; 
+  border-color: #059669;
+}
+
+.light .voucher-compact .stat-value { 
+  color: #059669; 
+}
+
+.light .voucher-compact .glass-panel { 
+  background: rgba(255, 255, 255, 0.9); 
+  backdrop-filter: blur(8px);
+}
+
+.light .modal-content, 
+.light .bg-gray-900, 
+.light .bg-gray-900/95, 
+.light .bg-gray-900/90 { 
+  background: #ffffff !important; 
+}
+
+.light .border-gray-700 { 
+  border-color: #e0e0e0 !important; 
+}
+
+.light .text-gray-400, 
+.light .text-gray-300, 
+.light .text-gray-500 { 
+  color: #555555 !important; 
+}
+
+.light .text-white { 
+  color: #1a1a2e !important; 
+}
+
+.light .bg-gray-800 { 
+  background: #f1f5f9 !important; 
+}
+
+.light .border-green-400, 
+.light .border-green-500 { 
+  border-color: #059669 !important; 
+}
+
+.light .text-green-400, 
+.light .text-green-500 { 
+  color: #059669 !important; 
+}
+
+.light .bg-green-600 { 
+  background: #059669 !important; 
+}
+
+.light .bg-green-600:hover { 
+  background: #047857 !important; 
+}
+
+.light hr.border-gray-600 { 
+  border-color: #e0e0e0; 
+}
 .card{
   position:relative; background:var(--card); color:var(--text); padding:1.3rem; border-radius:1rem; font-weight:600;
   display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:.35s;

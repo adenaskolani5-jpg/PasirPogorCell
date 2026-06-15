@@ -3056,5 +3056,164 @@ function openGameDetail(g) {
     </div>
   </div>
 </div>
+<script>
+// ========== PERBAIKAN FUNGSI POIN YANG HILANG ==========
+
+// Pastikan fungsi openPoinModal berfungsi
+if (typeof openPoinModal === 'undefined') {
+    window.openPoinModal = function() {
+        console.log('openPoinModal dipanggil');
+        const modal = document.getElementById('poinModal');
+        if (modal) {
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            const box = modal.querySelector('div');
+            if (box) box.classList.remove('scale-95');
+            // Reset form
+            const input = document.getElementById('poinCustomerId');
+            if (input) input.value = '';
+            const hasil = document.getElementById('poinHasil');
+            if (hasil) hasil.classList.add('hidden');
+            const empty = document.getElementById('poinEmpty');
+            if (empty) empty.classList.remove('hidden');
+        } else {
+            console.error('Modal Poin tidak ditemukan!');
+            alert('Fitur poin sedang dalam perbaikan. Silakan coba lagi nanti.');
+        }
+    };
+}
+
+if (typeof closePoinModal === 'undefined') {
+    window.closePoinModal = function() {
+        const modal = document.getElementById('poinModal');
+        if (modal) {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            const box = modal.querySelector('div');
+            if (box) box.classList.add('scale-95');
+        }
+    };
+}
+
+if (typeof togglePoinIdType === 'undefined') {
+    window.togglePoinIdType = function() {
+        const input = document.getElementById('poinCustomerId');
+        const phoneRadio = document.querySelector('input[value="phone"]');
+        if (phoneRadio && phoneRadio.checked) {
+            input.placeholder = "Masukkan nomor HP (contoh: 081234567890)";
+        } else {
+            input.placeholder = "Masukkan ID Game (contoh: 12345678(1011))";
+        }
+    };
+}
+
+// Pastikan fungsi cekPoinPelanggan menggunakan data dari localStorage
+if (typeof cekPoinPelanggan !== 'undefined') {
+    // Jika sudah ada, biarkan
+    console.log('cekPoinPelanggan sudah ada');
+} else {
+    window.cekPoinPelanggan = function() {
+        const customerId = document.getElementById('poinCustomerId').value.trim();
+        if (!customerId) {
+            alert('Masukkan ID terlebih dahulu!');
+            return;
+        }
+        
+        const normalizedId = customerId.toLowerCase();
+        const data = loadPoinData();
+        const customerData = data.customers[normalizedId] || null;
+        
+        if (!customerData) {
+            document.getElementById('poinEmpty').classList.remove('hidden');
+            document.getElementById('poinHasil').classList.add('hidden');
+            alert('ID tidak ditemukan. Pastikan Anda sudah melakukan pembelian dan admin telah mencatatnya.');
+            return;
+        }
+        
+        currentPoinCustomerId = normalizedId;
+        currentPoinCustomerData = customerData;
+        
+        document.getElementById('poinEmpty').classList.add('hidden');
+        document.getElementById('poinHasil').classList.remove('hidden');
+        document.getElementById('poinDisplayId').textContent = customerData.poin;
+        document.getElementById('poinKlaimTersedia').textContent = customerData.klaimTersedia;
+        
+        const poin = customerData.poin;
+        const percent = Math.min((poin / 1000) * 100, 100);
+        document.getElementById('poinProgressBar').style.width = percent + '%';
+        document.getElementById('poinProgressText').textContent = poin + ' / 1000';
+        
+        const rewardBtn = document.getElementById('rewardBtn');
+        if (poin >= 1000) {
+            rewardBtn.disabled = false;
+            rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (1000 poin akan ditukar)';
+            rewardBtn.classList.add('bg-green-600', 'text-black');
+            rewardBtn.classList.remove('poin-reward-btn');
+        } else {
+            rewardBtn.disabled = true;
+            rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)';
+            rewardBtn.classList.remove('bg-green-600', 'text-black');
+            rewardBtn.classList.add('poin-reward-btn');
+        }
+        
+        const klaimSection = document.getElementById('poinKlaimSection');
+        const klaimBtn = document.getElementById('klaimBtn');
+        if (customerData.klaimTersedia > 0) {
+            klaimSection.classList.remove('hidden');
+            klaimBtn.textContent = `🎁 KLAIM SEMUA (${customerData.klaimTersedia} klaim → ${customerData.klaimTersedia * 100} poin)`;
+        } else {
+            klaimSection.classList.add('hidden');
+        }
+    };
+}
+
+if (typeof klaimSemuaPoin === 'undefined') {
+    window.klaimSemuaPoin = function() {
+        if (!currentPoinCustomerId) return;
+        const result = klaimPoin(currentPoinCustomerId);
+        if (result.success) {
+            alert(result.message);
+            currentPoinCustomerData = cekPelanggan(currentPoinCustomerId);
+            document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
+            document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia;
+            document.getElementById('poinProgressBar').style.width = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100) + '%';
+            document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000';
+            document.getElementById('poinKlaimSection').classList.add('hidden');
+        } else {
+            alert(result.message);
+        }
+    };
+}
+
+if (typeof klaimReward === 'undefined') {
+    window.klaimReward = async function() {
+        if (!currentPoinCustomerId || !currentPoinCustomerData) return;
+        if (currentPoinCustomerData.poin < 1000) {
+            alert('Poin belum mencapai 1000!');
+            return;
+        }
+        const confirmReward = confirm('Apakah Anda yakin ingin menukarkan 1000 poin untuk mendapatkan reward?');
+        if (!confirmReward) return;
+        const result = await klaimRewardById(currentPoinCustomerId, currentPoinCustomerData);
+        if (result.success) {
+            alert(result.message);
+            currentPoinCustomerData = cekPelanggan(currentPoinCustomerId);
+            document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
+            document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia;
+            const percent = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100);
+            document.getElementById('poinProgressBar').style.width = percent + '%';
+            document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000';
+            document.getElementById('rewardBtn').disabled = true;
+            document.getElementById('rewardBtn').textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)';
+        } else {
+            alert(result.message);
+        }
+    };
+}
+
+// Variabel global untuk menyimpan data customer saat ini
+let currentPoinCustomerId = null;
+let currentPoinCustomerData = null;
+
+console.log('Fungsi poin siap, openPoinModal tersedia:', typeof openPoinModal);
+</script>
 </body>    
 </html>

@@ -615,19 +615,28 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
     <span>[ Harga sewaktu waktu dapat berubah ]</span><span>[ Silahkan kunjungi langsung Gerai PasirPogorCell ]</span><span>[ semoga harimu menyenangkan ]</span><span>[ Harga sewaktu waktu dapat berubah ]</span><span>[ Silahkan kunjungi langsung Gerai PasirPogorCell ]</span><span>[ semoga harimu menyenangkan ]</span>
   </div>
 </div>
-<header class="p-6 text-center border-b border-gray-700">          
-  <h1 class="text-4xl font-bold">PasirPogorCell</h1>          
-  <p class="text-gray-300">Paket Internet & Top Up Game</p>          
+<header class="p-6 border-b border-gray-700 relative">          
+  <!-- Tombol Settings di pojok kiri -->
+  <div class="absolute left-6 top-1/2 -translate-y-1/2">
+    <button onclick="openSettingsModal()" class="text-green-500 hover:text-green-300 transition-all duration-300 hover:scale-110 focus:outline-none" title="Pengaturan Admin">
+      <span class="text-3xl">⚙️</span>
+    </button>
+  </div>
+  
+  <!-- Judul Tengah -->
+  <div class="text-center">
+    <h1 class="text-4xl font-bold">PasirPogorCell</h1>          
+    <p class="text-gray-300">Paket Internet & Top Up Game</p>
+  </div>
 </header>        
 <!-- Tombol Baris Atas: Cari (lebar) dan Info (kanan) -->
 <div class="my-4 px-4">
-  <!-- Baris: Search + Tombol Settings (sejajar) -->
-  <div class="flex gap-3 items-center">
-    <!-- Kolom Search (flex-1 agar memenuhi sisa ruang) -->
-    <div class="relative flex-1">
-      <input type="text" id="searchHarga" placeholder="Cari paket internet atau game..." class="w-full border border-green-400 bg-gray-900 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300 focus:ring-1 focus:ring-green-500 transition futuristic-btn pr-8">
-      <button id="clearSearchBtn" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white text-lg font-bold hidden">&times;</button>
-    </div>
+  <div class="relative">
+    <input type="text" id="searchHarga" placeholder="Cari paket internet atau game..." class="w-full border border-green-400 bg-gray-900 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300 focus:ring-1 focus:ring-green-500 transition futuristic-btn pr-8">
+    <button id="clearSearchBtn" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white text-lg font-bold hidden">&times;</button>
+  </div>
+  <div id="hasilHarga" class="mt-3 space-y-2 max-h-80 overflow-y-auto"></div>
+</div>
     
     <!-- Tombol Settings -->
     <button onclick="openSettingsModal()" class="relative focus:outline-none group" title="Pengaturan Admin">

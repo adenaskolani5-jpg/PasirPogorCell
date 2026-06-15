@@ -2532,58 +2532,7 @@ function openGameDetail(g) {
     </div>
   </div>
 </div>
-// ========== FUNGSI MENU SETTINGS ==========
 
-// Hubungi Admin via WhatsApp
-function contactAdmin() {
-    const nomorAdmin = "6283844843020";
-    const pesan = "Halo admin PasirPogorCell, saya ingin bertanya tentang...";
-    window.open(`https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`, '_blank');
-    closeSettingsModal();
-}
-
-// Buka Lokasi Toko di Google Maps (menggunakan link yang Anda berikan)
-function openLocation() {
-    const mapsUrl = "https://maps.app.goo.gl/YoTYYXkZpmHgyE9v9?g_st=ac";
-    window.open(mapsUrl, '_blank');
-    closeSettingsModal();
-}
-
-// Bagikan Website
-function shareWebsite() {
-    const url = window.location.href;
-    const text = "PasirPogorCell - Tempat top up game & paket internet termurah!";
-    
-    // Cek apakah perangkat support Web Share API (HP biasanya support)
-    if (navigator.share) {
-        navigator.share({
-            title: 'PasirPogorCell',
-            text: text,
-            url: url
-        }).catch((err) => {
-            console.log('Gagal share:', err);
-            fallbackCopyUrl(url);
-        });
-    } else {
-        // Fallback untuk desktop: copy link ke clipboard
-        fallbackCopyUrl(url);
-    }
-    closeSettingsModal();
-}
-
-// Fallback copy URL ke clipboard
-function fallbackCopyUrl(url) {
-    navigator.clipboard.writeText(url).then(() => {
-        // Tampilkan notifikasi sukses
-        const toast = document.createElement('div');
-        toast.textContent = '✅ Link website telah disalin! Silakan bagikan ke teman Anda.';
-        toast.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50 shadow-lg animate-pulse';
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-    }).catch(() => {
-        alert('✅ Link website: ' + url + '\nSilakan salin dan bagikan ke teman Anda.');
-    });
-}
 <!-- MODAL HALAMAN ADMIN (KOSONG UNTUK SEKARANG) -->
 <div id="adminPanelModal" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
   <div class="bg-gray-900 border border-green-500 rounded-xl w-full max-w-2xl max-h-[85vh] overflow-auto transform scale-95 transition-all duration-300 shadow-2xl admin-card">

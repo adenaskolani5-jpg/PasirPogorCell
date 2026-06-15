@@ -2027,9 +2027,10 @@ document.getElementById('adminPassword')?.addEventListener('keypress', function(
   }
 });
 // ========== FUNGSI DARK/LIGHT MODE ==========
+// ========== FUNGSI HIJAU/BIRU MODE ==========
 function initDarkMode() {
-    // Cek preferensi tersimpan, default ke dark mode
-    const isLightMode = localStorage.getItem('lightMode') === 'true';
+    // Cek preferensi tersimpan, default ke dark mode (hijau)
+    const isBlueMode = localStorage.getItem('blueMode') === 'true';
     const toggle = document.getElementById('darkModeToggle');
     const circle = document.getElementById('darkModeToggleCircle');
     const themeIcon = document.getElementById('themeIcon');
@@ -2037,40 +2038,40 @@ function initDarkMode() {
     
     if (!toggle) return;
     
-    if (isLightMode) {
+    if (isBlueMode) {
         document.body.classList.add('light');
         if (circle) circle.classList.add('translate-x-6');
-        if (themeIcon) themeIcon.textContent = '☀️';
-        if (themeText) themeText.textContent = 'Mode Terang';
+        if (themeIcon) themeIcon.textContent = '🔵';
+        if (themeText) themeText.textContent = 'Mode Biru';
     } else {
         document.body.classList.remove('light');
         if (circle) circle.classList.remove('translate-x-6');
         if (circle) circle.classList.add('translate-x-1');
-        if (themeIcon) themeIcon.textContent = '🌙';
-        if (themeText) themeText.textContent = 'Mode Gelap';
+        if (themeIcon) themeIcon.textContent = '🟢';
+        if (themeText) themeText.textContent = 'Mode Hijau';
     }
     
     toggle.addEventListener('click', function() {
-        const isCurrentlyLight = document.body.classList.contains('light');
+        const isCurrentlyBlue = document.body.classList.contains('light');
         
-        if (isCurrentlyLight) {
+        if (isCurrentlyBlue) {
             document.body.classList.remove('light');
-            localStorage.setItem('lightMode', 'false');
+            localStorage.setItem('blueMode', 'false');
             if (circle) {
                 circle.classList.remove('translate-x-6');
                 circle.classList.add('translate-x-1');
             }
-            if (themeIcon) themeIcon.textContent = '🌙';
-            if (themeText) themeText.textContent = 'Mode Gelap';
+            if (themeIcon) themeIcon.textContent = '🟢';
+            if (themeText) themeText.textContent = 'Mode Hijau';
         } else {
             document.body.classList.add('light');
-            localStorage.setItem('lightMode', 'true');
+            localStorage.setItem('blueMode', 'true');
             if (circle) {
                 circle.classList.remove('translate-x-1');
                 circle.classList.add('translate-x-6');
             }
-            if (themeIcon) themeIcon.textContent = '☀️';
-            if (themeText) themeText.textContent = 'Mode Terang';
+            if (themeIcon) themeIcon.textContent = '🔵';
+            if (themeText) themeText.textContent = 'Mode Biru';
         }
     });
 }

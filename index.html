@@ -810,6 +810,7 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
     const modal = document.getElementById('inputModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalInput = document.getElementById('modalInput');
+    const modalCheckbox = document.getElementById('modalSaveCheckbox');
     const confirmBtn = document.getElementById('modalConfirmBtn');
     const cancelBtn = document.getElementById('modalCancelBtn');
     const modalBody = modal.querySelector('div');
@@ -827,7 +828,7 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
       if (inputElement && inputElement.nextSibling) {
         modalBody.insertBefore(infoDiv, inputElement.nextSibling);
       } else {
-        modalBody.insertBefore(infoDiv, confirmBtn.parentNode);
+        modalBody.insertBefore(infoDiv, modalCheckbox.parentNode);
       }
     }
     
@@ -838,13 +839,39 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
     modalTitle.textContent = title;
     modalInput.placeholder = placeholder;
     
-    // Muat data tersimpan dari localStorage jika ada
+    // Cek apakah ada data tersimpan
+    let hasSavedData = false;
     if (storageKey) {
       const savedValue = localStorage.getItem(storageKey);
-      if (savedValue) modalInput.value = savedValue;
+      if (savedValue) {
+        modalInput.value = savedValue;
+        hasSavedData = true;
+        // Jika ada data tersimpan, centang checkbox otomatis
+        modalCheckbox.checked = true;
+      } else {
+        modalInput.value = '';
+        modalCheckbox.checked = false;
+      }
     } else {
       modalInput.value = '';
+      modalCheckbox.checked = false;
     }
+    
+    // Fungsi untuk mengecek apakah input valid
+    function isInputValid() {
+      const val = modalInput.value.trim();
+      if (validator) {
+        return validator(val);
+      }
+      return val !== '';
+    }
+    
+    // Event listener untuk input: jika kosong atau tidak valid, checkbox otomatis tidak dicentang
+    modalInput.addEventListener('input', function() {
+      if (!isInputValid()) {
+        modalCheckbox.checked = false;
+      }
+    });
     
     modal.classList.remove('opacity-0', 'pointer-events-none');
     modal.querySelector('div').classList.remove('scale-95');
@@ -856,48 +883,37 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
       confirmBtn.removeEventListener('click', onConfirm);
       cancelBtn.removeEventListener('click', onCancel);
       modalInput.removeEventListener('keypress', onKeyPress);
-      modalInput.removeEventListener('input', onInput);
       if (errorMsg) errorMsg.remove();
     }
     
-    function onInput() {
+    function onConfirm() {
+      const value = modalInput.value.trim();
+      if (validator && !validator(value)) {
+        errorMsg.textContent = validator.errorMessage || 'Input tidak valid!';
+        errorMsg.classList.remove('hidden');
+        modalInput.classList.add('border-red-500');
+        return;
+      }
       errorMsg.classList.add('hidden');
       modalInput.classList.remove('border-red-500');
+      
+      // Simpan ke localStorage HANYA jika checkbox dicentang
+      if (storageKey && modalCheckbox.checked && value) {
+        localStorage.setItem(storageKey, value);
+        // Tampilkan notifikasi singkat
+        const toast = document.createElement('div');
+        toast.textContent = '✅ Data tersimpan';
+        toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50 shadow-lg';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 1500);
+      } else if (storageKey && !modalCheckbox.checked) {
+        // Jika checkbox tidak dicentang, hapus data yang tersimpan
+        localStorage.removeItem(storageKey);
+      }
+      
+      cleanup();
+      resolve(value);
     }
-    
-    function onConfirm() {
-  const value = modalInput.value.trim();
-  if (validator && !validator(value)) {
-    errorMsg.textContent = validator.errorMessage || 'Input tidak valid!';
-    errorMsg.classList.remove('hidden');
-    modalInput.classList.add('border-red-500');
-    return;
-  }
-  errorMsg.classList.add('hidden');
-  modalInput.classList.remove('border-red-500');
-  
-  // Simpan ke localStorage jika storageKey disediakan
-if (storageKey && value) {
-  localStorage.setItem(storageKey, value);
-  
-  // Tunda notifikasi 300ms untuk menunggu keyboard menutup
-  setTimeout(() => {
-    // Buat elemen toast
-    const toast = document.createElement('div');
-    toast.textContent = '✅ Data tersimpan';
-    toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50 shadow-lg';
-    document.body.appendChild(toast);
-    
-    // Notifikasi hilang setelah 2 detik
-    setTimeout(() => {
-      if (toast && toast.remove) toast.remove();
-    }, 2000);
-  }, 300);
-}
-  
-  cleanup();
-  resolve(value);
-}
     
     function onCancel() {
       cleanup();
@@ -911,7 +927,6 @@ if (storageKey && value) {
     confirmBtn.addEventListener('click', onConfirm);
     cancelBtn.addEventListener('click', onCancel);
     modalInput.addEventListener('keypress', onKeyPress);
-    modalInput.addEventListener('input', onInput);
   });
 }
 
@@ -2056,6 +2071,11 @@ function openGameDetail(g) {
   <div class="bg-gray-900 border border-green-500 rounded-xl p-6 w-80 relative transform scale-95 transition-all duration-300 shadow-2xl">
     <h3 id="modalTitle" class="text-lg font-bold text-green-400 mb-4">Masukkan Data</h3>
     <input type="text" id="modalInput" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300" placeholder="">
+    <!-- CHECKBOX SIMPAN -->
+    <div class="flex items-center gap-2 mt-3">
+      <input type="checkbox" id="modalSaveCheckbox" class="w-4 h-4 accent-green-500">
+      <label for="modalSaveCheckbox" class="text-xs text-gray-300">💾 Simpan data untuk kunjungan berikutnya</label>
+    </div>
     <div class="flex justify-end gap-3 mt-4">
       <button id="modalCancelBtn" class="px-4 py-1 border border-gray-500 text-gray-300 rounded-md hover:bg-gray-700">Batal</button>
       <button id="modalConfirmBtn" class="px-4 py-1 bg-green-500 text-black rounded-md font-semibold hover:bg-green-400">Kirim</button>

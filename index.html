@@ -606,6 +606,34 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   transform: translateX(5px);
   border-left-color: #22c55e !important;
 }
+/* ===== CUSTOM COLOR SYSTEM ===== */
+:root {
+  --custom-accent: #22c55e;
+  --custom-accent-glow: rgba(34, 197, 94, 0.8);
+  --custom-accent-light: #4ade80;
+}
+
+/* Warna aksen dinamis */
+.text-custom-accent { color: var(--custom-accent); }
+.border-custom-accent { border-color: var(--custom-accent); }
+.bg-custom-accent { background-color: var(--custom-accent); }
+.shadow-custom-accent { box-shadow: 0 0 12px var(--custom-accent-glow); }
+
+/* Update elemen yang menggunakan warna hijau */
+.card {
+  border-color: var(--custom-accent);
+  box-shadow: 0 0 12px var(--custom-accent-glow);
+}
+.price {
+  color: var(--custom-accent);
+  text-shadow: 0 0 6px var(--custom-accent-glow);
+}
+.whatsapp-btn {
+  background: var(--custom-accent);
+}
+.whatsapp-btn:hover {
+  background: var(--custom-accent-light);
+}
 </style>        
 </head>        
 <body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">        
@@ -2448,6 +2476,107 @@ function openGameDetail(g) {
         setInterval(sendMonthlyReport, 30 * 24 * 60 * 60 * 1000);
     }, timeUntilNextMonth);
 })();
+// ========== FUNGSI CUSTOM WARNA ==========
+function setColor(color) {
+    // Simpan warna ke localStorage
+    localStorage.setItem('customAccentColor', color);
+    
+    // Hitung warna glow (lebih terang)
+    let glowColor = color;
+    
+    // Set CSS variable
+    document.documentElement.style.setProperty('--custom-accent', color);
+    document.documentElement.style.setProperty('--custom-accent-glow', glowColor + '80');
+    document.documentElement.style.setProperty('--custom-accent-light', color);
+    
+    // Update tombol WhatsApp
+    const waButtons = document.querySelectorAll('.whatsapp-btn');
+    waButtons.forEach(btn => {
+        btn.style.backgroundColor = color;
+    });
+    
+    // Update elemen lain yang butuh warna
+    updateAllAccentColors(color);
+}
+
+function updateAllAccentColors(color) {
+    // Update color picker value
+    const picker = document.getElementById('customColorPicker');
+    if (picker) picker.value = color;
+    
+    // Update border dan shadow card secara dinamis
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.style.borderColor = color;
+        card.style.boxShadow = `0 0 12px ${color}80`;
+    });
+    
+    // Update tombol border hijau
+    const greenBtns = document.querySelectorAll('.border-green-400');
+    greenBtns.forEach(btn => {
+        btn.style.borderColor = color;
+    });
+}
+
+function resetToDefaultColor() {
+    setColor('#22c55e');
+    localStorage.setItem('customAccentColor', '#22c55e');
+    showToast('✅ Warna reset ke default (Hijau)');
+}
+
+// Load warna tersimpan saat halaman dimuat
+function loadSavedColor() {
+    const savedColor = localStorage.getItem('customAccentColor');
+    if (savedColor && savedColor !== '#22c55e') {
+        setColor(savedColor);
+    }
+}
+
+// Panggil loadSavedColor saat halaman load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadSavedColor);
+} else {
+    loadSavedColor();
+}
+// ========== FUNGSI MENU SETTINGS ==========
+
+function contactAdmin() {
+    const nomorAdmin = "6283844843020";
+    const pesan = "Halo admin PasirPogorCell, saya ingin bertanya tentang...";
+    window.open(`https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`, '_blank');
+}
+
+function openLocation() {
+    // Ganti dengan koordinat toko Anda
+    const lat = "-6.671597";
+    const lng = "106.162138";
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+    window.open(mapsUrl, '_blank');
+}
+
+function shareWebsite() {
+    const url = window.location.href;
+    const text = "PasirPogorCell - Tempat top up game & paket internet termurah!";
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'PasirPogorCell',
+            text: text,
+            url: url
+        }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(url);
+        alert('✅ Link website telah disalin! Silakan bagikan ke teman Anda.');
+    }
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    toast.className = 'fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50 shadow-lg animate-bounce';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+}
 </script>
 <!-- Modal Input untuk Nomor HP / ID Game -->
 <div id="inputModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
@@ -2472,15 +2601,88 @@ function openGameDetail(g) {
       <h3 class="text-lg font-bold text-green-400">⚙️ Pengaturan</h3>
       <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
-    <div class="p-4">
-      <div onclick="openAdminPanel()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent">
-        <span class="text-xl">👑</span>
+    <div class="p-4 space-y-2">
+      
+      <!-- Menu 1: Mode Gelap/Terang -->
+      <div class="settings-menu-item flex items-center justify-between p-3 rounded-lg border-l-2 border-transparent">
+        <div class="flex items-center gap-3">
+          <span class="text-xl">🌙</span>
+          <div>
+            <div class="font-semibold text-white">Mode Gelap/Terang</div>
+            <div class="text-xs text-gray-400">Ganti tema website</div>
+          </div>
+        </div>
+        <button id="darkModeToggle" class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors bg-gray-600">
+          <span id="darkModeToggleCircle" class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1"></span>
+        </button>
+      </div>
+      
+      <!-- Menu 2: Custom Warna Aksen -->
+      <div class="settings-menu-item p-3 rounded-lg border-l-2 border-transparent">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-xl">🎨</span>
+          <div>
+            <div class="font-semibold text-white">Warna Aksen</div>
+            <div class="text-xs text-gray-400">Ubah warna tema (hijau, biru, dll)</div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 ml-8">
+          <button onclick="setColor('#22c55e')" class="w-8 h-8 rounded-full border-2 border-gray-600 hover:scale-110 transition" style="background: #22c55e; box-shadow: 0 0 6px #22c55e;" title="Hijau (Default)"></button>
+          <button onclick="setColor('#3b82f6')" class="w-8 h-8 rounded-full border-2 border-gray-600 hover:scale-110 transition" style="background: #3b82f6; box-shadow: 0 0 6px #3b82f6;" title="Biru"></button>
+          <button onclick="setColor('#ef4444')" class="w-8 h-8 rounded-full border-2 border-gray-600 hover:scale-110 transition" style="background: #ef4444; box-shadow: 0 0 6px #ef4444;" title="Merah"></button>
+          <button onclick="setColor('#a855f7')" class="w-8 h-8 rounded-full border-2 border-gray-600 hover:scale-110 transition" style="background: #a855f7; box-shadow: 0 0 6px #a855f7;" title="Ungu"></button>
+          <button onclick="setColor('#eab308')" class="w-8 h-8 rounded-full border-2 border-gray-600 hover:scale-110 transition" style="background: #eab308; box-shadow: 0 0 6px #eab308;" title="Emas"></button>
+          <button onclick="setColor('#ec4899')" class="w-8 h-8 rounded-full border-2 border-gray-600 hover:scale-110 transition" style="background: #ec4899; box-shadow: 0 0 6px #ec4899;" title="Pink"></button>
+          <button onclick="setColor('#06b6d4')" class="w-8 h-8 rounded-full border-2 border-gray-600 hover:scale-110 transition" style="background: #06b6d4; box-shadow: 0 0 6px #06b6d4;" title="Cyan"></button>
+          <button onclick="setColor('#f97316')" class="w-8 h-8 rounded-full border-2 border-gray-600 hover:scale-110 transition" style="background: #f97316; box-shadow: 0 0 6px #f97316;" title="Oranye"></button>
+        </div>
+        <div class="ml-8 mt-2 flex items-center gap-2">
+          <span class="text-xs text-gray-400">Atau custom:</span>
+          <input type="color" id="customColorPicker" value="#22c55e" onchange="setColor(this.value)" class="w-8 h-8 rounded border border-gray-600 cursor-pointer bg-transparent">
+          <button onclick="resetToDefaultColor()" class="text-xs text-gray-400 hover:text-green-400 transition">Reset ke default</button>
+        </div>
+      </div>
+      
+      <!-- Menu 3: Hubungi Admin -->
+      <div onclick="contactAdmin()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer">
+        <span class="text-xl">💬</span>
         <div>
-          <div class="font-semibold text-white">Halaman Admin</div>
-          <div class="text-xs text-gray-400">Akses panel administrasi</div>
+          <div class="font-semibold text-white">Hubungi Admin</div>
+          <div class="text-xs text-gray-400">Chat via WhatsApp</div>
         </div>
         <span class="ml-auto text-gray-500">→</span>
       </div>
+      
+      <!-- Menu 4: Lokasi Toko -->
+      <div onclick="openLocation()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer">
+        <span class="text-xl">📍</span>
+        <div>
+          <div class="font-semibold text-white">Lokasi Toko</div>
+          <div class="text-xs text-gray-400">Buka Google Maps</div>
+        </div>
+        <span class="ml-auto text-gray-500">→</span>
+      </div>
+      
+      <!-- Menu 5: Bagikan Website -->
+      <div onclick="shareWebsite()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer">
+        <span class="text-xl">📱</span>
+        <div>
+          <div class="font-semibold text-white">Bagikan Website</div>
+          <div class="text-xs text-gray-400">Kirim ke teman</div>
+        </div>
+        <span class="ml-auto text-gray-500">→</span>
+      </div>
+      
+      <!-- Menu 6: Halaman Admin -->
+      <div onclick="openAdminPanel()" class="settings-menu-item flex items-center gap-3 p-3 rounded-lg border-l-2 border-transparent cursor-pointer mt-4 border-t border-gray-700 pt-4">
+        <span class="text-xl">👑</span>
+        <div>
+          <div class="font-semibold text-white">Halaman Admin</div>
+          <div class="text-xs text-gray-400">🔒 Akses terbatas (password)</div>
+        </div>
+        <span class="ml-auto text-gray-500">→</span>
+      </div>
+      
     </div>
   </div>
 </div>

@@ -3052,7 +3052,7 @@ function openGameDetail(g) {
             <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
               <div id="poinProgressBar" class="poin-progress-bar h-3" style="width: 0%"></div>
             </div>
-            <button id="rewardBtn" onclick="klaimReward()" disabled class="w-full mt-3 poin-reward-btn text-green-400 text-sm py-2 rounded-lg transition" disabled>📨 Kirim Informasi ke Penjual (butuh 1000 poin)</button>
+            <button id="rewardBtn" onclick="klaimReward()" disabled class="w-full mt-3 poin-reward-btn text-green-400 text-sm py-2 rounded-lg transition">📨 Kirim Informasi ke Penjual (butuh 1000 poin)</button>
           </div>
         </div>
       </div>
@@ -3064,40 +3064,5 @@ function openGameDetail(g) {
   </div>
 </div>
 <script>
-// ========== FUNGSI UNTUK MENU SETTINGS ==========
-
-// Hubungi Admin via WhatsApp
-function contactAdmin() {
-    const nomorAdmin = "6283844843020";
-    const pesan = "Halo admin PasirPogorCell, saya ingin bertanya tentang...";
-    window.open(`https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`, '_blank');
-    closeSettingsModal();
-}
-
-// Buka Lokasi Toko di Google Maps
-function openLocation() {
-    const mapsUrl = "https://maps.app.goo.gl/YoTYYXkZpmHgyE9v9?g_st=ac";
-    window.open(mapsUrl, '_blank');
-    closeSettingsModal();
-}
-
-// Bagikan Website
-function shareWebsite() {
-    const url = window.location.href;
-    const text = "PasirPogorCell - Tempat top up game & paket internet termurah!";
-    
-    if (navigator.share) {
-        navigator.share({
-            title: 'PasirPogorCell',
-            text: text,
-            url: url
-        }).catch(() => {});
-    } else {
-        navigator.clipboard.writeText(url);
-        alert('✅ Link website telah disalin! Silakan bagikan ke teman Anda.');
-    }
-    closeSettingsModal();
-}
-</script>
 </body>    
 </html>

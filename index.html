@@ -638,9 +638,6 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   <div id="hasilHarga" class="mt-3 space-y-2 max-h-80 overflow-y-auto"></div>
 </div>
   
-  <div id="hasilHarga" class="mt-3 space-y-2 max-h-80 overflow-y-auto"></div>
-</div> 
-
 <!-- Modal Rekomendasi -->
 <div id="rekomendasiModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-opacity duration-300">
   <div class="relative bg-gray-900 text-white rounded-xl p-6 w-80 max-h-[80vh] overflow-auto transform scale-95 transition-transform duration-300 border-l-4 border-green-500 shadow-2xl">
@@ -2550,5 +2547,41 @@ function openGameDetail(g) {
     </div>
   </div>
 </div>
+<script>
+// ========== FUNGSI UNTUK MENU SETTINGS ==========
+
+// Hubungi Admin via WhatsApp
+function contactAdmin() {
+    const nomorAdmin = "6283844843020";
+    const pesan = "Halo admin PasirPogorCell, saya ingin bertanya tentang...";
+    window.open(`https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`, '_blank');
+    closeSettingsModal();
+}
+
+// Buka Lokasi Toko di Google Maps
+function openLocation() {
+    const mapsUrl = "https://maps.app.goo.gl/YoTYYXkZpmHgyE9v9?g_st=ac";
+    window.open(mapsUrl, '_blank');
+    closeSettingsModal();
+}
+
+// Bagikan Website
+function shareWebsite() {
+    const url = window.location.href;
+    const text = "PasirPogorCell - Tempat top up game & paket internet termurah!";
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'PasirPogorCell',
+            text: text,
+            url: url
+        }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(url);
+        alert('✅ Link website telah disalin! Silakan bagikan ke teman Anda.');
+    }
+    closeSettingsModal();
+}
+</script>
 </body>    
 </html>

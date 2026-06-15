@@ -606,6 +606,31 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   transform: translateX(5px);
   border-left-color: #22c55e !important;
 }
+/* ===== MODAL POIN ===== */
+.poin-card {
+  background: linear-gradient(145deg, #111111, #0a0a0a);
+  border: 1px solid rgba(34,197,94,0.5);
+  border-radius: 1rem;
+}
+.poin-progress-bar {
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+  border-radius: 1rem;
+  transition: width 0.3s ease;
+}
+.poin-reward-btn {
+  background: rgba(34,197,94,0.15);
+  border: 1px solid rgba(34,197,94,0.4);
+  transition: all 0.2s ease;
+}
+.poin-reward-btn:hover:not(:disabled) {
+  background: #22c55e;
+  color: black;
+  transform: scale(1.02);
+}
+.poin-reward-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 </style>        
 </head>        
 <body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">        
@@ -1672,6 +1697,402 @@ document.getElementById('adminPassword')?.addEventListener('keypress', function(
     verifyAdminPassword();
   }
 });
+// ========== SISTEM POIN ==========
+// Key untuk localStorage
+const POIN_STORAGE_KEY = 'pasirpogor_poin_data';
+
+// Data awal (jika kosong)
+function getDefaultPoinData() {
+  return {
+    customers: {},  // format: { "id": { klaimTersedia: 0, poin: 0, lastUpdate: timestamp } }
+    version: '1.0'
+  };
+}
+
+// Load data dari localStorage
+function loadPoinData() {
+  const stored = localStorage.getItem(POIN_STORAGE_KEY);
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch(e) {
+      return getDefaultPoinData();
+    }
+  }
+  return getDefaultPoinData();
+}
+
+// Simpan data ke localStorage
+function savePoinData(data) {
+  localStorage.setItem(POIN_STORAGE_KEY, JSON.stringify(data));
+}
+
+// Tambah klaim untuk customer (dipanggil dari Admin Panel)
+function tambahKlaim(customerId, type) {
+  // Normalisasi ID (lowercase untuk konsistensi)
+  const normalizedId = customerId.trim().toLowerCase();
+  const data = loadPoinData();
+  
+  if (!data.customers[normalizedId]) {
+    data.customers[normalizedId] = { klaimTersedia: 0, poin: 0, lastUpdate: Date.now(), type: type };
+  }
+  
+  data.customers[normalizedId].klaimTersedia += 1;
+  data.customers[normalizedId].lastUpdate = Date.now();
+  savePoinData(data);
+  
+  return data.customers[normalizedId];
+}
+
+// Cek data pelanggan
+function cekPelanggan(customerId) {
+  const normalizedId = customerId.trim().toLowerCase();
+  const data = loadPoinData();
+  return data.customers[normalizedId] || null;
+}
+
+// Klaim poin (ubah klaim tersedia menjadi poin)
+function klaimPoin(customerId) {
+  const normalizedId = customerId.trim().toLowerCase();
+  const data = loadPoinData();
+  
+  if (!data.customers[normalizedId]) {
+    return { success: false, message: "ID tidak ditemukan" };
+  }
+  
+  const customer = data.customers[normalizedId];
+  
+  if (customer.klaimTersedia <= 0) {
+    return { success: false, message: "Tidak ada klaim tersedia" };
+  }
+  
+  const klaimDipakai = customer.klaimTersedia;
+  const poinDidapat = klaimDipakai * 100;
+  
+  customer.poin += poinDidapat;
+  customer.klaimTersedia = 0;
+  customer.lastUpdate = Date.now();
+  
+  savePoinData(data);
+  
+  return { 
+    success: true, 
+    klaimDipakai: klaimDipakai, 
+    poinDidapat: poinDidapat,
+    totalPoin: customer.poin,
+    message: `Berhasil klaim ${klaimDipakai} klaim! +${poinDidapat} poin`
+  };
+}
+
+// Klaim reward (1000 poin)
+async function klaimRewardById(customerId, customerData) {
+  if (customerData.poin < 1000) {
+    return { success: false, message: "Poin belum mencapai 1000" };
+  }
+  
+  // Kurangi poin 1000
+  customerData.poin -= 1000;
+  
+  const data = loadPoinData();
+  data.customers[customerId] = customerData;
+  savePoinData(data);
+  
+  // Kirim notifikasi ke Telegram
+  const pesan = `
+📢 <b>KLAIM REWARD PELANGGAN!</b>
+
+🆔 ID: ${customerId}
+⭐ Poin yang diklaim: 1000 poin
+💎 Sisa poin: ${customerData.poin}
+🕐 Waktu: ${new Date().toLocaleString('id-ID')}
+
+💡 Pelanggan berhak mendapatkan reward!
+Silakan hubungi pelanggan untuk memberikan hadiah.
+  `;
+  
+  await sendTelegramMessage(pesan);
+  
+  return { success: true, message: "Reward berhasil diklaim! Admin akan menghubungi Anda.", sisaPoin: customerData.poin };
+}
+
+// ========== FUNGSI UI MODAL POIN ==========
+let currentPoinCustomerId = null;
+let currentPoinCustomerData = null;
+
+function openPoinModal() {
+  const modal = document.getElementById('poinModal');
+  if (modal) {
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    const box = modal.querySelector('div');
+    if (box) box.classList.remove('scale-95');
+  }
+  // Reset form
+  document.getElementById('poinCustomerId').value = '';
+  document.getElementById('poinHasil').classList.add('hidden');
+  document.getElementById('poinEmpty').classList.remove('hidden');
+  currentPoinCustomerId = null;
+  currentPoinCustomerData = null;
+}
+
+function closePoinModal() {
+  const modal = document.getElementById('poinModal');
+  if (modal) {
+    modal.classList.add('opacity-0', 'pointer-events-none');
+    const box = modal.querySelector('div');
+    if (box) box.classList.add('scale-95');
+  }
+}
+
+function togglePoinIdType() {
+  // Fungsi ini hanya untuk UI, tidak mengubah logika utama
+  const input = document.getElementById('poinCustomerId');
+  const phoneRadio = document.querySelector('input[value="phone"]');
+  if (phoneRadio.checked) {
+    input.placeholder = "Masukkan nomor HP (contoh: 081234567890)";
+  } else {
+    input.placeholder = "Masukkan ID Game (contoh: 12345678(1011))";
+  }
+}
+
+function cekPoinPelanggan() {
+  const customerId = document.getElementById('poinCustomerId').value.trim();
+  if (!customerId) {
+    alert('Masukkan ID terlebih dahulu!');
+    return;
+  }
+  
+  currentPoinCustomerId = customerId.toLowerCase();
+  currentPoinCustomerData = cekPelanggan(customerId);
+  
+  if (!currentPoinCustomerData) {
+    // Pelanggan belum pernah ditambahkan admin
+    document.getElementById('poinEmpty').classList.remove('hidden');
+    document.getElementById('poinHasil').classList.add('hidden');
+    alert('ID tidak ditemukan. Pastikan Anda sudah melakukan pembelian dan admin telah mencatatnya.');
+    return;
+  }
+  
+  // Tampilkan hasil
+  document.getElementById('poinEmpty').classList.add('hidden');
+  document.getElementById('poinHasil').classList.remove('hidden');
+  
+  document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
+  document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia;
+  
+  // Update progress bar
+  const poin = currentPoinCustomerData.poin;
+  const percent = Math.min((poin / 1000) * 100, 100);
+  document.getElementById('poinProgressBar').style.width = percent + '%';
+  document.getElementById('poinProgressText').textContent = poin + ' / 1000';
+  
+  // Update tombol reward
+  const rewardBtn = document.getElementById('rewardBtn');
+  if (poin >= 1000) {
+    rewardBtn.disabled = false;
+    rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (1000 poin akan ditukar)';
+    rewardBtn.classList.add('bg-green-600', 'text-black');
+    rewardBtn.classList.remove('poin-reward-btn');
+  } else {
+    rewardBtn.disabled = true;
+    rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)';
+    rewardBtn.classList.remove('bg-green-600', 'text-black');
+    rewardBtn.classList.add('poin-reward-btn');
+  }
+  
+  // Tampilkan tombol klaim jika ada klaim tersedia
+  const klaimSection = document.getElementById('poinKlaimSection');
+  const klaimBtn = document.getElementById('klaimBtn');
+  if (currentPoinCustomerData.klaimTersedia > 0) {
+    klaimSection.classList.remove('hidden');
+    klaimBtn.textContent = `🎁 KLAIM SEMUA (${currentPoinCustomerData.klaimTersedia} klaim → ${currentPoinCustomerData.klaimTersedia * 100} poin)`;
+  } else {
+    klaimSection.classList.add('hidden');
+  }
+}
+
+function klaimSemuaPoin() {
+  if (!currentPoinCustomerId) return;
+  
+  const result = klaimPoin(currentPoinCustomerId);
+  if (result.success) {
+    alert(result.message);
+    // Refresh data
+    currentPoinCustomerData = cekPelanggan(currentPoinCustomerId);
+    // Update UI
+    document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
+    document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia;
+    document.getElementById('poinProgressBar').style.width = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100) + '%';
+    document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000';
+    document.getElementById('poinKlaimSection').classList.add('hidden');
+  } else {
+    alert(result.message);
+  }
+}
+
+async function klaimReward() {
+  if (!currentPoinCustomerId || !currentPoinCustomerData) return;
+  
+  if (currentPoinCustomerData.poin < 1000) {
+    alert('Poin belum mencapai 1000!');
+    return;
+  }
+  
+  const confirmReward = confirm('Apakah Anda yakin ingin menukarkan 1000 poin untuk mendapatkan reward?');
+  if (!confirmReward) return;
+  
+  const result = await klaimRewardById(currentPoinCustomerId, currentPoinCustomerData);
+  if (result.success) {
+    alert(result.message);
+    // Refresh data
+    currentPoinCustomerData = cekPelanggan(currentPoinCustomerId);
+    // Update UI
+    document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
+    document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia;
+    const percent = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100);
+    document.getElementById('poinProgressBar').style.width = percent + '%';
+    document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000';
+    
+    // Disable reward button
+    document.getElementById('rewardBtn').disabled = true;
+    document.getElementById('rewardBtn').textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)';
+  } else {
+    alert(result.message);
+  }
+}
+// ========== FUNGSI ADMIN UNTUK POIN ==========
+function adminTambahKlaim() {
+  const idType = document.getElementById('adminIdType').value;
+  let customerId = document.getElementById('adminCustomerId').value.trim();
+  
+  if (!customerId) {
+    alert('Masukkan ID pelanggan!');
+    return;
+  }
+  
+  // Validasi sederhana
+  if (idType === 'phone') {
+    if (!/^\d{10,13}$/.test(customerId.replace(/\s/g, ''))) {
+      alert('Nomor HP harus 10-13 digit angka!');
+      return;
+    }
+  }
+  
+  const result = tambahKlaim(customerId, idType);
+  alert(`✅ Berhasil menambah klaim untuk ${customerId}\nKlaim tersedia sekarang: ${result.klaimTersedia}\nTotal poin: ${result.poin}`);
+  
+  document.getElementById('adminCustomerId').value = '';
+  adminRefreshTable();
+}
+
+function adminRefreshTable() {
+  const data = loadPoinData();
+  const customers = data.customers;
+  const searchTerm = document.getElementById('searchCustomer')?.value.toLowerCase() || '';
+  
+  const tableBody = document.getElementById('adminCustomerTable');
+  if (!tableBody) return;
+  
+  const entries = Object.entries(customers);
+  if (entries.length === 0) {
+    tableBody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-400 p-4">Belum ada data pelanggan</td></tr>';
+    return;
+  }
+  
+  let filtered = entries;
+  if (searchTerm) {
+    filtered = entries.filter(([id]) => id.includes(searchTerm));
+  }
+  
+  tableBody.innerHTML = filtered.map(([id, data]) => `
+    <tr class="border-b border-gray-700 hover:bg-gray-800">
+      <td class="p-2 text-xs break-all">${id}</td>
+      <td class="p-2 text-center text-yellow-400">${data.klaimTersedia}</td>
+      <td class="p-2 text-center text-green-400">${data.poin}</td>
+    </tr>
+  `).join('');
+}
+
+// Event listener untuk search customer
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('searchCustomer');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => adminRefreshTable());
+  }
+});
+
+// Override openAdminPanelModal untuk refresh tabel
+const originalOpenAdminPanelModal = openAdminPanelModal;
+openAdminPanelModal = function() {
+  originalOpenAdminPanelModal();
+  setTimeout(() => adminRefreshTable(), 100);
+};
+// ========== FUNGSI ADMIN UNTUK POIN ==========
+function adminTambahKlaim() {
+  const idType = document.getElementById('adminIdType').value;
+  let customerId = document.getElementById('adminCustomerId').value.trim();
+  
+  if (!customerId) {
+    alert('Masukkan ID pelanggan!');
+    return;
+  }
+  
+  // Validasi sederhana
+  if (idType === 'phone') {
+    if (!/^\d{10,13}$/.test(customerId.replace(/\s/g, ''))) {
+      alert('Nomor HP harus 10-13 digit angka!');
+      return;
+    }
+  }
+  
+  const result = tambahKlaim(customerId, idType);
+  alert(`✅ Berhasil menambah klaim untuk ${customerId}\nKlaim tersedia sekarang: ${result.klaimTersedia}\nTotal poin: ${result.poin}`);
+  
+  document.getElementById('adminCustomerId').value = '';
+  adminRefreshTable();
+}
+
+function adminRefreshTable() {
+  const data = loadPoinData();
+  const customers = data.customers;
+  const searchTerm = document.getElementById('searchCustomer')?.value.toLowerCase() || '';
+  
+  const tableBody = document.getElementById('adminCustomerTable');
+  if (!tableBody) return;
+  
+  const entries = Object.entries(customers);
+  if (entries.length === 0) {
+    tableBody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-400 p-4">Belum ada data pelanggan</td></tr>';
+    return;
+  }
+  
+  let filtered = entries;
+  if (searchTerm) {
+    filtered = entries.filter(([id]) => id.includes(searchTerm));
+  }
+  
+  tableBody.innerHTML = filtered.map(([id, data]) => `
+    <tr class="border-b border-gray-700 hover:bg-gray-800">
+      <td class="p-2 text-xs break-all">${id}</td>
+      <td class="p-2 text-center text-yellow-400">${data.klaimTersedia}</td>
+      <td class="p-2 text-center text-green-400">${data.poin}</td>
+    </tr>
+  `).join('');
+}
+
+// Event listener untuk search customer
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('searchCustomer');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => adminRefreshTable());
+  }
+});
+
+// Override openAdminPanelModal untuk refresh tabel
+const originalOpenAdminPanelModal = openAdminPanelModal;
+openAdminPanelModal = function() {
+  originalOpenAdminPanelModal();
+  setTimeout(() => adminRefreshTable(), 100);
+};
 </script>    
 
 <section id="home" class="page p-6 max-w-4xl mx-auto mt-10">
@@ -1679,11 +2100,12 @@ document.getElementById('adminPassword')?.addEventListener('keypress', function(
     <button onclick="openInternet(this)" class="card">📶 Paket Internet</button>
     <button onclick="openGame(this)" class="card">🎮 Top Up Game</button>
   </div>
-  <div class="flex justify-center items-center gap-3 mt-6">
-    <button onclick="openCalculator()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">Kalkulator 📟</button>
-    <button onclick="openRekomendasi()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">⭐ Rekomend</button>
-    <button onclick="openPromo()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">📢 Info</button>
-  </div>
+  <div class="flex justify-center items-center gap-3 mt-6 flex-wrap">
+  <button onclick="openCalculator()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">📟 Kalkulator</button>
+  <button onclick="openRekomendasi()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">⭐ Rekomend</button>
+  <button onclick="openPromo()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">📢 Info</button>
+  <button onclick="openPoinModal()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">🎁 Poin</button>
+</div>
 </section>    
 
 <!-- INTERNET -->    
@@ -2537,11 +2959,106 @@ function openGameDetail(g) {
       <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
     <div class="p-6" id="adminPanelContent">
-      <!-- KONTEN ADMIN AKAN DITAMBAHKAN NANTI -->
-      <div class="text-center text-gray-400 py-10">
-        <div class="text-5xl mb-4">🚧</div>
-        <p class="text-lg">Halaman Admin sedang dalam pengembangan</p>
-        <p class="text-sm mt-2">Fitur akan segera hadir</p>
+  <div class="space-y-6">
+    <!-- Form Tambah Klaim -->
+    <div class="bg-gray-800/50 rounded-lg p-4">
+      <h4 class="text-green-400 font-bold mb-3">➕ Tambah Klaim untuk Pelanggan</h4>
+      <div class="grid gap-3">
+        <select id="adminIdType" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+          <option value="phone">📱 Nomor HP</option>
+          <option value="game">🎮 ID Game</option>
+        </select>
+        <input type="text" id="adminCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+        <button onclick="adminTambahKlaim()" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition">✅ Tambah Klaim (1 klaim = 100 poin)</button>
+      </div>
+    </div>
+    
+    <!-- Daftar Pelanggan -->
+    <div class="bg-gray-800/50 rounded-lg p-4">
+      <h4 class="text-green-400 font-bold mb-3">📋 Daftar Pelanggan</h4>
+      <div class="mb-3">
+        <input type="text" id="searchCustomer" placeholder="Cari ID..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+      </div>
+      <div class="overflow-x-auto max-h-64 overflow-y-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-700 sticky top-0">
+            <tr>
+              <th class="p-2 text-left">ID</th>
+              <th class="p-2 text-center">Klaim</th>
+              <th class="p-2 text-center">Poin</th>
+            </tr>
+          </thead>
+          <tbody id="adminCustomerTable">
+            <tr><td colspan="3" class="text-center text-gray-400 p-4">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- MODAL KLAIM POIN PELANGGAN -->
+<div id="poinModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
+  <div class="bg-gray-900/95 border border-green-500 rounded-xl w-full max-w-md max-h-[85vh] overflow-auto transform scale-95 transition-all duration-300 shadow-2xl poin-card">
+    <div class="sticky top-0 bg-gray-900 flex justify-between items-center p-4 border-b border-gray-700">
+      <h3 class="text-lg font-bold text-green-400">🎁 Klaim Poin & Reward</h3>
+      <button onclick="closePoinModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+    </div>
+    <div class="p-5">
+      <!-- Pilih Tipe ID -->
+      <div class="mb-4">
+        <label class="text-sm text-gray-400 block mb-2">Tipe ID:</label>
+        <div class="flex gap-4">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="poinIdType" value="phone" checked onchange="togglePoinIdType()" class="accent-green-500"> 
+            <span>📱 Nomor HP</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="poinIdType" value="game" onchange="togglePoinIdType()" class="accent-green-500"> 
+            <span>🎮 ID Game</span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Input ID -->
+      <div class="mb-4">
+        <input type="text" id="poinCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300">
+      </div>
+      
+      <!-- Tombol Cek -->
+      <button onclick="cekPoinPelanggan()" class="w-full bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition mb-4">🔍 Cek & Klaim</button>
+      
+      <!-- Hasil Cek Poin -->
+      <div id="poinHasil" class="hidden">
+        <div class="border-t border-gray-700 pt-4 mt-2">
+          <div class="text-center mb-3">
+            <div class="text-2xl font-bold text-green-400" id="poinDisplayId">-</div>
+            <div class="text-xs text-gray-400">Total Poin</div>
+          </div>
+          <div class="text-center mb-4">
+            <div class="text-sm text-gray-300">🎫 Klaim tersedia: <span id="poinKlaimTersedia" class="text-yellow-400 font-bold">0</span></div>
+          </div>
+          
+          <!-- Tombol Klaim Semua (jika ada klaim tersedia) -->
+          <div id="poinKlaimSection" class="hidden mb-4">
+            <button onclick="klaimSemuaPoin()" id="klaimBtn" class="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-2 rounded-lg transition">🎁 KLAIM SEMUA (0 klaim → 0 poin)</button>
+          </div>
+          
+          <!-- Progress Reward 1000 poin -->
+          <div class="bg-gray-800 rounded-lg p-4 mt-4">
+            <div class="flex justify-between text-sm mb-2">
+              <span>🏆 Reward 1000 Poin</span>
+              <span id="poinProgressText">0 / 1000</span>
+            </div>
+            <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+              <div id="poinProgressBar" class="poin-progress-bar h-3" style="width: 0%"></div>
+            </div>
+            <button id="rewardBtn" onclick="klaimReward()" disabled class="w-full mt-3 poin-reward-btn text-green-400 text-sm py-2 rounded-lg transition" disabled>📨 Kirim Informasi ke Penjual (butuh 1000 poin)</button>
+          </div>
+        </div>
+      </div>
+      
+      <div id="poinEmpty" class="text-center text-gray-400 py-8">
+        🔍 Masukkan ID Anda untuk melihat poin
       </div>
     </div>
   </div>

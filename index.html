@@ -99,373 +99,346 @@
 :root{
   --bg:#050505; --card:#0b0b0b; --text:#e5e7eb; --muted:#9ca3af; --accent:#22c55e; --blue:#3b82f6; --yellow:#facc15;
 }
-.light{
-  --bg:#f5f7fb; --card:#ffffff; --text:#0f172a; --muted:#64748b; --accent:#22c55e; --blue:#2563eb; --yellow:#f59e0b;
-}
-.light body{ background:linear-gradient(135deg,#eef2ff,#f8fafc); }
-.light .card{ background:white; color:#0f172a; border:1px solid rgba(34,197,94,.4); box-shadow:0 6px 20px rgba(0,0,0,.08),0 0 20px rgba(34,197,94,.15); }
-.light .card::before{ filter:blur(20px); opacity:.35; }
-.light .price{ color:#16a34a; text-shadow:none; }
-.light header{ background:white; border-color:#e5e7eb; }
-.light header p{ color:#64748b; }
-.light footer{ background:#f8fafc; color:#334155; }
-.light .marquee{ background:#e5e7eb; border-color:#22c55e; }
-.light .marquee span{ color:#0f172a; text-shadow:none; }
-body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
-.page{ animation:fadeIn 0.2s ease; }
-@keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
-/* ===== LIGHT MODE - TEMA BIRU ===== */
-.light {
+/* ===== MODE HIJAU (DEFAULT/DARK MODE) - TIDAK BERUBAH ===== */
+/* Mode ini menggunakan :root yang sudah ada, tidak perlu tambahan CSS */
+/* Dark mode tetap dengan background hitam dan aksen hijau neon */
+
+/* ===== MODE BIRU (LIGHT MODE BARU) ===== */
+.mode-biru {
   --bg: #e0f2fe;
   --card: #ffffff;
   --text: #1e293b;
   --muted: #475569;
-  --accent: #0284c7;    /* biru cerah sebagai aksen utama */
+  --accent: #0284c7;
   --blue: #0284c7;
   --yellow: #ca8a04;
 }
 
-.light body { 
-  background: linear-gradient(135deg, #bfdbfe, #93c5fd); /* gradasi biru lembut */
-  color: #1e293b;
+.mode-biru body { 
+  background: linear-gradient(135deg, #bfdbfe, #93c5fd) !important;
+  color: #1e293b !important;
 }
 
-/* Header */
-.light header { 
-  background: #ffffff; 
-  border-bottom-color: #cbd5e1;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+.mode-biru header { 
+  background: #ffffff !important; 
+  border-bottom-color: #cbd5e1 !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
 }
 
-.light header h1 { 
-  color: #0f172a; 
+.mode-biru header h1 { 
+  color: #0f172a !important; 
 }
 
-.light header p { 
-  color: #475569; 
+.mode-biru header p { 
+  color: #475569 !important; 
 }
 
-/* Marquee */
-.light .marquee { 
-  background: #eff6ff; 
-  border-color: #0284c7;
+.mode-biru .marquee { 
+  background: #eff6ff !important; 
+  border-color: #0284c7 !important;
 }
 
-.light .marquee span { 
-  color: #0f172a; 
-  text-shadow: none;
-  font-weight: 600;
+.mode-biru .marquee span { 
+  color: #0f172a !important; 
+  text-shadow: none !important;
+  font-weight: 600 !important;
 }
 
-/* Card */
-.light .card { 
-  background: #ffffff; 
-  color: #1e293b; 
-  border: 1px solid rgba(2, 132, 199, 0.3); 
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+.mode-biru .card { 
+  background: #ffffff !important; 
+  color: #1e293b !important; 
+  border: 1px solid rgba(2, 132, 199, 0.3) !important; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
 }
 
-.light .card .price { 
-  color: #0284c7; 
-  text-shadow: none;
-  font-weight: 700;
+.mode-biru .card .price { 
+  color: #0284c7 !important; 
+  text-shadow: none !important;
+  font-weight: 700 !important;
 }
 
-.light .card::before { 
-  background: linear-gradient(120deg, #0284c7, #3b82f6, #0284c7);
-  opacity: 0.4;
+.mode-biru .card::before { 
+  background: linear-gradient(120deg, #0284c7, #3b82f6, #0284c7) !important;
+  opacity: 0.4 !important;
 }
 
-/* Search bar */
-.light #searchHarga { 
-  background: #ffffff; 
-  color: #1e293b; 
-  border-color: #0284c7;
+.mode-biru #searchHarga { 
+  background: #ffffff !important; 
+  color: #1e293b !important; 
+  border-color: #0284c7 !important;
 }
 
-.light #searchHarga::placeholder { 
-  color: #94a3b8; 
+.mode-biru #searchHarga::placeholder { 
+  color: #94a3b8 !important; 
 }
 
-.light #searchHarga:focus { 
-  border-color: #3b82f6; 
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+.mode-biru #searchHarga:focus { 
+  border-color: #3b82f6 !important; 
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5) !important;
 }
 
-/* Hasil pencarian */
-.light .harga-item { 
-  background: #ffffff; 
-  border-left-color: #0284c7;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+.mode-biru .harga-item { 
+  background: #ffffff !important; 
+  border-left-color: #0284c7 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
 }
 
-.light .harga-nama-text { 
-  color: #1e293b; 
+.mode-biru .harga-nama-text { 
+  color: #1e293b !important; 
 }
 
-.light .harga-harga { 
-  background: rgba(2, 132, 199, 0.1);
-  color: #0284c7;
+.mode-biru .harga-harga { 
+  background: rgba(2, 132, 199, 0.1) !important;
+  color: #0284c7 !important;
 }
 
-.light .harga-ket { 
-  color: #475569; 
-  border-top-color: rgba(2, 132, 199, 0.2);
+.mode-biru .harga-ket { 
+  color: #475569 !important; 
+  border-top-color: rgba(2, 132, 199, 0.2) !important;
 }
 
-/* Tombol WhatsApp */
-.light .whatsapp-btn { 
-  background: #25D366; 
-  color: white;
+.mode-biru .whatsapp-btn { 
+  background: #25D366 !important; 
+  color: white !important;
 }
 
-.light .whatsapp-btn:hover { 
-  background: #128C7E; 
+.mode-biru .whatsapp-btn:hover { 
+  background: #128C7E !important; 
 }
 
-/* Glow Card */
-.light .glow-card { 
-  background: #ffffff; 
-  border-color: #0284c7;
+.mode-biru .glow-card { 
+  background: #ffffff !important; 
+  border-color: #0284c7 !important;
 }
 
-.light .glow-card h3 { 
-  color: #0284c7; 
+.mode-biru .glow-card h3 { 
+  color: #0284c7 !important; 
 }
 
-.light .glow-card p { 
-  color: #334155; 
-}
-
-.light .glow-card a { 
-  color: #3b82f6; 
-}
-
-/* Footer */
-.light footer { 
-  background: #bfdbfe; 
-  color: #1e293b;
-}
-
-.light footer .text-gray-300,
-.light footer .text-gray-400 { 
+.mode-biru .glow-card p { 
   color: #334155 !important; 
 }
 
-/* Modal Settings & Admin */
-.light .settings-card { 
-  background: #ffffff; 
-  border-color: #0284c7;
-}
-
-.light .settings-card h3 { 
-  color: #0284c7 !important; 
-}
-
-.light .settings-menu-item .text-white { 
-  color: #1e293b !important; 
-}
-
-.light .settings-menu-item .text-gray-400 { 
-  color: #475569 !important; 
-}
-
-.light .settings-menu-item:hover { 
-  background: rgba(2, 132, 199, 0.08); 
-}
-
-.light .admin-card { 
-  background: #ffffff; 
-  border-left-color: #0284c7;
-}
-
-/* Password Input */
-.light .password-input { 
-  background: #f8fafc; 
-  border-color: #0284c7;
-  color: #1e293b;
-}
-
-.light .password-input:focus { 
-  background: #ffffff; 
-  border-color: #3b82f6;
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
-}
-
-/* Kalkulator */
-.light .calc-btn { 
-  background: #f1f5f9; 
-  color: #1e293b; 
-  border-color: #cbd5e1;
-}
-
-.light .calc-btn:hover { 
-  background: #e2e8f0; 
-}
-
-.light .calc-btn-op { 
-  background: #dbeafe; 
-  color: #0284c7; 
-  border-color: #0284c7;
-}
-
-.light .calc-btn-equal { 
-  background: #0284c7; 
-  color: white;
-}
-
-.light .calc-display { 
-  background: #f8fafc; 
-  border-color: #0284c7;
-}
-
-.light .calc-display input { 
-  color: #0284c7; 
-}
-
-/* Voucher Mode */
-.light .voucher-compact .input-mini { 
-  background: #f8fafc; 
-  color: #1e293b; 
-  border-color: #0284c7;
-}
-
-.light .voucher-compact .input-mini:focus { 
-  background: #ffffff; 
-  border-color: #3b82f6;
-}
-
-.light .voucher-compact .stat-card { 
-  background: #f8fafc; 
-  border-color: #0284c7;
-}
-
-.light .voucher-compact .stat-value { 
-  color: #0284c7; 
-}
-
-.light .voucher-compact .glass-panel { 
-  background: rgba(255, 255, 255, 0.9); 
-  backdrop-filter: blur(8px);
-}
-
-.light .voucher-compact .btn-reset-voucher { 
-  background: #f1f5f9; 
-  border-color: #0284c7;
-  color: #1e293b;
-}
-
-.light .voucher-compact .btn-reset-voucher:hover { 
-  background: #e2e8f0; 
-}
-
-/* Modal umum */
-.light .bg-gray-900, 
-.light .bg-gray-900/95, 
-.light .bg-gray-900/90,
-.light .bg-gray-900/80 { 
-  background: #ffffff !important; 
-}
-
-.light .border-gray-700 { 
-  border-color: #e2e8f0 !important; 
-}
-
-.light .text-gray-400, 
-.light .text-gray-300, 
-.light .text-gray-500 { 
-  color: #475569 !important; 
-}
-
-.light .text-white { 
-  color: #1e293b !important; 
-}
-
-.light .bg-gray-800,
-.light .bg-gray-800/50 { 
-  background: #f1f5f9 !important; 
-}
-
-.light .border-green-400, 
-.light .border-green-500 { 
-  border-color: #0284c7 !important; 
-}
-
-.light .text-green-400, 
-.light .text-green-500 { 
-  color: #0284c7 !important; 
-}
-
-.light .bg-green-600 { 
-  background: #0284c7 !important; 
-}
-
-.light .bg-green-600:hover { 
-  background: #0369a1 !important; 
-}
-
-.light .bg-green-500 { 
-  background: #0284c7 !important; 
-}
-
-.light .bg-green-500:hover { 
-  background: #0369a1 !important; 
-}
-
-.light hr.border-gray-600 { 
-  border-color: #cbd5e1; 
-}
-
-.light .text-yellow-300,
-.light .text-yellow-400 { 
-  color: #ca8a04 !important; 
-}
-
-.light .text-red-400 { 
-  color: #dc2626 !important; 
-}
-
-.light .text-blue-400,
-.light .text-blue-500 { 
+.mode-biru .glow-card a { 
   color: #3b82f6 !important; 
 }
 
-/* Tombol back dan lainnya */
-.light .back-btn { 
-  background: #0284c7; 
-  color: white;
+.mode-biru footer { 
+  background: #bfdbfe !important; 
+  color: #1e293b !important;
 }
 
-.light .back-btn:hover { 
-  background: #0369a1; 
+.mode-biru footer .text-gray-300,
+.mode-biru footer .text-gray-400 { 
+  color: #334155 !important; 
 }
 
-.light .futuristic-btn { 
-  border-color: #0284c7;
-  color: #0284c7;
+.mode-biru .settings-card { 
+  background: #ffffff !important; 
+  border-color: #0284c7 !important;
 }
 
-.light .futuristic-btn:hover { 
-  background: #0284c7;
-  color: white;
+.mode-biru .settings-card h3 { 
+  color: #0284c7 !important; 
 }
 
-/* Floating back button */
-.light .floating-back { 
-  background: #0284c7; 
-  color: white;
+.mode-biru .settings-menu-item .text-white { 
+  color: #1e293b !important; 
 }
 
-.light .floating-back:hover { 
-  background: #0369a1; 
+.mode-biru .settings-menu-item .text-gray-400 { 
+  color: #475569 !important; 
 }
 
-/* Toggle mode button di light mode */
-.light #darkModeToggle {
+.mode-biru .settings-menu-item:hover { 
+  background: rgba(2, 132, 199, 0.08) !important; 
+}
+
+.mode-biru .admin-card { 
+  background: #ffffff !important; 
+  border-left-color: #0284c7 !important;
+}
+
+.mode-biru .password-input { 
+  background: #f8fafc !important; 
+  border-color: #0284c7 !important;
+  color: #1e293b !important;
+}
+
+.mode-biru .password-input:focus { 
+  background: #ffffff !important; 
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4) !important;
+}
+
+.mode-biru .calc-btn { 
+  background: #f1f5f9 !important; 
+  color: #1e293b !important; 
+  border-color: #cbd5e1 !important;
+}
+
+.mode-biru .calc-btn:hover { 
+  background: #e2e8f0 !important; 
+}
+
+.mode-biru .calc-btn-op { 
+  background: #dbeafe !important; 
+  color: #0284c7 !important; 
+  border-color: #0284c7 !important;
+}
+
+.mode-biru .calc-btn-equal { 
+  background: #0284c7 !important; 
+  color: white !important;
+}
+
+.mode-biru .calc-display { 
+  background: #f8fafc !important; 
+  border-color: #0284c7 !important;
+}
+
+.mode-biru .calc-display input { 
+  color: #0284c7 !important; 
+}
+
+.mode-biru .voucher-compact .input-mini { 
+  background: #f8fafc !important; 
+  color: #1e293b !important; 
+  border-color: #0284c7 !important;
+}
+
+.mode-biru .voucher-compact .input-mini:focus { 
+  background: #ffffff !important; 
+  border-color: #3b82f6 !important;
+}
+
+.mode-biru .voucher-compact .stat-card { 
+  background: #f8fafc !important; 
+  border-color: #0284c7 !important;
+}
+
+.mode-biru .voucher-compact .stat-value { 
+  color: #0284c7 !important; 
+}
+
+.mode-biru .voucher-compact .glass-panel { 
+  background: rgba(255, 255, 255, 0.9) !important; 
+  backdrop-filter: blur(8px) !important;
+}
+
+.mode-biru .voucher-compact .btn-reset-voucher { 
+  background: #f1f5f9 !important; 
+  border-color: #0284c7 !important;
+  color: #1e293b !important;
+}
+
+.mode-biru .voucher-compact .btn-reset-voucher:hover { 
+  background: #e2e8f0 !important; 
+}
+
+.mode-biru .bg-gray-900, 
+.mode-biru .bg-gray-900/95, 
+.mode-biru .bg-gray-900/90,
+.mode-biru .bg-gray-900/80 { 
+  background: #ffffff !important; 
+}
+
+.mode-biru .border-gray-700 { 
+  border-color: #e2e8f0 !important; 
+}
+
+.mode-biru .text-gray-400, 
+.mode-biru .text-gray-300, 
+.mode-biru .text-gray-500 { 
+  color: #475569 !important; 
+}
+
+.mode-biru .text-white { 
+  color: #1e293b !important; 
+}
+
+.mode-biru .bg-gray-800,
+.mode-biru .bg-gray-800/50 { 
+  background: #f1f5f9 !important; 
+}
+
+.mode-biru .border-green-400, 
+.mode-biru .border-green-500 { 
+  border-color: #0284c7 !important; 
+}
+
+.mode-biru .text-green-400, 
+.mode-biru .text-green-500 { 
+  color: #0284c7 !important; 
+}
+
+.mode-biru .bg-green-600 { 
+  background: #0284c7 !important; 
+}
+
+.mode-biru .bg-green-600:hover { 
+  background: #0369a1 !important; 
+}
+
+.mode-biru .bg-green-500 { 
+  background: #0284c7 !important; 
+}
+
+.mode-biru .bg-green-500:hover { 
+  background: #0369a1 !important; 
+}
+
+.mode-biru hr.border-gray-600 { 
+  border-color: #cbd5e1 !important; 
+}
+
+.mode-biru .text-yellow-300,
+.mode-biru .text-yellow-400 { 
+  color: #ca8a04 !important; 
+}
+
+.mode-biru .text-red-400 { 
+  color: #dc2626 !important; 
+}
+
+.mode-biru .text-blue-400,
+.mode-biru .text-blue-500 { 
+  color: #3b82f6 !important; 
+}
+
+.mode-biru .back-btn { 
+  background: #0284c7 !important; 
+  color: white !important;
+}
+
+.mode-biru .back-btn:hover { 
+  background: #0369a1 !important; 
+}
+
+.mode-biru .futuristic-btn { 
+  border-color: #0284c7 !important;
+  color: #0284c7 !important;
+}
+
+.mode-biru .futuristic-btn:hover { 
+  background: #0284c7 !important;
+  color: white !important;
+}
+
+.mode-biru .floating-back { 
+  background: #0284c7 !important; 
+  color: white !important;
+}
+
+.mode-biru .floating-back:hover { 
+  background: #0369a1 !important; 
+}
+
+.mode-biru #darkModeToggle {
   background: #cbd5e1 !important;
 }
 
-.light #darkModeToggle.bg-green-500 {
+.mode-biru #darkModeToggle.bg-green-500 {
   background: #0284c7 !important;
 }
 .card{
@@ -2026,10 +1999,9 @@ document.getElementById('adminPassword')?.addEventListener('keypress', function(
     verifyAdminPassword();
   }
 });
-// ========== FUNGSI DARK/LIGHT MODE ==========
 // ========== FUNGSI HIJAU/BIRU MODE ==========
 function initDarkMode() {
-    // Cek preferensi tersimpan, default ke dark mode (hijau)
+    // Cek preferensi tersimpan, default ke mode hijau
     const isBlueMode = localStorage.getItem('blueMode') === 'true';
     const toggle = document.getElementById('darkModeToggle');
     const circle = document.getElementById('darkModeToggleCircle');
@@ -2039,12 +2011,15 @@ function initDarkMode() {
     if (!toggle) return;
     
     if (isBlueMode) {
-        document.body.classList.add('light');
+        document.body.classList.add('mode-biru');
+        document.body.classList.remove('mode-hijau');
         if (circle) circle.classList.add('translate-x-6');
+        if (circle) circle.classList.remove('translate-x-1');
         if (themeIcon) themeIcon.textContent = '🔵';
         if (themeText) themeText.textContent = 'Mode Biru';
     } else {
-        document.body.classList.remove('light');
+        document.body.classList.remove('mode-biru');
+        document.body.classList.add('mode-hijau');
         if (circle) circle.classList.remove('translate-x-6');
         if (circle) circle.classList.add('translate-x-1');
         if (themeIcon) themeIcon.textContent = '🟢';
@@ -2052,10 +2027,11 @@ function initDarkMode() {
     }
     
     toggle.addEventListener('click', function() {
-        const isCurrentlyBlue = document.body.classList.contains('light');
+        const isCurrentlyBlue = document.body.classList.contains('mode-biru');
         
         if (isCurrentlyBlue) {
-            document.body.classList.remove('light');
+            document.body.classList.remove('mode-biru');
+            document.body.classList.add('mode-hijau');
             localStorage.setItem('blueMode', 'false');
             if (circle) {
                 circle.classList.remove('translate-x-6');
@@ -2064,7 +2040,8 @@ function initDarkMode() {
             if (themeIcon) themeIcon.textContent = '🟢';
             if (themeText) themeText.textContent = 'Mode Hijau';
         } else {
-            document.body.classList.add('light');
+            document.body.classList.remove('mode-hijau');
+            document.body.classList.add('mode-biru');
             localStorage.setItem('blueMode', 'true');
             if (circle) {
                 circle.classList.remove('translate-x-1');

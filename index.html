@@ -2336,6 +2336,400 @@ function openGameDetail(g) {
       <button id="modalConfirmBtn" class="px-4 py-1 bg-green-500 text-black rounded-md font-semibold hover:bg-green-400">Kirim</button>
     </div>
   </div>
-</div>    
+</div>
+// ========== SISTEM ADMIN TERSEMBUNYI ==========
+// Password untuk akses admin
+const ADMIN_PASSWORD = "ppc2025"; // Ganti dengan password Anda
+
+// Variabel untuk menyimpan data pelanggan (sementara dengan localStorage)
+let memberData = {};
+
+// Load data member yang tersimpan
+function loadMemberData() {
+    const saved = localStorage.getItem('ppc_member_data');
+    if (saved) {
+        memberData = JSON.parse(saved);
+    } else {
+        // Data contoh
+        memberData = {
+            "081234567890": {
+                nama: "Budi Santoso",
+                poin: 150,
+                totalBelanja: 1500000,
+                terakhirTransaksi: "2026-06-15",
+                history: [
+                    { tanggal: "2026-06-10", nominal: 26000, produk: "Freedom 9GB", poin: 26 },
+                    { tanggal: "2026-06-15", nominal: 50000, produk: "MLBB 100 Diamond", poin: 50 }
+                ]
+            },
+            "089876543210": {
+                nama: "Ani Wijaya",
+                poin: 320,
+                totalBelanja: 3200000,
+                terakhirTransaksi: "2026-06-14",
+                history: [
+                    { tanggal: "2026-06-14", nominal: 100000, produk: "Paket Indosat 40GB", poin: 100 }
+                ]
+            }
+        };
+        localStorage.setItem('ppc_member_data', JSON.stringify(memberData));
+    }
+}
+
+// Simpan data member
+function saveMemberData() {
+    localStorage.setItem('ppc_member_data', JSON.stringify(memberData));
+}
+
+// Tambah poin ke member
+function tambahPoin(nomorHp, nominal, produk, nama = null) {
+    const poinDidapat = Math.floor(nominal / 1000); // Rp 1.000 = 1 poin
+    
+    if (!memberData[nomorHp]) {
+        memberData[nomorHp] = {
+            nama: nama || `Pelanggan ${nomorHp.slice(-4)}`,
+            poin: 0,
+            totalBelanja: 0,
+            history: []
+        };
+    }
+    
+    memberData[nomorHp].poin += poinDidapat;
+    memberData[nomorHp].totalBelanja += nominal;
+    memberData[nomorHp].terakhirTransaksi = new Date().toISOString().slice(0,10);
+    memberData[nomorHp].history.unshift({
+        tanggal: new Date().toLocaleString(),
+        nominal: nominal,
+        produk: produk,
+        poin: poinDidapat
+    });
+    
+    // Simpan maksimal 50 history
+    if (memberData[nomorHp].history.length > 50) {
+        memberData[nomorHp].history.pop();
+    }
+    
+    saveMemberData();
+    
+    return {
+        poinDidapat: poinDidapat,
+        totalPoin: memberData[nomorHp].poin
+    };
+}
+
+// Cek poin member
+function cekPoinMember(nomorHp) {
+    return memberData[nomorHp] || null;
+}
+
+// Tampilkan modal admin (tersembunyi, butuh password)
+function showAdminPanel() {
+    // Minta password dulu
+    const password = prompt("🔒 ADMIN ACCESS\n\nMasukkan password untuk mengakses panel admin:");
+    
+    if (password !== ADMIN_PASSWORD) {
+        if (password !== null) {
+            alert("❌ Password salah! Akses ditolak.");
+        }
+        return;
+    }
+    
+    // Password benar, tampilkan admin panel
+    const adminHtml = `
+        <div id="adminModal" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[100] transition-all duration-300" style="z-index:9999;">
+            <div class="bg-gray-900 border border-green-500 rounded-xl p-6 w-[500px] max-w-[95%] max-h-[90vh] overflow-y-auto relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-green-400">👑 ADMIN PANEL</h2>
+                    <button onclick="closeAdminPanel()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+                </div>
+                
+                <!-- TAB Navigasi -->
+                <div class="flex border-b border-gray-700 mb-4">
+                    <button onclick="adminTab('tambah')" id="tabTambahBtn" class="px-4 py-2 text-sm font-medium text-green-400 border-b-2 border-green-400">➕ Tambah Poin</button>
+                    <button onclick="adminTab('cari')" id="tabCariBtn" class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-green-400">🔍 Cari Member</button>
+                    <button onclick="adminTab('laporan')" id="tabLaporanBtn" class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-green-400">📊 Laporan</button>
+                    <button onclick="adminTab('pengaturan')" id="tabPengaturanBtn" class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-green-400">⚙️ Pengaturan</button>
+                </div>
+                
+                <!-- Konten Tab Tambah Poin -->
+                <div id="adminTabTambah" class="admin-tab-content">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">Nomor HP Pelanggan</label>
+                            <input type="tel" id="adminNomorHp" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-green-500 focus:outline-none" placeholder="Contoh: 081234567890">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">Nama Pelanggan (opsional)</label>
+                            <input type="text" id="adminNama" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-green-500 focus:outline-none" placeholder="Contoh: Budi Santoso">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">Nominal Transaksi (Rp)</label>
+                            <input type="number" id="adminNominal" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-green-500 focus:outline-none" placeholder="Contoh: 26000">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">Produk / Keterangan</label>
+                            <input type="text" id="adminProduk" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-green-500 focus:outline-none" placeholder="Contoh: Freedom 9GB">
+                        </div>
+                        <div class="bg-gray-800 p-3 rounded-lg">
+                            <p class="text-sm text-gray-400">📊 Preview:</p>
+                            <p class="text-green-400 font-bold" id="previewPoin">Poin yang didapat: 0 poin</p>
+                        </div>
+                        <button onclick="prosesTambahPoin()" class="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-3 rounded-lg transition">✅ TAMBAH POIN</button>
+                    </div>
+                </div>
+                
+                <!-- Konten Tab Cari Member -->
+                <div id="adminTabCari" class="admin-tab-content hidden">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">Cari berdasarkan Nomor HP</label>
+                            <div class="flex gap-2">
+                                <input type="tel" id="cariNomorHp" class="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-green-500 focus:outline-none" placeholder="081234567890">
+                                <button onclick="cariMember()" class="bg-green-500 hover:bg-green-600 text-black font-bold px-4 rounded-lg transition">🔍 Cari</button>
+                            </div>
+                        </div>
+                        <div id="hasilCariMember" class="bg-gray-800 rounded-lg p-4 hidden">
+                            <!-- Hasil pencarian akan muncul di sini -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Konten Tab Laporan -->
+                <div id="adminTabLaporan" class="admin-tab-content hidden">
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-gray-800 p-3 rounded-lg text-center">
+                                <p class="text-gray-400 text-xs">TOTAL MEMBER</p>
+                                <p class="text-green-400 text-2xl font-bold" id="totalMember">0</p>
+                            </div>
+                            <div class="bg-gray-800 p-3 rounded-lg text-center">
+                                <p class="text-gray-400 text-xs">TOTAL POIN BERSALDO</p>
+                                <p class="text-green-400 text-2xl font-bold" id="totalPoin">0</p>
+                            </div>
+                            <div class="bg-gray-800 p-3 rounded-lg text-center">
+                                <p class="text-gray-400 text-xs">TOTAL BELANJA</p>
+                                <p class="text-green-400 text-2xl font-bold" id="totalBelanja">Rp 0</p>
+                            </div>
+                            <div class="bg-gray-800 p-3 rounded-lg text-center">
+                                <p class="text-gray-400 text-xs">TOP MEMBER</p>
+                                <p class="text-green-400 text-sm font-bold" id="topMember">-</p>
+                            </div>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg p-3">
+                            <p class="text-gray-400 text-sm mb-2">📋 Daftar Member Terbaru</p>
+                            <div id="daftarMemberList" class="space-y-2 max-h-60 overflow-y-auto">
+                                <!-- Daftar member -->
+                            </div>
+                        </div>
+                        <button onclick="exportDataMember()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-lg transition">📥 Export Data (Copy ke Clipboard)</button>
+                    </div>
+                </div>
+                
+                <!-- Konten Tab Pengaturan -->
+                <div id="adminTabPengaturan" class="admin-tab-content hidden">
+                    <div class="space-y-4">
+                        <div class="bg-yellow-900/30 border border-yellow-500 rounded-lg p-3">
+                            <p class="text-yellow-400 text-sm">⚠️ Peringatan: Fitur ini akan mereset semua data member!</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">Ganti Password Admin</label>
+                            <input type="password" id="newPassword" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-green-500 focus:outline-none" placeholder="Password baru">
+                            <button onclick="gantiPassword()" class="mt-2 bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg transition">Ganti Password</button>
+                        </div>
+                        <hr class="border-gray-700">
+                        <button onclick="resetAllData()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg transition" onclick="return confirm('Yakin ingin mereset semua data?')">🗑️ RESET SEMUA DATA MEMBER</button>
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-3 border-t border-gray-700 text-center">
+                    <p class="text-gray-500 text-xs">PasirPogorCell - Sistem Poin Member</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Hapus modal lama jika ada
+    const oldModal = document.getElementById('adminModal');
+    if (oldModal) oldModal.remove();
+    
+    // Tambahkan modal ke body
+    document.body.insertAdjacentHTML('beforeend', adminHtml);
+    
+    // Load data dan refresh tampilan
+    loadMemberData();
+    refreshLaporan();
+    
+    // Set default tab
+    adminTab('tambah');
+    
+    // Event listener untuk preview poin
+    const nominalInput = document.getElementById('adminNominal');
+    if (nominalInput) {
+        nominalInput.addEventListener('input', function() {
+            const nominal = parseInt(this.value) || 0;
+            const poin = Math.floor(nominal / 1000);
+            document.getElementById('previewPoin').innerHTML = `🎁 Poin yang didapat: <span class="text-green-400">${poin} poin</span> (Rp 1.000 = 1 poin)`;
+        });
+    }
+}
+
+// Tutup admin panel
+function closeAdminPanel() {
+    const modal = document.getElementById('adminModal');
+    if (modal) modal.remove();
+}
+
+// Switch tab admin
+function adminTab(tab) {
+    // Sembunyikan semua tab content
+    document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+    
+    // Reset style semua tombol tab
+    document.getElementById('tabTambahBtn')?.classList.remove('border-green-400', 'text-green-400');
+    document.getElementById('tabTambahBtn')?.classList.add('text-gray-400');
+    document.getElementById('tabCariBtn')?.classList.remove('border-green-400', 'text-green-400');
+    document.getElementById('tabCariBtn')?.classList.add('text-gray-400');
+    document.getElementById('tabLaporanBtn')?.classList.remove('border-green-400', 'text-green-400');
+    document.getElementById('tabLaporanBtn')?.classList.add('text-gray-400');
+    document.getElementById('tabPengaturanBtn')?.classList.remove('border-green-400', 'text-green-400');
+    document.getElementById('tabPengaturanBtn')?.classList.add('text-gray-400');
+    
+    // Tampilkan tab yang dipilih
+    if (tab === 'tambah') {
+        document.getElementById('adminTabTambah')?.classList.remove('hidden');
+        document.getElementById('tabTambahBtn')?.classList.add('border-green-400', 'text-green-400');
+    } else if (tab === 'cari') {
+        document.getElementById('adminTabCari')?.classList.remove('hidden');
+        document.getElementById('tabCariBtn')?.classList.add('border-green-400', 'text-green-400');
+    } else if (tab === 'laporan') {
+        document.getElementById('adminTabLaporan')?.classList.remove('hidden');
+        document.getElementById('tabLaporanBtn')?.classList.add('border-green-400', 'text-green-400');
+        refreshLaporan();
+    } else if (tab === 'pengaturan') {
+        document.getElementById('adminTabPengaturan')?.classList.remove('hidden');
+        document.getElementById('tabPengaturanBtn')?.classList.add('border-green-400', 'text-green-400');
+    }
+}
+
+// Proses tambah poin
+function prosesTambahPoin() {
+    const nomorHp = document.getElementById('adminNomorHp').value.trim();
+    const nama = document.getElementById('adminNama').value.trim();
+    const nominal = parseInt(document.getElementById('adminNominal').value);
+    const produk = document.getElementById('adminProduk').value.trim() || "Transaksi konter";
+    
+    if (!nomorHp) {
+        alert("❌ Nomor HP harus diisi!");
+        return;
+    }
+    
+    if (!nomorHp.match(/^\d{10,13}$/)) {
+        alert("❌ Nomor HP tidak valid! Harus 10-13 digit angka.");
+        return;
+    }
+    
+    if (isNaN(nominal) || nominal <= 0) {
+        alert("❌ Nominal transaksi harus diisi dengan angka yang valid!");
+        return;
+    }
+    
+    const result = tambahPoin(nomorHp, nominal, produk, nama || null);
+    
+    alert(`✅ Poin berhasil ditambahkan!\n\n📱 Nomor: ${nomorHp}\n💵 Nominal: Rp ${nominal.toLocaleString()}\n⭐ Poin +${result.poinDidapat}\n📊 Total poin: ${result.totalPoin}`);
+    
+    // Reset form
+    document.getElementById('adminNomorHp').value = '';
+    document.getElementById('adminNama').value = '';
+    document.getElementById('adminNominal').value = '';
+    document.getElementById('adminProduk').value = '';
+    document.getElementById('previewPoin').innerHTML = '🎁 Poin yang didapat: 0 poin (Rp 1.000 = 1 poin)';
+    
+    // Refresh laporan jika tab laporan terbuka
+    refreshLaporan();
+}
+
+// Cari member
+function cariMember() {
+    const nomorHp = document.getElementById('cariNomorHp').value.trim();
+    const hasilDiv = document.getElementById('hasilCariMember');
+    
+    if (!nomorHp) {
+        alert("❌ Masukkan nomor HP terlebih dahulu!");
+        return;
+    }
+    
+    const member = cekPoinMember(nomorHp);
+    
+    if (member) {
+        const rewardTersedia = [];
+        if (member.poin >= 100) rewardTersedia.push("🎁 Diskon Rp 5.000 (100 poin)");
+        if (member.poin >= 250) rewardTersedia.push("🎁 Freedom Mini 5GB (250 poin)");
+        if (member.poin >= 500) rewardTersedia.push("🎁 MLBB 100 Diamond (500 poin)");
+        if (member.poin >= 1000) rewardTersedia.push("🎁 Diskon Rp 30.000 (1000 poin)");
+        
+        let historyHtml = '';
+        if (member.history && member.history.length > 0) {
+            historyHtml = '<p class="text-gray-400 text-sm mt-3 mb-2">📜 Riwayat Transaksi:</p><div class="space-y-1 max-h-40 overflow-y-auto">';
+            member.history.slice(0, 10).forEach(h => {
+                historyHtml += `<div class="text-xs text-gray-500 border-b border-gray-700 py-1">${h.tanggal} - ${h.produk} - Rp ${h.nominal.toLocaleString()} (+${h.poin} poin)</div>`;
+            });
+            historyHtml += '</div>';
+        }
+        
+        hasilDiv.innerHTML = `
+            <div class="space-y-2">
+                <div class="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span class="text-gray-400">Nama:</span>
+                    <span class="text-white font-bold">${member.nama}</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span class="text-gray-400">Nomor HP:</span>
+                    <span class="text-white">${nomorHp}</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span class="text-gray-400">⭐ Total Poin:</span>
+                    <span class="text-green-400 font-bold text-xl">${member.poin}</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span class="text-gray-400">💰 Total Belanja:</span>
+                    <span class="text-yellow-400">Rp ${member.totalBelanja.toLocaleString()}</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span class="text-gray-400">📅 Terakhir Transaksi:</span>
+                    <span class="text-white">${member.terakhirTransaksi || '-'}</span>
+                </div>
+                ${rewardTersedia.length > 0 ? `
+                <div class="bg-green-900/30 p-2 rounded-lg mt-2">
+                    <p class="text-green-400 text-sm mb-1">🎁 Reward tersedia:</p>
+                    ${rewardTersedia.map(r => `<p class="text-xs text-gray-300">${r}</p>`).join('')}
+                </div>
+                ` : '<p class="text-gray-500 text-sm mt-2">Belum ada reward yang tersedia. Ajak belanja lagi!</p>'}
+                ${historyHtml}
+                <button onclick="copyNomorHp('${nomorHp}')" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 rounded-lg text-sm mt-2 transition">📋 Copy Nomor HP</button>
+            </div>
+        `;
+        hasilDiv.classList.remove('hidden');
+    } else {
+        hasilDiv.innerHTML = `
+            <div class="text-center py-4">
+                <p class="text-yellow-400">⚠️ Member dengan nomor ${nomorHp} tidak ditemukan.</p>
+                <p class="text-gray-400 text-sm mt-2">Silakan tambahkan melalui tab "Tambah Poin" terlebih dahulu.</p>
+            </div>
+        `;
+        hasilDiv.classList.remove('hidden');
+    }
+}
+
+// Refresh data laporan
+function refreshLaporan() {
+    const members = Object.keys(memberData);
+    const totalMember = members.length;
+    let totalPoin = 0;
+    let totalBelanja = 0;
+    let topMember = { nama: '-', poin: 0 };
+    
+    members.forEach(nomor => {
+        const m = memberData[nomor];
+       
 </body>    
 </html>

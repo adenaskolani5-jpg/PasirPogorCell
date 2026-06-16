@@ -1919,8 +1919,9 @@ function klaimSemuaPoin() {
     currentPoinCustomerData = cekPelanggan(currentPoinCustomerId);
     // Update UI
     document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
-    document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia;
-    document.getElementById('poinProgressBar').style.width = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100) + '%';
+    document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.poinTertunda;
+    const percent = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100);
+    document.getElementById('poinProgressBar').style.width = percent + '%';
     document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000';
     document.getElementById('poinKlaimSection').classList.add('hidden');
   } else {
@@ -3072,7 +3073,8 @@ Silakan hubungi pelanggan untuk memberikan hadiah.
     
     // Update UI
     document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
-    document.getElementById('poinProgressBar').style.width = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100) + '%';
+    const percent = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100);
+    document.getElementById('poinProgressBar').style.width = percent + '%';
     document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000';
     
     // Nonaktifkan tombol reward

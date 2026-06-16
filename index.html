@@ -3484,7 +3484,7 @@ function updateDates() {
         });
 }
 
-// ===== FUNGSI TANGGAL HIJRIAH (TANPA TULISAN PERKIRAAN) =====
+// ===== FUNGSI TANGGAL HIJRIAH (DENGAN FALLBACK YANG LEBIH BAIK) =====
 async function fetchHijriahDate() {
     const now = new Date();
     const year = now.getFullYear();
@@ -3492,18 +3492,32 @@ async function fetchHijriahDate() {
     const day = String(now.getDate()).padStart(2, '0');
     const dateKey = `${year}-${month}-${day}`;
     
+    const hijriElement = document.getElementById('hijriahDate');
+    
     // Cek cache
     const cached = localStorage.getItem('hijriahDate');
     if (cached) {
         try {
             const parsed = JSON.parse(cached);
             if (parsed.date === dateKey && parsed.data) {
-                document.getElementById('hijriahDate').textContent = parsed.data;
+                hijriElement.textContent = parsed.data;
                 return;
             }
         } catch(e) {}
     }
     
+    // Jika cache tidak ada atau tanggal berbeda, langsung tampilkan fallback dulu
+    // Agar tidak muncul "Memuat..."
+    const fallbackText = getHijriApproximation(now);
+    hijriElement.textContent = fallbackText;
+    
+    // Simpan fallback ke cache sementara
+    localStorage.setItem('hijriahDate', JSON.stringify({
+        date: dateKey,
+        data: fallbackText
+    }));
+    
+    // Kemudian coba ambil dari API (tanpa mengganggu tampilan)
     try {
         const response = await fetch(`https://api.aladhan.com/v1/gToH/${dateKey}`);
         if (!response.ok) throw new Error('Gagal');
@@ -3513,28 +3527,24 @@ async function fetchHijriahDate() {
             const hijri = data.data.hijri;
             const hijriText = `${hijri.day} ${hijri.month.en} ${hijri.year} H`;
             
+            // Update cache dengan data API
             localStorage.setItem('hijriahDate', JSON.stringify({
                 date: dateKey,
                 data: hijriText
             }));
             
-            document.getElementById('hijriahDate').textContent = hijriText;
-            return;
+            // Update tampilan jika berbeda
+            if (hijriText !== fallbackText) {
+                hijriElement.textContent = hijriText;
+            }
         }
     } catch (error) {
-        console.error('Error Hijriah:', error);
+        console.error('Error Hijriah API:', error);
+        // Tetap gunakan fallback yang sudah ditampilkan
     }
-    
-    // Fallback - tampilkan tanpa tulisan "perkiraan"
-    const hijriText = getHijriApproximation(now);
-    document.getElementById('hijriahDate').textContent = hijriText;
-    localStorage.setItem('hijriahDate', JSON.stringify({
-        date: dateKey,
-        data: hijriText
-    }));
 }
 
-// ===== FUNGSI FALLBACK HIJRIAH (TANPA TULISAN PERKIRAAN) =====
+// ===== FUNGSI FALLBACK HIJRIAH =====
 function getHijriApproximation(date) {
     const islamicMonths = [
         'Muharram', 'Safar', 'Rabiul Awwal', 'Rabiul Akhir',
@@ -3542,7 +3552,7 @@ function getHijriApproximation(date) {
         'Ramadan', 'Syawal', 'Dzulqa\'dah', 'Dzulhijjah'
     ];
     
-    // Data referensi akurat untuk 2026
+    // Data referensi akurat untuk 2026-2027
     const hijriReference = {
         '2026-01-01': [11, 6, 1447],
         '2026-02-01': [12, 7, 1447],
@@ -3576,8 +3586,8 @@ function getHijriApproximation(date) {
         let newMonth = baseMonth;
         let newYear = baseYear;
         
-        if (newDay > 30) {
-            newDay = newDay - 30;
+        if (newDay > 29) {
+            newDay = newDay - 29;
             newMonth++;
             if (newMonth > 11) {
                 newMonth = 0;
@@ -3606,6 +3616,23 @@ function getHijriApproximation(date) {
     }
     
     return `1447 H`;
+}
+
+// ===== UPDATE HIJRIAH SAAT TENGAH MALAM =====
+function scheduleMidnightUpdate() {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    const timeUntilMidnight = tomorrow - now;
+    
+    setTimeout(() => {
+        // Reset cache agar mengambil tanggal baru
+        localStorage.removeItem('hijriahDate');
+        fetchHijriahDate();
+        // Jadwalkan lagi untuk besok
+        scheduleMidnightUpdate();
+    }, timeUntilMidnight);
 }
 </script>
 <script>
@@ -3818,32 +3845,43 @@ function updateCountdown() {
 
 // Inisialisasi
 document.addEventListener('DOMContentLoaded', function() {
-    // Update Masehi
     updateMasehiDate();
-    
-    // Update Hijriah
-    updateHijriahDate();
-    
-    // Update jam setiap detik
+    fetchHijriahDate();
     updateClock();
     setInterval(updateClock, 1000);
-    
-    // Ambil jadwal sholat
     fetchPrayerTimes();
-    
-    // Refresh jadwal sholat setiap jam
     setInterval(fetchPrayerTimes, 3600000);
     
-    // Refresh setiap hari
+    // Refresh setiap hari (untuk sholat)
     const now = new Date();
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
-    const timeUntilMidnight = tomorrow - now;
     setTimeout(() => {
         fetchPrayerTimes();
         setInterval(fetchPrayerTimes, 86400000);
-    }, timeUntilMidnight);
+    }, tomorrow - now);
+    
+    // ===== UPDATE HIJRIAH SAAT TENGAH MALAM =====
+    function scheduleMidnightUpdate() {
+        const now = new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);
+        const timeUntilMidnight = tomorrow - now;
+        
+        setTimeout(() => {
+            localStorage.removeItem('hijriahDate');
+            fetchHijriahDate();
+            scheduleMidnightUpdate();
+        }, timeUntilMidnight);
+    }
+    
+    // Jadwalkan update tengah malam untuk Hijriah
+    scheduleMidnightUpdate();
+    
+    // Update Hijriah setiap jam (cadangan)
+    setInterval(fetchHijriahDate, 3600000);
 });
 </script>
 <script>

@@ -682,65 +682,67 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.3rem 0.6rem;
-    margin-top: 0.15rem;
+    padding: 0.4rem 0.8rem;
+    margin-top: 0.2rem;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 1rem;
-    border: 1px solid rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.25);
     backdrop-filter: blur(4px);
     flex-wrap: wrap;
-    gap: 0.2rem;
+    gap: 0.3rem;
 }
 
 .datetime-left {
     display: flex;
     flex-direction: column;
-    gap: 0.1rem;
+    gap: 0.15rem;
     flex: 1;
-    min-width: 120px;
+    min-width: 130px;
 }
 
 .datetime-right {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 0.1rem;
+    gap: 0.15rem;
     flex: 1;
-    min-width: 80px;
+    min-width: 90px;
 }
 
 .date-item-compact {
     display: flex;
     align-items: center;
-    gap: 0.3rem;
-    font-size: 0.7rem;
-    color: #d1d5db;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: #22c55e;
 }
 
 .date-item-compact .icon {
-    font-size: 0.65rem;
+    font-size: 0.85rem;
 }
 
 .date-item-compact .label {
-    color: #9ca3af;
-    font-size: 0.55rem;
+    color: #4ade80;
+    font-size: 0.65rem;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
 }
 
 .date-item-compact .value {
     color: #22c55e;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 0.85rem;
 }
 
 .date-item-compact .value-hijri {
-    color: #facc15;
-    font-weight: 600;
-    font-size: 0.65rem;
+    color: #22c55e;
+    font-weight: 700;
+    font-size: 0.85rem;
 }
 
 .time-display {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: #22c55e;
     text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
@@ -749,44 +751,46 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 }
 
 .time-display .label-wib {
-    font-size: 0.5rem;
-    font-weight: 400;
-    color: #9ca3af;
+    font-size: 0.55rem;
+    font-weight: 500;
+    color: #4ade80;
     margin-left: 0.2rem;
 }
 
 .sholat-next {
     display: flex;
     align-items: center;
-    gap: 0.3rem;
-    font-size: 0.65rem;
-    background: rgba(34, 197, 94, 0.1);
-    padding: 0.1rem 0.4rem;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    background: rgba(34, 197, 94, 0.08);
+    padding: 0.15rem 0.5rem;
     border-radius: 1rem;
     border: 1px solid rgba(34, 197, 94, 0.2);
 }
 
 .sholat-next .name {
-    color: #9ca3af;
-    font-size: 0.55rem;
+    color: #22c55e;
+    font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
 }
 
 .sholat-next .time {
-    color: #facc15;
+    color: #22c55e;
     font-weight: 700;
+    font-size: 0.8rem;
 }
 
 .sholat-next .countdown {
-    color: #4ade80;
-    font-size: 0.55rem;
+    color: #22c55e;
+    font-size: 0.65rem;
     font-weight: 600;
 }
 
 .progress-container {
     width: 100%;
-    margin-top: 0.15rem;
-    height: 2px;
+    margin-top: 0.2rem;
+    height: 3px;
     background: rgba(34, 197, 94, 0.15);
     border-radius: 1rem;
     overflow: hidden;
@@ -803,41 +807,41 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 /* Responsif untuk HP */
 @media (max-width: 500px) {
     .datetime-compact {
-        padding: 0.2rem 0.4rem;
+        padding: 0.3rem 0.5rem;
         border-radius: 0.75rem;
-        gap: 0.1rem;
+        gap: 0.15rem;
     }
     .date-item-compact {
-        font-size: 0.6rem;
-        gap: 0.2rem;
+        font-size: 0.7rem;
+        gap: 0.25rem;
     }
     .date-item-compact .icon {
-        font-size: 0.55rem;
+        font-size: 0.7rem;
     }
     .date-item-compact .label {
-        font-size: 0.45rem;
+        font-size: 0.5rem;
     }
     .date-item-compact .value {
-        font-size: 0.6rem;
+        font-size: 0.7rem;
     }
     .date-item-compact .value-hijri {
-        font-size: 0.55rem;
+        font-size: 0.7rem;
     }
     .time-display {
-        font-size: 0.75rem;
+        font-size: 0.9rem;
     }
     .sholat-next {
-        font-size: 0.55rem;
-        padding: 0.05rem 0.3rem;
+        font-size: 0.65rem;
+        padding: 0.1rem 0.35rem;
     }
     .sholat-next .name {
-        font-size: 0.45rem;
-    }
-    .sholat-next .time {
         font-size: 0.55rem;
     }
+    .sholat-next .time {
+        font-size: 0.65rem;
+    }
     .sholat-next .countdown {
-        font-size: 0.45rem;
+        font-size: 0.5rem;
     }
 }
 </style>        

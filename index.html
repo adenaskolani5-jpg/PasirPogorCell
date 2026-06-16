@@ -3907,7 +3907,8 @@ function updateCountdown() {
     
     document.getElementById('nextSholatCountdown').textContent = `⏳ ${countdownText}`;
     
-    const totalMinutes = 720;
+    // PERBAIKI: 1440 menit = 24 jam
+    const totalMinutes = 1440;
     const progress = Math.min((currentTime / totalMinutes) * 100, 100);
     document.getElementById('sholatProgressBar').style.width = progress + '%';
 }

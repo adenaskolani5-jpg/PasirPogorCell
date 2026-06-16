@@ -3258,12 +3258,17 @@ function updateDates() {
     const masehiStr = `${dayName}, ${day} ${month} ${year}`;
     document.getElementById('masehiDate').textContent = masehiStr;
     
-    // Format Hijriah - menggunakan API dari aladhan.com
+    // ===== HIJRIAH MENGGUNAKAN API ALADHAN DENGAN PROXY CORS =====
     const gregorianDate = `${year}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     
-    fetch(`https://api.aladhan.com/v1/gToH/${gregorianDate}`)
+    // Gunakan proxy CORS untuk menghindari blokir
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const apiUrl = `https://api.aladhan.com/v1/gToH/${gregorianDate}`;
+    
+    // Coba dengan proxy terlebih dahulu
+    fetch(proxyUrl + apiUrl)
         .then(response => {
-            if (!response.ok) throw new Error('Gagal mengambil data');
+            if (!response.ok) throw new Error('Gagal mengambil data melalui proxy');
             return response.json();
         })
         .then(data => {
@@ -3278,17 +3283,104 @@ function updateDates() {
             }
         })
         .catch(error => {
-            console.error('Error mengambil tanggal Hijriah:', error);
-            document.getElementById('hijriahDate').textContent = 'Gagal memuat';
+            console.error('Error dengan proxy, mencoba tanpa proxy...');
+            // Jika proxy gagal, coba langsung (mungkin berhasil di beberapa browser)
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error('Gagal mengambil data');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.code === 200 && data.data) {
+                        const hijri = data.data.hijri;
+                        const hijriDay = hijri.day;
+                        const hijriMonth = hijri.month.en;
+                        const hijriYear = hijri.year;
+                        document.getElementById('hijriahDate').textContent = `${hijriDay} ${hijriMonth} ${hijriYear} H`;
+                    } else {
+                        throw new Error('Data tidak valid');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error mengambil tanggal Hijriah:', err);
+                    // Gunakan fallback - perkiraan manual (kurang akurat tapi lebih baik dari "Gagal memuat")
+                    document.getElementById('hijriahDate').textContent = getHijriApproximation(now);
+                });
         });
+}
+
+// ===== FUNGSI FALLBACK HIJRIAH (PERKIRAAN) =====
+function getHijriApproximation(date) {
+    // Perkiraan kasar - hanya untuk fallback jika API gagal
+    // Ini adalah perhitungan sederhana, tidak akurat 100%
+    const islamicMonths = [
+        'Muharram', 'Safar', 'Rabiul Awwal', 'Rabiul Akhir',
+        'Jumada Awwal', 'Jumada Akhir', 'Rajab', 'Sya\'ban',
+        'Ramadan', 'Syawal', 'Dzulqa\'dah', 'Dzulhijjah'
+    ];
+    
+    // Tanggal Hijriah saat ini (perkiraan)
+    // Kita bisa gunakan data hardcoded untuk 2026
+    const hijriReference = {
+        // Format: { gregorian: [hijriDay, hijriMonthIndex, hijriYear] }
+        // Contoh: 1 Januari 2026 = 11 Rajab 1447
+        '2026-01-01': [11, 6, 1447],  // Rajab
+        '2026-02-01': [12, 7, 1447],  // Sya'ban
+        '2026-03-01': [11, 8, 1447],  // Ramadan
+        '2026-04-01': [13, 9, 1447],  // Syawal
+        '2026-05-01': [13, 10, 1447], // Dzulqa'dah
+        '2026-06-01': [14, 11, 1447], // Dzulhijjah
+        '2026-07-01': [15, 0, 1448],  // Muharram
+        '2026-08-01': [16, 1, 1448],  // Safar
+        '2026-09-01': [17, 2, 1448],  // Rabiul Awwal
+        '2026-10-01': [18, 3, 1448],  // Rabiul Akhir
+        '2026-11-01': [19, 4, 1448],  // Jumada Awwal
+        '2026-12-01': [20, 5, 1448]   // Jumada Akhir
+    };
+    
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const key = `${year}-${month}-${day}`;
+    
+    // Coba cari referensi terdekat
+    if (hijriReference[key]) {
+        const [hDay, hMonth, hYear] = hijriReference[key];
+        return `${hDay} ${islamicMonths[hMonth]} ${hYear} H (perkiraan)`;
+    }
+    
+    // Jika tidak ada, gunakan perkiraan dengan menambahkan hari dari tanggal referensi terdekat
+    // Ambil referensi dari tanggal 1 bulan yang sama
+    const monthKey = `${year}-${month}-01`;
+    if (hijriReference[monthKey]) {
+        const [baseDay, baseMonth, baseYear] = hijriReference[monthKey];
+        const dayDiff = parseInt(day) - 1;
+        let newDay = baseDay + dayDiff;
+        let newMonth = baseMonth;
+        let newYear = baseYear;
+        
+        // Perkiraan sederhana: 30 hari per bulan
+        if (newDay > 30) {
+            newDay = newDay - 30;
+            newMonth++;
+            if (newMonth > 11) {
+                newMonth = 0;
+                newYear++;
+            }
+        }
+        
+        return `${newDay} ${islamicMonths[newMonth]} ${newYear} H (perkiraan)`;
+    }
+    
+    // Fallback terakhir
+    return '1447 H (perkiraan)';
 }
 
 // Update saat halaman dimuat
 document.addEventListener('DOMContentLoaded', function() {
     updateDates();
-    
-    // Update setiap jam (jika halaman dibuka lama)
-    setInterval(updateDates, 3600000); // 1 jam
+    // Update setiap jam
+    setInterval(updateDates, 3600000);
 });
 </script>
 </body>    

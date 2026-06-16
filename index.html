@@ -1716,6 +1716,43 @@ document.getElementById('adminPassword')?.addEventListener('keypress', function(
 // ========== SISTEM POIN ==========
 // Key untuk localStorage
 const POIN_STORAGE_KEY = 'pasirpogor_poin_data';
+// ========== DATA PRODUK UNTUK REWARD ==========
+const rewardProducts = {
+  kuota: [
+    { nama: "Kuota 1GB 7 Hari", harga: 10000, poin: 1000 },
+    { nama: "Kuota 2GB 7 Hari", harga: 15000, poin: 1500 },
+    { nama: "Kuota 3GB 7 Hari", harga: 20000, poin: 2000 },
+    { nama: "Kuota 5GB 7 Hari", harga: 25000, poin: 2500 },
+    { nama: "Kuota 7GB 7 Hari", harga: 30000, poin: 3000 },
+    { nama: "Kuota 10GB 7 Hari", harga: 35000, poin: 3500 },
+    { nama: "Kuota 15GB 7 Hari", harga: 40000, poin: 4000 },
+    { nama: "Kuota 20GB 7 Hari", harga: 45000, poin: 4500 },
+    { nama: "Kuota 30GB 7 Hari", harga: 50000, poin: 5000 },
+    { nama: "Kuota 50GB 7 Hari", harga: 60000, poin: 6000 },
+  ],
+  game: [
+    { nama: "Mobile Legends 11 Diamond", harga: 3000, poin: 300 },
+    { nama: "Mobile Legends 19 Diamond", harga: 5000, poin: 500 },
+    { nama: "Mobile Legends 28 Diamond", harga: 7000, poin: 700 },
+    { nama: "Mobile Legends 44 Diamond", harga: 9000, poin: 900 },
+    { nama: "Mobile Legends 56 Diamond", harga: 11000, poin: 1100 },
+    { nama: "Mobile Legends 85 Diamond", harga: 15000, poin: 1500 },
+    { nama: "Mobile Legends 100 Diamond", harga: 18000, poin: 1800 },
+    { nama: "Mobile Legends 144 Diamond", harga: 25000, poin: 2500 },
+    { nama: "Mobile Legends 170 Diamond", harga: 30000, poin: 3000 },
+    { nama: "Mobile Legends 222 Diamond", harga: 40000, poin: 4000 },
+    { nama: "Free Fire 100 Diamond", harga: 10000, poin: 1000 },
+    { nama: "Free Fire 210 Diamond", harga: 20000, poin: 2000 },
+    { nama: "Free Fire 500 Diamond", harga: 45000, poin: 4500 },
+    { nama: "PUBG Mobile 60 UC", harga: 12000, poin: 1200 },
+    { nama: "PUBG Mobile 125 UC", harga: 25000, poin: 2500 },
+    { nama: "PUBG Mobile 325 UC", harga: 55000, poin: 5500 },
+    { nama: "Call of Duty 63 CP", harga: 12000, poin: 1200 },
+    { nama: "Call of Duty 321 CP", harga: 48000, poin: 4800 },
+    { nama: "Honor of Kings 16 Tokens", harga: 6000, poin: 600 },
+    { nama: "Honor of Kings 80 Tokens", harga: 18000, poin: 1800 },
+  ]
+};
 
 // Data awal (jika kosong)
 function getDefaultPoinData() {
@@ -1782,35 +1819,53 @@ function klaimPoin(customerId) {
   return { success: true, poinDidapat: poinDidapat, totalPoin: customer.poin, message: `Berhasil klaim ${poinDidapat} poin!` };
 }
 
-// Klaim reward (1000 poin)
-async function klaimRewardById(customerId, customerData) {
-  if (customerData.poin < 1000) {
-    return { success: false, message: "Poin belum mencapai 1000" };
+// Klaim reward dengan pilihan produk
+async function klaimRewardById(customerId, customerData, product) {
+  if (customerData.poin < product.poin) {
+    return { success: false, message: `Poin tidak mencukupi! Butuh ${product.poin} poin, Anda punya ${customerData.poin} poin.` };
   }
   
-  // Kurangi poin 1000
-  customerData.poin -= 1000;
+  // Kurangi poin sesuai produk
+  customerData.poin -= product.poin;
   
   const data = loadPoinData();
   data.customers[customerId] = customerData;
   savePoinData(data);
+  
+  // Tentukan jenis produk
+  const isKuota = product.nama.toLowerCase().includes('kuota');
   
   // Kirim notifikasi ke Telegram
   const pesan = `
 📢 <b>KLAIM REWARD PELANGGAN!</b>
 
 🆔 ID: ${customerId}
-⭐ Poin yang diklaim: 1000 poin
+${customerData.type === 'phone' ? '📱 Nomor HP: ' + customerId : '🎮 ID Game: ' + customerId}
+
+📦 Produk: ${product.nama}
+💰 Harga: Rp ${product.harga.toLocaleString()}
+⭐ Poin digunakan: ${product.poin} poin
 💎 Sisa poin: ${customerData.poin}
 🕐 Waktu: ${new Date().toLocaleString('id-ID')}
 
-💡 Pelanggan berhak mendapatkan reward!
-Silakan hubungi pelanggan untuk memberikan hadiah.
+📌 Instruksi: ${isKuota ? 'Kirim kuota ke nomor di atas.' : 'Kirim diamond/top up ke ID game di atas.'}
   `;
   
-  await sendTelegramMessage(pesan);
-  
-  return { success: true, message: "Reward berhasil diklaim! Admin akan menghubungi Anda.", sisaPoin: customerData.poin };
+  try {
+    await sendTelegramMessage(pesan);
+    return { 
+      success: true, 
+      message: `✅ Berhasil klaim ${product.nama}!\nPoin digunakan: ${product.poin}\nSisa poin: ${customerData.poin}`,
+      sisaPoin: customerData.poin 
+    };
+  } catch(e) {
+    console.error('Gagal kirim notifikasi:', e);
+    return { 
+      success: true, 
+      message: `✅ Berhasil klaim ${product.nama}!\n(Notifikasi gagal, tapi admin akan tetap mendapat info)\nPoin digunakan: ${product.poin}\nSisa poin: ${customerData.poin}`,
+      sisaPoin: customerData.poin 
+    };
+  }
 }
 
 // ========== FUNGSI UI MODAL POIN ==========
@@ -1863,7 +1918,6 @@ function cekPoinPelanggan() {
   currentPoinCustomerData = cekPelanggan(customerId);
   
   if (!currentPoinCustomerData) {
-    // Pelanggan belum pernah ditambahkan admin
     document.getElementById('poinEmpty').classList.remove('hidden');
     document.getElementById('poinHasil').classList.add('hidden');
     alert('ID tidak ditemukan. Pastikan Anda sudah melakukan pembelian dan admin telah mencatatnya.');
@@ -1883,28 +1937,98 @@ function cekPoinPelanggan() {
   document.getElementById('poinProgressBar').style.width = percent + '%';
   document.getElementById('poinProgressText').textContent = poin + ' / 1000';
   
-  // Update tombol reward
+  // ===== TAMPILKAN DAFTAR PRODUK YANG BISA DIKLAIM =====
+  const productListDiv = document.getElementById('productList');
+  if (!productListDiv) return;
+  
+  productListDiv.innerHTML = '';
+  
+  // Cek apakah ada produk yang bisa diklaim
+  const availableProducts = [];
+  
+  // Cek kuota
+  rewardProducts.kuota.forEach(p => {
+    if (poin >= p.poin) {
+      availableProducts.push({ ...p, type: 'kuota' });
+    }
+  });
+  
+  // Cek game
+  rewardProducts.game.forEach(p => {
+    if (poin >= p.poin) {
+      availableProducts.push({ ...p, type: 'game' });
+    }
+  });
+  
+  if (availableProducts.length === 0) {
+    productListDiv.innerHTML = `
+      <div class="text-center text-gray-400 py-4">
+        <p>🔥 Belum ada produk yang bisa diklaim</p>
+        <p class="text-xs mt-1">Kumpulkan minimal 300 poin untuk mulai klaim</p>
+      </div>
+    `;
+    // Nonaktifkan tombol reward
+    const rewardBtn = document.getElementById('rewardBtn');
+    rewardBtn.disabled = true;
+    rewardBtn.textContent = '📨 Belum ada produk yang tersedia';
+    rewardBtn.classList.remove('bg-green-600', 'text-black');
+    rewardBtn.classList.add('poin-reward-btn');
+    return;
+  }
+  
+  // Tampilkan produk yang tersedia
+  availableProducts.forEach((product, index) => {
+    const div = document.createElement('div');
+    div.className = `product-item bg-gray-800/50 rounded-lg p-3 mb-2 border border-gray-700 hover:border-green-500 transition cursor-pointer ${index === 0 ? 'selected' : ''}`;
+    div.dataset.product = JSON.stringify(product);
+    div.innerHTML = `
+      <div class="flex justify-between items-center">
+        <div>
+          <span class="text-sm font-semibold text-white">${product.nama}</span>
+          <span class="text-xs text-gray-400 ml-2">${product.type === 'kuota' ? '📶 Kuota' : '🎮 Game'}</span>
+        </div>
+        <div class="text-right">
+          <span class="text-green-400 font-bold">Rp ${product.harga.toLocaleString()}</span>
+          <span class="text-xs text-gray-400 block">${product.poin} poin</span>
+        </div>
+      </div>
+    `;
+    div.onclick = function() {
+      document.querySelectorAll('.product-item').forEach(el => el.classList.remove('selected', 'border-green-500'));
+      this.classList.add('selected', 'border-green-500');
+      document.getElementById('selectedProduct').value = JSON.stringify(product);
+    };
+    productListDiv.appendChild(div);
+  });
+  
+  // Pilih produk pertama secara default
+  const firstProduct = document.querySelector('.product-item');
+  if (firstProduct) {
+    firstProduct.classList.add('selected', 'border-green-500');
+    document.getElementById('selectedProduct').value = JSON.stringify(availableProducts[0]);
+  }
+  
+  // Tampilkan tombol reward
   const rewardBtn = document.getElementById('rewardBtn');
-  if (poin >= 1000) {
+  if (availableProducts.length > 0) {
     rewardBtn.disabled = false;
-    rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (1000 poin akan ditukar)';
+    rewardBtn.textContent = '📨 Kirim Informasi ke Penjual';
     rewardBtn.classList.add('bg-green-600', 'text-black');
     rewardBtn.classList.remove('poin-reward-btn');
   } else {
     rewardBtn.disabled = true;
-    rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)';
+    rewardBtn.textContent = '📨 Belum ada produk yang tersedia';
     rewardBtn.classList.remove('bg-green-600', 'text-black');
     rewardBtn.classList.add('poin-reward-btn');
   }
   
-  // Tampilkan tombol klaim jika ada klaim tersedia
+  // Tampilkan tombol klaim jika ada poin tertunda
   const klaimSection = document.getElementById('poinKlaimSection');
   const klaimBtn = document.getElementById('klaimBtn');
   if (currentPoinCustomerData.poinTertunda > 0) {
-  klaimSection.classList.remove('hidden');
-  klaimBtn.textContent = `🎁 KLAIM SEMUA (${currentPoinCustomerData.poinTertunda} poin)`;
-}
- else {
+    klaimSection.classList.remove('hidden');
+    klaimBtn.textContent = `🎁 KLAIM SEMUA (${currentPoinCustomerData.poinTertunda} poin)`;
+  } else {
     klaimSection.classList.add('hidden');
   }
 }
@@ -2998,6 +3122,14 @@ function openGameDetail(g) { historyStack.push(() => game.classList.remove("hidd
           </div>
         </div>
       </div>
+<!-- Daftar Produk Yang Bisa Diklaim -->
+<div id="productListContainer" class="mt-4">
+  <h5 class="text-sm font-semibold text-green-400 mb-2">🎯 Pilih Produk yang Ingin Diklaim:</h5>
+  <div id="productList" class="max-h-48 overflow-y-auto">
+    <!-- Daftar produk akan di-render di sini -->
+  </div>
+  <input type="hidden" id="selectedProduct" value="">
+</div>
       <div id="poinEmpty" class="text-center text-gray-400 py-8">🔍 Masukkan ID Anda untuk melihat poin</div>
     </div>
   </div>
@@ -3012,100 +3144,6 @@ function openGameDetail(g) { historyStack.push(() => game.classList.remove("hidd
     <div class="flex justify-end gap-3 mt-4"><button id="modalCancelBtn" class="px-4 py-1 border border-gray-500 text-gray-300 rounded-md hover:bg-gray-700">Batal</button><button id="modalConfirmBtn" class="px-4 py-1 bg-green-500 text-black rounded-md font-semibold hover:bg-green-400">Kirim</button></div>
   </div>
 </div>
-<script>
-// ========== PERBAIKAN FUNGSI KLAIM REWARD ==========
-
-// Fungsi kirim pesan ke Telegram
-async function sendTelegramMessage(message) {
-    const TELEGRAM_BOT_TOKEN = '8303767615:AAHIloX2OXO3imC3tVnjfN_W_n2joaNSnro';
-    const TELEGRAM_CHAT_ID = '5725724854';
-    try {
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'HTML' })
-        });
-        console.log('Notifikasi Telegram terkirim');
-    } catch(e) {
-        console.error('Gagal kirim Telegram:', e);
-    }
-}
-
-// Fungsi klaim reward (panggil dari tombol)
-async function klaimReward() {
-    console.log('klaimReward dipanggil');
-    
-    if (!currentPoinCustomerId || !currentPoinCustomerData) {
-        alert('Silakan cek ID terlebih dahulu!');
-        return;
-    }
-    
-    if (currentPoinCustomerData.poin < 1000) {
-        alert('Poin belum mencapai 1000!');
-        return;
-    }
-    
-    const confirmReward = confirm('Apakah Anda yakin ingin menukarkan 1000 poin untuk mendapatkan reward?');
-    if (!confirmReward) return;
-    
-    // Kurangi poin 1000
-    currentPoinCustomerData.poin -= 1000;
-    
-    // Simpan ke localStorage
-    const data = loadPoinData();
-    data.customers[currentPoinCustomerId] = currentPoinCustomerData;
-    savePoinData(data);
-    
-    // Kirim notifikasi ke Telegram
-    const pesan = `
-📢 <b>KLAIM REWARD PELANGGAN!</b>
-
-🆔 ID: ${currentPoinCustomerId}
-⭐ Poin yang diklaim: 1000 poin
-💎 Sisa poin: ${currentPoinCustomerData.poin}
-🕐 Waktu: ${new Date().toLocaleString('id-ID')}
-
-💡 Pelanggan berhak mendapatkan reward!
-Silakan hubungi pelanggan untuk memberikan hadiah.
-    `;
-    
-    await sendTelegramMessage(pesan);
-    
-    // Update UI
-    document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
-    const percent = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100);
-    document.getElementById('poinProgressBar').style.width = percent + '%';
-    document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000';
-    
-    // Nonaktifkan tombol reward
-    const rewardBtn = document.getElementById('rewardBtn');
-    rewardBtn.disabled = true;
-    rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)';
-    rewardBtn.classList.remove('bg-green-600', 'text-black');
-    rewardBtn.classList.add('poin-reward-btn');
-    
-    alert('✅ Reward berhasil diklaim! Admin akan menghubungi Anda.');
-}
-
-// Pastikan fungsi loadPoinData dan savePoinData tersedia
-if (typeof loadPoinData === 'undefined') {
-    window.loadPoinData = function() {
-        const stored = localStorage.getItem('pasirpogor_poin_data');
-        if (stored) {
-            try { return JSON.parse(stored); } catch(e) { return { customers: {} }; }
-        }
-        return { customers: {} };
-    };
-}
-
-if (typeof savePoinData === 'undefined') {
-    window.savePoinData = function(data) {
-        localStorage.setItem('pasirpogor_poin_data', JSON.stringify(data));
-    };
-}
-
-console.log('Fungsi reward siap');
-</script>
 <script>
 // ========== SISTEM KUNJUNGAN DENGAN TOGGLE ==========
 const STORAGE_KEY = 'visitor_count';

@@ -1743,20 +1743,16 @@ function savePoinData(data) {
   localStorage.setItem(POIN_STORAGE_KEY, JSON.stringify(data));
 }
 
-// Tambah klaim untuk customer (dipanggil dari Admin Panel)
-function tambahKlaim(customerId, type) {
-  // Normalisasi ID (lowercase untuk konsistensi)
+// Tambah poin untuk customer (dipanggil dari Admin Panel)
+function tambahPoin(customerId, amount) {
   const normalizedId = customerId.trim().toLowerCase();
   const data = loadPoinData();
-  
   if (!data.customers[normalizedId]) {
-    data.customers[normalizedId] = { klaimTersedia: 0, poin: 0, lastUpdate: Date.now(), type: type };
+    data.customers[normalizedId] = { poinTertunda: 0, poin: 0, lastUpdate: Date.now(), type: 'phone' };
   }
-  
-  data.customers[normalizedId].klaimTersedia += 1;
+  data.customers[normalizedId].poinTertunda += amount;
   data.customers[normalizedId].lastUpdate = Date.now();
   savePoinData(data);
-  
   return data.customers[normalizedId];
 }
 

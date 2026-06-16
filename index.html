@@ -1771,33 +1771,19 @@ function cekPelanggan(customerId) {
 function klaimPoin(customerId) {
   const normalizedId = customerId.trim().toLowerCase();
   const data = loadPoinData();
-  
   if (!data.customers[normalizedId]) {
     return { success: false, message: "ID tidak ditemukan" };
   }
-  
   const customer = data.customers[normalizedId];
-  
-  if (customer.klaimTersedia <= 0) {
-    return { success: false, message: "Tidak ada klaim tersedia" };
+  if (customer.poinTertunda <= 0) {
+    return { success: false, message: "Tidak ada poin tertunda" };
   }
-  
-  const klaimDipakai = customer.klaimTersedia;
-  const poinDidapat = klaimDipakai * 100;
-  
+  const poinDidapat = customer.poinTertunda;
   customer.poin += poinDidapat;
-  customer.klaimTersedia = 0;
+  customer.poinTertunda = 0;
   customer.lastUpdate = Date.now();
-  
   savePoinData(data);
-  
-  return { 
-    success: true, 
-    klaimDipakai: klaimDipakai, 
-    poinDidapat: poinDidapat,
-    totalPoin: customer.poin,
-    message: `Berhasil klaim ${klaimDipakai} klaim! +${poinDidapat} poin`
-  };
+  return { success: true, poinDidapat: poinDidapat, totalPoin: customer.poin, message: `Berhasil klaim ${poinDidapat} poin!` };
 }
 
 // Klaim reward (1000 poin)
@@ -1893,7 +1879,7 @@ function cekPoinPelanggan() {
   document.getElementById('poinHasil').classList.remove('hidden');
   
   document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
-  document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia;
+  document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.poinTertunda;
   
   // Update progress bar
   const poin = currentPoinCustomerData.poin;
@@ -1918,10 +1904,11 @@ function cekPoinPelanggan() {
   // Tampilkan tombol klaim jika ada klaim tersedia
   const klaimSection = document.getElementById('poinKlaimSection');
   const klaimBtn = document.getElementById('klaimBtn');
-  if (currentPoinCustomerData.klaimTersedia > 0) {
-    klaimSection.classList.remove('hidden');
-    klaimBtn.textContent = `🎁 KLAIM SEMUA (${currentPoinCustomerData.klaimTersedia} klaim → ${currentPoinCustomerData.klaimTersedia * 100} poin)`;
-  } else {
+  if (currentPoinCustomerData.poinTertunda > 0) {
+  klaimSection.classList.remove('hidden');
+  klaimBtn.textContent = `🎁 KLAIM SEMUA (${currentPoinCustomerData.poinTertunda} poin)`;
+}
+ else {
     klaimSection.classList.add('hidden');
   }
 }
@@ -1977,26 +1964,22 @@ async function klaimReward() {
 }
 
 // ========== FUNGSI ADMIN UNTUK POIN ==========
-function adminTambahKlaim() {
+function adminTambahPoin() {
   const idType = document.getElementById('adminIdType').value;
   let customerId = document.getElementById('adminCustomerId').value.trim();
-  
   if (!customerId) {
     alert('Masukkan ID pelanggan!');
     return;
   }
-  
-  // Validasi sederhana
   if (idType === 'phone') {
     if (!/^\d{10,13}$/.test(customerId.replace(/\s/g, ''))) {
       alert('Nomor HP harus 10-13 digit angka!');
       return;
     }
   }
-  
-  const result = tambahKlaim(customerId, idType);
-  alert(`✅ Berhasil menambah klaim untuk ${customerId}\nKlaim tersedia sekarang: ${result.klaimTersedia}\nTotal poin: ${result.poin}`);
-  
+  const poinAmount = parseInt(document.querySelector('input[name="poinAmount"]:checked').value);
+  const result = tambahPoin(customerId, poinAmount);
+  alert(`✅ Berhasil menambah ${poinAmount} poin untuk ${customerId}\nPoin tertunda: ${result.poinTertunda}\nTotal poin: ${result.poin}`);
   document.getElementById('adminCustomerId').value = '';
   adminRefreshTable();
 }
@@ -2023,7 +2006,7 @@ function adminRefreshTable() {
   tableBody.innerHTML = filtered.map(([id, data]) => `
     <tr class="border-b border-gray-700 hover:bg-gray-800">
       <td class="p-2 text-xs break-all">${escapeHtml(id)}</td>
-      <td class="p-2 text-center text-yellow-400">${data.klaimTersedia}</td>
+      <td class="p-2 text-center text-yellow-400">${data.poinTertunda}</td>
       <td class="p-2 text-center text-green-400">${data.poin}</td>
     </tr>
   `).join('');
@@ -2910,6 +2893,17 @@ function openGameDetail(g) { historyStack.push(() => game.classList.remove("hidd
 </div>
 
 <div id="adminPanelModal" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
+<div class="mb-2">
+  <label class="text-sm text-gray-300">Pilih jumlah poin:</label>
+  <div class="flex gap-4 mt-1">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="radio" name="poinAmount" value="50" checked class="accent-green-500"> 50 poin
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="radio" name="poinAmount" value="100" class="accent-green-500"> 100 poin
+    </label>
+  </div>
+</div>
   <div class="bg-gray-900 border border-green-500 rounded-xl w-full max-w-2xl max-h-[85vh] overflow-auto transform scale-95 transition-all duration-300 shadow-2xl admin-card">
     <div class="sticky top-0 bg-gray-900 flex justify-between items-center p-4 border-b border-gray-700 z-10">
     <h3 class="text-lg font-bold text-green-400">👑 Admin Panel</h3>
@@ -2925,7 +2919,7 @@ function openGameDetail(g) { historyStack.push(() => game.classList.remove("hidd
               <option value="game">🎮 ID Game</option>
             </select>
             <input type="text" id="adminCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
-            <button onclick="adminTambahKlaim()" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition">✅ Tambah Klaim (1 klaim = 100 poin)</button>
+            <button onclick="adminTambahPoin()" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition">✅ Tambah Poin</button>
           </div>
         </div>
         <div class="bg-gray-800/50 rounded-lg p-4">

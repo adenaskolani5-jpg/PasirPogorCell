@@ -1653,17 +1653,21 @@ function closeSettingsModal() {
 }
 
 function openAdminPanel() {
-  // Tutup settings modal terlebih dahulu
-  closeSettingsModal();
-  // Buka modal login admin
-  const loginModal = document.getElementById('adminLoginModal');
-  if (!loginModal) return;
-  loginModal.classList.remove('opacity-0', 'pointer-events-none');
-  const box = loginModal.querySelector('div');
-  if (box) box.classList.remove('scale-95');
-  // Reset input password
-  document.getElementById('adminPassword').value = '';
-  document.getElementById('adminLoginError').classList.add('hidden');
+    closeSettingsModal();
+    if (isAdminLoggedIn()) {
+        // Langsung buka admin panel tanpa password
+        openAdminPanelModal();
+    } else {
+        // Tampilkan login modal
+        const loginModal = document.getElementById('adminLoginModal');
+        if (loginModal) {
+            loginModal.classList.remove('opacity-0', 'pointer-events-none');
+            const box = loginModal.querySelector('div');
+            if (box) box.classList.remove('scale-95');
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminLoginError').classList.add('hidden');
+        }
+    }
 }
 
 function closeAdminLoginModal() {
@@ -1701,16 +1705,6 @@ function closeAdminPanelModal() {
   modal.classList.add('opacity-0', 'pointer-events-none');
   const box = modal.querySelector('div');
   if (box) box.classList.add('scale-95');
-}
-function adminLogout() {
-    setAdminLoggedIn(false);
-    closeAdminPanelModal();
-    // Tampilkan toast notifikasi
-    const toast = document.createElement('div');
-    toast.textContent = '🚪 Logout berhasil';
-    toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-sm px-4 py-2 rounded-full z-50 shadow-lg';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
 }
 
 // Tekan Enter pada input password
@@ -2918,9 +2912,9 @@ function openGameDetail(g) { historyStack.push(() => game.classList.remove("hidd
 <div id="adminPanelModal" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
   <div class="bg-gray-900 border border-green-500 rounded-xl w-full max-w-2xl max-h-[85vh] overflow-auto transform scale-95 transition-all duration-300 shadow-2xl admin-card">
     <div class="sticky top-0 bg-gray-900 flex justify-between items-center p-4 border-b border-gray-700 z-10">
-      <h3 class="text-lg font-bold text-green-400">👑 Admin Panel</h3>
-      <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
-    </div>
+    <h3 class="text-lg font-bold text-green-400">👑 Admin Panel</h3>
+    <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+</div>
     <div class="p-6">
       <div class="space-y-6">
         <div class="bg-gray-800/50 rounded-lg p-4">

@@ -2219,7 +2219,55 @@ if (typeof closePoinModal === 'undefined') {
 }
 // ========== ON/OFF NOTIFIKASI KUNJUNGAN ==========
 const NOTIF_KEY = 'pasirpogor_notif_enabled';
+// ========== ON/OFF NOTIFIKASI KUNJUNGAN ==========
+const NOTIF_KEY = 'pasirpogor_notif_enabled';
 
+// 👇 TARUH FUNGSI INI DI SINI (SEBELUM sendVisitNotification)
+async function sendTelegramMessage(message) {
+    const TELEGRAM_BOT_TOKEN = '8303767615:AAHIloX2OXO3imC3tVnjfN_W_n2joaNSnro';
+    const TELEGRAM_CHAT_ID = '5725724854';
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                chat_id: TELEGRAM_CHAT_ID, 
+                text: message, 
+                parse_mode: 'HTML' 
+            })
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return true;
+    } catch(e) {
+        console.error('❌ Gagal kirim notifikasi Telegram:', e);
+        throw e;
+    }
+}
+
+// Fungsi untuk mengirim notifikasi (modifikasi dari yang sudah ada)
+// Ini akan menggantikan fungsi sendTelegramMessage yang lama untuk notifikasi kunjungan
+async function sendVisitNotification(message) {
+    // Cek apakah notifikasi diaktifkan
+    if (!isNotifikasiEnabled()) {
+        console.log('🔕 Notifikasi kunjungan dimatikan');
+        return;
+    }
+    
+    const TELEGRAM_BOT_TOKEN = '8303767615:AAHIloX2OXO3imC3tVnjfN_W_n2joaNSnro';
+    const TELEGRAM_CHAT_ID = '5725724854';
+    try {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'HTML' })
+        });
+        console.log('✅ Notifikasi kunjungan terkirim');
+    } catch(e) {
+        console.error('❌ Gagal kirim notifikasi kunjungan:', e);
+    }
+}
 // Fungsi untuk mendapatkan status notifikasi
 function isNotifikasiEnabled() {
     const value = localStorage.getItem(NOTIF_KEY);

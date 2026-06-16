@@ -631,6 +631,52 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   opacity: 0.5;
   cursor: not-allowed;
 }
+/* ===== STYLE TANGGAL ===== */
+.date-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 2rem;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    backdrop-filter: blur(8px);
+    font-size: 0.75rem;
+    font-weight: 500;
+    flex-wrap: wrap;
+}
+.date-display .date-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #d1d5db;
+}
+.date-display .date-item .label {
+    color: #9ca3af;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.date-display .date-item .value {
+    color: #22c55e;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+.date-display .separator {
+    color: #374151;
+}
+@media (max-width: 500px) {
+    .date-display {
+        font-size: 0.65rem;
+        gap: 0.8rem;
+        padding: 0.2rem 0.4rem;
+    }
+    .date-display .date-item .value {
+        font-size: 0.7rem;
+    }
+}
 </style>        
 </head>        
 <body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">        
@@ -653,7 +699,19 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
     <h1 class="text-4xl font-bold">PasirPogorCell</h1>          
     <p class="text-gray-300">Paket Internet & Top Up Game</p>
   </div>
-</header>        
+</header> 
+<!-- Tanggal Masehi & Hijriah -->
+<div id="dateDisplay" class="date-display">
+    <div class="date-item">
+        <span class="label">📅 Masehi</span>
+        <span class="value" id="masehiDate">Memuat...</span>
+    </div>
+    <span class="separator">|</span>
+    <div class="date-item">
+        <span class="label">🕌 Hijriah</span>
+        <span class="value" id="hijriahDate">Memuat...</span>
+    </div>
+</div>       
 <!-- Tombol Baris Atas: Cari -->
 <div class="my-4 px-4">
   <div class="relative">
@@ -3182,6 +3240,56 @@ function sendMonthlyReport() {
 })();
 
 console.log('✅ Sistem notifikasi kunjungan siap, status:', isNotifikasiEnabled() ? 'AKTIF' : 'NONAKTIF');
+</script>
+<script>
+// ========== FUNGSI TANGGAL MASEHI DAN HIJRIAH ==========
+function updateDates() {
+    const now = new Date();
+    
+    // Format Masehi
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    
+    const dayName = days[now.getDay()];
+    const day = now.getDate();
+    const month = months[now.getMonth()];
+    const year = now.getFullYear();
+    
+    const masehiStr = `${dayName}, ${day} ${month} ${year}`;
+    document.getElementById('masehiDate').textContent = masehiStr;
+    
+    // Format Hijriah - menggunakan API dari aladhan.com
+    const gregorianDate = `${year}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    
+    fetch(`https://api.aladhan.com/v1/gToH/${gregorianDate}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Gagal mengambil data');
+            return response.json();
+        })
+        .then(data => {
+            if (data.code === 200 && data.data) {
+                const hijri = data.data.hijri;
+                const hijriDay = hijri.day;
+                const hijriMonth = hijri.month.en;
+                const hijriYear = hijri.year;
+                document.getElementById('hijriahDate').textContent = `${hijriDay} ${hijriMonth} ${hijriYear} H`;
+            } else {
+                throw new Error('Data tidak valid');
+            }
+        })
+        .catch(error => {
+            console.error('Error mengambil tanggal Hijriah:', error);
+            document.getElementById('hijriahDate').textContent = 'Gagal memuat';
+        });
+}
+
+// Update saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    updateDates();
+    
+    // Update setiap jam (jika halaman dibuka lama)
+    setInterval(updateDates, 3600000); // 1 jam
+});
 </script>
 </body>    
 </html>

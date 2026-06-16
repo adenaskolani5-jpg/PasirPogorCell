@@ -2919,29 +2919,40 @@ function openGameDetail(g) { historyStack.push(() => game.classList.remove("hidd
   <div class="bg-gray-900 border border-green-500 rounded-xl w-full max-w-2xl max-h-[85vh] overflow-auto transform scale-95 transition-all duration-300 shadow-2xl admin-card">
     <div class="sticky top-0 bg-gray-900 flex justify-between items-center p-4 border-b border-gray-700 z-10">
       <h3 class="text-lg font-bold text-green-400">👑 Admin Panel</h3>
-      <div>
-        <button onclick="adminLogout()" class="text-red-400 hover:text-red-300 text-sm mr-3 font-semibold">🚪 Logout</button>
-        <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
-      </div>
+      <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
-    <!-- ... konten admin panel tetap sama ... -->
-  </div>
-</div>
-
     <div class="p-6">
       <div class="space-y-6">
         <div class="bg-gray-800/50 rounded-lg p-4">
           <h4 class="text-green-400 font-bold mb-3">➕ Tambah Klaim untuk Pelanggan</h4>
           <div class="grid gap-3">
-            <select id="adminIdType" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm"><option value="phone">📱 Nomor HP</option><option value="game">🎮 ID Game</option></select>
+            <select id="adminIdType" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+              <option value="phone">📱 Nomor HP</option>
+              <option value="game">🎮 ID Game</option>
+            </select>
             <input type="text" id="adminCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
             <button onclick="adminTambahKlaim()" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition">✅ Tambah Klaim (1 klaim = 100 poin)</button>
           </div>
         </div>
         <div class="bg-gray-800/50 rounded-lg p-4">
           <h4 class="text-green-400 font-bold mb-3">📋 Daftar Pelanggan</h4>
-          <div class="mb-3"><input type="text" id="searchCustomer" placeholder="Cari ID..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm"></div>
-          <div class="overflow-x-auto max-h-64 overflow-y-auto"><table class="w-full text-sm"><thead class="bg-gray-700 sticky top-0"><tr><th class="p-2 text-left">ID</th><th class="p-2 text-center">Klaim</th><th class="p-2 text-center">Poin</th></tr></thead><tbody id="adminCustomerTable"><tr><td colspan="3" class="text-center text-gray-400 p-4">Loading...</td></tr></tbody></table></div>
+          <div class="mb-3">
+            <input type="text" id="searchCustomer" placeholder="Cari ID..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+          </div>
+          <div class="overflow-x-auto max-h-64 overflow-y-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-gray-700 sticky top-0">
+                <tr>
+                  <th class="p-2 text-left">ID</th>
+                  <th class="p-2 text-center">Klaim</th>
+                  <th class="p-2 text-center">Poin</th>
+                </tr>
+              </thead>
+              <tbody id="adminCustomerTable">
+                <tr><td colspan="3" class="text-center text-gray-400 p-4">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <!-- ===== TOMBOL NOTIFIKASI DI ADMIN PANEL ===== -->

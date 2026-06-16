@@ -3417,21 +3417,6 @@ function sendMonthlyReport() {
 console.log('✅ Sistem notifikasi kunjungan siap, status:', isNotifikasiEnabled() ? 'AKTIF' : 'NONAKTIF');
 </script>
 <script>
-// ========== FUNGSI TANGGAL MASEHI DAN HIJRIAH ==========
-function updateDates() {
-    const now = new Date();
-    
-    // Format Masehi
-    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    
-    const dayName = days[now.getDay()];
-    const day = now.getDate();
-    const month = months[now.getMonth()];
-    const year = now.getFullYear();
-    
-    const masehiStr = `${dayName}, ${day} ${month} ${year}`;
-    document.getElementById('masehiDate').textContent = masehiStr;
     
     // ===== HIJRIAH MENGGUNAKAN API ALADHAN DENGAN PROXY CORS =====
     const gregorianDate = `${year}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -3843,12 +3828,19 @@ function updateCountdown() {
     document.getElementById('sholatProgressBar').style.width = progress + '%';
 }
 
-// Inisialisasi
+// ===== INISIALISASI =====
 document.addEventListener('DOMContentLoaded', function() {
+    // Update Masehi
     updateMasehiDate();
+    
+    // Update Hijriah (langsung tampil, tidak ada "Memuat...")
     fetchHijriahDate();
+    
+    // Update jam
     updateClock();
     setInterval(updateClock, 1000);
+    
+    // Update sholat
     fetchPrayerTimes();
     setInterval(fetchPrayerTimes, 3600000);
     
@@ -3861,21 +3853,6 @@ document.addEventListener('DOMContentLoaded', function() {
         fetchPrayerTimes();
         setInterval(fetchPrayerTimes, 86400000);
     }, tomorrow - now);
-    
-    // ===== UPDATE HIJRIAH SAAT TENGAH MALAM =====
-    function scheduleMidnightUpdate() {
-        const now = new Date();
-        const tomorrow = new Date(now);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        tomorrow.setHours(0, 0, 0, 0);
-        const timeUntilMidnight = tomorrow - now;
-        
-        setTimeout(() => {
-            localStorage.removeItem('hijriahDate');
-            fetchHijriahDate();
-            scheduleMidnightUpdate();
-        }, timeUntilMidnight);
-    }
     
     // Jadwalkan update tengah malam untuk Hijriah
     scheduleMidnightUpdate();

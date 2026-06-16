@@ -2054,31 +2054,42 @@ function klaimSemuaPoin() {
 }
 
 async function klaimReward() {
-  if (!currentPoinCustomerId || !currentPoinCustomerData) return;
-  
-  if (currentPoinCustomerData.poin < 1000) {
-    alert('Poin belum mencapai 1000!');
+  if (!currentPoinCustomerId || !currentPoinCustomerData) {
+    alert('Silakan cek ID terlebih dahulu!');
     return;
   }
   
-  const confirmReward = confirm('Apakah Anda yakin ingin menukarkan 1000 poin untuk mendapatkan reward?');
-  if (!confirmReward) return;
+  // Ambil produk yang dipilih
+  const selectedProductJson = document.getElementById('selectedProduct')?.value;
+  if (!selectedProductJson) {
+    alert('Silakan pilih produk terlebih dahulu!');
+    return;
+  }
   
-  const result = await klaimRewardById(currentPoinCustomerId, currentPoinCustomerData);
+  const product = JSON.parse(selectedProductJson);
+  
+  if (currentPoinCustomerData.poin < product.poin) {
+    alert(`Poin tidak mencukupi! Butuh ${product.poin} poin, Anda punya ${currentPoinCustomerData.poin} poin.`);
+    return;
+  }
+  
+  const confirmMessage = `Anda akan mengklaim:\n📦 ${product.nama}\n💰 Rp ${product.harga.toLocaleString()}\n⭐ ${product.poin} poin\n\nSisa poin: ${currentPoinCustomerData.poin - product.poin}\n\nApakah Anda yakin?`;
+  if (!confirm(confirmMessage)) return;
+  
+  const result = await klaimRewardById(currentPoinCustomerId, currentPoinCustomerData, product);
   if (result.success) {
     alert(result.message);
     // Refresh data
     currentPoinCustomerData = cekPelanggan(currentPoinCustomerId);
     // Update UI
     document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
-    document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia;
+    document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.poinTertunda;
     const percent = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100);
     document.getElementById('poinProgressBar').style.width = percent + '%';
     document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000';
     
-    // Disable reward button
-    document.getElementById('rewardBtn').disabled = true;
-    document.getElementById('rewardBtn').textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)';
+    // Refresh daftar produk
+    cekPoinPelanggan();
   } else {
     alert(result.message);
   }

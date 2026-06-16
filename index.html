@@ -2086,6 +2086,96 @@ if (typeof closePoinModal === 'undefined') {
         }
     };
 }
+// ========== ON/OFF NOTIFIKASI KUNJUNGAN ==========
+const NOTIF_KEY = 'pasirpogor_notif_enabled';
+
+// Fungsi untuk mendapatkan status notifikasi
+function isNotifikasiEnabled() {
+    const value = localStorage.getItem(NOTIF_KEY);
+    // Default: true (aktif) jika belum pernah diatur
+    if (value === null) {
+        localStorage.setItem(NOTIF_KEY, 'true');
+        return true;
+    }
+    return value === 'true';
+}
+
+// Fungsi untuk toggle notifikasi
+function toggleNotifikasi() {
+    const current = isNotifikasiEnabled();
+    const newStatus = !current;
+    localStorage.setItem(NOTIF_KEY, String(newStatus));
+    updateNotifikasiUI();
+    
+    // Tampilkan notifikasi singkat
+    const statusText = newStatus ? 'AKTIF' : 'NONAKTIF';
+    const toast = document.createElement('div');
+    toast.textContent = `🔔 Notifikasi kunjungan ${statusText}`;
+    toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50 shadow-lg';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+}
+
+// Fungsi update UI toggle
+function updateNotifikasiUI() {
+    const isEnabled = isNotifikasiEnabled();
+    const toggle = document.getElementById('toggleNotifBtn');
+    const circle = document.getElementById('toggleNotifCircle');
+    const statusText = document.getElementById('notifStatusText');
+    
+    if (toggle) {
+        if (isEnabled) {
+            toggle.classList.remove('bg-gray-600');
+            toggle.classList.add('bg-green-500');
+            if (circle) {
+                circle.classList.remove('translate-x-1');
+                circle.classList.add('translate-x-8');
+            }
+        } else {
+            toggle.classList.remove('bg-green-500');
+            toggle.classList.add('bg-gray-600');
+            if (circle) {
+                circle.classList.remove('translate-x-8');
+                circle.classList.add('translate-x-1');
+            }
+        }
+    }
+    
+    if (statusText) {
+        statusText.textContent = isEnabled ? '🟢 AKTIF' : '🔴 NONAKTIF';
+        statusText.className = isEnabled ? 'text-green-400' : 'text-red-400';
+    }
+}
+
+// Fungsi untuk mengirim notifikasi (modifikasi dari yang sudah ada)
+// Ini akan menggantikan fungsi sendTelegramMessage yang lama untuk notifikasi kunjungan
+async function sendVisitNotification(message) {
+    // Cek apakah notifikasi diaktifkan
+    if (!isNotifikasiEnabled()) {
+        console.log('🔕 Notifikasi kunjungan dimatikan');
+        return;
+    }
+    
+    const TELEGRAM_BOT_TOKEN = '8303767615:AAHIloX2OXO3imC3tVnjfN_W_n2joaNSnro';
+    const TELEGRAM_CHAT_ID = '5725724854';
+    try {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'HTML' })
+        });
+        console.log('✅ Notifikasi kunjungan terkirim');
+    } catch(e) {
+        console.error('❌ Gagal kirim notifikasi kunjungan:', e);
+    }
+}
+
+// Panggil update UI saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    updateNotifikasiUI();
+});
+
+console.log('✅ Fungsi notifikasi siap, status:', isNotifikasiEnabled() ? 'AKTIF' : 'NONAKTIF');
 </script>    
 
 <section id="home" class="page p-6 max-w-4xl mx-auto mt-10">
@@ -2828,6 +2918,21 @@ function openGameDetail(g) { historyStack.push(() => game.classList.remove("hidd
     </div>
   </div>
 </div>
+<!-- Tombol ON/OFF Notifikasi Kunjungan -->
+<div class="bg-gray-800/50 rounded-lg p-4">
+  <div class="flex justify-between items-center">
+    <div>
+      <h4 class="text-green-400 font-bold">🔔 Notifikasi Kunjungan</h4>
+      <p class="text-xs text-gray-400">Kirim notifikasi Telegram setiap ada pengunjung baru</p>
+    </div>
+    <div>
+      <button id="toggleNotifBtn" onclick="toggleNotifikasi()" class="relative inline-flex h-7 w-14 items-center rounded-full transition-colors bg-gray-600">
+        <span id="toggleNotifCircle" class="inline-block h-5 w-5 transform rounded-full bg-white transition-transform translate-x-1"></span>
+      </button>
+    </div>
+  </div>
+  <div id="notifStatus" class="text-xs text-gray-400 mt-2">Status: <span id="notifStatusText" class="text-yellow-400">Memuat...</span></div>
+</div>
 
 <!-- MODAL KLAIM POIN PELANGGAN (TERPISAH, LANGSUNG MUNCUL) -->
 <div id="poinModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
@@ -2964,6 +3069,83 @@ if (typeof savePoinData === 'undefined') {
 }
 
 console.log('Fungsi reward siap');
+</script>
+<script>
+// ========== SISTEM KUNJUNGAN DENGAN TOGGLE ==========
+const STORAGE_KEY = 'visitor_count';
+
+function recordVisitAndReport(sendNotif = true) {
+    let count = localStorage.getItem(STORAGE_KEY);
+    count = count ? parseInt(count) + 1 : 1;
+    localStorage.setItem(STORAGE_KEY, count);
+
+    // Hanya kirim notifikasi jika sendNotif = true DAN notifikasi diaktifkan
+    if (sendNotif && isNotifikasiEnabled()) {
+        const visitMessage = `
+<b>📊 KUNJUNGAN WEBSITE</b>
+<b>Waktu:</b> ${new Date().toLocaleString()}
+<b>Total bulan ini:</b> ${count}
+<b>Halaman:</b> ${document.title}
+<b>URL:</b> ${window.location.href}
+        `;
+        sendVisitNotification(visitMessage);
+    }
+}
+
+function resetMonthlyCounter() {
+    const today = new Date();
+    const lastReset = localStorage.getItem('lastReset');
+    if (!lastReset) {
+        localStorage.setItem('lastReset', today.toISOString());
+        return;
+    }
+    const lastResetDate = new Date(lastReset);
+    if (today.getMonth() !== lastResetDate.getMonth() || today.getFullYear() !== lastResetDate.getFullYear()) {
+        localStorage.setItem(STORAGE_KEY, '0');
+        localStorage.setItem('lastReset', today.toISOString());
+        console.log('🔄 Penghitung kunjungan direset untuk bulan baru.');
+    }
+}
+
+function sendMonthlyReport() {
+    const count = localStorage.getItem(STORAGE_KEY) || 0;
+    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    const date = new Date();
+    const monthName = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+    const monthlyMessage = `
+<b>📈 LAPORAN BULANAN - ${monthName} ${year}</b>
+<b>Total Kunjungan:</b> ${count}
+    `;
+    sendVisitNotification(monthlyMessage);
+}
+
+// Jalankan saat halaman dimuat
+(function() {
+    resetMonthlyCounter();
+
+    const visitedBefore = sessionStorage.getItem('visited_this_tab');
+    if (!visitedBefore) {
+        sessionStorage.setItem('visited_this_tab', 'true');
+        recordVisitAndReport(true);
+    } else {
+        console.log('🔄 Refresh / navigasi internal, notifikasi tidak dikirim');
+        let count = localStorage.getItem(STORAGE_KEY);
+        count = count ? parseInt(count) + 1 : 1;
+        localStorage.setItem(STORAGE_KEY, count);
+    }
+
+    // Laporan bulanan
+    const now = new Date();
+    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const timeUntilNextMonth = nextMonth - now;
+    setTimeout(() => {
+        sendMonthlyReport();
+        setInterval(sendMonthlyReport, 30 * 24 * 60 * 60 * 1000);
+    }, timeUntilNextMonth);
+})();
+
+console.log('✅ Sistem notifikasi kunjungan siap, status:', isNotifikasiEnabled() ? 'AKTIF' : 'NONAKTIF');
 </script>
 </body>    
 </html>

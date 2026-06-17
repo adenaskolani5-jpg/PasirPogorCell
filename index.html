@@ -2818,6 +2818,43 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="footer-info">⏳ Waktu berdasarkan lokasi Lebak, Banten</div>
     </div>
 </div>
+<script>
+// === PERBAIKAN TOMBOL KEMBALI ===
+function updateBackButton() {
+    const btn = document.getElementById('floatingBackBtn');
+    if (!btn) return;
+    btn.style.display = historyStack.length > 0 ? 'flex' : 'none';
+}
 
+// Override fungsi back yang sudah ada
+const originalBack = window.back;
+window.back = function() {
+    if (historyStack.length > 0) {
+        const f = historyStack.pop();
+        if (f) {
+            hideAll();
+            f();
+            updateBackButton();
+        }
+    }
+};
+
+// Override semua fungsi navigasi
+const navigasiFunctions = ['openInternet', 'openGame', 'openTypes', 'openPaket', 'openGameDetail'];
+navigasiFunctions.forEach(funcName => {
+    if (typeof window[funcName] === 'function') {
+        const originalFunc = window[funcName];
+        window[funcName] = function(...args) {
+            originalFunc.apply(this, args);
+            setTimeout(updateBackButton, 50);
+        };
+    }
+});
+
+// Inisialisasi
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(updateBackButton, 100);
+});
+</script>
 </body>    
 </html>

@@ -4166,6 +4166,30 @@ function renderSholatFull() {
     list.innerHTML = html;
 }
 
+// ===== FORCE UPDATE HIJRIAH CACHE =====
+function checkHijriCache() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const todayKey = `${year}-${month}-${day}`;
+    
+    const cached = localStorage.getItem('hijriahDate');
+    if (cached) {
+        try {
+            const parsed = JSON.parse(cached);
+            // Jika tanggal di cache berbeda dengan hari ini, hapus cache
+            if (parsed.date !== todayKey) {
+                localStorage.removeItem('hijriahDate');
+                console.log('🔄 Cache Hijriah kadaluarsa, mengambil data baru...');
+                fetchHijriahDate();
+            }
+        } catch(e) {
+            localStorage.removeItem('hijriahDate');
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     updateMasehiDate();
     fetchHijriahDate();
@@ -4191,6 +4215,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sholatDisplay) {
         sholatDisplay.addEventListener('click', openSholatFull);
     }
+    
+    // ===== CEK DAN UPDATE CACHE HIJRIAH =====
+    checkHijriCache();
 });
 </script>
 </body>    

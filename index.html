@@ -2856,5 +2856,67 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(updateBackButton, 100);
 });
 </script>
+<script>
+// ===== OPTIMASI PERFORMANCE =====
+(function() {
+    // 1. Batasi update jam (tanpa detik)
+    const originalUpdateClock = window.updateClock;
+    if (typeof originalUpdateClock === 'function') {
+        window.updateClock = function() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = 
+                `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            // Update countdown dengan throttle
+            if (!window._countdownThrottle || Date.now() - window._countdownThrottle > 5000) {
+                if (typeof updateCountdown === 'function') updateCountdown();
+                window._countdownThrottle = Date.now();
+            }
+        };
+    }
+
+    // 2. Tombol kembali tetap terlihat
+    const style = document.createElement('style');
+    style.textContent = `
+        .floating-back {
+            will-change: transform !important;
+            transform: translateZ(0) !important;
+            backface-visibility: hidden !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+        }
+        /* Kurangi intensitas animasi */
+        .card::before { animation-duration: 5s !important; }
+        .card { transition: 0.2s !important; }
+        #hargaModal > div { animation-duration: 4s !important; }
+        .glow-card { animation-duration: 4s !important; }
+        /* Matikan backdrop-filter pada scroll */
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // 3. Batasi scroll event
+    let isScrolling = false;
+    window.addEventListener('scroll', function() {
+        if (!isScrolling) {
+            isScrolling = true;
+            requestAnimationFrame(() => {
+                // Update back button visibility
+                if (typeof updateBackButton === 'function') updateBackButton();
+                isScrolling = false;
+            });
+        }
+    }, { passive: true });
+
+    // 4. Optimasi marquee
+    document.querySelectorAll('.marquee-track').forEach(el => {
+        el.style.animationDuration = '30s';
+    });
+
+    console.log('✅ Performance optimization applied');
+})();
+</script>
 </body>    
 </html>

@@ -2433,313 +2433,606 @@ document.getElementById('adminPassword')?.addEventListener('keypress', function(
 // ========== SISTEM POIN ==========
 // Key untuk localStorage
 const POIN_STORAGE_KEY = 'pasirpogor_poin_data';
+const KLAIM_STORAGE_KEY = 'pasirpogor_klaim_history';
 
-// Data awal (jika kosong)
+// ===== 1. DATA POIN =====
 function getDefaultPoinData() {
-  return {
-    customers: {},  // format: { "id": { klaimTersedia: 0, poin: 0, lastUpdate: timestamp } }
-    version: '1.0'
-  };
+    return {
+        customers: {},
+        version: '1.0'
+    };
 }
 
-// Load data dari localStorage
 function loadPoinData() {
-  const stored = localStorage.getItem(POIN_STORAGE_KEY);
-  if (stored) {
-    try {
-      return JSON.parse(stored);
-    } catch(e) {
-      return getDefaultPoinData();
+    const stored = localStorage.getItem(POIN_STORAGE_KEY);
+    if (stored) {
+        try { return JSON.parse(stored); }
+        catch(e) { return getDefaultPoinData(); }
     }
-  }
-  return getDefaultPoinData();
+    return getDefaultPoinData();
 }
 
-// Simpan data ke localStorage
 function savePoinData(data) {
-  localStorage.setItem(POIN_STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(POIN_STORAGE_KEY, JSON.stringify(data));
 }
 
-// Tambah poin untuk customer (dipanggil dari Admin Panel)
+// ===== 2. FUNGSI POIN =====
 function tambahPoin(customerId, amount) {
-  const normalizedId = customerId.trim().toLowerCase();
-  const data = loadPoinData();
-  if (!data.customers[normalizedId]) {
-    data.customers[normalizedId] = { poinTertunda: 0, poin: 0, lastUpdate: Date.now(), type: 'phone' };
-  }
-  data.customers[normalizedId].poinTertunda += amount;
-  data.customers[normalizedId].lastUpdate = Date.now();
-  savePoinData(data);
-  return data.customers[normalizedId];
+    const normalizedId = customerId.trim().toLowerCase();
+    const data = loadPoinData();
+    if (!data.customers[normalizedId]) {
+        data.customers[normalizedId] = { 
+            poinTertunda: 0, 
+            poin: 0, 
+            lastUpdate: Date.now(), 
+            type: 'phone' 
+        };
+    }
+    data.customers[normalizedId].poinTertunda += amount;
+    data.customers[normalizedId].lastUpdate = Date.now();
+    savePoinData(data);
+    return data.customers[normalizedId];
 }
 
-// Cek data pelanggan
 function cekPelanggan(customerId) {
-  const normalizedId = customerId.trim().toLowerCase();
-  const data = loadPoinData();
-  return data.customers[normalizedId] || null;
+    const normalizedId = customerId.trim().toLowerCase();
+    const data = loadPoinData();
+    return data.customers[normalizedId] || null;
 }
 
-// Klaim poin (ubah klaim tersedia menjadi poin)
 function klaimPoin(customerId) {
-  const normalizedId = customerId.trim().toLowerCase();
-  const data = loadPoinData();
-  if (!data.customers[normalizedId]) {
-    return { success: false, message: "ID tidak ditemukan" };
-  }
-  const customer = data.customers[normalizedId];
-  if (customer.poinTertunda <= 0) {
-    return { success: false, message: "Tidak ada poin tertunda" };
-  }
-  const poinDidapat = customer.poinTertunda;
-  customer.poin += poinDidapat;
-  customer.poinTertunda = 0;
-  customer.lastUpdate = Date.now();
-  savePoinData(data);
-  return { success: true, poinDidapat: poinDidapat, totalPoin: customer.poin, message: `Berhasil klaim ${poinDidapat} poin!` };
+    const normalizedId = customerId.trim().toLowerCase();
+    const data = loadPoinData();
+    if (!data.customers[normalizedId]) {
+        return { success: false, message: "ID tidak ditemukan" };
+    }
+    const customer = data.customers[normalizedId];
+    if (customer.poinTertunda <= 0) {
+        return { success: false, message: "Tidak ada poin tertunda" };
+    }
+    const poinDidapat = customer.poinTertunda;
+    customer.poin += poinDidapat;
+    customer.poinTertunda = 0;
+    customer.lastUpdate = Date.now();
+    savePoinData(data);
+    return { 
+        success: true, 
+        poinDidapat: poinDidapat, 
+        totalPoin: customer.poin, 
+        message: `Berhasil klaim ${poinDidapat} poin!` 
+    };
 }
 
-// Klaim reward (1000 poin)
-async function klaimRewardById(customerId, customerData) {
-  if (customerData.poin < 1000) {
-    return { success: false, message: "Poin belum mencapai 1000" };
-  }
-  
-  // Kurangi poin 1000
-  customerData.poin -= 1000;
-  
-  const data = loadPoinData();
-  data.customers[customerId] = customerData;
-  savePoinData(data);
-  
-  // Kirim notifikasi ke Telegram
-  const pesan = `
-📢 <b>KLAIM REWARD PELANGGAN!</b>
-
-🆔 ID: ${customerId}
-⭐ Poin yang diklaim: 1000 poin
-💎 Sisa poin: ${customerData.poin}
-🕐 Waktu: ${new Date().toLocaleString('id-ID')}
-
-💡 Pelanggan berhak mendapatkan reward!
-Silakan hubungi pelanggan untuk memberikan hadiah.
-  `;
-  
-  await sendTelegramMessage(pesan);
-  
-  return { success: true, message: "Reward berhasil diklaim! Admin akan menghubungi Anda.", sisaPoin: customerData.poin };
+// ===== 3. FUNGSI TELEGRAM =====
+async function sendTelegramMessage(message) {
+    const TELEGRAM_BOT_TOKEN = '8303767615:AAHIloX2OXO3imC3tVnjfN_W_n2joaNSnro';
+    const TELEGRAM_CHAT_ID = '5725724854';
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: message,
+                parse_mode: 'HTML'
+            })
+        });
+        const result = await response.json();
+        if (result.ok) {
+            console.log('✅ Notifikasi Telegram terkirim');
+        } else {
+            console.error('❌ Telegram error:', result);
+        }
+    } catch(e) {
+        console.error('❌ Gagal kirim Telegram:', e);
+    }
 }
 
-// ========== FUNGSI UI MODAL POIN ==========
+// ===== 4. HISTORI KLAIM =====
+function getKlaimHistory() {
+    const stored = localStorage.getItem(KLAIM_STORAGE_KEY);
+    if (stored) {
+        try { return JSON.parse(stored); }
+        catch(e) { return []; }
+    }
+    return [];
+}
+
+function saveKlaimHistory(history) {
+    localStorage.setItem(KLAIM_STORAGE_KEY, JSON.stringify(history));
+}
+
+function addKlaimRecord(customerId, poinDiklaim, status = 'pending') {
+    const history = getKlaimHistory();
+    const record = {
+        id: 'KLM-' + Date.now().toString(36).toUpperCase(),
+        customerId: customerId,
+        poinDiklaim: poinDiklaim,
+        status: status,
+        timestamp: new Date().toISOString(),
+        processedAt: null,
+        note: ''
+    };
+    history.unshift(record);
+    saveKlaimHistory(history);
+    return record;
+}
+
+function updateKlaimStatus(klaimId, newStatus, note = '') {
+    const history = getKlaimHistory();
+    const index = history.findIndex(k => k.id === klaimId);
+    if (index !== -1) {
+        history[index].status = newStatus;
+        history[index].processedAt = new Date().toISOString();
+        if (note) history[index].note = note;
+        saveKlaimHistory(history);
+        return history[index];
+    }
+    return null;
+}
+
+function getKlaimByCustomer(customerId) {
+    const history = getKlaimHistory();
+    return history.filter(k => k.customerId.toLowerCase() === customerId.toLowerCase());
+}
+
+// ===== 5. FUNGSI KLAIM REWARD (UTAMA) =====
 let currentPoinCustomerId = null;
 let currentPoinCustomerData = null;
 
+async function klaimReward() {
+    console.log('🔔 klaimReward dipanggil');
+    
+    if (!currentPoinCustomerId || !currentPoinCustomerData) {
+        alert('⚠️ Silakan cek ID terlebih dahulu!');
+        return;
+    }
+    
+    if (currentPoinCustomerData.poin < 1000) {
+        alert('❌ Poin belum mencapai 1000!');
+        return;
+    }
+    
+    // Pilih jumlah poin (kelipatan 500)
+    let poinToRedeem = 1000;
+    if (currentPoinCustomerData.poin >= 1500) {
+        const options = [];
+        for (let p = 1000; p <= currentPoinCustomerData.poin; p += 500) {
+            options.push(p);
+        }
+        const choice = prompt(
+            `💎 Poin Anda: ${currentPoinCustomerData.poin}\n` +
+            `Pilih jumlah poin yang ingin ditukar:\n` +
+            options.map((p, i) => `${i+1}. ${p} poin`).join('\n') +
+            `\n\nMasukkan nomor pilihan (1-${options.length}):`
+        );
+        if (choice === null) return;
+        const idx = parseInt(choice) - 1;
+        if (isNaN(idx) || idx < 0 || idx >= options.length) {
+            alert('❌ Pilihan tidak valid!');
+            return;
+        }
+        poinToRedeem = options[idx];
+    }
+    
+    const confirmReward = confirm(
+        `⚠️ Apakah Anda yakin ingin menukarkan ${poinToRedeem} poin?\n` +
+        `Sisa poin: ${currentPoinCustomerData.poin - poinToRedeem}`
+    );
+    if (!confirmReward) return;
+    
+    // Kurangi poin
+    currentPoinCustomerData.poin -= poinToRedeem;
+    
+    // Simpan ke localStorage
+    const data = loadPoinData();
+    data.customers[currentPoinCustomerId] = currentPoinCustomerData;
+    savePoinData(data);
+    
+    // Simpan histori klaim
+    const klaimRecord = addKlaimRecord(currentPoinCustomerId, poinToRedeem, 'pending');
+    const kodeUnik = klaimRecord.id;
+    
+    // Kirim notifikasi ke Telegram
+    const pesan = `
+📢 <b>KLAIM REWARD PELANGGAN!</b>
+
+🆔 ID: ${currentPoinCustomerId}
+⭐ Poin diklaim: ${poinToRedeem} poin
+💎 Sisa poin: ${currentPoinCustomerData.poin}
+🔑 Kode Klaim: <b>${kodeUnik}</b>
+🕐 Waktu: ${new Date().toLocaleString('id-ID')}
+📌 Status: Menunggu diproses
+
+💡 Admin: Segera proses klaim ini!
+    `;
+    await sendTelegramMessage(pesan);
+    
+    // AUTO-REPLY ke pelanggan
+    alert(
+        `✅ Klaim reward berhasil!\n\n` +
+        `🎯 Poin ditukar: ${poinToRedeem}\n` +
+        `💎 Sisa poin: ${currentPoinCustomerData.poin}\n` +
+        `🔑 Kode Klaim: ${kodeUnik}\n\n` +
+        `📨 Admin akan memproses dan mengirim reward ke ID Anda.\n` +
+        `⏳ Mohon tunggu maksimal 1x24 jam.\n\n` +
+        `💡 Simpan kode klaim untuk konfirmasi ke admin.`
+    );
+    
+    // Update UI
+    updatePoinUI();
+}
+
+// ===== 6. FUNGSI UI =====
+function updatePoinUI() {
+    if (!currentPoinCustomerData) return;
+    
+    document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
+    document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.poinTertunda;
+    
+    const poin = currentPoinCustomerData.poin;
+    const percent = Math.min((poin / 1000) * 100, 100);
+    document.getElementById('poinProgressBar').style.width = percent + '%';
+    document.getElementById('poinProgressText').textContent = poin + ' / 1000';
+    
+    const rewardBtn = document.getElementById('rewardBtn');
+    if (poin >= 1000) {
+        rewardBtn.disabled = false;
+        rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (1000 poin akan ditukar)';
+        rewardBtn.classList.add('bg-green-600', 'text-black');
+        rewardBtn.classList.remove('poin-reward-btn');
+    } else {
+        rewardBtn.disabled = true;
+        rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)';
+        rewardBtn.classList.remove('bg-green-600', 'text-black');
+        rewardBtn.classList.add('poin-reward-btn');
+    }
+    
+    // Tombol klaim
+    const klaimSection = document.getElementById('poinKlaimSection');
+    const klaimBtn = document.getElementById('klaimBtn');
+    if (currentPoinCustomerData.poinTertunda > 0) {
+        klaimSection.classList.remove('hidden');
+        klaimBtn.textContent = `🎁 KLAIM SEMUA (${currentPoinCustomerData.poinTertunda} poin)`;
+    } else {
+        klaimSection.classList.add('hidden');
+    }
+    
+    // Tombol histori
+    const historiBtn = document.getElementById('lihatHistoriBtn');
+    if (historiBtn) {
+        const history = getKlaimByCustomer(currentPoinCustomerId);
+        if (history.length > 0) {
+            historiBtn.classList.remove('hidden');
+        }
+    }
+}
+
 function openPoinModal() {
-  const modal = document.getElementById('poinModal');
-  if (modal) {
-    modal.classList.remove('opacity-0', 'pointer-events-none');
-    const box = modal.querySelector('div');
-    if (box) box.classList.remove('scale-95');
-  }
-  // Reset form
-  document.getElementById('poinCustomerId').value = '';
-  document.getElementById('poinHasil').classList.add('hidden');
-  document.getElementById('poinEmpty').classList.remove('hidden');
-  currentPoinCustomerId = null;
-  currentPoinCustomerData = null;
+    const modal = document.getElementById('poinModal');
+    if (modal) {
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        const box = modal.querySelector('div');
+        if (box) box.classList.remove('scale-95');
+    }
+    document.getElementById('poinCustomerId').value = '';
+    document.getElementById('poinHasil').classList.add('hidden');
+    document.getElementById('poinEmpty').classList.remove('hidden');
+    currentPoinCustomerId = null;
+    currentPoinCustomerData = null;
+    
+    // Tambahkan tombol histori
+    setTimeout(tambahkanTombolHistori, 100);
 }
 
 function closePoinModal() {
-  const modal = document.getElementById('poinModal');
-  if (modal) {
-    modal.classList.add('opacity-0', 'pointer-events-none');
-    const box = modal.querySelector('div');
-    if (box) box.classList.add('scale-95');
-  }
+    const modal = document.getElementById('poinModal');
+    if (modal) {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        const box = modal.querySelector('div');
+        if (box) box.classList.add('scale-95');
+    }
 }
 
 function togglePoinIdType() {
-  // Fungsi ini hanya untuk UI, tidak mengubah logika utama
-  const input = document.getElementById('poinCustomerId');
-  const phoneRadio = document.querySelector('input[value="phone"]');
-  if (phoneRadio.checked) {
-    input.placeholder = "Masukkan nomor HP (contoh: 081234567890)";
-  } else {
-    input.placeholder = "Masukkan ID Game (contoh: 12345678(1011))";
-  }
+    const input = document.getElementById('poinCustomerId');
+    const phoneRadio = document.querySelector('input[value="phone"]');
+    if (phoneRadio && phoneRadio.checked) {
+        input.placeholder = "Masukkan nomor HP (contoh: 081234567890)";
+    } else {
+        input.placeholder = "Masukkan ID Game (contoh: 12345678(1011))";
+    }
 }
 
 function cekPoinPelanggan() {
-  const customerId = document.getElementById('poinCustomerId').value.trim();
-  if (!customerId) {
-    alert('Masukkan ID terlebih dahulu!');
-    return;
-  }
-  
-  currentPoinCustomerId = customerId.toLowerCase();
-  currentPoinCustomerData = cekPelanggan(customerId);
-  
-  if (!currentPoinCustomerData) {
-    // Pelanggan belum pernah ditambahkan admin
-    document.getElementById('poinEmpty').classList.remove('hidden');
-    document.getElementById('poinHasil').classList.add('hidden');
-    alert('ID tidak ditemukan. Pastikan Anda sudah melakukan pembelian dan admin telah mencatatnya.');
-    return;
-  }
-  
-  // Tampilkan hasil
-  document.getElementById('poinEmpty').classList.add('hidden');
-  document.getElementById('poinHasil').classList.remove('hidden');
-  
-  document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
-  document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.poinTertunda;
-  
-  // Update progress bar
-  const poin = currentPoinCustomerData.poin;
-  const percent = Math.min((poin / 1000) * 100, 100);
-  document.getElementById('poinProgressBar').style.width = percent + '%';
-  document.getElementById('poinProgressText').textContent = poin + ' / 1000';
-  
-  // Update tombol reward
-  const rewardBtn = document.getElementById('rewardBtn');
-  if (poin >= 1000) {
-    rewardBtn.disabled = false;
-    rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (1000 poin akan ditukar)';
-    rewardBtn.classList.add('bg-green-600', 'text-black');
-    rewardBtn.classList.remove('poin-reward-btn');
-  } else {
-    rewardBtn.disabled = true;
-    rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)';
-    rewardBtn.classList.remove('bg-green-600', 'text-black');
-    rewardBtn.classList.add('poin-reward-btn');
-  }
-  
-  // Tampilkan tombol klaim jika ada klaim tersedia
-  const klaimSection = document.getElementById('poinKlaimSection');
-  const klaimBtn = document.getElementById('klaimBtn');
-  if (currentPoinCustomerData.poinTertunda > 0) {
-  klaimSection.classList.remove('hidden');
-  klaimBtn.textContent = `🎁 KLAIM SEMUA (${currentPoinCustomerData.poinTertunda} poin)`;
-}
- else {
-    klaimSection.classList.add('hidden');
-  }
+    const customerId = document.getElementById('poinCustomerId').value.trim();
+    if (!customerId) {
+        alert('Masukkan ID terlebih dahulu!');
+        return;
+    }
+    
+    currentPoinCustomerId = customerId.toLowerCase();
+    currentPoinCustomerData = cekPelanggan(customerId);
+    
+    if (!currentPoinCustomerData) {
+        document.getElementById('poinEmpty').classList.remove('hidden');
+        document.getElementById('poinHasil').classList.add('hidden');
+        alert('ID tidak ditemukan. Pastikan Anda sudah melakukan pembelian dan admin telah mencatatnya.');
+        return;
+    }
+    
+    document.getElementById('poinEmpty').classList.add('hidden');
+    document.getElementById('poinHasil').classList.remove('hidden');
+    
+    updatePoinUI();
+    
+    // Tampilkan info klaim terakhir
+    const history = getKlaimByCustomer(currentPoinCustomerId);
+    if (history.length > 0) {
+        const latest = history[0];
+        const statusEmoji = latest.status === 'pending' ? '⏳' : 
+                           latest.status === 'processed' ? '🔄' : 
+                           latest.status === 'done' ? '✅' : '❌';
+        const statusText = latest.status === 'pending' ? 'Menunggu diproses' :
+                          latest.status === 'processed' ? 'Sedang diproses' :
+                          latest.status === 'done' ? 'Selesai ✅' : 'Dibatalkan';
+        
+        const progressDiv = document.querySelector('.bg-gray-800.rounded-lg.p-4');
+        if (progressDiv) {
+            const oldInfo = progressDiv.querySelector('.klaim-terakhir-info');
+            if (oldInfo) oldInfo.remove();
+            
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'klaim-terakhir-info mt-2 pt-2 border-t border-gray-700 text-xs text-gray-400';
+            infoDiv.innerHTML = `
+                📌 Klaim terakhir: <span class="text-green-400">${latest.id}</span>
+                <span class="ml-2">${statusEmoji} ${statusText}</span>
+                <span class="ml-2">(${new Date(latest.timestamp).toLocaleDateString('id-ID')})</span>
+            `;
+            progressDiv.appendChild(infoDiv);
+        }
+    }
 }
 
 function klaimSemuaPoin() {
-  if (!currentPoinCustomerId) return;
-  
-  const result = klaimPoin(currentPoinCustomerId);
-  if (result.success) {
-    alert(result.message);
-    // Refresh data
-    currentPoinCustomerData = cekPelanggan(currentPoinCustomerId);
-    // Update UI
-    document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
-    document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.poinTertunda;
-    const percent = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100);
-    document.getElementById('poinProgressBar').style.width = percent + '%';
-    document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000';
-    document.getElementById('poinKlaimSection').classList.add('hidden');
-  } else {
-    alert(result.message);
-  }
-}
-
-async function klaimReward() {
-  if (!currentPoinCustomerId || !currentPoinCustomerData) return;
-  
-  if (currentPoinCustomerData.poin < 1000) {
-    alert('Poin belum mencapai 1000!');
-    return;
-  }
-  
-  const confirmReward = confirm('Apakah Anda yakin ingin menukarkan 1000 poin untuk mendapatkan reward?');
-  if (!confirmReward) return;
-  
-  const result = await klaimRewardById(currentPoinCustomerId, currentPoinCustomerData);
-  if (result.success) {
-    alert(result.message);
-    // Refresh data
-    currentPoinCustomerData = cekPelanggan(currentPoinCustomerId);
-    // Update UI
-    document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
-    document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.klaimTersedia;
-    const percent = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100);
-    document.getElementById('poinProgressBar').style.width = percent + '%';
-    document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000';
+    if (!currentPoinCustomerId) return;
     
-    // Disable reward button
-    document.getElementById('rewardBtn').disabled = true;
-    document.getElementById('rewardBtn').textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)';
-  } else {
-    alert(result.message);
-  }
+    const result = klaimPoin(currentPoinCustomerId);
+    if (result.success) {
+        alert(result.message);
+        currentPoinCustomerData = cekPelanggan(currentPoinCustomerId);
+        updatePoinUI();
+    } else {
+        alert(result.message);
+    }
 }
 
-// ========== FUNGSI ADMIN UNTUK POIN ==========
-function adminTambahPoin() {
-  const idType = document.getElementById('adminIdType').value;
-  let customerId = document.getElementById('adminCustomerId').value.trim();
-  if (!customerId) {
-    alert('Masukkan ID pelanggan!');
-    return;
-  }
-  if (idType === 'phone') {
-    if (!/^\d{10,13}$/.test(customerId.replace(/\s/g, ''))) {
-      alert('Nomor HP harus 10-13 digit angka!');
-      return;
+function lihatHistoriKlaim() {
+    if (!currentPoinCustomerId) {
+        alert('⚠️ Silakan cek ID terlebih dahulu!');
+        return;
     }
-  }
-  const poinAmount = parseInt(document.querySelector('input[name="poinAmount"]:checked').value);
-  const result = tambahPoin(customerId, poinAmount);
-  alert(`✅ Berhasil menambah ${poinAmount} poin untuk ${customerId}\nPoin tertunda: ${result.poinTertunda}\nTotal poin: ${result.poin}`);
-  document.getElementById('adminCustomerId').value = '';
-  adminRefreshTable();
+    
+    const history = getKlaimByCustomer(currentPoinCustomerId);
+    if (history.length === 0) {
+        alert('📭 Belum ada riwayat klaim untuk ID ini.');
+        return;
+    }
+    
+    let msg = '📋 **RIWAYAT KLAIM REWARD**\n';
+    msg += `🆔 ID: ${currentPoinCustomerId}\n`;
+    msg += `📊 Total klaim: ${history.length}\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+    
+    history.forEach((k, i) => {
+        const date = new Date(k.timestamp).toLocaleString('id-ID');
+        const statusEmoji = k.status === 'pending' ? '⏳' : 
+                           k.status === 'processed' ? '🔄' : 
+                           k.status === 'done' ? '✅' : '❌';
+        const statusText = k.status === 'pending' ? 'Menunggu' :
+                          k.status === 'processed' ? 'Diproses' :
+                          k.status === 'done' ? 'Selesai' : 'Dibatalkan';
+        msg += `${i+1}. ${k.id}\n`;
+        msg += `   📅 ${date}\n`;
+        msg += `   ⭐ ${k.poinDiklaim} poin\n`;
+        msg += `   ${statusEmoji} ${statusText}\n`;
+        if (k.note) msg += `   📝 ${k.note}\n`;
+        msg += `\n`;
+    });
+    
+    alert(msg);
+}
+
+function tambahkanTombolHistori() {
+    const poinHasil = document.getElementById('poinHasil');
+    if (!poinHasil) return;
+    if (document.getElementById('lihatHistoriBtn')) return;
+    
+    const historiDiv = document.createElement('div');
+    historiDiv.className = 'mt-3 text-center';
+    historiDiv.innerHTML = `
+        <button id="lihatHistoriBtn" onclick="lihatHistoriKlaim()" 
+                class="text-xs text-green-400 hover:text-green-300 underline hidden">
+            📋 Lihat Riwayat Klaim
+        </button>
+    `;
+    poinHasil.appendChild(historiDiv);
+}
+
+// ===== 7. ADMIN FUNGSI =====
+function adminTambahPoin() {
+    const idType = document.getElementById('adminIdType').value;
+    let customerId = document.getElementById('adminCustomerId').value.trim();
+    if (!customerId) {
+        alert('Masukkan ID pelanggan!');
+        return;
+    }
+    if (idType === 'phone') {
+        if (!/^\d{10,13}$/.test(customerId.replace(/\s/g, ''))) {
+            alert('Nomor HP harus 10-13 digit angka!');
+            return;
+        }
+    }
+    const poinAmount = parseInt(document.querySelector('input[name="poinAmount"]:checked').value);
+    const result = tambahPoin(customerId, poinAmount);
+    alert(`✅ Berhasil menambah ${poinAmount} poin untuk ${customerId}\nPoin tertunda: ${result.poinTertunda}\nTotal poin: ${result.poin}`);
+    document.getElementById('adminCustomerId').value = '';
+    adminRefreshTable();
 }
 
 function adminRefreshTable() {
-  const data = loadPoinData();
-  const customers = data.customers;
-  const searchTerm = document.getElementById('searchCustomer')?.value.toLowerCase() || '';
-  
-  const tableBody = document.getElementById('adminCustomerTable');
-  if (!tableBody) return;
-  
-  const entries = Object.entries(customers);
-  if (entries.length === 0) {
-    tableBody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-400 p-4">Belum ada data pelanggan</td></tr>';
-    return;
-  }
-  
-  let filtered = entries;
-  if (searchTerm) {
-    filtered = entries.filter(([id]) => id.includes(searchTerm));
-  }
-  
-  tableBody.innerHTML = filtered.map(([id, data]) => `
-    <tr class="border-b border-gray-700 hover:bg-gray-800">
-      <td class="p-2 text-xs break-all">${escapeHtml(id)}</td>
-      <td class="p-2 text-center text-yellow-400">${data.poinTertunda}</td>
-      <td class="p-2 text-center text-green-400">${data.poin}</td>
-    </tr>
-  `).join('');
+    const data = loadPoinData();
+    const customers = data.customers;
+    const searchTerm = document.getElementById('searchCustomer')?.value.toLowerCase() || '';
+    
+    const tableBody = document.getElementById('adminCustomerTable');
+    if (!tableBody) return;
+    
+    const entries = Object.entries(customers);
+    if (entries.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-400 p-4">Belum ada data pelanggan</td></tr>';
+        return;
+    }
+    
+    let filtered = entries;
+    if (searchTerm) {
+        filtered = entries.filter(([id]) => id.includes(searchTerm));
+    }
+    
+    tableBody.innerHTML = filtered.map(([id, data]) => `
+        <tr class="border-b border-gray-700 hover:bg-gray-800">
+            <td class="p-2 text-xs break-all">${escapeHtml(id)}</td>
+            <td class="p-2 text-center text-yellow-400">${data.poinTertunda}</td>
+            <td class="p-2 text-center text-green-400">${data.poin}</td>
+        </tr>
+    `).join('');
 }
 
-// Event listener untuk search customer
+function adminRefreshKlaimTable() {
+    const history = getKlaimHistory();
+    const tableBody = document.getElementById('adminKlaimTable');
+    if (!tableBody) return;
+    
+    if (history.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-400 p-4">Belum ada klaim reward</td></tr>';
+        return;
+    }
+    
+    tableBody.innerHTML = history.map(k => {
+        const statusColors = {
+            pending: 'bg-yellow-500/20 text-yellow-400',
+            processed: 'bg-blue-500/20 text-blue-400',
+            done: 'bg-green-500/20 text-green-400',
+            cancelled: 'bg-red-500/20 text-red-400'
+        };
+        const statusTexts = {
+            pending: '⏳ Menunggu',
+            processed: '🔄 Diproses',
+            done: '✅ Selesai',
+            cancelled: '❌ Dibatalkan'
+        };
+        const statusColor = statusColors[k.status] || 'bg-gray-500/20 text-gray-400';
+        const statusText = statusTexts[k.status] || k.status;
+        
+        return `
+            <tr class="border-b border-gray-700 hover:bg-gray-800">
+                <td class="p-2 text-xs font-mono text-green-400">${k.id}</td>
+                <td class="p-2 text-xs break-all">${escapeHtml(k.customerId)}</td>
+                <td class="p-2 text-center text-yellow-400">${k.poinDiklaim}</td>
+                <td class="p-2 text-center">
+                    <span class="text-xs px-2 py-1 rounded-full ${statusColor}">${statusText}</span>
+                </td>
+                <td class="p-2 text-center">
+                    <select onchange="adminUpdateKlaim('${k.id}', this.value)" class="bg-gray-700 border border-gray-600 rounded px-2 py-1 text-xs text-white">
+                        <option value="pending" ${k.status === 'pending' ? 'selected' : ''}>⏳ Menunggu</option>
+                        <option value="processed" ${k.status === 'processed' ? 'selected' : ''}>🔄 Diproses</option>
+                        <option value="done" ${k.status === 'done' ? 'selected' : ''}>✅ Selesai</option>
+                        <option value="cancelled" ${k.status === 'cancelled' ? 'selected' : ''}>❌ Dibatalkan</option>
+                    </select>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function adminUpdateKlaim(klaimId, newStatus) {
+    const updated = updateKlaimStatus(klaimId, newStatus);
+    if (updated) {
+        const statusTexts = {
+            pending: 'Menunggu diproses',
+            processed: 'Sedang diproses',
+            done: '✅ Selesai - Reward telah dikirim!',
+            cancelled: '❌ Dibatalkan'
+        };
+        const pesan = `
+📢 <b>UPDATE STATUS KLAIM</b>
+
+🔑 Kode: ${klaimId}
+🆔 ID: ${updated.customerId}
+📌 Status: ${statusTexts[newStatus] || newStatus}
+🕐 Waktu: ${new Date().toLocaleString('id-ID')}
+
+💡 Pelanggan: Silakan cek status klaim Anda.
+        `;
+        sendTelegramMessage(pesan);
+        adminRefreshKlaimTable();
+        alert(`✅ Status klaim ${klaimId} diupdate menjadi: ${newStatus}`);
+    }
+}
+
+function tambahkanTabelKlaimDiAdmin() {
+    const adminPanel = document.querySelector('#adminPanelModal .p-6 .space-y-6');
+    if (!adminPanel) return;
+    if (document.getElementById('adminKlaimSection')) return;
+    
+    const klaimSection = document.createElement('div');
+    klaimSection.id = 'adminKlaimSection';
+    klaimSection.className = 'bg-gray-800/50 rounded-lg p-4';
+    klaimSection.innerHTML = `
+        <h4 class="text-green-400 font-bold mb-3">📋 Daftar Klaim Reward</h4>
+        <div class="overflow-x-auto max-h-64 overflow-y-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-700 sticky top-0">
+                    <tr>
+                        <th class="p-2 text-left">Kode</th>
+                        <th class="p-2 text-left">ID Pelanggan</th>
+                        <th class="p-2 text-center">Poin</th>
+                        <th class="p-2 text-center">Status</th>
+                        <th class="p-2 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="adminKlaimTable">
+                    <tr><td colspan="5" class="text-center text-gray-400 p-4">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-2 text-xs text-gray-400 text-center">
+            <span>⏳ Menunggu | 🔄 Diproses | ✅ Selesai | ❌ Dibatalkan</span>
+        </div>
+    `;
+    adminPanel.appendChild(klaimSection);
+}
+
+// ===== 8. OVERRIDE FUNGSI MODAL =====
+const originalOpenAdminPanelModal = window.openAdminPanelModal;
+window.openAdminPanelModal = function() {
+    originalOpenAdminPanelModal();
+    setTimeout(() => {
+        tambahkanTabelKlaimDiAdmin();
+        adminRefreshKlaimTable();
+        adminRefreshTable();
+    }, 150);
+};
+
+// ===== 9. EVENT LISTENER =====
 document.addEventListener('DOMContentLoaded', function() {
-  const searchInput = document.getElementById('searchCustomer');
-  if (searchInput) {
-    searchInput.addEventListener('input', () => adminRefreshTable());
-  }
+    const searchInput = document.getElementById('searchCustomer');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => adminRefreshTable());
+    }
 });
 
-// Override openAdminPanelModal untuk refresh tabel
-const originalOpenAdminPanelModal = openAdminPanelModal;
-openAdminPanelModal = function() {
-  originalOpenAdminPanelModal();
-  setTimeout(() => adminRefreshTable(), 100);
-};
+console.log('✅ Sistem Poin baru telah dimuat!');
 
 // ========== FUNGSI UNTUK MENU SETTINGS ==========
 function contactAdmin() {

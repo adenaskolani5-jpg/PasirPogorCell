@@ -1882,6 +1882,394 @@ function toggleCalcMode() {
     currentMode = 'calc';
   }
 }
+// ========== FITUR TAMBAHAN SISTEM POIN ==========
+
+// ===== 1. SIMPAN HISTORI KLAIM =====
+const KLAIM_STORAGE_KEY = 'pasirpogor_klaim_history';
+
+function getKlaimHistory() {
+    const stored = localStorage.getItem(KLAIM_STORAGE_KEY);
+    if (stored) {
+        try { return JSON.parse(stored); } catch(e) { return []; }
+    }
+    return [];
+}
+
+function saveKlaimHistory(history) {
+    localStorage.setItem(KLAIM_STORAGE_KEY, JSON.stringify(history));
+}
+
+function addKlaimRecord(customerId, poinDiklaim, status = 'pending') {
+    const history = getKlaimHistory();
+    const record = {
+        id: 'KLM-' + Date.now().toString(36).toUpperCase(),
+        customerId: customerId,
+        poinDiklaim: poinDiklaim,
+        status: status, // pending, processed, done, cancelled
+        timestamp: new Date().toISOString(),
+        processedAt: null,
+        note: ''
+    };
+    history.unshift(record); // Tambahkan di awal
+    saveKlaimHistory(history);
+    return record;
+}
+
+function updateKlaimStatus(klaimId, newStatus, note = '') {
+    const history = getKlaimHistory();
+    const index = history.findIndex(k => k.id === klaimId);
+    if (index !== -1) {
+        history[index].status = newStatus;
+        history[index].processedAt = new Date().toISOString();
+        if (note) history[index].note = note;
+        saveKlaimHistory(history);
+        return history[index];
+    }
+    return null;
+}
+
+function getKlaimByCustomer(customerId) {
+    const history = getKlaimHistory();
+    return history.filter(k => k.customerId.toLowerCase() === customerId.toLowerCase());
+}
+
+// ===== 2. MODIFIED KLAIM REWARD (DENGAN AUTO-REPLY & HISTORI) =====
+// OVERRIDE fungsi klaimReward yang lama
+const originalKlaimReward = window.klaimReward;
+
+window.klaimReward = async function() {
+    console.log('klaimReward (enhanced) dipanggil');
+    
+    if (!currentPoinCustomerId || !currentPoinCustomerData) {
+        alert('⚠️ Silakan cek ID terlebih dahulu!');
+        return;
+    }
+    
+    if (currentPoinCustomerData.poin < 1000) {
+        alert('❌ Poin belum mencapai 1000!');
+        return;
+    }
+    
+    // Tanya berapa poin yang ingin ditukar (kelipatan 500)
+    let poinToRedeem = 1000;
+    if (currentPoinCustomerData.poin >= 1500) {
+        const options = [];
+        for (let p = 1000; p <= currentPoinCustomerData.poin; p += 500) {
+            options.push(p);
+        }
+        const choice = prompt(
+            `💎 Poin Anda: ${currentPoinCustomerData.poin}\n` +
+            `Pilih jumlah poin yang ingin ditukar:\n` +
+            options.map((p, i) => `${i+1}. ${p} poin`).join('\n') +
+            `\n\nMasukkan nomor pilihan (1-${options.length}):`
+        );
+        if (choice === null) return; // Batal
+        const idx = parseInt(choice) - 1;
+        if (isNaN(idx) || idx < 0 || idx >= options.length) {
+            alert('❌ Pilihan tidak valid!');
+            return;
+        }
+        poinToRedeem = options[idx];
+    }
+    
+    const confirmReward = confirm(
+        `⚠️ Apakah Anda yakin ingin menukarkan ${poinToRedeem} poin untuk mendapatkan reward?\n` +
+        `Sisa poin setelah ditukar: ${currentPoinCustomerData.poin - poinToRedeem}`
+    );
+    if (!confirmReward) return;
+    
+    // Kurangi poin
+    currentPoinCustomerData.poin -= poinToRedeem;
+    
+    // Simpan ke localStorage
+    const data = loadPoinData();
+    data.customers[currentPoinCustomerId] = currentPoinCustomerData;
+    savePoinData(data);
+    
+    // Simpan histori klaim
+    const klaimRecord = addKlaimRecord(currentPoinCustomerId, poinToRedeem, 'pending');
+    
+    // Kirim notifikasi ke Telegram (dengan kode unik)
+    const kodeUnik = klaimRecord.id;
+    const pesan = `
+📢 <b>KLAIM REWARD PELANGGAN!</b>
+
+🆔 ID: ${currentPoinCustomerId}
+⭐ Poin diklaim: ${poinToRedeem} poin
+💎 Sisa poin: ${currentPoinCustomerData.poin}
+🔑 Kode Klaim: <b>${kodeUnik}</b>
+🕐 Waktu: ${new Date().toLocaleString('id-ID')}
+📌 Status: Menunggu diproses
+
+💡 Admin: Segera proses klaim ini!
+    `;
+    await sendTelegramMessage(pesan);
+    
+    // AUTO-REPLY ke pelanggan
+    alert(
+        `✅ Klaim reward berhasil!\n\n` +
+        `🎯 Poin yang ditukar: ${poinToRedeem}\n` +
+        `💎 Sisa poin: ${currentPoinCustomerData.poin}\n` +
+        `🔑 Kode Klaim: ${kodeUnik}\n\n` +
+        `📨 Admin akan memproses dan mengirim reward ke ID Anda.\n` +
+        `⏳ Mohon tunggu maksimal 1x24 jam.\n\n` +
+        `💡 Simpan kode klaim untuk konfirmasi ke admin.`
+    );
+    
+    // Update UI
+    document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
+    const percent = Math.min((currentPoinCustomerData.poin / 1000) * 100, 100);
+    document.getElementById('poinProgressBar').style.width = percent + '%';
+    document.getElementById('poinProgressText').textContent = currentPoinCustomerData.poin + ' / 1000';
+    
+    // Nonaktifkan tombol reward jika poin < 1000
+    const rewardBtn = document.getElementById('rewardBtn');
+    if (currentPoinCustomerData.poin < 1000) {
+        rewardBtn.disabled = true;
+        rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (butuh 1000 poin)';
+        rewardBtn.classList.remove('bg-green-600', 'text-black');
+        rewardBtn.classList.add('poin-reward-btn');
+    } else {
+        rewardBtn.disabled = false;
+        rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (1000 poin akan ditukar)';
+        rewardBtn.classList.add('bg-green-600', 'text-black');
+        rewardBtn.classList.remove('poin-reward-btn');
+    }
+    
+    // Update tombol "Lihat Histori" agar muncul
+    document.getElementById('lihatHistoriBtn')?.classList.remove('hidden');
+}
+
+// ===== 3. FUNGSI LIHAT HISTORI KLAIM PELANGGAN =====
+function lihatHistoriKlaim() {
+    if (!currentPoinCustomerId) {
+        alert('⚠️ Silakan cek ID terlebih dahulu!');
+        return;
+    }
+    
+    const history = getKlaimByCustomer(currentPoinCustomerId);
+    if (history.length === 0) {
+        alert('📭 Belum ada riwayat klaim untuk ID ini.');
+        return;
+    }
+    
+    let msg = '📋 **RIWAYAT KLAIM REWARD**\n';
+    msg += `🆔 ID: ${currentPoinCustomerId}\n`;
+    msg += `📊 Total klaim: ${history.length}\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+    
+    history.forEach((k, i) => {
+        const date = new Date(k.timestamp).toLocaleString('id-ID');
+        const statusEmoji = k.status === 'pending' ? '⏳' : 
+                           k.status === 'processed' ? '🔄' : 
+                           k.status === 'done' ? '✅' : '❌';
+        const statusText = k.status === 'pending' ? 'Menunggu' :
+                          k.status === 'processed' ? 'Diproses' :
+                          k.status === 'done' ? 'Selesai' : 'Dibatalkan';
+        msg += `${i+1}. ${k.id}\n`;
+        msg += `   📅 ${date}\n`;
+        msg += `   ⭐ ${k.poinDiklaim} poin\n`;
+        msg += `   ${statusEmoji} ${statusText}\n`;
+        if (k.note) msg += `   📝 ${k.note}\n`;
+        msg += `\n`;
+    });
+    
+    alert(msg);
+}
+
+// ===== 4. ADMIN PANEL - DAFTAR KLAIM =====
+function adminRefreshKlaimTable() {
+    const history = getKlaimHistory();
+    const tableBody = document.getElementById('adminKlaimTable');
+    if (!tableBody) return;
+    
+    if (history.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-400 p-4">Belum ada klaim reward</td></tr>';
+        return;
+    }
+    
+    tableBody.innerHTML = history.map(k => {
+        const date = new Date(k.timestamp).toLocaleString('id-ID');
+        const statusColors = {
+            pending: 'bg-yellow-500/20 text-yellow-400',
+            processed: 'bg-blue-500/20 text-blue-400',
+            done: 'bg-green-500/20 text-green-400',
+            cancelled: 'bg-red-500/20 text-red-400'
+        };
+        const statusTexts = {
+            pending: '⏳ Menunggu',
+            processed: '🔄 Diproses',
+            done: '✅ Selesai',
+            cancelled: '❌ Dibatalkan'
+        };
+        const statusColor = statusColors[k.status] || 'bg-gray-500/20 text-gray-400';
+        const statusText = statusTexts[k.status] || k.status;
+        
+        return `
+            <tr class="border-b border-gray-700 hover:bg-gray-800">
+                <td class="p-2 text-xs font-mono text-green-400">${k.id}</td>
+                <td class="p-2 text-xs break-all">${escapeHtml(k.customerId)}</td>
+                <td class="p-2 text-center text-yellow-400">${k.poinDiklaim}</td>
+                <td class="p-2 text-center">
+                    <span class="text-xs px-2 py-1 rounded-full ${statusColor}">${statusText}</span>
+                </td>
+                <td class="p-2 text-center">
+                    <select onchange="adminUpdateKlaim('${k.id}', this.value)" class="bg-gray-700 border border-gray-600 rounded px-2 py-1 text-xs text-white">
+                        <option value="pending" ${k.status === 'pending' ? 'selected' : ''}>⏳ Menunggu</option>
+                        <option value="processed" ${k.status === 'processed' ? 'selected' : ''}>🔄 Diproses</option>
+                        <option value="done" ${k.status === 'done' ? 'selected' : ''}>✅ Selesai</option>
+                        <option value="cancelled" ${k.status === 'cancelled' ? 'selected' : ''}>❌ Dibatalkan</option>
+                    </select>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function adminUpdateKlaim(klaimId, newStatus) {
+    const updated = updateKlaimStatus(klaimId, newStatus);
+    if (updated) {
+        // Kirim notifikasi ke pelanggan (via Telegram)
+        const statusTexts = {
+            pending: 'Menunggu diproses',
+            processed: 'Sedang diproses',
+            done: '✅ Selesai - Reward telah dikirim!',
+            cancelled: '❌ Dibatalkan'
+        };
+        const pesan = `
+📢 <b>UPDATE STATUS KLAIM</b>
+
+🔑 Kode: ${klaimId}
+🆔 ID: ${updated.customerId}
+📌 Status: ${statusTexts[newStatus] || newStatus}
+🕐 Waktu: ${new Date().toLocaleString('id-ID')}
+
+💡 Pelanggan: Silakan cek status klaim Anda.
+        `;
+        sendTelegramMessage(pesan);
+        adminRefreshKlaimTable();
+        alert(`✅ Status klaim ${klaimId} diupdate menjadi: ${newStatus}`);
+    }
+}
+
+// ===== 5. TAMBAHKAN TOMBOL LIHAT HISTORI DI MODAL POIN =====
+// Fungsi ini akan dipanggil saat modal poin dibuka
+function tambahkanTombolHistori() {
+    const poinHasil = document.getElementById('poinHasil');
+    if (!poinHasil) return;
+    
+    // Cek apakah tombol sudah ada
+    if (document.getElementById('lihatHistoriBtn')) return;
+    
+    const historiDiv = document.createElement('div');
+    historiDiv.className = 'mt-3 text-center';
+    historiDiv.innerHTML = `
+        <button id="lihatHistoriBtn" onclick="lihatHistoriKlaim()" 
+                class="text-xs text-green-400 hover:text-green-300 underline hidden">
+            📋 Lihat Riwayat Klaim
+        </button>
+    `;
+    poinHasil.appendChild(historiDiv);
+}
+
+// ===== 6. TAMBAHKAN TABEL KLAIM DI ADMIN PANEL =====
+function tambahkanTabelKlaimDiAdmin() {
+    const adminPanel = document.querySelector('#adminPanelModal .p-6 .space-y-6');
+    if (!adminPanel) return;
+    
+    // Cek apakah sudah ada
+    if (document.getElementById('adminKlaimSection')) return;
+    
+    const klaimSection = document.createElement('div');
+    klaimSection.id = 'adminKlaimSection';
+    klaimSection.className = 'bg-gray-800/50 rounded-lg p-4';
+    klaimSection.innerHTML = `
+        <h4 class="text-green-400 font-bold mb-3">📋 Daftar Klaim Reward</h4>
+        <div class="overflow-x-auto max-h-64 overflow-y-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-700 sticky top-0">
+                    <tr>
+                        <th class="p-2 text-left">Kode</th>
+                        <th class="p-2 text-left">ID Pelanggan</th>
+                        <th class="p-2 text-center">Poin</th>
+                        <th class="p-2 text-center">Status</th>
+                        <th class="p-2 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="adminKlaimTable">
+                    <tr><td colspan="5" class="text-center text-gray-400 p-4">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-2 text-xs text-gray-400 text-center">
+            <span>⏳ Menunggu | 🔄 Diproses | ✅ Selesai | ❌ Dibatalkan</span>
+        </div>
+    `;
+    adminPanel.appendChild(klaimSection);
+}
+
+// ===== 7. OVERRIDE openPoinModal UNTUK TAMBAHKAN TOMBOL HISTORI =====
+const originalOpenPoinModal = window.openPoinModal;
+window.openPoinModal = function() {
+    originalOpenPoinModal();
+    setTimeout(() => {
+        tambahkanTombolHistori();
+    }, 100);
+};
+
+// ===== 8. OVERRIDE openAdminPanelModal UNTUK TAMBAHKAN TABEL KLAIM =====
+const originalOpenAdminPanelModal2 = window.openAdminPanelModal;
+window.openAdminPanelModal = function() {
+    originalOpenAdminPanelModal2();
+    setTimeout(() => {
+        tambahkanTabelKlaimDiAdmin();
+        adminRefreshKlaimTable();
+    }, 150);
+};
+
+// ===== 9. AUTO-REPLY SAAT CEK PELANGGAN (TAMBAHKAN INFORMASI STATUS KLAIM) =====
+// Tambahkan informasi status klaim di hasil cek pelanggan
+const originalCekPoinPelanggan = window.cekPoinPelanggan;
+window.cekPoinPelanggan = function() {
+    originalCekPoinPelanggan();
+    
+    // Setelah hasil ditampilkan, tambahkan informasi klaim terakhir
+    if (currentPoinCustomerId && currentPoinCustomerData) {
+        const history = getKlaimByCustomer(currentPoinCustomerId);
+        if (history.length > 0) {
+            const latest = history[0];
+            const statusEmoji = latest.status === 'pending' ? '⏳' : 
+                               latest.status === 'processed' ? '🔄' : 
+                               latest.status === 'done' ? '✅' : '❌';
+            const statusText = latest.status === 'pending' ? 'Menunggu diproses' :
+                              latest.status === 'processed' ? 'Sedang diproses' :
+                              latest.status === 'done' ? 'Selesai ✅' : 'Dibatalkan';
+            
+            // Tambahkan info di bawah progress bar
+            const progressDiv = document.querySelector('.bg-gray-800.rounded-lg.p-4');
+            if (progressDiv) {
+                // Hapus info lama jika ada
+                const oldInfo = progressDiv.querySelector('.klaim-terakhir-info');
+                if (oldInfo) oldInfo.remove();
+                
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'klaim-terakhir-info mt-2 pt-2 border-t border-gray-700 text-xs text-gray-400';
+                infoDiv.innerHTML = `
+                    📌 Klaim terakhir: <span class="text-green-400">${latest.id}</span>
+                    <span class="ml-2">${statusEmoji} ${statusText}</span>
+                    <span class="ml-2">(${new Date(latest.timestamp).toLocaleDateString('id-ID')})</span>
+                `;
+                progressDiv.appendChild(infoDiv);
+            }
+        }
+        
+        // Tampilkan tombol histori
+        const historiBtn = document.getElementById('lihatHistoriBtn');
+        if (historiBtn) historiBtn.classList.remove('hidden');
+    }
+}
+
+console.log('✅ Fitur tambahan sistem poin telah dimuat!');
 </script>        
 
 <!-- Kalkulator Modal dengan Toggle Mode -->

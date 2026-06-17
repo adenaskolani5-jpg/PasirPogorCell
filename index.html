@@ -4126,7 +4126,8 @@ function scheduleMidnightUpdate() {
         scheduleMidnightUpdate();
     }, timeUntilMidnight);
 }
-// ===== FUNGSI MODAL JADWAL SHOLAT LENGKAP =====
+<script>
+// ========== FUNGSI MODAL JADWAL SHOLAT LENGKAP ==========
 
 function openSholatFull() {
     const modal = document.getElementById('sholatFullModal');
@@ -4207,15 +4208,14 @@ function renderSholatFull() {
     list.innerHTML = html;
 }
 
-// Event klik pada area sholat (tambahkan di dalam DOMContentLoaded)
+// ===== EVENT KLIK PADA AREA SHOLAT =====
 document.addEventListener('DOMContentLoaded', function() {
-    // ... kode yang sudah ada ...
-    
     const sholatDisplay = document.getElementById('sholatDisplay');
     if (sholatDisplay) {
         sholatDisplay.addEventListener('click', openSholatFull);
     }
 });
+</script>
 // ===== INISIALISASI =====
 document.addEventListener('DOMContentLoaded', function() {
     updateMasehiDate();
@@ -4237,7 +4237,7 @@ document.addEventListener('DOMContentLoaded', function() {
     scheduleMidnightUpdate();
     setInterval(fetchHijriahDate, 3600000);
 });
-</script>
+
 <!-- MODAL JADWAL SHOLAT LENGKAP -->
 <div id="sholatFullModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300 sholat-full-modal">
     <div class="sholat-full-card p-5 transform scale-95 transition-all duration-300">

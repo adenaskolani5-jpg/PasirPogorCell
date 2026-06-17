@@ -470,6 +470,22 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
     <div class="progress-container">
         <div class="progress-bar" id="sholatProgressBar" style="width:0%"></div>
     </div>
+</div>  
+
+<div class="px-6 max-w-4xl mx-auto mt-3">
+  <div class="relative">
+    <input type="text" id="searchHargaHome" 
+           placeholder="🔍 Cari paket internet atau top-up game..." 
+           class="w-full bg-gray-800/80 border-2 border-green-500/50 rounded-xl px-5 py-4 text-white text-sm focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-500/30 transition-all pr-12">
+    <button id="clearSearchHomeBtn" 
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xl hidden">
+      ✕
+    </button>
+  </div>
+  <!-- Hasil Pencarian -->
+  <div id="hasilHargaHome" class="mt-3 space-y-2 max-h-80 overflow-y-auto">
+    <p class="text-gray-400 text-sm text-center py-4">🔍 Ketik kata kunci untuk mencari paket atau game...</p>
+  </div>
 </div>
   
 <!-- Modal Rekomendasi -->
@@ -2120,11 +2136,80 @@ async function sendVisitNotification(message) {
 
 document.addEventListener('DOMContentLoaded', function() {
     updateNotifikasiUI();
-    setupSearch(); // Setup pencarian setelah DOM ready
-    buildHargaData(); // Build data harga
+    setupSearch();
+    buildHargaData();
+    initSearchBarHome(); 
 });
 
 console.log('✅ Sistem siap, status notifikasi:', isNotifikasiEnabled() ? 'AKTIF' : 'NONAKTIF');
+
+// ===== SEARCH BAR HOME =====
+function initSearchBarHome() {
+    const searchInput = document.getElementById('searchHargaHome');
+    const clearBtn = document.getElementById('clearSearchHomeBtn');
+    const hasilBox = document.getElementById('hasilHargaHome');
+
+    if (!searchInput || !hasilBox) return;
+
+    function toggleClearButton() {
+        if (searchInput.value.trim() !== "") {
+            clearBtn.classList.remove('hidden');
+        } else {
+            clearBtn.classList.add('hidden');
+        }
+    }
+
+    function performSearchHome() {
+        const q = searchInput.value.toLowerCase().trim();
+        
+        if (q === "") {
+            hasilBox.innerHTML = '<p class="text-gray-400 text-sm text-center py-4">🔍 Ketik kata kunci untuk mencari paket atau game...</p>';
+            toggleClearButton();
+            return;
+        }
+
+        const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
+        
+        if (res.length === 0) {
+            hasilBox.innerHTML = `<p class="text-gray-400 text-sm text-center py-4">😕 Tidak ada hasil untuk "<strong>${escapeHtml(q)}</strong>"</p>`;
+            toggleClearButton();
+            return;
+        }
+
+        let html = '';
+        res.slice(0, 15).forEach(x => {
+            html += `
+                <div class="harga-item">
+                    <div class="harga-nama">
+                        <span class="harga-nama-text">${escapeHtml(x.nama)}</span>
+                        <span class="harga-harga">${escapeHtml(x.harga)}</span>
+                    </div>
+                    <div class="harga-ket">${escapeHtml(x.ket)}</div>
+                    <div style="margin-top: 0.5rem; text-align: right;">
+                        <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        if (res.length > 15) {
+            html += `<p class="text-gray-400 text-xs text-center py-2">📌 Menampilkan 15 dari ${res.length} hasil</p>`;
+        }
+
+        hasilBox.innerHTML = html;
+        toggleClearButton();
+    }
+
+    searchInput.addEventListener('input', performSearchHome);
+    clearBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        performSearchHome();
+        searchInput.focus();
+    });
+
+    toggleClearButton();
+    console.log('✅ Search bar home siap!');
+}
 </script>    
 
 <!-- KALKULATOR MODAL -->
@@ -2163,25 +2248,7 @@ console.log('✅ Sistem siap, status notifikasi:', isNotifikasiEnabled() ? 'AKTI
     <button onclick="openRekomendasi()" class="futuristic-btn border border-green-400 text-green-400 text-xs py-2 px-4 rounded-md hover:bg-green-400 hover:text-black transition">⭐ Rekomend</button>
     <button onclick="openPromo()" class="futuristic-btn border border-green-400 text-green-400 text-xs py-2 px-4 rounded-md hover:bg-green-400 hover:text-black transition">📢 Info</button>
     <button onclick="openPoinModal()" class="futuristic-btn border border-green-400 text-green-400 text-xs py-2 px-4 rounded-md hover:bg-green-400 hover:text-black transition">🎁 Poin</button>
-  </div>
-
-  <!-- === SEARCH BAR BARU (LEBAR PENUH) === -->
-  <div class="mt-6">
-    <div class="relative">
-      <input type="text" id="searchHargaHome" 
-             placeholder="🔍 Cari paket internet atau top-up game..." 
-             class="w-full bg-gray-800/80 border-2 border-green-500/50 rounded-xl px-5 py-4 text-white text-sm focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-500/30 transition-all pr-12">
-      <button id="clearSearchHomeBtn" 
-              class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xl hidden">
-        ✕
-      </button>
-    </div>
-    <!-- Hasil Pencarian -->
-    <div id="hasilHargaHome" class="mt-3 space-y-2 max-h-80 overflow-y-auto">
-      <p class="text-gray-400 text-sm text-center py-4">🔍 Ketik kata kunci untuk mencari paket atau game...</p>
-    </div>
-  </div>
-</section>    
+  </div>    
 
 <!-- INTERNET -->
 <section id="internet" class="hidden page p-6 max-w-6xl mx-auto"><h2 class="text-2xl font-bold mb-4">Pilih Operator</h2><div id="operatorList" class="grid md:grid-cols-3 gap-4"></div></section>    
@@ -2732,6 +2799,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('sholatDisplay')?.addEventListener('click', openSholatFull);
     checkHijriCache();
 });
+
 // ===== SEARCH BAR HOME (TANPA MODAL) =====
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchHargaHome');

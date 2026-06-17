@@ -4048,7 +4048,59 @@ function updateMasehiDate() {
     document.getElementById('masehiDate').textContent = `${dayName}, ${day} ${month} ${year}`;
 }
 
-// ===== FUNGSI TANGGAL HIJRIAH (TANPA ERROR) =====
+// ===== FUNGSI TANGGAL HIJRIAH (TANPA CACHE, PAKAI API LANGSUNG) =====
+
+async function fetchHijriahDate() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const dateKey = `${year}-${month}-${day}`;
+    const hijriElement = document.getElementById('hijriahDate');
+    
+    // Tampilkan loading dulu
+    hijriElement.textContent = 'Memuat...';
+    
+    try {
+        // Coba ambil dari API
+        const response = await fetch(`https://api.aladhan.com/v1/gToH/${dateKey}`);
+        if (!response.ok) throw new Error('Gagal');
+        const data = await response.json();
+        
+        if (data.code === 200 && data.data) {
+            const hijri = data.data.hijri;
+            const hijriText = `${hijri.day} ${hijri.month.en} ${hijri.year} H`;
+            hijriElement.textContent = hijriText;
+            
+            // Simpan ke localStorage sebagai cadangan (untuk offline)
+            localStorage.setItem('hijriahDate', JSON.stringify({ 
+                date: dateKey, 
+                data: hijriText 
+            }));
+            return;
+        }
+        throw new Error('Data tidak valid');
+    } catch (error) {
+        console.log('API gagal, coba fallback...');
+        
+        // Jika API gagal, coba dari localStorage
+        const cached = localStorage.getItem('hijriahDate');
+        if (cached) {
+            try {
+                const parsed = JSON.parse(cached);
+                if (parsed.date === dateKey && parsed.data) {
+                    hijriElement.textContent = parsed.data;
+                    return;
+                }
+            } catch(e) {}
+        }
+        
+        // Fallback terakhir - perkiraan
+        hijriElement.textContent = getHijriApproximation(now);
+    }
+}
+
+// ===== FUNGSI FALLBACK HIJRIAH =====
 function getHijriApproximation(date) {
     const islamicMonths = [
         'Muharram', 'Safar', 'Rabiul Awwal', 'Rabiul Akhir',
@@ -4056,6 +4108,7 @@ function getHijriApproximation(date) {
         'Ramadan', 'Syawal', 'Dzulqa\'dah', 'Dzulhijjah'
     ];
     
+    // Data referensi untuk 2026
     const hijriReference = {
         '2026-01-01': [11, 6, 1447],
         '2026-02-01': [12, 7, 1447],
@@ -4063,6 +4116,7 @@ function getHijriApproximation(date) {
         '2026-04-01': [13, 9, 1447],
         '2026-05-01': [13, 10, 1447],
         '2026-06-01': [14, 11, 1447],
+        '2026-06-17': [1, 0, 1448],
         '2026-07-01': [15, 0, 1448],
         '2026-08-01': [16, 1, 1448],
         '2026-09-01': [17, 2, 1448],
@@ -4100,7 +4154,7 @@ function getHijriApproximation(date) {
         return `${newDay} ${islamicMonths[newMonth]} ${newYear} H`;
     }
     
-    return `1447 H`;
+    return `1448 H`;
 }
 
 async function fetchHijriahDate() {
@@ -4357,7 +4411,6 @@ function renderSholatFull() {
     list.innerHTML = html;
 }
 
-// ===== INISIALISASI (SATU DOMContentLoaded) =====
 document.addEventListener('DOMContentLoaded', function() {
     updateMasehiDate();
     fetchHijriahDate();

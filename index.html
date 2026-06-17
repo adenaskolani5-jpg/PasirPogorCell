@@ -2272,7 +2272,15 @@ function initSearchBarHome() {
 // ===== NAVIGASI =====
 let historyStack = [];
 function hideAll() { document.querySelectorAll("section").forEach(s => s.classList.add("hidden")); }
-function back() { const f = historyStack.pop(); if (f) { hideAll(); f(); } }
+function back() { 
+    if (historyStack.length > 0) {
+        const f = historyStack.pop(); 
+        if (f) { 
+            hideAll(); 
+            f(); 
+        }
+    }
+}
 function clearActive() { document.querySelectorAll(".menu-active").forEach(x => x.classList.remove("menu-active")); }
 
 function openInternet(b) { 

@@ -2794,19 +2794,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 console.log('✅ Fungsi notifikasi siap, status:', isNotifikasiEnabled() ? 'AKTIF' : 'NONAKTIF');
-
-// ===== PERBAIKI: Tambahkan event klik pada area sholat =====
-// Tambahkan ini di dalam DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
-    // ... kode yang sudah ada ...
-    
-    // Event klik pada area sholat
-    const sholatDisplay = document.getElementById('sholatDisplay');
-    if (sholatDisplay) {
-        sholatDisplay.style.cursor = 'pointer';
-        sholatDisplay.addEventListener('click', openSholatFull);
-    }
-});
 </script>    
 
 <section id="home" class="page p-6 max-w-4xl mx-auto mt-10">

@@ -1685,9 +1685,15 @@ function openHargaModal() {
     const box = modal.querySelector('div');
     if (box) box.classList.remove('scale-95');
     // Fokus ke input pencarian
-    document.getElementById('searchHarga').focus();
+    const searchInput = document.getElementById('searchHarga');
+    if (searchInput) {
+      searchInput.focus();
+      searchInput.select();
+    }
     // Load data jika belum
     buildHargaData();
+    // Tampilkan hasil awal jika ada data
+    performSearch();
   }
 }
 
@@ -1698,8 +1704,12 @@ function closeHargaModal() {
     const box = modal.querySelector('div');
     if (box) box.classList.add('scale-95');
     // Kosongkan hasil dan input
-    document.getElementById('searchHarga').value = '';
-    document.getElementById('hasilHarga').innerHTML = '';
+    const searchInput = document.getElementById('searchHarga');
+    if (searchInput) searchInput.value = '';
+    const hasilBox = document.getElementById('hasilHarga');
+    if (hasilBox) hasilBox.innerHTML = '';
+    const clearBtn = document.getElementById('clearSearchBtn');
+    if (clearBtn) clearBtn.classList.add('hidden');
   }
 }
 </script>        
@@ -2647,7 +2657,7 @@ console.log('✅ Fungsi notifikasi siap, status:', isNotifikasiEnabled() ? 'AKTI
   <p class="text-gray-300">📍 Pasir Pogor, RT.2/RW.1, Ciparasi,<br>Kec. Sobang, Kabupaten Lebak, Banten 42280</p>    
   <hr class="border-gray-600 my-3">    
   <p class="text-gray-400 text-xs">© 2026 PasirPogorCell<br>Developed by <span class="font-semibold text-white">Aden Askolani Fahri</span></p>    
-</footer>         
+</footer>             
     
 <script>    
 /* ================= DATA ================= */    

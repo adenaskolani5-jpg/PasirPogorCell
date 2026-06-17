@@ -2158,13 +2158,13 @@ function initSearchBarHome() {
     }
 
     function performSearchHome() {
-    const q = searchInput.value.toLowerCase().trim();
-    
-    if (q === "") {
-        hasilBox.innerHTML = '';  
-        toggleClearButton();
-        return;
-    }
+        const q = searchInput.value.toLowerCase().trim();
+        
+        if (q === "") {
+            hasilBox.innerHTML = '';
+            toggleClearButton();
+            return;
+        }
 
         const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
         

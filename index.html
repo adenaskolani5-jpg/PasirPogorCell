@@ -3321,66 +3321,74 @@ async function sendToWhatsApp(nama, harga) {
   window.open(`https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`, '_blank');
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-  // Load data pencarian
-  buildHargaData();
+<script>
+// ===== INISIALISASI PENCARIAN =====
+// Load data terlebih dahulu
+buildHargaData();
 
-  const searchInput = document.getElementById("searchHarga");
-  const clearBtn = document.getElementById("clearSearchBtn");
-  const hasilBox = document.getElementById("hasilHarga");
+// Setup pencarian
+const searchInput = document.getElementById("searchHarga");
+const clearBtn = document.getElementById("clearSearchBtn");
+const hasilBox = document.getElementById("hasilHarga");
 
-  function toggleClearButton() {
-    if (searchInput.value.trim() !== "") {
-      clearBtn.classList.remove("hidden");
-    } else {
-      clearBtn.classList.add("hidden");
-    }
+function toggleClearButton() {
+  if (searchInput.value.trim() !== "") {
+    clearBtn.classList.remove("hidden");
+  } else {
+    clearBtn.classList.add("hidden");
   }
+}
 
-  function performSearch() {
-    const q = searchInput.value.toLowerCase().trim();
-    if (!hasilBox) return;
-    if (q === "") {
-      hasilBox.innerHTML = "";
-      return;
-    }
-    const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
+function performSearch() {
+  const q = searchInput.value.toLowerCase().trim();
+  if (!hasilBox) return;
+  if (q === "") {
     hasilBox.innerHTML = "";
-    if (res.length === 0) {
-      hasilBox.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
-      return;
-    }
-    res.slice(0, 20).forEach(x => {
-      hasilBox.innerHTML += `
-        <div class="harga-item">
-          <div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div>
-          <div class="harga-ket">${escapeHtml(x.ket)}</div>
-          <div style="margin-top: 0.5rem; text-align: right;">
-            <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
-          </div>
+    return;
+  }
+  const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
+  hasilBox.innerHTML = "";
+  if (res.length === 0) {
+    hasilBox.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
+    return;
+  }
+  res.slice(0, 20).forEach(x => {
+    hasilBox.innerHTML += `
+      <div class="harga-item">
+        <div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div>
+        <div class="harga-ket">${escapeHtml(x.ket)}</div>
+        <div style="margin-top: 0.5rem; text-align: right;">
+          <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
         </div>
-      `;
-    });
-  }
+      </div>
+    `;
+  });
+}
 
-  if (searchInput) {
-    // Event input
-    searchInput.addEventListener("input", function() {
-      toggleClearButton();
-      performSearch();
-    });
-    // Inisialisasi tombol
+if (searchInput) {
+  searchInput.addEventListener("input", function() {
     toggleClearButton();
-  }
+    performSearch();
+  });
+  toggleClearButton();
+}
 
-  if (clearBtn) {
-    clearBtn.addEventListener("click", function() {
-      searchInput.value = "";
-      toggleClearButton();
-      performSearch();
-      searchInput.focus();
-    });
-  }
+if (clearBtn) {
+  clearBtn.addEventListener("click", function() {
+    searchInput.value = "";
+    toggleClearButton();
+    performSearch();
+    searchInput.focus();
+  });
+}
+
+// Tampilkan pesan di layar (untuk konfirmasi di HP)
+if (hargaData.length > 0) {
+  console.log('✅ Data siap: ' + hargaData.length + ' item');
+} else {
+  // Jika data kosong, tampilkan alert (opsional)
+  // alert('⚠️ Data belum siap, refresh halaman');
+}
 </script>
 
 <!-- MODAL SETTINGS, ADMIN LOGIN, ADMIN PANEL, MODAL POIN -->
@@ -4070,18 +4078,5 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
-<script>
-// ===== PASTIKAN DATA TERLOAD UNTUK PENCARIAN =====
-// Jalankan buildHargaData() setelah semua data siap
-buildHargaData();
-
-// Tampilkan notifikasi di layar jika data berhasil dimuat
-// (opsional, untuk konfirmasi)
-if (hargaData.length > 0) {
-    console.log('✅ Data siap: ' + hargaData.length + ' item');
-} else {
-    console.warn('⚠️ Data kosong, periksa kembali');
-}
-</script>
 </body>    
 </html>

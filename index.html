@@ -1350,210 +1350,6 @@ function showInputModal(title, placeholder, validator, infoText = '', storageKey
   });
 }
 
-async function sendToWhatsApp(nama, harga) {
-  const nomorToko = "6283844843020";
-  const isGame = /(Top Up|Diamond|UC|CP|Tokens|Crystals|Robux|Mobile Legends|Free Fire|PUBG|Call Of Duty|Honor Of Kings|Genshin Impact|Roblox)/i.test(nama);
-  
-  let userInput = null;
-  const isMobileLegends = /Mobile Legends/i.test(nama);
-  const isFreeFire = /Free Fire/i.test(nama);
-  const isPUBG = /PUBG Mobile/i.test(nama);
-  const isCOD = /Call Of Duty/i.test(nama);
-  const isHOK = /Honor Of Kings/i.test(nama);
-  const isGenshin = /Genshin Impact/i.test(nama);
-  const isRoblox = /Roblox/i.test(nama);
-  
-  if (isGame) {
-    let gameStorageKey = 'game_id';
-    let gameTitle = "ID Game Anda";
-    let gamePlaceholder = "Contoh: Gamer123 (5-30 karakter, huruf/angka)";
-    let gameValidator = (val) => /^[A-Za-z0-9]{5,30}$/.test(val);
-    let gameInfoText = `<span class="text-yellow-300">📌 Informasi:</span><br>• Masukkan ID Game Anda dengan benar.<br>• Pastikan tidak ada kesalahan pengetikan.<br><span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input.</span>`;
-    
-    if (isMobileLegends) {
-      gameStorageKey = 'ml_id';
-      gameTitle = "Masukkan ID Mobile Legends";
-      gamePlaceholder = "Contoh: 12345678(1011) atau 123456781011";
-      gameValidator = (val) => { const r = validateMLBBID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
-      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Mobile Legends:</span><br>
-       • Format: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
-       • User ID: 4-10 digit | Zone ID: 4-5 digit<br>
-       • TOTAL minimal 8 digit (contoh: 10001+2001=100012001)<br>
-       • User ID TIDAK boleh diawali angka 0<br>
-       <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`;
-    }
-    else if (isFreeFire) {
-      gameStorageKey = 'ff_id';
-      gameTitle = "Masukkan ID Free Fire";
-      gamePlaceholder = "Contoh: 12345678 (8-11 digit)";
-      gameValidator = (val) => { const r = validateFFID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
-      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Free Fire:</span><br>
-       • Panjang ID: 8-11 digit<br>
-       • Akun terlama (2017): 8 digit<br>
-       • Akun baru (2024-2026): 11 digit<br>
-       • ID cantik (11111111, 12345678) TIDAK VALID<br>
-       <span class="text-green-300">💡 Cek ID di Settings → Account.</span>`;
-    }
-    else if (isPUBG) {
-      gameStorageKey = 'pubg_id';
-      gameTitle = "Masukkan ID PUBG Mobile";
-      gamePlaceholder = "Contoh: 512345678 (9 digit) atau 6198765432 (10 digit)";
-      gameValidator = (val) => { const r = validatePUBGID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
-      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID PUBG Mobile:</span><br>
-       • Panjang ID: 9-10 digit<br>
-       • Akun veteran (2018-2019): 9 digit, diawali 5<br>
-       • Akun baru: 10 digit, diawali 6 atau 7<br>
-       • ID diawali 0,1,2,3,4 TIDAK VALID<br>
-       <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`;
-    }
-    else if (isCOD) {
-      gameStorageKey = 'cod_id';
-      gameTitle = "Masukkan UID Call Of Duty Mobile";
-      gamePlaceholder = "Contoh: 6742910384756291029 (19 digit)";
-      gameValidator = (val) => { const r = validateCODMID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
-      gameInfoText = `<span class="text-yellow-300">📌 Aturan UID Call of Duty Mobile:</span><br>
-       • Panjang UID: TEPAT 19 digit<br>
-       • ID pendek (5,8,10 digit) MUSTAHIL ADA untuk UID CODM<br>
-       • Yang Anda miliki jika pendek adalah OpenID atau Nickname<br>
-       <span class="text-green-300">💡 Cek UID di Settings → Legal & Privacy.</span>`;
-    }
-    else if (isHOK) {
-      gameStorageKey = 'hok_id';
-      gameTitle = "Masukkan ID Honor Of Kings";
-      gamePlaceholder = "Contoh: 12345678901 (11-12 digit)";
-      gameValidator = (val) => { const r = validateHOKID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
-      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Honor of Kings:</span><br>
-       • Panjang ID: 11-12 digit (server Global)<br>
-       • ID kurang dari 11 digit TIDAK MUNGKIN ADA<br>
-       <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`;
-    }
-    else if (isGenshin) {
-      gameStorageKey = 'genshin_id';
-      gameTitle = "Masukkan UID Genshin Impact";
-      gamePlaceholder = "Contoh: 712345678 (9 digit)";
-      gameValidator = (val) => { const r = validateGenshinID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
-      gameInfoText = `<span class="text-yellow-300">📌 Aturan UID Genshin Impact:</span><br>
-       • Panjang UID: TEPAT 9 digit<br>
-       • Digit pertama = kode server:<br>
-       &nbsp;&nbsp;• 7 = Server Asia (Indonesia)<br>
-       &nbsp;&nbsp;• 5 = Amerika | 6 = Eropa | 8 = TW/HK/MO<br>
-       • Jika UID diawali selain 7 untuk server Asia, TIDAK VALID<br>
-       <span class="text-green-300">💡 Cek UID di pojok kanan bawah layar game.</span>`;
-    }
-    else if (isRoblox) {
-      gameStorageKey = 'roblox_id';
-      gameTitle = "Masukkan User ID Roblox";
-      gamePlaceholder = "Contoh: 3948576102 (angka dari URL profil)";
-      gameValidator = (val) => { const r = validateRobloxID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
-      gameInfoText = `<span class="text-yellow-300">📌 Aturan User ID Roblox:</span><br>
-       • Cara dapatkan: buka profil → lihat URL<br>
-       • Contoh URL: roblox.com/users/3948576102/profile<br>
-       • 1-4 digit: Akun 2006 | 8-9 digit: 2015-2018 | 10 digit: 2020-sekarang<br>
-       • ID 11 digit+ BELUM MUNGKIN ADA<br>
-       <span class="text-green-300">💡 Ini ANGKA dari URL profil, BUKAN username.</span>`;
-    }
-    
-    userInput = await showInputModal(gameTitle, gamePlaceholder, gameValidator, gameInfoText, gameStorageKey);
-    if (userInput === null) return;
-  } else {
-    const operator = detectOperatorFromNama(nama);
-    let operatorKey = 'customer_phone';
-    let operatorDisplay = '';
-    
-    if (operator) {
-      operatorKey = `customer_phone_${operator}`;
-      operatorDisplay = operator.toUpperCase();
-    }
-    
-    let validatorMessage = "Contoh: 081234567890 (10-13 digit)";
-    let infoHtml = `<span class="text-yellow-300">📌 Informasi Penting:</span><br>• Masukkan nomor HP aktif.<br>• Kami tidak bertanggung jawab atas kesalahan input.<br><span class="text-green-300">💡 Periksa kembali nomor Anda.</span>`;
-    
-    if (operator) {
-      const prefixList = operatorPrefixes[operator].join(', ');
-      validatorMessage = `Nomor harus diawali ${prefixList} (10-13 digit)`;
-      infoHtml = `<span class="text-yellow-300">📌 Informasi (${operatorDisplay}):</span><br>• Nomor harus diawali: <strong>${prefixList}</strong><br>• Contoh: ${operatorPrefixes[operator][0]}xxxxxxx<br><span class="text-green-300">💡 Periksa kembali nomor Anda.</span>`;
-    }
-    
-    userInput = await showInputModal("Masukkan Nomor HP", validatorMessage, (val) => {
-      if (!/^\d{10,13}$/.test(val)) return false;
-      if (operator) return isValidPhoneForOperator(val, operator);
-      return true;
-    }, infoHtml, operatorKey);
-    if (userInput === null) return;
-  }
-  
-  let pesan = isGame 
-    ? `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nID Game: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`
-    : `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nNo. HP: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
-  
-  window.open(`https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`, '_blank');
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  // Load data pencarian
-  buildHargaData();
-
-  const searchInput = document.getElementById("searchHarga");
-  const clearBtn = document.getElementById("clearSearchBtn");
-  const hasilBox = document.getElementById("hasilHarga");
-
-  function toggleClearButton() {
-    if (searchInput.value.trim() !== "") {
-      clearBtn.classList.remove("hidden");
-    } else {
-      clearBtn.classList.add("hidden");
-    }
-  }
-
-  function performSearch() {
-    const q = searchInput.value.toLowerCase().trim();
-    if (!hasilBox) return;
-    if (q === "") {
-      hasilBox.innerHTML = "";
-      return;
-    }
-    const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
-    hasilBox.innerHTML = "";
-    if (res.length === 0) {
-      hasilBox.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
-      return;
-    }
-    res.slice(0, 20).forEach(x => {
-      hasilBox.innerHTML += `
-        <div class="harga-item">
-          <div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div>
-          <div class="harga-ket">${escapeHtml(x.ket)}</div>
-          <div style="margin-top: 0.5rem; text-align: right;">
-            <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
-          </div>
-        </div>
-      `;
-    });
-  }
-
-  if (searchInput) {
-    // Event input
-    searchInput.addEventListener("input", function() {
-      toggleClearButton();
-      performSearch();
-    });
-    // Inisialisasi tombol
-    toggleClearButton();
-  }
-
-  if (clearBtn) {
-    clearBtn.addEventListener("click", function() {
-      searchInput.value = "";
-      toggleClearButton();
-      performSearch();
-      searchInput.focus();
-    });
-  }
-
-  // Sisa kode DOMContentLoaded (misalnya untuk customerId jika ada) tetap di sini
-  // ... (jika ada kode lain seperti untuk customerId, letakkan di sini)
-});
-
 // ========== VALIDASI ID GAME MLBB & FF (SESUAI ATURAN) ==========
 function validateMLBBID(id) {
     // Format: 12345678(1011) atau 123456781011
@@ -3383,6 +3179,212 @@ function openTypes(op) { historyStack.push(() => internet.classList.remove("hidd
 function openPaket(op, cat) { historyStack.push(() => paketTypes.classList.remove("hidden")); hideAll(); operatorDetail.classList.remove("hidden"); operatorTitle.innerText = op + " - " + cat; paketList.innerHTML = ""; operators[op][cat].forEach(p => { paketList.innerHTML += `<div class="card"><div class="card-main"><div style="flex:1">${p.nama}</div><span class="price">${p.harga}</span><button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')">💬 Beli</button></div><div class="card-detail">${p.ket}</div></div>`; }); }
 function openGame(b) { clearActive(); b.classList.add("menu-active"); historyStack.push(() => home.classList.remove("hidden")); hideAll(); game.classList.remove("hidden"); gameList.innerHTML = ""; Object.keys(games).forEach(g => { gameList.innerHTML += `<div class="card" onclick="openGameDetail('${g}')">${g}</div>`; }); }
 function openGameDetail(g) { historyStack.push(() => game.classList.remove("hidden")); hideAll(); gameDetail.classList.remove("hidden"); gameTitle.innerText = g; topupList.innerHTML = ""; games[g].forEach(item => { const hargaMatch = item.match(/Rp\s?[\d\.]+/); let harga = hargaMatch ? hargaMatch[0] : ""; let namaItem = item.replace(harga, "").trim(); topupList.innerHTML += `<div class="card"><div class="card-main"><div style="flex:1">${namaItem}</div><span class="price">${harga}</span><button class="whatsapp-btn" onclick="sendToWhatsApp('${g} - ${namaItem}', '${harga}')">💬 Beli</button></div><div class="card-detail">Top Up Game</div></div>`; }); }
+</script>
+
+<script>
+async function sendToWhatsApp(nama, harga) {
+  const nomorToko = "6283844843020";
+  const isGame = /(Top Up|Diamond|UC|CP|Tokens|Crystals|Robux|Mobile Legends|Free Fire|PUBG|Call Of Duty|Honor Of Kings|Genshin Impact|Roblox)/i.test(nama);
+  
+  let userInput = null;
+  const isMobileLegends = /Mobile Legends/i.test(nama);
+  const isFreeFire = /Free Fire/i.test(nama);
+  const isPUBG = /PUBG Mobile/i.test(nama);
+  const isCOD = /Call Of Duty/i.test(nama);
+  const isHOK = /Honor Of Kings/i.test(nama);
+  const isGenshin = /Genshin Impact/i.test(nama);
+  const isRoblox = /Roblox/i.test(nama);
+  
+  if (isGame) {
+    let gameStorageKey = 'game_id';
+    let gameTitle = "ID Game Anda";
+    let gamePlaceholder = "Contoh: Gamer123 (5-30 karakter, huruf/angka)";
+    let gameValidator = (val) => /^[A-Za-z0-9]{5,30}$/.test(val);
+    let gameInfoText = `<span class="text-yellow-300">📌 Informasi:</span><br>• Masukkan ID Game Anda dengan benar.<br>• Pastikan tidak ada kesalahan pengetikan.<br><span class="text-green-300">💡 Kami tidak bertanggung jawab atas kesalahan input.</span>`;
+    
+    if (isMobileLegends) {
+      gameStorageKey = 'ml_id';
+      gameTitle = "Masukkan ID Mobile Legends";
+      gamePlaceholder = "Contoh: 12345678(1011) atau 123456781011";
+      gameValidator = (val) => { const r = validateMLBBID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Mobile Legends:</span><br>
+       • Format: <strong>12345678(1011)</strong> atau <strong>123456781011</strong><br>
+       • User ID: 4-10 digit | Zone ID: 4-5 digit<br>
+       • TOTAL minimal 8 digit (contoh: 10001+2001=100012001)<br>
+       • User ID TIDAK boleh diawali angka 0<br>
+       <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`;
+    }
+    else if (isFreeFire) {
+      gameStorageKey = 'ff_id';
+      gameTitle = "Masukkan ID Free Fire";
+      gamePlaceholder = "Contoh: 12345678 (8-11 digit)";
+      gameValidator = (val) => { const r = validateFFID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Free Fire:</span><br>
+       • Panjang ID: 8-11 digit<br>
+       • Akun terlama (2017): 8 digit<br>
+       • Akun baru (2024-2026): 11 digit<br>
+       • ID cantik (11111111, 12345678) TIDAK VALID<br>
+       <span class="text-green-300">💡 Cek ID di Settings → Account.</span>`;
+    }
+    else if (isPUBG) {
+      gameStorageKey = 'pubg_id';
+      gameTitle = "Masukkan ID PUBG Mobile";
+      gamePlaceholder = "Contoh: 512345678 (9 digit) atau 6198765432 (10 digit)";
+      gameValidator = (val) => { const r = validatePUBGID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID PUBG Mobile:</span><br>
+       • Panjang ID: 9-10 digit<br>
+       • Akun veteran (2018-2019): 9 digit, diawali 5<br>
+       • Akun baru: 10 digit, diawali 6 atau 7<br>
+       • ID diawali 0,1,2,3,4 TIDAK VALID<br>
+       <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`;
+    }
+    else if (isCOD) {
+      gameStorageKey = 'cod_id';
+      gameTitle = "Masukkan UID Call Of Duty Mobile";
+      gamePlaceholder = "Contoh: 6742910384756291029 (19 digit)";
+      gameValidator = (val) => { const r = validateCODMID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan UID Call of Duty Mobile:</span><br>
+       • Panjang UID: TEPAT 19 digit<br>
+       • ID pendek (5,8,10 digit) MUSTAHIL ADA untuk UID CODM<br>
+       • Yang Anda miliki jika pendek adalah OpenID atau Nickname<br>
+       <span class="text-green-300">💡 Cek UID di Settings → Legal & Privacy.</span>`;
+    }
+    else if (isHOK) {
+      gameStorageKey = 'hok_id';
+      gameTitle = "Masukkan ID Honor Of Kings";
+      gamePlaceholder = "Contoh: 12345678901 (11-12 digit)";
+      gameValidator = (val) => { const r = validateHOKID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan ID Honor of Kings:</span><br>
+       • Panjang ID: 11-12 digit (server Global)<br>
+       • ID kurang dari 11 digit TIDAK MUNGKIN ADA<br>
+       <span class="text-green-300">💡 Cek ID di profil game Anda.</span>`;
+    }
+    else if (isGenshin) {
+      gameStorageKey = 'genshin_id';
+      gameTitle = "Masukkan UID Genshin Impact";
+      gamePlaceholder = "Contoh: 712345678 (9 digit)";
+      gameValidator = (val) => { const r = validateGenshinID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan UID Genshin Impact:</span><br>
+       • Panjang UID: TEPAT 9 digit<br>
+       • Digit pertama = kode server:<br>
+       &nbsp;&nbsp;• 7 = Server Asia (Indonesia)<br>
+       &nbsp;&nbsp;• 5 = Amerika | 6 = Eropa | 8 = TW/HK/MO<br>
+       • Jika UID diawali selain 7 untuk server Asia, TIDAK VALID<br>
+       <span class="text-green-300">💡 Cek UID di pojok kanan bawah layar game.</span>`;
+    }
+    else if (isRoblox) {
+      gameStorageKey = 'roblox_id';
+      gameTitle = "Masukkan User ID Roblox";
+      gamePlaceholder = "Contoh: 3948576102 (angka dari URL profil)";
+      gameValidator = (val) => { const r = validateRobloxID(val); if (!r.valid) gameValidator.errorMessage = r.message; return r.valid; };
+      gameInfoText = `<span class="text-yellow-300">📌 Aturan User ID Roblox:</span><br>
+       • Cara dapatkan: buka profil → lihat URL<br>
+       • Contoh URL: roblox.com/users/3948576102/profile<br>
+       • 1-4 digit: Akun 2006 | 8-9 digit: 2015-2018 | 10 digit: 2020-sekarang<br>
+       • ID 11 digit+ BELUM MUNGKIN ADA<br>
+       <span class="text-green-300">💡 Ini ANGKA dari URL profil, BUKAN username.</span>`;
+    }
+    
+    userInput = await showInputModal(gameTitle, gamePlaceholder, gameValidator, gameInfoText, gameStorageKey);
+    if (userInput === null) return;
+  } else {
+    const operator = detectOperatorFromNama(nama);
+    let operatorKey = 'customer_phone';
+    let operatorDisplay = '';
+    
+    if (operator) {
+      operatorKey = `customer_phone_${operator}`;
+      operatorDisplay = operator.toUpperCase();
+    }
+    
+    let validatorMessage = "Contoh: 081234567890 (10-13 digit)";
+    let infoHtml = `<span class="text-yellow-300">📌 Informasi Penting:</span><br>• Masukkan nomor HP aktif.<br>• Kami tidak bertanggung jawab atas kesalahan input.<br><span class="text-green-300">💡 Periksa kembali nomor Anda.</span>`;
+    
+    if (operator) {
+      const prefixList = operatorPrefixes[operator].join(', ');
+      validatorMessage = `Nomor harus diawali ${prefixList} (10-13 digit)`;
+      infoHtml = `<span class="text-yellow-300">📌 Informasi (${operatorDisplay}):</span><br>• Nomor harus diawali: <strong>${prefixList}</strong><br>• Contoh: ${operatorPrefixes[operator][0]}xxxxxxx<br><span class="text-green-300">💡 Periksa kembali nomor Anda.</span>`;
+    }
+    
+    userInput = await showInputModal("Masukkan Nomor HP", validatorMessage, (val) => {
+      if (!/^\d{10,13}$/.test(val)) return false;
+      if (operator) return isValidPhoneForOperator(val, operator);
+      return true;
+    }, infoHtml, operatorKey);
+    if (userInput === null) return;
+  }
+  
+  let pesan = isGame 
+    ? `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nID Game: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`
+    : `Assalamualaikum, saya ingin memesan:\n${nama}\nHarga: ${harga}\n\nNo. HP: ${userInput}\nPembayaran: (transfer/QRIS)\n\nTerima kasih.`;
+  
+  window.open(`https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`, '_blank');
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Load data pencarian
+  buildHargaData();
+
+  const searchInput = document.getElementById("searchHarga");
+  const clearBtn = document.getElementById("clearSearchBtn");
+  const hasilBox = document.getElementById("hasilHarga");
+
+  function toggleClearButton() {
+    if (searchInput.value.trim() !== "") {
+      clearBtn.classList.remove("hidden");
+    } else {
+      clearBtn.classList.add("hidden");
+    }
+  }
+
+  function performSearch() {
+    const q = searchInput.value.toLowerCase().trim();
+    if (!hasilBox) return;
+    if (q === "") {
+      hasilBox.innerHTML = "";
+      return;
+    }
+    const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
+    hasilBox.innerHTML = "";
+    if (res.length === 0) {
+      hasilBox.innerHTML = "<p class='text-gray-400'>Tidak ditemukan</p>";
+      return;
+    }
+    res.slice(0, 20).forEach(x => {
+      hasilBox.innerHTML += `
+        <div class="harga-item">
+          <div class="harga-nama"><span class="harga-nama-text">${escapeHtml(x.nama)}</span><span class="harga-harga">${escapeHtml(x.harga)}</span></div>
+          <div class="harga-ket">${escapeHtml(x.ket)}</div>
+          <div style="margin-top: 0.5rem; text-align: right;">
+            <button class="whatsapp-btn" onclick="sendToWhatsApp('${escapeHtml(x.nama)}', '${escapeHtml(x.harga)}')">💬 Beli via WA</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  if (searchInput) {
+    // Event input
+    searchInput.addEventListener("input", function() {
+      toggleClearButton();
+      performSearch();
+    });
+    // Inisialisasi tombol
+    toggleClearButton();
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function() {
+      searchInput.value = "";
+      toggleClearButton();
+      performSearch();
+      searchInput.focus();
+    });
+  }
+
+  // Sisa kode DOMContentLoaded (misalnya untuk customerId jika ada) tetap di sini
+  // ... (jika ada kode lain seperti untuk customerId, letakkan di sini)
+});
 </script>
 
 <!-- MODAL SETTINGS, ADMIN LOGIN, ADMIN PANEL, MODAL POIN -->

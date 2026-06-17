@@ -1882,6 +1882,30 @@ function toggleCalcMode() {
     currentMode = 'calc';
   }
 }
+function openHargaModal() {
+  const modal = document.getElementById('hargaModal');
+  if (modal) {
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    const box = modal.querySelector('div');
+    if (box) box.classList.remove('scale-95');
+    // Fokus ke input pencarian
+    document.getElementById('searchHarga').focus();
+    // Load data jika belum
+    buildHargaData();
+  }
+}
+
+function closeHargaModal() {
+  const modal = document.getElementById('hargaModal');
+  if (modal) {
+    modal.classList.add('opacity-0', 'pointer-events-none');
+    const box = modal.querySelector('div');
+    if (box) box.classList.add('scale-95');
+    // Kosongkan hasil dan input
+    document.getElementById('searchHarga').value = '';
+    document.getElementById('hasilHarga').innerHTML = '';
+  }
+}
 </script>        
 
 <!-- Kalkulator Modal dengan Toggle Mode -->
@@ -2806,6 +2830,7 @@ console.log('✅ Fungsi notifikasi siap, status:', isNotifikasiEnabled() ? 'AKTI
   <button onclick="openRekomendasi()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">⭐ Rekomend</button>
   <button onclick="openPromo()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">📢 Info</button>
   <button onclick="openPoinModal()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">🎁 Poin</button>
+<button onclick="openHargaModal()" class="w-24 border border-green-400 text-green-400 text-xs py-2 rounded-md hover:bg-green-400 hover:text-black transition futuristic-btn">🔍 Cari</button>
 </div>
 </section>    
 

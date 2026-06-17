@@ -3381,10 +3381,6 @@ document.addEventListener("DOMContentLoaded", function() {
       searchInput.focus();
     });
   }
-
-  // Sisa kode DOMContentLoaded (misalnya untuk customerId jika ada) tetap di sini
-  // ... (jika ada kode lain seperti untuk customerId, letakkan di sini)
-});
 </script>
 
 <!-- MODAL SETTINGS, ADMIN LOGIN, ADMIN PANEL, MODAL POIN -->
@@ -4074,5 +4070,18 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
+<script>
+// ===== PASTIKAN DATA TERLOAD UNTUK PENCARIAN =====
+// Jalankan buildHargaData() setelah semua data siap
+buildHargaData();
+
+// Tampilkan notifikasi di layar jika data berhasil dimuat
+// (opsional, untuk konfirmasi)
+if (hargaData.length > 0) {
+    console.log('✅ Data siap: ' + hargaData.length + ' item');
+} else {
+    console.warn('⚠️ Data kosong, periksa kembali');
+}
+</script>
 </body>    
 </html>

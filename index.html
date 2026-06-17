@@ -2268,13 +2268,15 @@ function initSearchBarHome() {
   <p class="text-gray-400 text-xs">© 2026 PasirPogorCell<br>Developed by <span class="font-semibold text-white">Aden Askolani Fahri</span></p>    
 </footer>         
     
-<script>    
 // ===== NAVIGASI =====
 let historyStack = [];
-let isNavigating = false;
 
 function hideAll() { 
     document.querySelectorAll("section").forEach(s => s.classList.add("hidden")); 
+}
+
+function clearActive() {
+    document.querySelectorAll(".menu-active").forEach(x => x.classList.remove("menu-active"));
 }
 
 function back() { 
@@ -2283,14 +2285,11 @@ function back() {
         if (f) { 
             hideAll(); 
             f(); 
-            // Update URL state agar back device tidak keluar web
             if (historyStack.length === 0) {
-                // Di halaman home, replace state agar back device tidak keluar
                 history.replaceState({ page: 'home' }, '', window.location.pathname);
             }
         }
     } else {
-        // Jika di home, redirect ke #home agar back device tidak keluar
         if (window.location.hash !== '#home') {
             window.location.hash = 'home';
         }
@@ -2306,7 +2305,6 @@ window.addEventListener('popstate', function(event) {
     if (historyStack.length > 0) {
         back();
     } else {
-        // Jika di home dan user tekan back, tetap di home
         if (window.location.hash === '' || window.location.hash === '#home') {
             window.location.hash = 'home';
         }
@@ -2319,7 +2317,7 @@ function openInternet(b) {
     historyStack.push(() => document.getElementById('home').classList.remove("hidden")); 
     hideAll(); 
     document.getElementById('internet').classList.remove("hidden"); 
-    pushState('internet'); // <-- TAMBAHKAN
+    pushState('internet');
     const list = document.getElementById('operatorList'); 
     list.innerHTML = ""; 
     Object.keys(operators).forEach(o => { 
@@ -2332,7 +2330,7 @@ function openTypes(op) {
     hideAll(); 
     document.getElementById('paketTypes').classList.remove("hidden"); 
     document.getElementById('paketTitle').innerText = op; 
-    pushState('paketTypes'); // <-- TAMBAHKAN
+    pushState('paketTypes');
     const list = document.getElementById('paketTypeList'); 
     list.innerHTML = ""; 
     Object.keys(operators[op]).forEach(t => { 
@@ -2345,11 +2343,41 @@ function openPaket(op, cat) {
     hideAll(); 
     document.getElementById('operatorDetail').classList.remove("hidden"); 
     document.getElementById('operatorTitle').innerText = op + " - " + cat; 
-    pushState('operatorDetail'); // <-- TAMBAHKAN
+    pushState('operatorDetail');
     const list = document.getElementById('paketList'); 
     list.innerHTML = ""; 
     operators[op][cat].forEach(p => { 
         list.innerHTML += `<div class="card"><div class="card-main"><div style="flex:1">${p.nama}</div><span class="price">${p.harga}</span><button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')">💬 Beli</button></div><div class="card-detail">${p.ket}</div></div>`; 
+    }); 
+}
+
+function openGame(b) { 
+    clearActive(); 
+    b.classList.add("menu-active"); 
+    historyStack.push(() => document.getElementById('home').classList.remove("hidden")); 
+    hideAll(); 
+    document.getElementById('game').classList.remove("hidden"); 
+    pushState('game');
+    const list = document.getElementById('gameList'); 
+    list.innerHTML = ""; 
+    Object.keys(games).forEach(g => { 
+        list.innerHTML += `<div class="card" onclick="openGameDetail('${g}')">${g}</div>`; 
+    }); 
+}
+
+function openGameDetail(g) { 
+    historyStack.push(() => document.getElementById('game').classList.remove("hidden")); 
+    hideAll(); 
+    document.getElementById('gameDetail').classList.remove("hidden"); 
+    document.getElementById('gameTitle').innerText = g; 
+    pushState('gameDetail');
+    const list = document.getElementById('topupList'); 
+    list.innerHTML = ""; 
+    games[g].forEach(item => { 
+        const match = item.match(/^(.*?)\s*Rp\s*([\d.]+)$/);
+        let harga = match ? "Rp " + match[2] : "";
+        let namaItem = match ? match[1].trim() : item;
+        list.innerHTML += `<div class="card"><div class="card-main"><div style="flex:1">${namaItem}</div><span class="price">${harga}</span><button class="whatsapp-btn" onclick="sendToWhatsApp('${g} - ${namaItem}', '${harga}')">💬 Beli</button></div><div class="card-detail">Top Up Game</div></div>`; 
     }); 
 }
 

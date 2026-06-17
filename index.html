@@ -484,8 +484,6 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
   </div>
   <!-- Hasil Pencarian -->
   <div id="hasilHargaHome" class="mt-3 space-y-2 max-h-80 overflow-y-auto">
-    <p class="text-gray-400 text-sm text-center py-4">🔍 Ketik kata kunci untuk mencari paket atau game...</p>
-  </div>
 </div>
   
 <!-- Modal Rekomendasi -->
@@ -2163,7 +2161,7 @@ function initSearchBarHome() {
         const q = searchInput.value.toLowerCase().trim();
         
         if (q === "") {
-            hasilBox.innerHTML = '<p class="text-gray-400 text-sm text-center py-4">🔍 Ketik kata kunci untuk mencari paket atau game...</p>';
+            hasilBox.innerHTML =
             toggleClearButton();
             return;
         }
@@ -2823,10 +2821,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const q = searchInput.value.toLowerCase().trim();
         
         if (q === "") {
-            hasilBox.innerHTML = '<p class="text-gray-400 text-sm text-center py-4">🔍 Ketik kata kunci untuk mencari paket atau game...</p>';
-            toggleClearButton();
-            return;
-        }
+    hasilBox.innerHTML = '';
+    return;
+}
 
         const res = hargaData.filter(x => x.nama.toLowerCase().includes(q));
         

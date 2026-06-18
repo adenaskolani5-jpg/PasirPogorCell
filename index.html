@@ -1938,6 +1938,194 @@ function closeAdminPanelModal() {
   if (box) box.classList.add('scale-95');
 }
 
+// ===== ADMIN MENU NAVIGASI =====
+
+function showAdminMenu(menu) {
+    const mainMenu = document.getElementById('adminMainMenu');
+    const content = document.getElementById('adminContent');
+    const contentInner = document.getElementById('adminContentInner');
+    
+    if (menu === 'menu') {
+        // Kembali ke menu utama
+        mainMenu.classList.remove('hidden');
+        content.classList.add('hidden');
+        return;
+    }
+    
+    // Sembunyikan menu utama, tampilkan konten
+    mainMenu.classList.add('hidden');
+    content.classList.remove('hidden');
+    
+    // Muat konten sesuai menu
+    switch(menu) {
+        case 'poin':
+            contentInner.innerHTML = getAdminPoinContent();
+            // Refresh tabel setelah konten dimuat
+            setTimeout(() => {
+                adminRefreshTable();
+                adminRefreshKlaimTable();
+            }, 100);
+            break;
+        case 'notifikasi':
+            contentInner.innerHTML = getAdminNotifikasiContent();
+            // Update status notifikasi setelah konten dimuat
+            setTimeout(() => {
+                updateNotifikasiUI();
+            }, 100);
+            break;
+        case 'maintenance':
+            contentInner.innerHTML = getAdminMaintenanceContent();
+            // Tampilkan daftar koreksi setelah konten dimuat
+            setTimeout(() => {
+                tampilkanDaftarKoreksi();
+            }, 100);
+            break;
+        default:
+            contentInner.innerHTML = '<p class="text-gray-400">Menu tidak ditemukan</p>';
+    }
+}
+
+// ===== KONTEN MENU TAMBAH POIN =====
+function getAdminPoinContent() {
+    return `
+        <div class="bg-gray-800/50 rounded-lg p-4">
+            <h4 class="text-green-400 font-bold mb-3 text-lg">⭐ Tambah Poin</h4>
+            <div class="grid gap-3">
+                <select id="adminIdType" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+                    <option value="phone">📱 Nomor HP</option>
+                    <option value="game">🎮 ID Game</option>
+                </select>
+                <input type="text" id="adminCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+                <div>
+                    <label class="text-sm text-gray-300">Jumlah poin:</label>
+                    <div class="flex gap-4 mt-1">
+                        <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="poinAmount" value="50" checked class="accent-green-500"> 50 poin</label>
+                        <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="poinAmount" value="100" class="accent-green-500"> 100 poin</label>
+                    </div>
+                </div>
+                <button onclick="adminTambahPoin()" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition">✅ Tambah Poin</button>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800/50 rounded-lg p-4 mt-4">
+            <h4 class="text-green-400 font-bold mb-3 text-lg">📋 Daftar Pelanggan</h4>
+            <div class="mb-3"><input type="text" id="searchCustomer" placeholder="Cari ID..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm"></div>
+            <div class="overflow-x-auto max-h-64 overflow-y-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-700 sticky top-0"><tr><th class="p-2 text-left">ID</th><th class="p-2 text-center">Klaim</th><th class="p-2 text-center">Poin</th></tr></thead>
+                    <tbody id="adminCustomerTable"><tr><td colspan="3" class="text-center text-gray-400 p-4">Loading...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800/50 rounded-lg p-4 mt-4">
+            <h4 class="text-green-400 font-bold mb-3 text-lg">📋 Daftar Klaim</h4>
+            <div class="overflow-x-auto max-h-64 overflow-y-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-700 sticky top-0"><tr><th class="p-2 text-left">Kode</th><th class="p-2 text-left">ID</th><th class="p-2 text-center">Poin</th><th class="p-2 text-center">Status</th><th class="p-2 text-center">Aksi</th></tr></thead>
+                    <tbody id="adminKlaimTable"><tr><td colspan="5" class="text-center text-gray-400 p-4">Loading...</td></tr></tbody>
+                </table>
+            </div>
+            <div class="mt-2 text-xs text-gray-400 text-center">⏳ Menunggu | 🔄 Diproses | ✅ Selesai | ❌ Dibatalkan</div>
+        </div>
+    `;
+}
+
+// ===== KONTEN MENU NOTIFIKASI =====
+function getAdminNotifikasiContent() {
+    return `
+        <div class="bg-gray-800/50 rounded-lg p-4">
+            <h4 class="text-green-400 font-bold mb-3 text-lg">🔔 Notifikasi</h4>
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm text-gray-300">Notifikasi Kunjungan</p>
+                    <p class="text-xs text-gray-400">Kirim notifikasi ke Telegram saat ada pengunjung</p>
+                </div>
+                <div>
+                    <button id="toggleNotifBtn" onclick="toggleNotifikasi()" class="relative inline-flex h-7 w-14 items-center rounded-full transition-colors bg-gray-600">
+                        <span id="toggleNotifCircle" class="inline-block h-5 w-5 transform rounded-full bg-white transition-transform translate-x-1"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="text-xs text-gray-400 mt-3">Status: <span id="notifStatusText" class="text-yellow-400">Memuat...</span></div>
+            
+            <div class="mt-4 pt-4 border-t border-gray-700">
+                <p class="text-xs text-gray-400">💡 Notifikasi dikirim ke Telegram saat:</p>
+                <ul class="text-xs text-gray-400 mt-1 list-disc list-inside">
+                    <li>Ada pengunjung baru di website</li>
+                    <li>Ada klaim reward poin</li>
+                    <li>Status klaim diupdate</li>
+                </ul>
+            </div>
+        </div>
+    `;
+}
+
+// ===== KONTEN MENU MAINTENANCE =====
+function getAdminMaintenanceContent() {
+    return `
+        <div class="bg-gray-800/50 rounded-lg p-4">
+            <h4 class="text-green-400 font-bold mb-3 text-lg">🧹 Maintenance</h4>
+            <p class="text-sm text-gray-300 mb-4">Hapus semua data cache yang tersimpan di browser pengunjung.</p>
+            
+            <button onclick="clearAllCache()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-lg transition">
+                🗑️ Hapus Semua Cache
+            </button>
+            <p class="text-xs text-gray-400 mt-3">⚠️ Hapus cache untuk memuat data terbaru. Biasanya refresh biasa sudah cukup.</p>
+            
+            <div class="mt-4 pt-4 border-t border-gray-700">
+                <p class="text-xs text-gray-400">📌 Data yang di-cache:</p>
+                <ul class="text-xs text-gray-400 mt-1 list-disc list-inside">
+                    <li>Daftar Operator & Paket</li>
+                    <li>Daftar Game & Topup</li>
+                    <li>Tanggal Hijriah</li>
+                    <li>Jadwal Sholat</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800/50 rounded-lg p-4 mt-4">
+            <h4 class="text-green-400 font-bold mb-3 text-lg">📅 Koreksi Bulan Kritis</h4>
+            <div class="grid gap-3">
+                <div class="flex gap-2 flex-wrap">
+                    <input type="number" id="koreksiTahun" placeholder="Tahun" class="flex-1 min-w-[80px] bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
+                    <select id="koreksiBulan" class="flex-1 min-w-[100px] bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
+                        <option value="8">Ramadan</option>
+                        <option value="9">Syawal</option>
+                        <option value="11">Dzulhijjah</option>
+                    </select>
+                    <input type="number" id="koreksiNilai" placeholder="Nilai" class="flex-1 min-w-[80px] bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="simpanKoreksi()" class="flex-1 bg-green-600 hover:bg-green-500 text-black font-bold py-1 rounded transition">✅ Simpan Koreksi</button>
+                    <button onclick="resetSemuaKoreksi()" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-1 rounded transition text-sm">🗑️ Reset</button>
+                </div>
+                <div id="daftarKoreksi" class="text-xs text-gray-400 max-h-32 overflow-y-auto bg-gray-900/50 rounded p-2"></div>
+            </div>
+        </div>
+    `;
+}
+
+// ===== OVERRIDE FUNGSI OPEN ADMIN PANEL =====
+// Ganti fungsi openAdminPanelModal yang sudah ada
+const originalOpenAdminPanel = window.openAdminPanelModal;
+window.openAdminPanelModal = function() {
+    originalOpenAdminPanel();
+    setTimeout(() => {
+        // Reset ke menu utama
+        const mainMenu = document.getElementById('adminMainMenu');
+        const content = document.getElementById('adminContent');
+        if (mainMenu) mainMenu.classList.remove('hidden');
+        if (content) content.classList.add('hidden');
+        
+        // Refresh tabel
+        adminRefreshTable();
+        adminRefreshKlaimTable();
+        updateNotifikasiUI();
+        tampilkanDaftarKoreksi();
+    }, 200);
+};
+
 document.getElementById('adminPassword')?.addEventListener('keypress', function(e) {
   if (e.key === 'Enter') verifyAdminPassword();
 });

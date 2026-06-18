@@ -3374,16 +3374,62 @@ function updateNextPrayer() {
 
 function updateCountdown() {
     if (nextPrayerIndex === -1 || !allPrayerTimes[nextPrayerIndex]) return;
+    
     const now = new Date();
-    const currentTime = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
-    const [h,m] = allPrayerTimes[nextPrayerIndex].time.split(':').map(Number);
-    const prayerTime = h * 60 + m;
-    const diffMinutes = prayerTime - currentTime;
-    if (diffMinutes <= 0) { updateNextPrayer(); return; }
-    const diffHours = Math.floor(diffMinutes / 60), diffMins = Math.floor(diffMinutes % 60), diffSecs = Math.floor((diffMinutes % 1) * 60);
-    let countdownText = diffHours > 0 ? `${diffHours}j ${diffMins}m` : (diffMins > 0 ? `${diffMins}m ${diffSecs}s` : `${diffSecs}s`);
+    const currentMinutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
+    
+    // Ambil waktu sholat berikutnya
+    const [h, m] = allPrayerTimes[nextPrayerIndex].time.split(':').map(Number);
+    const prayerMinutes = h * 60 + m;
+    
+    // Hitung selisih
+    const diffMinutes = prayerMinutes - currentMinutes;
+    
+    // Update countdown text
+    if (diffMinutes <= 0) {
+        updateNextPrayer();
+        return;
+    }
+    
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffMins = Math.floor(diffMinutes % 60);
+    const diffSecs = Math.floor((diffMinutes % 1) * 60);
+    
+    let countdownText = diffHours > 0 ? `${diffHours}j ${diffMins}m` : 
+                        (diffMins > 0 ? `${diffMins}m ${diffSecs}s` : `${diffSecs}s`);
     document.getElementById('nextSholatCountdown').textContent = `⏳ ${countdownText}`;
-    document.getElementById('sholatProgressBar').style.width = Math.min((currentTime / 1440) * 100, 100) + '%';
+    
+    // ===== PERBAIKAN PROGRESS BAR =====
+    // Hitung progress berdasarkan rentang sholat hari ini
+    // Dari Subuh ke Isya, bukan dari 00:00 ke 23:59
+    
+    // Ambil waktu Subuh (sholat pertama)
+    const [subuhH, subuhM] = allPrayerTimes[0].time.split(':').map(Number);
+    const subuhMinutes = subuhH * 60 + subuhM;
+    
+    // Ambil waktu Isya (sholat terakhir)
+    const [isyaH, isyaM] = allPrayerTimes[allPrayerTimes.length - 1].time.split(':').map(Number);
+    const isyaMinutes = isyaH * 60 + isyaM;
+    
+    // Total rentang dari Subuh sampai Isya
+    const totalRange = isyaMinutes - subuhMinutes;
+    
+    // Posisi sekarang dalam rentang
+    let currentPosition = currentMinutes - subuhMinutes;
+    
+    // Jika sebelum Subuh, progress = 0%
+    if (currentPosition < 0) {
+        document.getElementById('sholatProgressBar').style.width = '0%';
+    }
+    // Jika setelah Isya, progress = 100%
+    else if (currentPosition > totalRange) {
+        document.getElementById('sholatProgressBar').style.width = '100%';
+    }
+    // Hitung persentase
+    else {
+        const percent = Math.min((currentPosition / totalRange) * 100, 100);
+        document.getElementById('sholatProgressBar').style.width = percent + '%';
+    }
 }
 
 function scheduleMidnightUpdate() {

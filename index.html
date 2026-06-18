@@ -2956,45 +2956,98 @@ console.log('✅ Sistem navigasi dengan tombol perangkat aktif!');
 </script>
 
 <script>
-// ===== PERBAIKAN TANGGAL HIJRIAH (FORCED UPDATE) =====
+// ===== PERBAIKAN TANGGAL HIJRIAH DENGAN API WEMUSLIM =====
 
-// Fungsi untuk memaksa update dari API
-function forceUpdateHijriah() {
-    console.log('🔄 Memaksa update tanggal Hijriah...');
-    // Hapus semua cache terkait
-    localStorage.removeItem('hijriahDate');
-    localStorage.removeItem('hijriDate');
-    
-    // Panggil fetch ulang dengan timestamp untuk menghindari cache browser
-    const now = new Date();
-    const year = now.getFullYear(), month = String(now.getMonth()+1).padStart(2,'0'), day = String(now.getDate()).padStart(2,'0');
-    const dateKey = `${year}-${month}-${day}`;
+// Fungsi untuk fetch dari API Wemuslim
+async function fetchHijriahFromWemuslim() {
     const hijriElement = document.getElementById('hijriahDate');
     if (!hijriElement) return;
     
     hijriElement.textContent = 'Memuat...';
     
-    // Fetch dengan cache busting
-    fetch(`https://api.aladhan.com/v1/gToH/${dateKey}?_=${Date.now()}`)
-        .then(r => r.json())
-        .then(data => {
-            if (data.code === 200 && data.data) {
-                const hijri = data.data.hijri;
-                const hijriText = `${hijri.day} ${hijri.month.en} ${hijri.year} H`;
-                hijriElement.textContent = hijriText;
-                localStorage.setItem('hijriahDate', JSON.stringify({ date: dateKey, data: hijriText }));
-                console.log('✅ Tanggal Hijriah terupdate:', hijriText);
-                showToast('✅ Tanggal Hijriah diperbarui: ' + hijriText);
-            } else {
-                throw new Error('Data tidak valid');
-            }
-        })
-        .catch(() => {
-            // Fallback ke aproximasi
-            const fallback = getHijriApproximation(now);
-            hijriElement.textContent = fallback;
-            console.log('⚠️ Fallback ke aproximasi:', fallback);
-        });
+    try {
+        // API Wemuslim - free dan akurat
+        const response = await fetch('https://api.wemuslim.com/v1/hijri');
+        if (!response.ok) throw new Error('Gagal fetch dari Wemuslim');
+        
+        const data = await response.json();
+        console.log('📡 Data dari Wemuslim:', data);
+        
+        if (data && data.data && data.data.hijri) {
+            const hijri = data.data.hijri;
+            // Format: day, month, year
+            const monthNames = ['Muharram','Safar','Rabiul Awwal','Rabiul Akhir','Jumada Awwal','Jumada Akhir','Rajab','Sya\'ban','Ramadan','Syawal','Dzulqa\'dah','Dzulhijjah'];
+            const monthName = monthNames[parseInt(hijri.month) - 1] || hijri.month;
+            const hijriText = `${hijri.day} ${monthName} ${hijri.year} H`;
+            
+            hijriElement.textContent = hijriText;
+            
+            // Simpan ke cache
+            const now = new Date();
+            const dateKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+            localStorage.setItem('hijriahDate', JSON.stringify({ 
+                date: dateKey, 
+                data: hijriText,
+                source: 'wemuslim'
+            }));
+            
+            console.log('✅ Tanggal Hijriah terupdate:', hijriText);
+            return hijriText;
+        } else {
+            throw new Error('Data tidak valid dari Wemuslim');
+        }
+    } catch(error) {
+        console.error('❌ Gagal fetch Wemuslim:', error);
+        // Fallback ke Aladhan
+        return fetchHijriahFromAladhan();
+    }
+}
+
+// Fungsi fallback ke Aladhan
+async function fetchHijriahFromAladhan() {
+    const hijriElement = document.getElementById('hijriahDate');
+    if (!hijriElement) return;
+    
+    try {
+        const now = new Date();
+        const year = now.getFullYear(), month = String(now.getMonth()+1).padStart(2,'0'), day = String(now.getDate()).padStart(2,'0');
+        const dateKey = `${year}-${month}-${day}`;
+        
+        const response = await fetch(`https://api.aladhan.com/v1/gToH/${dateKey}?_=${Date.now()}`);
+        if (!response.ok) throw new Error('Gagal fetch Aladhan');
+        
+        const data = await response.json();
+        if (data.code === 200 && data.data) {
+            const hijri = data.data.hijri;
+            const hijriText = `${hijri.day} ${hijri.month.en} ${hijri.year} H`;
+            hijriElement.textContent = hijriText;
+            localStorage.setItem('hijriahDate', JSON.stringify({ 
+                date: dateKey, 
+                data: hijriText,
+                source: 'aladhan'
+            }));
+            console.log('✅ Fallback Aladhan:', hijriText);
+            return hijriText;
+        }
+        throw new Error('Data Aladhan tidak valid');
+    } catch(error) {
+        console.error('❌ Gagal semua API:', error);
+        // Fallback terakhir
+        const fallback = getHijriApproximation(new Date());
+        hijriElement.textContent = fallback;
+        return fallback;
+    }
+}
+
+// Fungsi utama untuk update
+function forceUpdateHijriah() {
+    console.log('🔄 Memaksa update tanggal Hijriah...');
+    // Hapus cache lama
+    localStorage.removeItem('hijriahDate');
+    // Fetch dari Wemuslim
+    fetchHijriahFromWemuslim();
+    // Tampilkan notifikasi
+    showToast('🔄 Memperbarui tanggal Hijriah...');
 }
 
 // Fungsi showToast
@@ -3003,7 +3056,7 @@ function showToast(message) {
     toast.textContent = message;
     toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50 shadow-lg';
     document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
+    setTimeout(() => toast.remove(), 2500);
 }
 
 // Tambahkan tombol refresh di header
@@ -3029,52 +3082,51 @@ window.checkHijriCache = function() {
     const now = new Date();
     const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
     const cached = localStorage.getItem('hijriahDate');
+    
     if (cached) {
         try {
             const parsed = JSON.parse(cached);
             if (parsed.date !== today) {
                 console.log('📅 Tanggal berganti, update Hijriah...');
-                localStorage.removeItem('hijriahDate');
                 forceUpdateHijriah();
             } else {
-                // Cek apakah data masih valid (tidak 1 Muharram terus)
+                // Cek apakah data masih 1 Muharram
                 if (parsed.data && parsed.data.includes('1 Muharram')) {
                     console.log('⚠️ Detected stuck 1 Muharram, force update...');
                     forceUpdateHijriah();
                 }
             }
         } catch(e) {
-            localStorage.removeItem('hijriahDate');
+            forceUpdateHijriah();
         }
     } else {
-        // Jika tidak ada cache, fetch
         forceUpdateHijriah();
     }
 };
 
+// Override fetchHijriahDate yang lama
+window.fetchHijriahDate = forceUpdateHijriah;
+
 // Jalankan saat halaman siap
 document.addEventListener('DOMContentLoaded', function() {
-    // Hapus cache lama dulu
+    // Hapus cache lama
     localStorage.removeItem('hijriahDate');
     
     // Tambahkan tombol refresh
     setTimeout(addHijriRefreshButton, 500);
     
-    // Force update pertama
+    // Fetch dari Wemuslim
     setTimeout(forceUpdateHijriah, 1000);
     
-    // Cek setiap 30 detik (lebih agresif)
+    // Cek setiap 1 menit
     setInterval(function() {
         if (typeof window.checkHijriCache === 'function') {
             window.checkHijriCache();
         }
-    }, 30000); // 30 detik
-    
-    // Override fetchHijriahDate yang lama dengan yang baru
-    window.fetchHijriahDate = forceUpdateHijriah;
+    }, 60000); // 1 menit
 });
 
-console.log('✅ Perbaikan tanggal Hijriah aktif!');
+console.log('✅ Perbaikan tanggal Hijriah dengan API Wemuslim aktif!');
 </script>
 </body>    
 </html>

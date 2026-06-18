@@ -125,6 +125,42 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 }
 @keyframes glow{ from{opacity:.3} to{opacity:.7} }
 .card:hover{ transform:scale(1.05); box-shadow:0 0 20px rgba(34,197,94,.8),0 0 60px rgba(59,130,246,.7); }
+/* ===== KARTU DENGAN GLOW TAPI TIDAK BERKEDIP ===== */
+.card {
+    position: relative;
+    background: var(--card);
+    color: var(--text);
+    padding: 1.3rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(34,197,94,.35);
+    box-shadow: 0 0 12px rgba(34,197,94,.15);
+    /* HAPUS animasi glow yang bikin berkedip */
+    /* animation: glow 3s infinite alternate; HAPUS INI */
+}
+.card::before {
+    /* HAPUS atau KOMENTAR bagian ini */
+    /* content: ""; */
+    /* position: absolute; */
+    /* inset: -2px; */
+    /* border-radius: 1rem; */
+    /* background: linear-gradient(120deg, var(--accent), var(--blue), var(--accent)); */
+    /* filter: blur(18px); */
+    /* opacity: .55; */
+    /* z-index: -1; */
+    /* animation: glow 3s infinite alternate; */
+    display: none;
+}
+.card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 25px rgba(34,197,94,.5), 0 0 60px rgba(59,130,246,.3);
+    border-color: #4ade80;
+}
 .menu-active{ border-color:var(--accent)!important; box-shadow:0 0 30px var(--accent),0 0 80px rgba(59,130,246,.9)!important; }
 .back-btn{ padding:.6rem 1.3rem; border-radius:999px; background:black; color:white; font-weight:600; border:1px solid #22c55e; box-shadow:0 0 15px rgba(34,197,94,.6); transition:.3s; }
 .back-btn:hover{ transform:scale(1.05); }
@@ -433,13 +469,28 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
     100% { background-position: -200% 0; }
 }
 
-/* ===== TRANSISI HALUS ===== */
+/* ===== TRANSISI HALUS (TANPA BERKEDIP) ===== */
 .fade-enter {
-    animation: fadeIn 0.3s ease forwards;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
 }
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.fade-enter.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===== SKELETON LOADING ===== */
+.skeleton {
+    background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 1rem;
+    min-height: 80px;
+}
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
 
 /* ===== TOMBOL PAGINASI ===== */
@@ -483,24 +534,15 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
     }
 }
 
-/* ===== TOMBOL SHOW MORE ===== */
-.show-more-btn {
-    background: rgba(34, 197, 94, 0.15);
-    border: 1px solid rgba(34, 197, 94, 0.4);
-    color: #22c55e;
-    padding: 0.75rem 2rem;
-    border-radius: 2rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-    text-align: center;
+/* ===== KARTU TANPA ANIMASI BERKEDIP ===== */
+.card-enter {
+    opacity: 0;
+    transform: scale(0.98);
+    transition: all 0.2s ease;
 }
-.show-more-btn:hover {
-    background: #22c55e;
-    color: black;
-    transform: scale(1.02);
-    box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+.card-enter.show {
+    opacity: 1;
+    transform: scale(1);
 }
 </style>        
 </head>        
@@ -1840,7 +1882,7 @@ function calculate() { let d=document.getElementById('calcDisplay'); try { d.val
 document.getElementById('toggleCalcModeBtn')?.addEventListener('click', toggleCalcMode);
 
 // ===== ADMIN PANEL =====
-const ADMIN_PASSWORD = "zxcvbnm";
+const ADMIN_PASSWORD = "@#$_&-+()/";
 
 function isAdminLoggedIn() {
     return sessionStorage.getItem('adminLoggedIn') === 'true';
@@ -2500,36 +2542,36 @@ function openInternet(b) {
     
     const list = document.getElementById('operatorList');
     
-    // Tampilkan skeleton loading
+    // Tampilkan skeleton loading (tanpa animasi berkedip)
     list.innerHTML = `
         <div class="skeleton" style="height:80px;"></div>
         <div class="skeleton" style="height:80px;"></div>
         <div class="skeleton" style="height:80px;"></div>
     `;
     
-    // Gunakan cache
-    let operators = CacheManager.get('operators');
-    
-    if (operators) {
+    // Gunakan setTimeout kecil agar skeleton terlihat
+    setTimeout(() => {
+        const operators = Object.keys(operators);
         renderOperatorList(operators);
-    } else {
-        // Simulasikan loading (sebenernya data sudah ada di memory)
-        setTimeout(() => {
-            operators = Object.keys(operators);
-            CacheManager.set('operators', operators);
-            renderOperatorList(operators);
-        }, 300);
-    }
+    }, 150);
 }
 
 function renderOperatorList(operators) {
     const list = document.getElementById('operatorList');
     list.innerHTML = "";
     
-    operators.forEach((o, index) => {
-        setTimeout(() => {
-            list.innerHTML += `<div class="card fade-enter" onclick="openTypes('${o}')">${o}</div>`;
-        }, index * 50); // Delay 50ms per item
+    // Render semua sekaligus (tanpa delay berlebihan)
+    operators.forEach((o) => {
+        const div = document.createElement('div');
+        div.className = 'card card-enter';
+        div.textContent = o;
+        div.onclick = () => openTypes(o);
+        list.appendChild(div);
+        
+        // Trigger animasi setelah ditambahkan
+        requestAnimationFrame(() => {
+            div.classList.add('show');
+        });
     });
 }
 
@@ -2547,18 +2589,22 @@ function openTypes(op) {
         <div class="skeleton" style="height:80px;"></div>
     `;
     
-    const categories = Object.keys(operators[op]);
-    const cacheKey = 'categories_' + op;
-    
-    // Simpan ke cache
-    CacheManager.set(cacheKey, categories);
-    
-    list.innerHTML = "";
-    categories.forEach((t, index) => {
-        setTimeout(() => {
-            list.innerHTML += `<div class="card fade-enter" onclick="openPaket('${op}','${t}')">${t}</div>`;
-        }, index * 80);
-    });
+    setTimeout(() => {
+        const categories = Object.keys(operators[op]);
+        list.innerHTML = "";
+        
+        categories.forEach((t) => {
+            const div = document.createElement('div');
+            div.className = 'card card-enter';
+            div.textContent = t;
+            div.onclick = () => openPaket(op, t);
+            list.appendChild(div);
+            
+            requestAnimationFrame(() => {
+                div.classList.add('show');
+            });
+        });
+    }, 150);
 }
 
 function openPaket(op, cat) { 
@@ -2577,59 +2623,65 @@ function openPaket(op, cat) {
         <div class="skeleton" style="height:80px;"></div>
     `;
     
-    // Ambil data paket
     const allPaket = operators[op][cat];
     
-    // Setup paginasi
     setTimeout(() => {
         PaginationHelper.setup(
             allPaket,
             function(pageData, currentPage, totalPages) {
                 renderPaketPage(pageData, currentPage, totalPages, op, cat);
             },
-            8 // 8 item per halaman
+            8
         );
-    }, 300);
+    }, 150);
 }
 
 function renderPaketPage(pageData, currentPage, totalPages, op, cat) {
     const list = document.getElementById('paketList');
     
-    let html = '';
+    // Kosongkan dulu
+    list.innerHTML = '';
+    
+    // Render item satu per satu dengan smooth
     pageData.forEach((p, index) => {
-        html += `
-            <div class="card fade-enter" style="animation-delay: ${index * 0.05}s;">
-                <div class="card-main">
-                    <div style="flex:1">${p.nama}</div>
-                    <span class="price">${p.harga}</span>
-                    <button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')">💬 Beli</button>
-                </div>
-                <div class="card-detail">${p.ket}</div>
+        const div = document.createElement('div');
+        div.className = 'card card-enter';
+        div.style.transitionDelay = (index * 0.03) + 's';
+        div.innerHTML = `
+            <div class="card-main">
+                <div style="flex:1">${p.nama}</div>
+                <span class="price">${p.harga}</span>
+                <button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')">💬 Beli</button>
             </div>
+            <div class="card-detail">${p.ket}</div>
         `;
+        list.appendChild(div);
+        
+        // Trigger animasi
+        requestAnimationFrame(() => {
+            div.classList.add('show');
+        });
     });
     
-    // Tambahkan kontrol paginasi
-    html += `
-        <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-700">
-            <button class="pagination-btn" onclick="changePaketPage('${op}', '${cat}', ${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>
-                ← Sebelumnya
-            </button>
-            <span class="pagination-info">
-                Halaman ${currentPage} dari ${totalPages} 
-                <span class="text-gray-500 text-xs ml-2">(${PaginationHelper.totalItems} paket)</span>
-            </span>
-            <button class="pagination-btn" onclick="changePaketPage('${op}', '${cat}', ${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>
-                Selanjutnya →
-            </button>
-        </div>
+    // Tambahkan paginasi
+    const paginationDiv = document.createElement('div');
+    paginationDiv.className = 'flex justify-between items-center mt-6 pt-4 border-t border-gray-700';
+    paginationDiv.innerHTML = `
+        <button class="pagination-btn" onclick="changePaketPage('${op}', '${cat}', ${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>
+            ← Sebelumnya
+        </button>
+        <span class="pagination-info">
+            Halaman ${currentPage} dari ${totalPages} 
+            <span class="text-gray-500 text-xs ml-2">(${PaginationHelper.totalItems} paket)</span>
+        </span>
+        <button class="pagination-btn" onclick="changePaketPage('${op}', '${cat}', ${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>
+            Selanjutnya →
+        </button>
     `;
-    
-    list.innerHTML = html;
+    list.appendChild(paginationDiv);
 }
 
 function changePaketPage(op, cat, newPage) {
-    // Hanya panggil PaginationHelper.goTo
     PaginationHelper.goTo(newPage);
 }
 
@@ -2651,22 +2703,23 @@ function openGame(b) {
     
     const gameNames = Object.keys(games);
     
-    // Simpan ke cache
-    CacheManager.set('games_list', gameNames);
-    
     setTimeout(() => {
         list.innerHTML = "";
-        // Gunakan lazy render
-        lazyRenderItems(
-            gameNames,
-            'gameList',
-            function(game, index) {
-                return `<div class="card fade-enter" style="animation-delay: ${index * 0.03}s;" onclick="openGameDetail('${game}')">${game}</div>`;
-            },
-            4, // 4 item per batch
-            100 // delay 100ms antar batch
-        );
-    }, 200);
+        
+        // Render game dengan smooth (tidak berkedip)
+        gameNames.forEach((game, index) => {
+            const div = document.createElement('div');
+            div.className = 'card card-enter';
+            div.style.transitionDelay = (index * 0.04) + 's';
+            div.textContent = game;
+            div.onclick = () => openGameDetail(game);
+            list.appendChild(div);
+            
+            requestAnimationFrame(() => {
+                div.classList.add('show');
+            });
+        });
+    }, 150);
 }
 
 function openGameDetail(g) { 
@@ -2685,37 +2738,34 @@ function openGameDetail(g) {
     `;
     
     const items = games[g];
-    const cacheKey = 'game_items_' + g;
-    
-    // Simpan ke cache
-    CacheManager.set(cacheKey, items);
     
     setTimeout(() => {
         list.innerHTML = "";
         
-        // Gunakan lazy render dengan batch lebih besar
-        lazyRenderItems(
-            items,
-            'topupList',
-            function(item, index) {
-                const match = item.match(/^(.*?)\s*Rp\s*([\d.]+)$/);
-                let harga = match ? "Rp " + match[2] : "";
-                let namaItem = match ? match[1].trim() : item;
-                return `
-                    <div class="card fade-enter" style="animation-delay: ${(index % 10) * 0.03}s;">
-                        <div class="card-main">
-                            <div style="flex:1">${namaItem}</div>
-                            <span class="price">${harga}</span>
-                            <button class="whatsapp-btn" onclick="sendToWhatsApp('${g} - ${namaItem}', '${harga}')">💬 Beli</button>
-                        </div>
-                        <div class="card-detail">Top Up Game</div>
-                    </div>
-                `;
-            },
-            8, // 8 item per batch
-            50 // delay 50ms
-        );
-    }, 200);
+        // Render item topup dengan smooth
+        items.forEach((item, index) => {
+            const match = item.match(/^(.*?)\s*Rp\s*([\d.]+)$/);
+            let harga = match ? "Rp " + match[2] : "";
+            let namaItem = match ? match[1].trim() : item;
+            
+            const div = document.createElement('div');
+            div.className = 'card card-enter';
+            div.style.transitionDelay = (index * 0.02) + 's';
+            div.innerHTML = `
+                <div class="card-main">
+                    <div style="flex:1">${namaItem}</div>
+                    <span class="price">${harga}</span>
+                    <button class="whatsapp-btn" onclick="sendToWhatsApp('${g} - ${namaItem}', '${harga}')">💬 Beli</button>
+                </div>
+                <div class="card-detail">Top Up Game</div>
+            `;
+            list.appendChild(div);
+            
+            requestAnimationFrame(() => {
+                div.classList.add('show');
+            });
+        });
+    }, 150);
 }
 
 async function sendToWhatsApp(nama, harga) {

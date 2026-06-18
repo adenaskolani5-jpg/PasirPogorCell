@@ -3400,19 +3400,17 @@ function updateCountdown() {
     document.getElementById('nextSholatCountdown').textContent = `⏳ ${countdownText}`;
     
     // ===== PERBAIKAN PROGRESS BAR =====
-    // Hitung progress berdasarkan rentang sholat hari ini
-    // Dari Subuh ke Isya, bukan dari 00:00 ke 23:59
+    // Hitung progress berdasarkan rentang dari Subuh sampai Tengah Malam (00:00)
     
-    // Ambil waktu Subuh (sholat pertama)
+    // Ambil waktu Subuh (sholat pertama) sebagai awal
     const [subuhH, subuhM] = allPrayerTimes[0].time.split(':').map(Number);
     const subuhMinutes = subuhH * 60 + subuhM;
     
-    // Ambil waktu Isya (sholat terakhir)
-    const [isyaH, isyaM] = allPrayerTimes[allPrayerTimes.length - 1].time.split(':').map(Number);
-    const isyaMinutes = isyaH * 60 + isyaM;
+    // Akhir = Tengah Malam (24:00 = 1440 menit)
+    const endMinutes = 24 * 60; // 1440 menit (tengah malam)
     
-    // Total rentang dari Subuh sampai Isya
-    const totalRange = isyaMinutes - subuhMinutes;
+    // Total rentang dari Subuh sampai Tengah Malam
+    const totalRange = endMinutes - subuhMinutes;
     
     // Posisi sekarang dalam rentang
     let currentPosition = currentMinutes - subuhMinutes;
@@ -3420,10 +3418,6 @@ function updateCountdown() {
     // Jika sebelum Subuh, progress = 0%
     if (currentPosition < 0) {
         document.getElementById('sholatProgressBar').style.width = '0%';
-    }
-    // Jika setelah Isya, progress = 100%
-    else if (currentPosition > totalRange) {
-        document.getElementById('sholatProgressBar').style.width = '100%';
     }
     // Hitung persentase
     else {

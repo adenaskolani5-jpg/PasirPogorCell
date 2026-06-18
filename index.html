@@ -1951,6 +1951,47 @@ function showAdminMenu(menu) {
         content.classList.add('hidden');
         return;
     }
+function showAdminMenu(menu) {
+    const mainMenu = document.getElementById('adminMainMenu');
+    const content = document.getElementById('adminContent');
+    const contentInner = document.getElementById('adminContentInner');
+    
+    if (menu === 'menu') {
+        mainMenu.classList.remove('hidden');
+        content.classList.add('hidden');
+        return;
+    }
+    
+    mainMenu.classList.add('hidden');
+    content.classList.remove('hidden');
+    
+    switch(menu) {
+        case 'poin':
+            contentInner.innerHTML = getAdminPoinContent();
+            setTimeout(() => {
+                adminRefreshTable();
+                adminRefreshKlaimTable();
+            }, 100);
+            break;
+        case 'notifikasi':
+            contentInner.innerHTML = getAdminNotifikasiContent();
+            setTimeout(() => {
+                updateNotifikasiUI();
+            }, 100);
+            break;
+        case 'maintenance':
+            contentInner.innerHTML = getAdminMaintenanceContent();
+            break;
+        case 'koreksi':  // <-- TAMBAHKAN INI
+            contentInner.innerHTML = getAdminKoreksiContent();
+            setTimeout(() => {
+                tampilkanDaftarKoreksi();
+            }, 100);
+            break;
+        default:
+            contentInner.innerHTML = '<p class="text-gray-400">Menu tidak ditemukan</p>';
+    }
+}
     
     // Sembunyikan menu utama, tampilkan konten
     mainMenu.classList.add('hidden');
@@ -1983,6 +2024,37 @@ function showAdminMenu(menu) {
         default:
             contentInner.innerHTML = '<p class="text-gray-400">Menu tidak ditemukan</p>';
     }
+}
+
+// ===== KONTEN MENU KOREKSI HIJRIAH =====
+function getAdminKoreksiContent() {
+    return `
+        <div class="bg-gray-800/50 rounded-lg p-4">
+            <h4 class="text-green-400 font-bold mb-3 text-lg">📅 Koreksi Bulan Kritis</h4>
+            <p class="text-xs text-gray-400 mb-3">Tambahkan koreksi untuk bulan-bulan tertentu jika perhitungan otomatis kurang tepat.</p>
+            
+            <div class="grid gap-3">
+                <div class="flex gap-2 flex-wrap">
+                    <input type="number" id="koreksiTahun" placeholder="Tahun" class="flex-1 min-w-[80px] bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
+                    <select id="koreksiBulan" class="flex-1 min-w-[100px] bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
+                        <option value="8">Ramadan</option>
+                        <option value="9">Syawal</option>
+                        <option value="11">Dzulhijjah</option>
+                    </select>
+                    <input type="number" id="koreksiNilai" placeholder="Nilai" class="flex-1 min-w-[80px] bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="simpanKoreksi()" class="flex-1 bg-green-600 hover:bg-green-500 text-black font-bold py-1.5 rounded transition text-sm">✅ Simpan Koreksi</button>
+                    <button onclick="resetSemuaKoreksi()" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-1.5 rounded transition text-sm">🗑️ Reset</button>
+                </div>
+                <div id="daftarKoreksi" class="text-xs text-gray-400 max-h-32 overflow-y-auto bg-gray-900/50 rounded p-2"></div>
+            </div>
+            
+            <div class="mt-3 pt-3 border-t border-gray-700">
+                <p class="text-xs text-gray-400">💡 <strong>Contoh:</strong> Jika Ramadan 1448 H seharusnya +1 hari, masukkan Tahun=1448, Bulan=Ramadan, Nilai=1</p>
+            </div>
+        </div>
+    `;
 }
 
 // ===== KONTEN MENU TAMBAH POIN =====
@@ -2083,26 +2155,6 @@ function getAdminMaintenanceContent() {
                 </ul>
             </div>
         </div>
-        
-        <div class="bg-gray-800/50 rounded-lg p-4 mt-4">
-            <h4 class="text-green-400 font-bold mb-3 text-lg">📅 Koreksi Bulan Kritis</h4>
-            <div class="grid gap-3">
-                <div class="flex gap-2 flex-wrap">
-                    <input type="number" id="koreksiTahun" placeholder="Tahun" class="flex-1 min-w-[80px] bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
-                    <select id="koreksiBulan" class="flex-1 min-w-[100px] bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
-                        <option value="8">Ramadan</option>
-                        <option value="9">Syawal</option>
-                        <option value="11">Dzulhijjah</option>
-                    </select>
-                    <input type="number" id="koreksiNilai" placeholder="Nilai" class="flex-1 min-w-[80px] bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
-                </div>
-                <div class="flex gap-2 flex-wrap">
-                    <button onclick="simpanKoreksi()" class="flex-1 bg-green-600 hover:bg-green-500 text-black font-bold py-1 rounded transition">✅ Simpan Koreksi</button>
-                    <button onclick="resetSemuaKoreksi()" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-1 rounded transition text-sm">🗑️ Reset</button>
-                </div>
-                <div id="daftarKoreksi" class="text-xs text-gray-400 max-h-32 overflow-y-auto bg-gray-900/50 rounded p-2"></div>
-            </div>
-        </div>
     `;
 }
 
@@ -2119,6 +2171,22 @@ window.openAdminPanelModal = function() {
         if (content) content.classList.add('hidden');
         
         // Refresh tabel
+        adminRefreshTable();
+        adminRefreshKlaimTable();
+        updateNotifikasiUI();
+        tampilkanDaftarKoreksi();
+    }, 200);
+};
+
+const originalOpenAdminPanel = window.openAdminPanelModal;
+window.openAdminPanelModal = function() {
+    originalOpenAdminPanel();
+    setTimeout(() => {
+        const mainMenu = document.getElementById('adminMainMenu');
+        const content = document.getElementById('adminContent');
+        if (mainMenu) mainMenu.classList.remove('hidden');
+        if (content) content.classList.add('hidden');
+        
         adminRefreshTable();
         adminRefreshKlaimTable();
         updateNotifikasiUI();
@@ -3104,43 +3172,50 @@ function clearAllCache() {
       <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
     
-    <!-- MENU UTAMA ADMIN -->
-    <div id="adminMainMenu" class="p-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- MENU UTAMA ADMIN (Ukuran lebih kecil) -->
+    <div id="adminMainMenu" class="p-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <!-- Menu Tambah Poin -->
-        <div onclick="showAdminMenu('poin')" class="bg-gray-800/50 hover:bg-gray-700/50 rounded-lg p-6 text-center cursor-pointer transition-all border border-gray-700 hover:border-green-500">
-          <div class="text-4xl mb-3">⭐</div>
-          <h4 class="text-green-400 font-bold text-lg">Tambah Poin</h4>
-          <p class="text-gray-400 text-sm mt-1">Kelola poin pelanggan</p>
+        <div onclick="showAdminMenu('poin')" class="bg-gray-800/50 hover:bg-gray-700/50 rounded-lg p-3 text-center cursor-pointer transition-all border border-gray-700 hover:border-green-500">
+          <div class="text-2xl mb-1">⭐</div>
+          <h4 class="text-green-400 font-bold text-sm">Tambah Poin</h4>
+          <p class="text-gray-400 text-xs mt-0.5">Kelola poin</p>
         </div>
         
         <!-- Menu Notifikasi -->
-        <div onclick="showAdminMenu('notifikasi')" class="bg-gray-800/50 hover:bg-gray-700/50 rounded-lg p-6 text-center cursor-pointer transition-all border border-gray-700 hover:border-green-500">
-          <div class="text-4xl mb-3">🔔</div>
-          <h4 class="text-green-400 font-bold text-lg">Notifikasi</h4>
-          <p class="text-gray-400 text-sm mt-1">Atur notifikasi Telegram</p>
+        <div onclick="showAdminMenu('notifikasi')" class="bg-gray-800/50 hover:bg-gray-700/50 rounded-lg p-3 text-center cursor-pointer transition-all border border-gray-700 hover:border-green-500">
+          <div class="text-2xl mb-1">🔔</div>
+          <h4 class="text-green-400 font-bold text-sm">Notifikasi</h4>
+          <p class="text-gray-400 text-xs mt-0.5">Atur notif</p>
         </div>
         
         <!-- Menu Maintenance -->
-        <div onclick="showAdminMenu('maintenance')" class="bg-gray-800/50 hover:bg-gray-700/50 rounded-lg p-6 text-center cursor-pointer transition-all border border-gray-700 hover:border-green-500">
-          <div class="text-4xl mb-3">🧹</div>
-          <h4 class="text-green-400 font-bold text-lg">Maintenance</h4>
-          <p class="text-gray-400 text-sm mt-1">Bersihkan cache & data</p>
+        <div onclick="showAdminMenu('maintenance')" class="bg-gray-800/50 hover:bg-gray-700/50 rounded-lg p-3 text-center cursor-pointer transition-all border border-gray-700 hover:border-green-500">
+          <div class="text-2xl mb-1">🧹</div>
+          <h4 class="text-green-400 font-bold text-sm">Maintenance</h4>
+          <p class="text-gray-400 text-xs mt-0.5">Bersihkan cache</p>
+        </div>
+        
+        <!-- Menu Koreksi Hijriah (Baru) -->
+        <div onclick="showAdminMenu('koreksi')" class="bg-gray-800/50 hover:bg-gray-700/50 rounded-lg p-3 text-center cursor-pointer transition-all border border-gray-700 hover:border-green-500">
+          <div class="text-2xl mb-1">📅</div>
+          <h4 class="text-green-400 font-bold text-sm">Koreksi Hijriah</h4>
+          <p class="text-gray-400 text-xs mt-0.5">Koreksi tanggal</p>
         </div>
       </div>
       
       <!-- Tombol Kembali ke Pengaturan -->
-      <div class="mt-6 text-center">
-        <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-sm transition">
+      <div class="mt-4 text-center">
+        <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xs transition">
           ← Kembali ke Pengaturan
         </button>
       </div>
     </div>
     
     <!-- KONTEN MENU (Awalnya tersembunyi) -->
-    <div id="adminContent" class="hidden p-6">
+    <div id="adminContent" class="hidden p-4">
       <!-- Tombol Kembali ke Menu -->
-      <button onclick="showAdminMenu('menu')" class="text-green-400 hover:text-green-300 text-sm mb-4 transition flex items-center gap-2">
+      <button onclick="showAdminMenu('menu')" class="text-green-400 hover:text-green-300 text-xs mb-3 transition flex items-center gap-2">
         ← Kembali ke Menu
       </button>
       

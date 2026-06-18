@@ -420,6 +420,88 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 .sholat-full-card .date-info { font-size: 0.65rem; color: #9ca3af; }
 #sholatDisplay { cursor: pointer; transition: all 0.2s ease; }
 #sholatDisplay:hover { border-color: rgba(34,197,94,0.5); box-shadow: 0 0 15px rgba(34,197,94,0.2); }
+/* ===== SKELETON LOADING ===== */
+.skeleton {
+    background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 1rem;
+    min-height: 80px;
+}
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ===== TRANSISI HALUS ===== */
+.fade-enter {
+    animation: fadeIn 0.3s ease forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== TOMBOL PAGINASI ===== */
+.pagination-btn {
+    transition: all 0.2s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: #22c55e;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+.pagination-btn:hover:not(:disabled) {
+    background: #22c55e;
+    color: black;
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+}
+.pagination-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+.pagination-info {
+    color: #9ca3af;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+}
+
+/* ===== OPTIMASI ANIMASI ===== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .skeleton {
+        animation: none !important;
+        background: #1a1a1a !important;
+    }
+}
+
+/* ===== TOMBOL SHOW MORE ===== */
+.show-more-btn {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    color: #22c55e;
+    padding: 0.75rem 2rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
+}
+.show-more-btn:hover {
+    background: #22c55e;
+    color: black;
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+}
 </style>        
 </head>        
 <body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">        
@@ -999,6 +1081,132 @@ const games = {
   "Gift Card IDR 950K Rp 997.000"    
 ]    
 };
+// ===== CACHE MANAGER =====
+const CacheManager = {
+    // Simpan data dengan timestamp
+    set(key, data, ttl = 3600000) { // default 1 jam
+        try {
+            const item = {
+                data: data,
+                timestamp: Date.now(),
+                ttl: ttl
+            };
+            localStorage.setItem('cache_' + key, JSON.stringify(item));
+        } catch (e) {
+            console.warn('Gagal menyimpan cache:', e);
+        }
+    },
+    
+    // Ambil data dari cache
+    get(key) {
+        try {
+            const cached = localStorage.getItem('cache_' + key);
+            if (!cached) return null;
+            
+            const item = JSON.parse(cached);
+            const isExpired = Date.now() - item.timestamp > item.ttl;
+            
+            if (isExpired) {
+                localStorage.removeItem('cache_' + key);
+                return null;
+            }
+            
+            return item.data;
+        } catch (e) {
+            return null;
+        }
+    },
+    
+    // Hapus cache tertentu
+    remove(key) {
+        localStorage.removeItem('cache_' + key);
+    },
+    
+    // Hapus semua cache
+    clear() {
+        const keys = Object.keys(localStorage);
+        keys.forEach(key => {
+            if (key.startsWith('cache_')) {
+                localStorage.removeItem(key);
+            }
+        });
+    }
+};
+
+// ===== PAGINASI HELPER =====
+const PaginationHelper = {
+    currentPage: 1,
+    itemsPerPage: 10,
+    totalItems: 0,
+    currentData: [],
+    currentCallback: null,
+    
+    // Set data dan render
+    setup(data, callback, itemsPerPage = 10) {
+        this.currentData = data;
+        this.totalItems = data.length;
+        this.itemsPerPage = itemsPerPage;
+        this.currentCallback = callback;
+        this.currentPage = 1;
+        this.render();
+    },
+    
+    // Ambil data untuk halaman saat ini
+    getCurrentPageData() {
+        const start = (this.currentPage - 1) * this.itemsPerPage;
+        const end = start + this.itemsPerPage;
+        return this.currentData.slice(start, end);
+    },
+    
+    // Pindah halaman
+    goTo(page) {
+        const totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+        if (page < 1 || page > totalPages) return;
+        this.currentPage = page;
+        this.render();
+    },
+    
+    // Render dengan callback
+    render() {
+        if (this.currentCallback) {
+            const pageData = this.getCurrentPageData();
+            const totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+            this.currentCallback(pageData, this.currentPage, totalPages);
+        }
+    }
+};
+
+// ===== LAZY RENDER HELPER =====
+function lazyRenderItems(items, containerId, renderItem, batchSize = 5, delay = 50) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    let currentIndex = 0;
+    let isRendering = false;
+    
+    function renderBatch() {
+        if (isRendering) return;
+        isRendering = true;
+        
+        const endIndex = Math.min(currentIndex + batchSize, items.length);
+        
+        for (let i = currentIndex; i < endIndex; i++) {
+            const html = renderItem(items[i], i);
+            container.innerHTML += html;
+        }
+        
+        currentIndex = endIndex;
+        isRendering = false;
+        
+        // Jika masih ada item, render batch berikutnya
+        if (currentIndex < items.length) {
+            setTimeout(renderBatch, delay);
+        }
+    }
+    
+    // Mulai render
+    renderBatch();
+}
 </script>
 
 <!-- SCRIPT UTAMA (FUNGSI & LOGIKA) -->
@@ -2284,68 +2492,230 @@ function back() {
 function clearActive() { document.querySelectorAll(".menu-active").forEach(x => x.classList.remove("menu-active")); }
 
 function openInternet(b) { 
-  clearActive(); 
-  b.classList.add("menu-active"); 
-  historyStack.push(() => document.getElementById('home').classList.remove("hidden")); 
-  hideAll(); 
-  document.getElementById('internet').classList.remove("hidden"); 
-  const list = document.getElementById('operatorList'); 
-  list.innerHTML = ""; 
-  Object.keys(operators).forEach(o => { 
-    list.innerHTML += `<div class="card" onclick="openTypes('${o}')">${o}</div>`; 
-  }); 
+    clearActive(); 
+    b.classList.add("menu-active"); 
+    historyStack.push(() => document.getElementById('home').classList.remove("hidden")); 
+    hideAll(); 
+    document.getElementById('internet').classList.remove("hidden"); 
+    
+    const list = document.getElementById('operatorList');
+    
+    // Tampilkan skeleton loading
+    list.innerHTML = `
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+    `;
+    
+    // Gunakan cache
+    let operators = CacheManager.get('operators');
+    
+    if (operators) {
+        renderOperatorList(operators);
+    } else {
+        // Simulasikan loading (sebenernya data sudah ada di memory)
+        setTimeout(() => {
+            operators = Object.keys(operators);
+            CacheManager.set('operators', operators);
+            renderOperatorList(operators);
+        }, 300);
+    }
+}
+
+function renderOperatorList(operators) {
+    const list = document.getElementById('operatorList');
+    list.innerHTML = "";
+    
+    operators.forEach((o, index) => {
+        setTimeout(() => {
+            list.innerHTML += `<div class="card fade-enter" onclick="openTypes('${o}')">${o}</div>`;
+        }, index * 50); // Delay 50ms per item
+    });
 }
 
 function openTypes(op) { 
-  historyStack.push(() => document.getElementById('internet').classList.remove("hidden")); 
-  hideAll(); 
-  document.getElementById('paketTypes').classList.remove("hidden"); 
-  document.getElementById('paketTitle').innerText = op; 
-  const list = document.getElementById('paketTypeList'); 
-  list.innerHTML = ""; 
-  Object.keys(operators[op]).forEach(t => { 
-    list.innerHTML += `<div class="card" onclick="openPaket('${op}','${t}')">${t}</div>`; 
-  }); 
+    historyStack.push(() => document.getElementById('internet').classList.remove("hidden")); 
+    hideAll(); 
+    document.getElementById('paketTypes').classList.remove("hidden"); 
+    document.getElementById('paketTitle').innerText = op; 
+    
+    const list = document.getElementById('paketTypeList');
+    
+    // Tampilkan skeleton
+    list.innerHTML = `
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+    `;
+    
+    const categories = Object.keys(operators[op]);
+    const cacheKey = 'categories_' + op;
+    
+    // Simpan ke cache
+    CacheManager.set(cacheKey, categories);
+    
+    list.innerHTML = "";
+    categories.forEach((t, index) => {
+        setTimeout(() => {
+            list.innerHTML += `<div class="card fade-enter" onclick="openPaket('${op}','${t}')">${t}</div>`;
+        }, index * 80);
+    });
 }
 
 function openPaket(op, cat) { 
-  historyStack.push(() => document.getElementById('paketTypes').classList.remove("hidden")); 
-  hideAll(); 
-  document.getElementById('operatorDetail').classList.remove("hidden"); 
-  document.getElementById('operatorTitle').innerText = op + " - " + cat; 
-  const list = document.getElementById('paketList'); 
-  list.innerHTML = ""; 
-  operators[op][cat].forEach(p => { 
-    list.innerHTML += `<div class="card"><div class="card-main"><div style="flex:1">${p.nama}</div><span class="price">${p.harga}</span><button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')">💬 Beli</button></div><div class="card-detail">${p.ket}</div></div>`; 
-  }); 
+    historyStack.push(() => document.getElementById('paketTypes').classList.remove("hidden")); 
+    hideAll(); 
+    document.getElementById('operatorDetail').classList.remove("hidden"); 
+    document.getElementById('operatorTitle').innerText = op + " - " + cat; 
+    
+    const list = document.getElementById('paketList');
+    
+    // Tampilkan skeleton loading
+    list.innerHTML = `
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+    `;
+    
+    // Ambil data paket
+    const allPaket = operators[op][cat];
+    
+    // Setup paginasi
+    setTimeout(() => {
+        PaginationHelper.setup(
+            allPaket,
+            function(pageData, currentPage, totalPages) {
+                renderPaketPage(pageData, currentPage, totalPages, op, cat);
+            },
+            8 // 8 item per halaman
+        );
+    }, 300);
+}
+
+function renderPaketPage(pageData, currentPage, totalPages, op, cat) {
+    const list = document.getElementById('paketList');
+    
+    let html = '';
+    pageData.forEach((p, index) => {
+        html += `
+            <div class="card fade-enter" style="animation-delay: ${index * 0.05}s;">
+                <div class="card-main">
+                    <div style="flex:1">${p.nama}</div>
+                    <span class="price">${p.harga}</span>
+                    <button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')">💬 Beli</button>
+                </div>
+                <div class="card-detail">${p.ket}</div>
+            </div>
+        `;
+    });
+    
+    // Tambahkan kontrol paginasi
+    html += `
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-700">
+            <button class="pagination-btn" onclick="changePaketPage('${op}', '${cat}', ${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>
+                ← Sebelumnya
+            </button>
+            <span class="pagination-info">
+                Halaman ${currentPage} dari ${totalPages} 
+                <span class="text-gray-500 text-xs ml-2">(${PaginationHelper.totalItems} paket)</span>
+            </span>
+            <button class="pagination-btn" onclick="changePaketPage('${op}', '${cat}', ${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>
+                Selanjutnya →
+            </button>
+        </div>
+    `;
+    
+    list.innerHTML = html;
+}
+
+function changePaketPage(op, cat, newPage) {
+    // Hanya panggil PaginationHelper.goTo
+    PaginationHelper.goTo(newPage);
 }
 
 function openGame(b) { 
-  clearActive(); 
-  b.classList.add("menu-active"); 
-  historyStack.push(() => document.getElementById('home').classList.remove("hidden")); 
-  hideAll(); 
-  document.getElementById('game').classList.remove("hidden"); 
-  const list = document.getElementById('gameList'); 
-  list.innerHTML = ""; 
-  Object.keys(games).forEach(g => { 
-    list.innerHTML += `<div class="card" onclick="openGameDetail('${g}')">${g}</div>`; 
-  }); 
+    clearActive(); 
+    b.classList.add("menu-active"); 
+    historyStack.push(() => document.getElementById('home').classList.remove("hidden")); 
+    hideAll(); 
+    document.getElementById('game').classList.remove("hidden"); 
+    
+    const list = document.getElementById('gameList');
+    
+    // Tampilkan skeleton
+    list.innerHTML = `
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+    `;
+    
+    const gameNames = Object.keys(games);
+    
+    // Simpan ke cache
+    CacheManager.set('games_list', gameNames);
+    
+    setTimeout(() => {
+        list.innerHTML = "";
+        // Gunakan lazy render
+        lazyRenderItems(
+            gameNames,
+            'gameList',
+            function(game, index) {
+                return `<div class="card fade-enter" style="animation-delay: ${index * 0.03}s;" onclick="openGameDetail('${game}')">${game}</div>`;
+            },
+            4, // 4 item per batch
+            100 // delay 100ms antar batch
+        );
+    }, 200);
 }
 
 function openGameDetail(g) { 
-  historyStack.push(() => document.getElementById('game').classList.remove("hidden")); 
-  hideAll(); 
-  document.getElementById('gameDetail').classList.remove("hidden"); 
-  document.getElementById('gameTitle').innerText = g; 
-  const list = document.getElementById('topupList'); 
-  list.innerHTML = ""; 
-  games[g].forEach(item => { 
-    const match = item.match(/^(.*?)\s*Rp\s*([\d.]+)$/);
-    let harga = match ? "Rp " + match[2] : "";
-    let namaItem = match ? match[1].trim() : item;
-    list.innerHTML += `<div class="card"><div class="card-main"><div style="flex:1">${namaItem}</div><span class="price">${harga}</span><button class="whatsapp-btn" onclick="sendToWhatsApp('${g} - ${namaItem}', '${harga}')">💬 Beli</button></div><div class="card-detail">Top Up Game</div></div>`; 
-  }); 
+    historyStack.push(() => document.getElementById('game').classList.remove("hidden")); 
+    hideAll(); 
+    document.getElementById('gameDetail').classList.remove("hidden"); 
+    document.getElementById('gameTitle').innerText = g; 
+    
+    const list = document.getElementById('topupList');
+    
+    // Tampilkan skeleton
+    list.innerHTML = `
+        <div class="skeleton" style="height:60px;"></div>
+        <div class="skeleton" style="height:60px;"></div>
+        <div class="skeleton" style="height:60px;"></div>
+    `;
+    
+    const items = games[g];
+    const cacheKey = 'game_items_' + g;
+    
+    // Simpan ke cache
+    CacheManager.set(cacheKey, items);
+    
+    setTimeout(() => {
+        list.innerHTML = "";
+        
+        // Gunakan lazy render dengan batch lebih besar
+        lazyRenderItems(
+            items,
+            'topupList',
+            function(item, index) {
+                const match = item.match(/^(.*?)\s*Rp\s*([\d.]+)$/);
+                let harga = match ? "Rp " + match[2] : "";
+                let namaItem = match ? match[1].trim() : item;
+                return `
+                    <div class="card fade-enter" style="animation-delay: ${(index % 10) * 0.03}s;">
+                        <div class="card-main">
+                            <div style="flex:1">${namaItem}</div>
+                            <span class="price">${harga}</span>
+                            <button class="whatsapp-btn" onclick="sendToWhatsApp('${g} - ${namaItem}', '${harga}')">💬 Beli</button>
+                        </div>
+                        <div class="card-detail">Top Up Game</div>
+                    </div>
+                `;
+            },
+            8, // 8 item per batch
+            50 // delay 50ms
+        );
+    }, 200);
 }
 
 async function sendToWhatsApp(nama, harga) {
@@ -2446,6 +2816,35 @@ async function sendToWhatsApp(nama, harga) {
   
   window.open(`https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`, '_blank');
 }
+
+// ===== PERFORMANCE MONITOR =====
+function checkPerformance() {
+    console.log('📊 Performance Report:');
+    console.log('  - Total data items:', hargaData ? hargaData.length : 0);
+    console.log('  - Cache size:', localStorage.length + ' items');
+    console.log('  - Memory usage:', performance.memory ? 
+        Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) + ' MB' : 
+        'Not available');
+}
+
+// Jalankan setelah load
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(checkPerformance, 2000);
+});
+
+// ===== CLEAR CACHE (untuk admin) =====
+function clearAllCache() {
+    if (confirm('Hapus semua cache?')) {
+        CacheManager.clear();
+        localStorage.removeItem('hijriahDate');
+        localStorage.removeItem('prayerTimes');
+        alert('✅ Cache berhasil dihapus!');
+        location.reload();
+    }
+}
+
+// Tambahkan tombol clear cache di admin panel
+// (akan ditambahkan otomatis di bawah)
 </script>
 
 <!-- MODALS -->
@@ -2483,6 +2882,14 @@ async function sendToWhatsApp(nama, harga) {
     <div class="sticky top-0 bg-gray-900 flex justify-between items-center p-4 border-b border-gray-700 z-10">
       <h3 class="text-lg font-bold text-green-400">👑 Admin Panel</h3>
       <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+<!-- Tambahkan di admin panel, setelah daftar pelanggan -->
+<div class="bg-gray-800/50 rounded-lg p-4 mt-4">
+    <h4 class="text-green-400 font-bold mb-3">🧹 Maintenance</h4>
+    <button onclick="clearAllCache()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2 rounded-lg transition">
+        🗑️ Hapus Semua Cache
+    </button>
+    <p class="text-xs text-gray-400 mt-2">Hapus cache untuk memuat data terbaru</p>
+</div>
     </div>
     <div class="p-6">
       <div class="space-y-6">

@@ -1946,17 +1946,6 @@ function showAdminMenu(menu) {
     const contentInner = document.getElementById('adminContentInner');
     
     if (menu === 'menu') {
-        // Kembali ke menu utama
-        mainMenu.classList.remove('hidden');
-        content.classList.add('hidden');
-        return;
-    }
-function showAdminMenu(menu) {
-    const mainMenu = document.getElementById('adminMainMenu');
-    const content = document.getElementById('adminContent');
-    const contentInner = document.getElementById('adminContentInner');
-    
-    if (menu === 'menu') {
         mainMenu.classList.remove('hidden');
         content.classList.add('hidden');
         return;
@@ -1982,41 +1971,8 @@ function showAdminMenu(menu) {
         case 'maintenance':
             contentInner.innerHTML = getAdminMaintenanceContent();
             break;
-        case 'koreksi':  // <-- TAMBAHKAN INI
+        case 'koreksi':
             contentInner.innerHTML = getAdminKoreksiContent();
-            setTimeout(() => {
-                tampilkanDaftarKoreksi();
-            }, 100);
-            break;
-        default:
-            contentInner.innerHTML = '<p class="text-gray-400">Menu tidak ditemukan</p>';
-    }
-}
-    
-    // Sembunyikan menu utama, tampilkan konten
-    mainMenu.classList.add('hidden');
-    content.classList.remove('hidden');
-    
-    // Muat konten sesuai menu
-    switch(menu) {
-        case 'poin':
-            contentInner.innerHTML = getAdminPoinContent();
-            // Refresh tabel setelah konten dimuat
-            setTimeout(() => {
-                adminRefreshTable();
-                adminRefreshKlaimTable();
-            }, 100);
-            break;
-        case 'notifikasi':
-            contentInner.innerHTML = getAdminNotifikasiContent();
-            // Update status notifikasi setelah konten dimuat
-            setTimeout(() => {
-                updateNotifikasiUI();
-            }, 100);
-            break;
-        case 'maintenance':
-            contentInner.innerHTML = getAdminMaintenanceContent();
-            // Tampilkan daftar koreksi setelah konten dimuat
             setTimeout(() => {
                 tampilkanDaftarKoreksi();
             }, 100);

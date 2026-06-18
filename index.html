@@ -2956,41 +2956,41 @@ console.log('✅ Sistem navigasi dengan tombol perangkat aktif!');
 </script>
 
 <script>
-// ===== SISTEM HISAB URFI - PENANGALAN HIJRIAH MANDIRI =====
-// Epoch: 1 Muharram 1 H = 12 Juli 622 M
+// ===== SISTEM HISAB URFI DENGAN KOREKSI MANUAL =====
 
 const HIJRI = {
-    // Nama bulan Hijriah
     MONTHS: [
         'Muharram', 'Safar', 'Rabiul Awwal', 'Rabiul Akhir',
         'Jumada Awwal', 'Jumada Akhir', 'Rajab', 'Sya\'ban',
         'Ramadan', 'Syawal', 'Dzulqa\'dah', 'Dzulhijjah'
     ],
     
-    // Jumlah hari per bulan (tahun basitah)
     MONTH_DAYS: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
-    
-    // Tahun kabisat dalam siklus 30 tahun
     KABISAT_POSITION: [2, 5, 7, 10, 13, 16, 18, 21, 24, 26, 29],
     
-    // EPOCH yang sudah disesuaikan agar 18 Juni 2026 = 3 Muharram 1448 H
-    // 1 Muharram 1 H = 12 Juli 622 M
+    // EPOCH: 1 Muharram 1 H
+    // Standar: 16 Juli 622 M
+    // TAPI kita akan pakai KOREKSI MANUAL
     EPOCH_YEAR: 622,
-    EPOCH_MONTH: 7,  // Juli
-    EPOCH_DAY: 12,   // Diubah dari 14 menjadi 12
+    EPOCH_MONTH: 7,
+    EPOCH_DAY: 16,
     
-    // Cek apakah tahun kabisat
+    // KOREKSI: berapa hari harus ditambahkan/dikurangi
+    // Untuk mendapatkan 18 Juni 2026 = 3 Muharram 1448 H
+    // Kita hitung: epoch 16 Juli 622 M ke 18 Juni 2026
+    // Hasilnya harus 3 Muharram 1448 H
+    // Koreksi: -2 hari (mengurangi 2 hari dari hasil perhitungan)
+    KOREKSI_HARI: -2,  // <-- UBAH ANGKA INI jika tanggal masih salah
+    
     isKabisat: function(hijriYear) {
         const position = hijriYear % 30 || 30;
         return this.KABISAT_POSITION.includes(position);
     },
     
-    // Jumlah hari dalam setahun Hijriah
     daysInYear: function(hijriYear) {
         return this.isKabisat(hijriYear) ? 355 : 354;
     },
     
-    // Jumlah hari dalam bulan tertentu
     daysInMonth: function(hijriYear, monthIndex) {
         if (monthIndex < 0 || monthIndex > 11) return 0;
         if (monthIndex === 11) {
@@ -2999,7 +2999,6 @@ const HIJRI = {
         return this.MONTH_DAYS[monthIndex];
     },
     
-    // Total hari dari 1 Muharram 1 H
     totalDaysFromEpoch: function(hijriYear) {
         let totalDays = 0;
         for (let year = 1; year < hijriYear; year++) {
@@ -3008,7 +3007,6 @@ const HIJRI = {
         return totalDays;
     },
     
-    // Konversi Hijriah ke Masehi
     toMasehi: function(hijriYear, hijriMonth, hijriDay) {
         if (hijriYear < 1 || hijriMonth < 1 || hijriMonth > 12) return null;
         
@@ -3021,6 +3019,9 @@ const HIJRI = {
         }
         totalHijriDays += (hijriDay - 1);
         
+        // Tambahkan koreksi
+        totalHijriDays += this.KOREKSI_HARI;
+        
         const epochDate = new Date(this.EPOCH_YEAR, this.EPOCH_MONTH - 1, this.EPOCH_DAY);
         const resultDate = new Date(epochDate);
         resultDate.setDate(resultDate.getDate() + totalHijriDays);
@@ -3032,10 +3033,12 @@ const HIJRI = {
         };
     },
     
-    // Konversi Masehi ke Hijriah
     fromMasehi: function(masehiDate) {
         const epochDate = new Date(this.EPOCH_YEAR, this.EPOCH_MONTH - 1, this.EPOCH_DAY);
-        const diffDays = Math.floor((masehiDate - epochDate) / (1000 * 60 * 60 * 24));
+        let diffDays = Math.floor((masehiDate - epochDate) / (1000 * 60 * 60 * 24));
+        
+        // Tambahkan koreksi
+        diffDays += this.KOREKSI_HARI;
         
         if (diffDays < 0) return null;
         
@@ -3064,13 +3067,11 @@ const HIJRI = {
         };
     },
     
-    // Format Hijriah
     format: function(hijriResult) {
         if (!hijriResult) return 'Invalid date';
         return `${hijriResult.day} ${hijriResult.monthName} ${hijriResult.year} H`;
     },
     
-    // Dapatkan tanggal Hijriah sekarang
     now: function() {
         const now = new Date();
         return this.fromMasehi(now);
@@ -3107,12 +3108,12 @@ function forceUpdateHijriah() {
 
 window.fetchHijriahDate = forceUpdateHijriah;
 
-// Test fungsi
+// ===== TEST =====
 function testHijriConversion() {
     console.log('🧪 TEST KONVERSI HIJRIAH');
     console.log('=======================');
+    console.log('KOREKSI_HARI =', HIJRI.KOREKSI_HARI);
     
-    // Test tanggal 18 Juni 2026
     const testDate = new Date(2026, 5, 18);
     const result = HIJRI.fromMasehi(testDate);
     console.log(`📆 18 Juni 2026 M = ${HIJRI.format(result)}`);
@@ -3149,8 +3150,9 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(testHijriConversion, 1000);
 });
 
-console.log('✅ Sistem Hisab Urfi aktif!');
-console.log('📅 Epoch: 1 Muharram 1 H = 12 Juli 622 M');
+console.log('✅ Sistem Hisab Urfi dengan koreksi manual aktif!');
+console.log('📅 KOREKSI_HARI =', HIJRI.KOREKSI_HARI);
+console.log('💡 Ubah nilai KOREKSI_HARI jika tanggal masih salah');
 </script>
 </body>    
 </html>

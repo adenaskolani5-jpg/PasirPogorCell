@@ -2819,110 +2819,22 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 <script>
-// === PERBAIKAN TOMBOL KEMBALI ===
-function updateBackButton() {
-    const btn = document.getElementById('floatingBackBtn');
-    if (!btn) return;
-    btn.style.display = historyStack.length > 0 ? 'flex' : 'none';
-}
-
-// Override fungsi back yang sudah ada
-const originalBack = window.back;
-window.back = function() {
-    if (historyStack.length > 0) {
-        const f = historyStack.pop();
-        if (f) {
-            hideAll();
-            f();
-            updateBackButton();
-        }
-    }
-};
-
-// Override semua fungsi navigasi
-const navigasiFunctions = ['openInternet', 'openGame', 'openTypes', 'openPaket', 'openGameDetail'];
-navigasiFunctions.forEach(funcName => {
-    if (typeof window[funcName] === 'function') {
-        const originalFunc = window[funcName];
-        window[funcName] = function(...args) {
-            originalFunc.apply(this, args);
-            setTimeout(updateBackButton, 50);
-        };
-    }
-});
-
-// Inisialisasi
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(updateBackButton, 100);
-});
-</script>
-<script>
 // ===== SISTEM NAVIGASI MENGGUNAKAN TOMBOL PERANGKAT =====
+// (Gabungan dari semua solusi)
 
-// 1. TAMBAHKAN HISTORY STATE UNTUK SETIAP NAVIGASI
-const originalOpenInternet = window.openInternet;
-window.openInternet = function(b) {
-    // Jalankan fungsi asli
-    originalOpenInternet(b);
-    // Tambahkan state ke browser history
-    history.pushState({ page: 'internet' }, '', '#internet');
-};
-
-const originalOpenGame = window.openGame;
-window.openGame = function(b) {
-    originalOpenGame(b);
-    history.pushState({ page: 'game' }, '', '#game');
-};
-
-const originalOpenTypes = window.openTypes;
-window.openTypes = function(op) {
-    originalOpenTypes(op);
-    history.pushState({ page: 'paketTypes', operator: op }, '', '#paket');
-};
-
-const originalOpenPaket = window.openPaket;
-window.openPaket = function(op, cat) {
-    originalOpenPaket(op, cat);
-    history.pushState({ page: 'operatorDetail', operator: op, category: cat }, '', '#detail');
-};
-
-const originalOpenGameDetail = window.openGameDetail;
-window.openGameDetail = function(g) {
-    originalOpenGameDetail(g);
-    history.pushState({ page: 'gameDetail', game: g }, '', '#gamedetail');
-};
-
-// 2. DETEKSI TOMBOL KEMBALI PERANGKAT (POPSTATE)
-window.addEventListener('popstate', function(event) {
-    // Jika history stack kosong, kembali ke home
-    if (historyStack.length === 0) {
-        hideAll();
-        document.getElementById('home').classList.remove('hidden');
-        return;
-    }
-    
-    // Jalankan fungsi back() yang sudah ada
-    if (typeof back === 'function') {
-        back();
-    }
-});
-
-// 3. TAMBAHKAN STATE SAAT PERTAMA KALI LOAD
-document.addEventListener('DOMContentLoaded', function() {
-    // Ganti state awal
-    history.replaceState({ page: 'home' }, '', window.location.pathname);
-    
-    // Hapus tombol floating back (tidak diperlukan lagi)
+// 1. PASTIKAN TOMBOL FLOATING SEMBUNYI PERMANEN
+(function() {
     const floatingBtn = document.getElementById('floatingBackBtn');
     if (floatingBtn) {
-        floatingBtn.style.display = 'none';
+        floatingBtn.style.display = 'none !important';
+        floatingBtn.style.opacity = '0';
+        floatingBtn.style.pointerEvents = 'none';
+        // Hapus dari DOM sepenuhnya agar tidak mengganggu
+        floatingBtn.remove();
     }
-    
-    console.log('✅ Navigasi menggunakan tombol perangkat siap!');
-});
+})();
 
-// 4. MODIFIKASI FUNGSI BACK (tetap jalan tapi tanpa tombol)
-const originalBack = window.back;
+// 2. FUNGSI BACK YANG DISEDERHANAKAN (hanya untuk historyStack)
 window.back = function() {
     if (historyStack.length > 0) {
         const f = historyStack.pop();
@@ -2935,45 +2847,109 @@ window.back = function() {
     }
 };
 
-// 5. TAMBAHKAN PETUNJUK UNTUK PENGGUNA
-(function showNavigationHint() {
-    // Cek apakah ini pertama kali pengguna buka
-    const hasSeenHint = localStorage.getItem('nav_hint_shown');
-    if (!hasSeenHint) {
-        setTimeout(() => {
-            const hint = document.createElement('div');
-            hint.style.cssText = `
-                position: fixed;
-                bottom: 80px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: rgba(0,0,0,0.85);
-                color: #22c55e;
-                padding: 12px 20px;
-                border-radius: 12px;
-                border: 1px solid #22c55e;
-                font-size: 14px;
-                z-index: 9999;
-                text-align: center;
-                max-width: 90%;
-                box-shadow: 0 0 30px rgba(34,197,94,0.3);
-                animation: fadeInUp 0.5s ease;
-            `;
-            hint.innerHTML = `
-                📱 Gunakan tombol <strong>Kembali</strong> di perangkat Anda<br>
-                <span style="font-size:12px;color:#9ca3af;">(tombol panah kiri di bawah layar)</span>
-            `;
-            document.body.appendChild(hint);
-            
-            setTimeout(() => {
-                hint.style.transition = 'opacity 0.5s';
-                hint.style.opacity = '0';
-                setTimeout(() => hint.remove(), 500);
-            }, 5000);
-            
-            localStorage.setItem('nav_hint_shown', 'true');
-        }, 1000);
+// 3. TAMBAHKAN HISTORY STATE UNTUK SETIAP NAVIGASI
+// Simpan fungsi asli
+const origOpenInternet = window.openInternet;
+window.openInternet = function(b) {
+    origOpenInternet(b);
+    history.pushState({ page: 'internet' }, '', '#internet');
+};
+
+const origOpenGame = window.openGame;
+window.openGame = function(b) {
+    origOpenGame(b);
+    history.pushState({ page: 'game' }, '', '#game');
+};
+
+const origOpenTypes = window.openTypes;
+window.openTypes = function(op) {
+    origOpenTypes(op);
+    history.pushState({ page: 'paketTypes', operator: op }, '', '#paket');
+};
+
+const origOpenPaket = window.openPaket;
+window.openPaket = function(op, cat) {
+    origOpenPaket(op, cat);
+    history.pushState({ page: 'operatorDetail', operator: op, category: cat }, '', '#detail');
+};
+
+const origOpenGameDetail = window.openGameDetail;
+window.openGameDetail = function(g) {
+    origOpenGameDetail(g);
+    history.pushState({ page: 'gameDetail', game: g }, '', '#gamedetail');
+};
+
+// 4. DETEKSI TOMBOL KEMBALI PERANGKAT (POPSTATE)
+window.addEventListener('popstate', function(event) {
+    // Jika history stack kosong, kembali ke home
+    if (historyStack.length === 0) {
+        hideAll();
+        document.getElementById('home').classList.remove('hidden');
+        return;
     }
+    
+    // Jalankan fungsi back()
+    window.back();
+});
+
+// 5. TAMBAHKAN STATE SAAT PERTAMA KALI LOAD
+document.addEventListener('DOMContentLoaded', function() {
+    history.replaceState({ page: 'home' }, '', window.location.pathname);
+    console.log('✅ Navigasi menggunakan tombol perangkat siap!');
+});
+
+// 6. PETUNJUK UNTUK PENGGUNA (hanya sekali)
+(function showNavigationHint() {
+    if (localStorage.getItem('nav_hint_shown')) return;
+    
+    setTimeout(() => {
+        const hint = document.createElement('div');
+        hint.style.cssText = `
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: #22c55e;
+            padding: 14px 24px;
+            border-radius: 14px;
+            border: 1px solid #22c55e;
+            font-size: 14px;
+            z-index: 9999;
+            text-align: center;
+            max-width: 90%;
+            box-shadow: 0 0 40px rgba(34,197,94,0.4);
+            animation: fadeInUp 0.5s ease;
+            font-family: Poppins, sans-serif;
+        `;
+        hint.innerHTML = `
+            📱 Gunakan tombol <strong>Kembali</strong> di perangkat Anda<br>
+            <span style="font-size:11px;color:#9ca3af;">(tombol panah kiri di bawah layar)</span>
+        `;
+        document.body.appendChild(hint);
+        
+        // Tambahkan animasi CSS jika belum ada
+        if (!document.getElementById('hintAnimation')) {
+            const style = document.createElement('style');
+            style.id = 'hintAnimation';
+            style.textContent = `
+                @keyframes fadeInUp {
+                    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        setTimeout(() => {
+            hint.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            hint.style.opacity = '0';
+            hint.style.transform = 'translateX(-50%) translateY(-20px)';
+            setTimeout(() => hint.remove(), 800);
+        }, 5000);
+        
+        localStorage.setItem('nav_hint_shown', 'true');
+    }, 1500);
 })();
 
 console.log('✅ Sistem navigasi dengan tombol perangkat aktif!');

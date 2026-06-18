@@ -3277,5 +3277,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
 console.log('✅ Sistem Hisab Urfi dengan koreksi bulan kritis aktif!');
 </script>
+<script>
+// ===== PASTIKAN MENU KOREKSI MUNCUL =====
+// Override fungsi openAdminPanelModal yang sudah ada
+const originalOpenAdmin = window.openAdminPanelModal;
+window.openAdminPanelModal = function() {
+    // Panggil fungsi asli
+    originalOpenAdmin();
+    // Tunggu modal terbuka, lalu tambahkan menu koreksi
+    setTimeout(() => {
+        if (!document.getElementById('koreksiAdminSection')) {
+            addKoreksiAdmin();
+        }
+        tampilkanDaftarKoreksi();
+    }, 500);
+};
+
+console.log('✅ Menu koreksi akan muncul di admin panel');
+</script>
 </body>    
 </html>

@@ -2115,25 +2115,6 @@ function getAdminMaintenanceContent() {
 }
 
 // ===== OVERRIDE FUNGSI OPEN ADMIN PANEL =====
-// Ganti fungsi openAdminPanelModal yang sudah ada
-const originalOpenAdminPanel = window.openAdminPanelModal;
-window.openAdminPanelModal = function() {
-    originalOpenAdminPanel();
-    setTimeout(() => {
-        // Reset ke menu utama
-        const mainMenu = document.getElementById('adminMainMenu');
-        const content = document.getElementById('adminContent');
-        if (mainMenu) mainMenu.classList.remove('hidden');
-        if (content) content.classList.add('hidden');
-        
-        // Refresh tabel
-        adminRefreshTable();
-        adminRefreshKlaimTable();
-        updateNotifikasiUI();
-        tampilkanDaftarKoreksi();
-    }, 200);
-};
-
 const originalOpenAdminPanel = window.openAdminPanelModal;
 window.openAdminPanelModal = function() {
     originalOpenAdminPanel();

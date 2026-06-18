@@ -2956,138 +2956,41 @@ console.log('✅ Sistem navigasi dengan tombol perangkat aktif!');
 </script>
 
 <script>
-// ===== PERBAIKAN UNTUK TANGGAL HIJRIAH =====
-
-// Fungsi untuk memaksa update tanggal Hijriah
-function forceUpdateHijriah() {
-    // Hapus cache lama
-    localStorage.removeItem('hijriahDate');
-    // Fetch ulang
-    fetchHijriahDate();
-    // Tampilkan notifikasi
-    showToast('🔄 Tanggal Hijriah diperbarui');
-}
-
-// Fungsi showToast untuk notifikasi
-function showToast(message) {
-    const toast = document.createElement('div');
-    toast.textContent = message;
-    toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50 shadow-lg';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
-}
-
-// Perbaiki fungsi fetchHijriahDate
-async function fetchHijriahDate() {
-    const now = new Date();
-    const year = now.getFullYear(), month = String(now.getMonth()+1).padStart(2,'0'), day = String(now.getDate()).padStart(2,'0');
-    const dateKey = `${year}-${month}-${day}`;
-    const hijriElement = document.getElementById('hijriahDate');
-    if (!hijriElement) return;
-    
-    // Cek cache dengan tanggal hari ini
-    const cached = localStorage.getItem('hijriahDate');
-    if (cached) {
-        try {
-            const parsed = JSON.parse(cached);
-            // Jika cache masih untuk hari ini, gunakan
-            if (parsed.date === dateKey && parsed.data) {
-                hijriElement.textContent = parsed.data;
-                return;
-            }
-        } catch(e) {}
-    }
-    
-    hijriElement.textContent = 'Memuat...';
-    try {
-        const response = await fetch(`https://api.aladhan.com/v1/gToH/${dateKey}`);
-        if (!response.ok) throw new Error('Gagal');
-        const data = await response.json();
-        if (data.code === 200 && data.data) {
-            const hijri = data.data.hijri;
-            const hijriText = `${hijri.day} ${hijri.month.en} ${hijri.year} H`;
-            hijriElement.textContent = hijriText;
-            // Simpan dengan tanggal
-            localStorage.setItem('hijriahDate', JSON.stringify({ date: dateKey, data: hijriText }));
-            return;
-        }
-        throw new Error('Data tidak valid');
-    } catch(error) {
-        // Fallback ke perhitungan aproximasi
-        hijriElement.textContent = getHijriApproximation(now);
-        // Simpan aproximasi sebagai cache
-        localStorage.setItem('hijriahDate', JSON.stringify({ 
-            date: dateKey, 
-            data: getHijriApproximation(now) 
-        }));
-    }
-}
-
-// Tambahkan fungsi untuk update di tengah malam
-function scheduleHijriUpdate() {
-    const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
-    const msUntilMidnight = tomorrow - now;
-    
-    setTimeout(() => {
-        // Force update saat tengah malam
-        localStorage.removeItem('hijriahDate');
-        fetchHijriahDate();
-        // Schedule lagi untuk hari berikutnya
-        scheduleHijriUpdate();
-    }, msUntilMidnight);
-}
+// ===== PERBAIKAN TANGGAL HIJRIAH (SIMPLE) =====
 
 // Tambahkan tombol refresh di header
 function addHijriRefreshButton() {
     const header = document.querySelector('header');
     if (!header) return;
     
+    // Cek apakah tombol sudah ada
+    if (document.getElementById('hijriRefreshBtn')) return;
+    
     const refreshBtn = document.createElement('button');
+    refreshBtn.id = 'hijriRefreshBtn';
     refreshBtn.innerHTML = '🔄';
     refreshBtn.className = 'absolute right-4 text-green-500 hover:text-green-300 transition-all duration-300 hover:scale-110 focus:outline-none';
-    refreshBtn.style.cssText = 'position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; background: none; border: none; cursor: pointer;';
+    refreshBtn.style.cssText = 'position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; background: none; border: none; cursor: pointer; z-index: 10;';
     refreshBtn.title = 'Update tanggal Hijriah';
-    refreshBtn.onclick = forceUpdateHijriah;
+    refreshBtn.onclick = function() {
+        localStorage.removeItem('hijriahDate');
+        // Panggil fetchHijriahDate yang sudah ada
+        if (typeof window.fetchHijriahDate === 'function') {
+            window.fetchHijriahDate();
+        }
+        // Tampilkan notifikasi
+        const toast = document.createElement('div');
+        toast.textContent = '🔄 Tanggal Hijriah diperbarui';
+        toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50 shadow-lg';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+    };
     
     header.appendChild(refreshBtn);
 }
 
-// Jalankan saat halaman siap
-document.addEventListener('DOMContentLoaded', function() {
-    // Update tanggal saat halaman dimuat
-    setTimeout(() => {
-        fetchHijriahDate();
-        addHijriRefreshButton();
-    }, 500);
-    
-    // Update setiap 5 menit (300000 ms)
-    setInterval(() => {
-        const now = new Date();
-        const hijriElement = document.getElementById('hijriahDate');
-        if (hijriElement) {
-            // Cek apakah tanggal sudah berganti
-            const cached = localStorage.getItem('hijriahDate');
-            if (cached) {
-                try {
-                    const parsed = JSON.parse(cached);
-                    const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-                    if (parsed.date !== today) {
-                        // Tanggal berganti, force update
-                        forceUpdateHijriah();
-                    }
-                } catch(e) {}
-            }
-        }
-    }, 300000); // 5 menit
-    
-    // Schedule update tengah malam
-    scheduleHijriUpdate();
-});
-
-// Override fungsi checkHijriCache yang sudah ada
+// Perbaiki fungsi checkHijriCache yang sudah ada
+// Override agar lebih agresif
 const originalCheckHijriCache = window.checkHijriCache;
 window.checkHijriCache = function() {
     const now = new Date();
@@ -3098,7 +3001,10 @@ window.checkHijriCache = function() {
             const parsed = JSON.parse(cached);
             if (parsed.date !== today) {
                 localStorage.removeItem('hijriahDate');
-                fetchHijriahDate();
+                // Panggil fetchHijriahDate yang sudah ada
+                if (typeof window.fetchHijriahDate === 'function') {
+                    window.fetchHijriahDate();
+                }
             }
         } catch(e) {
             localStorage.removeItem('hijriahDate');
@@ -3106,7 +3012,20 @@ window.checkHijriCache = function() {
     }
 };
 
-console.log('✅ Sistem tanggal Hijriah diperbaiki!');
+// Jalankan saat halaman siap
+document.addEventListener('DOMContentLoaded', function() {
+    // Tambahkan tombol refresh setelah delay
+    setTimeout(addHijriRefreshButton, 1000);
+    
+    // Cek cache setiap 2 menit
+    setInterval(function() {
+        if (typeof window.checkHijriCache === 'function') {
+            window.checkHijriCache();
+        }
+    }, 120000); // 2 menit
+});
+
+console.log('✅ Perbaikan tanggal Hijriah aktif!');
 <script>
 </body>    
 </html>

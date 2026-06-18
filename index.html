@@ -2956,115 +2956,152 @@ console.log('✅ Sistem navigasi dengan tombol perangkat aktif!');
 </script>
 
 <script>
-// ===== SISTEM HIJRIAH OTOMATIS (TANPA TOMBOL REFRESH) =====
+// ===== SISTEM HISAB URFI - PENANGALAN HIJRIAH MANDIRI =====
+// Berdasarkan aturan: siklus 30 tahun, 11 tahun kabisat
 
-// Data referensi Hijriah yang akurat
-// Tanggal 18 Juni 2026 = 3 Muharram 1448 H
-const HIJRI_REFERENCE = {
-    // Tambahkan data referensi untuk beberapa tanggal
-    '2026-06-18': { day: 3, month: 'Muharram', year: 1448 },
-    '2026-06-19': { day: 4, month: 'Muharram', year: 1448 },
-    '2026-06-20': { day: 5, month: 'Muharram', year: 1448 },
-    '2026-06-21': { day: 6, month: 'Muharram', year: 1448 },
-    '2026-06-22': { day: 7, month: 'Muharram', year: 1448 },
-    '2026-06-23': { day: 8, month: 'Muharram', year: 1448 },
-    '2026-06-24': { day: 9, month: 'Muharram', year: 1448 },
-    '2026-06-25': { day: 10, month: 'Muharram', year: 1448 },
-    '2026-06-26': { day: 11, month: 'Muharram', year: 1448 },
-    '2026-06-27': { day: 12, month: 'Muharram', year: 1448 },
-    '2026-06-28': { day: 13, month: 'Muharram', year: 1448 },
-    '2026-06-29': { day: 14, month: 'Muharram', year: 1448 },
-    '2026-06-30': { day: 15, month: 'Muharram', year: 1448 },
-    '2026-07-01': { day: 16, month: 'Muharram', year: 1448 },
-    '2026-07-02': { day: 17, month: 'Muharram', year: 1448 },
-    '2026-07-03': { day: 18, month: 'Muharram', year: 1448 },
-    '2026-07-04': { day: 19, month: 'Muharram', year: 1448 },
-    '2026-07-05': { day: 20, month: 'Muharram', year: 1448 },
-};
-
-// Nama bulan Hijriah
-const HIJRI_MONTHS = [
-    'Muharram', 'Safar', 'Rabiul Awwal', 'Rabiul Akhir',
-    'Jumada Awwal', 'Jumada Akhir', 'Rajab', 'Sya\'ban',
-    'Ramadan', 'Syawal', 'Dzulqa\'dah', 'Dzulhijjah'
-];
-
-// Jumlah hari per bulan Hijriah
-const HIJRI_MONTH_DAYS = [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29];
-
-// Fungsi untuk menghitung tanggal Hijriah dari Masehi
-function calculateHijriDate(masehiDate) {
-    const year = masehiDate.getFullYear();
-    const month = String(masehiDate.getMonth() + 1).padStart(2, '0');
-    const day = String(masehiDate.getDate()).padStart(2, '0');
-    const dateKey = `${year}-${month}-${day}`;
+const HIJRI = {
+    // Nama bulan Hijriah
+    MONTHS: [
+        'Muharram', 'Safar', 'Rabiul Awwal', 'Rabiul Akhir',
+        'Jumada Awwal', 'Jumada Akhir', 'Rajab', 'Sya\'ban',
+        'Ramadan', 'Syawal', 'Dzulqa\'dah', 'Dzulhijjah'
+    ],
     
-    // Cek di referensi langsung
-    if (HIJRI_REFERENCE[dateKey]) {
-        return HIJRI_REFERENCE[dateKey];
-    }
+    // Jumlah hari per bulan (tahun basitah)
+    MONTH_DAYS: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
     
-    // Jika tidak ada di referensi, cari referensi terdekat
-    const refDates = Object.keys(HIJRI_REFERENCE).sort();
-    let closestDate = null;
-    let closestDiff = Infinity;
+    // Tahun kabisat dalam siklus 30 tahun (11 tahun)
+    // Posisi ke- (1-30): 2, 5, 7, 10, 13, 16, 18, 21, 24, 26, 29
+    KABISAT_POSITION: [2, 5, 7, 10, 13, 16, 18, 21, 24, 26, 29],
     
-    for (let refDate of refDates) {
-        const ref = new Date(refDate);
-        const diff = Math.abs(masehiDate - ref);
-        if (diff < closestDiff) {
-            closestDiff = diff;
-            closestDate = refDate;
+    // Epoch: 1 Muharram 1 H = 16 Juli 622 M (versi Hisab Urfi)
+    // Ini adalah patokan yang sudah diverifikasi
+    EPOCH_YEAR: 622,
+    EPOCH_MONTH: 7,  // Juli
+    EPOCH_DAY: 16,
+    EPOCH_WEEKDAY: 5, // Jumat (0=Minggu, 1=Senin, ... 5=Jumat)
+    
+    // Cek apakah tahun kabisat
+    isKabisat: function(hijriYear) {
+        const position = hijriYear % 30 || 30;
+        return this.KABISAT_POSITION.includes(position);
+    },
+    
+    // Jumlah hari dalam setahun Hijriah
+    daysInYear: function(hijriYear) {
+        return this.isKabisat(hijriYear) ? 355 : 354;
+    },
+    
+    // Jumlah hari dalam bulan tertentu
+    daysInMonth: function(hijriYear, monthIndex) {
+        // monthIndex: 0-11 (0=Muharram, 11=Dzulhijjah)
+        if (monthIndex < 0 || monthIndex > 11) return 0;
+        if (monthIndex === 11) {
+            // Bulan Dzulhijjah: 30 hari jika tahun kabisat
+            return this.isKabisat(hijriYear) ? 30 : 29;
         }
-    }
+        return this.MONTH_DAYS[monthIndex];
+    },
     
-    if (closestDate) {
-        const refData = HIJRI_REFERENCE[closestDate];
-        const refDateObj = new Date(closestDate);
-        const dayDiff = Math.floor((masehiDate - refDateObj) / (1000 * 60 * 60 * 24));
+    // Total hari dari 1 Muharram 1 H sampai 1 Muharram tahun tertentu
+    totalDaysFromEpoch: function(hijriYear) {
+        // hijriYear: tahun yang dicari (1-based)
+        let totalDays = 0;
+        for (let year = 1; year < hijriYear; year++) {
+            totalDays += this.daysInYear(year);
+        }
+        return totalDays;
+    },
+    
+    // Konversi Hijriah ke Masehi (Gregorian)
+    toMasehi: function(hijriYear, hijriMonth, hijriDay) {
+        // Validasi
+        if (hijriYear < 1 || hijriMonth < 1 || hijriMonth > 12) return null;
         
-        let hijriDay = refData.day + dayDiff;
-        let hijriMonthIndex = HIJRI_MONTHS.indexOf(refData.month);
-        let hijriYear = refData.year;
+        const monthIndex = hijriMonth - 1;
+        if (hijriDay < 1 || hijriDay > this.daysInMonth(hijriYear, monthIndex)) return null;
         
-        while (hijriDay > HIJRI_MONTH_DAYS[hijriMonthIndex]) {
-            hijriDay -= HIJRI_MONTH_DAYS[hijriMonthIndex];
-            hijriMonthIndex++;
-            if (hijriMonthIndex >= 12) {
-                hijriMonthIndex = 0;
-                hijriYear++;
-            }
+        // Hitung total hari dari epoch Hijriah
+        let totalHijriDays = this.totalDaysFromEpoch(hijriYear);
+        for (let m = 0; m < monthIndex; m++) {
+            totalHijriDays += this.daysInMonth(hijriYear, m);
         }
-        while (hijriDay < 1) {
-            hijriMonthIndex--;
-            if (hijriMonthIndex < 0) {
-                hijriMonthIndex = 11;
-                hijriYear--;
-            }
-            hijriDay += HIJRI_MONTH_DAYS[hijriMonthIndex];
-        }
+        totalHijriDays += (hijriDay - 1);
+        
+        // Konversi ke Masehi: dari 16 Juli 622 M
+        // Tanggal 16 Juli 622 M = 1 Muharram 1 H
+        const epochDate = new Date(this.EPOCH_YEAR, this.EPOCH_MONTH - 1, this.EPOCH_DAY);
+        const resultDate = new Date(epochDate);
+        resultDate.setDate(resultDate.getDate() + totalHijriDays);
         
         return {
-            day: hijriDay,
-            month: HIJRI_MONTHS[hijriMonthIndex],
-            year: hijriYear
+            year: resultDate.getFullYear(),
+            month: resultDate.getMonth() + 1,
+            day: resultDate.getDate()
         };
-    }
+    },
     
-    return { day: 1, month: 'Muharram', year: 1448 };
-}
+    // Konversi Masehi ke Hijriah
+    fromMasehi: function(masehiDate) {
+        // Masehi ke Hijriah dengan pendekatan iteratif
+        const epochDate = new Date(this.EPOCH_YEAR, this.EPOCH_MONTH - 1, this.EPOCH_DAY);
+        const diffDays = Math.floor((masehiDate - epochDate) / (1000 * 60 * 60 * 24));
+        
+        if (diffDays < 0) return null;
+        
+        // Cari tahun Hijriah
+        let hijriYear = 1;
+        let remainingDays = diffDays;
+        
+        while (remainingDays >= this.daysInYear(hijriYear)) {
+            remainingDays -= this.daysInYear(hijriYear);
+            hijriYear++;
+        }
+        
+        // Cari bulan Hijriah
+        let hijriMonth = 1;
+        while (remainingDays >= this.daysInMonth(hijriYear, hijriMonth - 1)) {
+            remainingDays -= this.daysInMonth(hijriYear, hijriMonth - 1);
+            hijriMonth++;
+        }
+        
+        const hijriDay = remainingDays + 1;
+        
+        return {
+            year: hijriYear,
+            month: hijriMonth,
+            day: hijriDay,
+            monthName: this.MONTHS[hijriMonth - 1],
+            isKabisat: this.isKabisat(hijriYear)
+        };
+    },
+    
+    // Format Hijriah
+    format: function(hijriResult) {
+        if (!hijriResult) return 'Invalid date';
+        return `${hijriResult.day} ${hijriResult.monthName} ${hijriResult.year} H`;
+    },
+    
+    // Dapatkan tanggal Hijriah sekarang
+    now: function() {
+        const now = new Date();
+        return this.fromMasehi(now);
+    }
+};
 
-// Fungsi utama untuk update Hijriah
+// ===== FUNGSI UPDATE =====
+
 function updateHijriahDate() {
     const hijriElement = document.getElementById('hijriahDate');
     if (!hijriElement) return;
     
-    const now = new Date();
-    const hijri = calculateHijriDate(now);
-    const hijriText = `${hijri.day} ${hijri.month} ${hijri.year} H`;
+    const hijri = HIJRI.now();
+    const hijriText = HIJRI.format(hijri);
     
     hijriElement.textContent = hijriText;
     
+    // Simpan ke cache
+    const now = new Date();
     const dateKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
     localStorage.setItem('hijriahDate', JSON.stringify({ 
         date: dateKey, 
@@ -3072,25 +3109,54 @@ function updateHijriahDate() {
         hijri: hijri
     }));
     
-    console.log('✅ Tanggal Hijriah:', hijriText);
+    console.log('✅ Hisab Urfi - Tanggal Hijriah:', hijriText);
+    console.log('📅 Detail:', `${hijri.day} ${hijri.monthName} ${hijri.year} H (${hijri.isKabisat ? 'Kabisat' : 'Basitah'})`);
     return hijri;
 }
 
-// Fungsi force update (bisa dipanggil dari console jika perlu)
+// Fungsi force update (dari console)
 function forceUpdateHijriah() {
     localStorage.removeItem('hijriahDate');
     updateHijriahDate();
+    console.log('🔄 Hisab Urfi di-refresh');
 }
 
 // Override fetchHijriahDate yang lama
 window.fetchHijriahDate = forceUpdateHijriah;
 
-// Jalankan saat halaman siap
+// ===== TEST FUNGSI (opsional) =====
+// Fungsi untuk test konversi
+function testHijriConversion() {
+    console.log('🧪 TEST KONVERSI HIJRIAH');
+    console.log('=======================');
+    
+    // Test beberapa tanggal penting
+    const testDates = [
+        { year: 1447, month: 1, day: 1, desc: '1 Muharram 1447 H' },
+        { year: 1447, month: 9, day: 1, desc: '1 Ramadan 1447 H' },
+        { year: 1447, month: 10, day: 1, desc: '1 Syawal 1447 H (Idul Fitri)' },
+        { year: 1447, month: 12, day: 10, desc: '10 Dzulhijjah 1447 H (Idul Adha)' }
+    ];
+    
+    testDates.forEach(test => {
+        const result = HIJRI.toMasehi(test.year, test.month, test.day);
+        if (result) {
+            console.log(`📆 ${test.desc} = ${result.day}/${result.month}/${result.year} M`);
+        }
+    });
+    
+    // Test sekarang
+    const now = HIJRI.now();
+    console.log('📌 Sekarang:', HIJRI.format(now));
+}
+
+// ===== JALANKAN =====
+
 document.addEventListener('DOMContentLoaded', function() {
     // Update langsung
     setTimeout(updateHijriahDate, 200);
     
-    // Update setiap 1 menit (seperti Masehi)
+    // Update setiap 1 menit (cek tanggal berganti)
     setInterval(function() {
         const now = new Date();
         const cached = localStorage.getItem('hijriahDate');
@@ -3109,11 +3175,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 60000); // 1 menit
     
-    // Update setiap jam (untuk jaga-jaga)
+    // Update setiap jam (backup)
     setInterval(updateHijriahDate, 3600000);
+    
+    // Test konversi (bisa dihapus jika tidak perlu)
+    setTimeout(testHijriConversion, 1000);
 });
 
-console.log('✅ Sistem Hijriah otomatis aktif (tanpa tombol refresh)!');
+console.log('✅ Sistem Hisab Urfi aktif!');
+console.log('📅 Gunakan HIJRI.now() untuk cek tanggal sekarang');
+console.log('📅 Gunakan HIJRI.fromMasehi(tanggal) untuk konversi');
+console.log('📅 Gunakan HIJRI.toMasehi(tahun, bulan, hari) untuk konversi balik');
 </script>
 </body>    
 </html>

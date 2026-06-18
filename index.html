@@ -3308,6 +3308,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
 console.log('✅ Sistem Hisab Urfi dengan koreksi bulan kritis aktif!');
 console.log('📅 Admin panel punya menu untuk koreksi Ramadan, Syawal, Dzulhijjah');
+
+// ===== PASTIKAN MENU KOREKSI MUNCUL =====
+// Override untuk memastikan menu koreksi muncul di admin panel
+
+// Cek apakah fungsi sudah ada
+if (typeof window.openAdminPanelModal === 'function') {
+    const originalOpen = window.openAdminPanelModal;
+    window.openAdminPanelModal = function() {
+        originalOpen();
+        // Tunggu sampai admin panel terbuka
+        setTimeout(() => {
+            // Cek apakah menu koreksi sudah ada
+            if (!document.getElementById('koreksiAdminSection')) {
+                addKoreksiAdmin();
+            }
+            // Refresh daftar koreksi
+            tampilkanDaftarKoreksi();
+        }, 500);
+    };
+} else {
+    // Jika fungsi belum ada, buat sendiri
+    window.openAdminPanelModal = function() {
+        const modal = document.getElementById('adminPanelModal');
+        if (modal) {
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            const box = modal.querySelector('div');
+            if (box) box.classList.remove('scale-95');
+            setTimeout(addKoreksiAdmin, 500);
+        }
+    };
+}
+
+console.log('✅ Menu koreksi akan muncul di admin panel');
 </script>
 </body>    
 </html>

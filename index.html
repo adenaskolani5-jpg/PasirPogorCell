@@ -3399,31 +3399,11 @@ function updateCountdown() {
                         (diffMins > 0 ? `${diffMins}m ${diffSecs}s` : `${diffSecs}s`);
     document.getElementById('nextSholatCountdown').textContent = `⏳ ${countdownText}`;
     
-    // ===== PERBAIKAN PROGRESS BAR =====
-    // Hitung progress berdasarkan rentang dari Subuh sampai Tengah Malam (00:00)
-    
-    // Ambil waktu Subuh (sholat pertama) sebagai awal
-    const [subuhH, subuhM] = allPrayerTimes[0].time.split(':').map(Number);
-    const subuhMinutes = subuhH * 60 + subuhM;
-    
-    // Akhir = Tengah Malam (24:00 = 1440 menit)
-    const endMinutes = 24 * 60; // 1440 menit (tengah malam)
-    
-    // Total rentang dari Subuh sampai Tengah Malam
-    const totalRange = endMinutes - subuhMinutes;
-    
-    // Posisi sekarang dalam rentang
-    let currentPosition = currentMinutes - subuhMinutes;
-    
-    // Jika sebelum Subuh, progress = 0%
-    if (currentPosition < 0) {
-        document.getElementById('sholatProgressBar').style.width = '0%';
-    }
-    // Hitung persentase
-    else {
-        const percent = Math.min((currentPosition / totalRange) * 100, 100);
-        document.getElementById('sholatProgressBar').style.width = percent + '%';
-    }
+    // ===== PROGRESS BAR 24 JAM =====
+    // Menghitung progress dari 00:00 sampai 23:59 (1440 menit)
+    const totalMinutesInDay = 24 * 60; // 1440 menit
+    const percent = Math.min((currentMinutes / totalMinutesInDay) * 100, 100);
+    document.getElementById('sholatProgressBar').style.width = percent + '%';
 }
 
 function scheduleMidnightUpdate() {

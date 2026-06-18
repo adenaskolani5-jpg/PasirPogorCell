@@ -2972,23 +2972,11 @@ const HIJRI = {
     EPOCH_MONTH: 7,
     EPOCH_DAY: 16,
     
-    // KOREKSI DASAR (untuk semua tanggal)
     KOREKSI_HARI: -2,
     
-    // ===== KOREKSI KHUSUS UNTUK BULAN KRITIS =====
-    // Format: { 'tahun-bulan': selisih_hari }
-    // Contoh: tahun 1448, bulan Ramadan (index 8) = koreksi +1 hari
     KOREKSI_BULAN_KRITIS: {
-        // Format: 'tahun-indexBulan': koreksi
-        // index bulan: 8=Ramadan, 9=Syawal, 11=Dzulhijjah
-        
-        // Contoh jika tahun 1448 Ramadan mundur 1 hari:
-        '1448-8': 1,   // Ramadan 1448 H maju 1 hari dari hisab
-        '1448-9': 1,   // Syawal 1448 H maju 1 hari dari hisab
-        // '1448-11': 0, // Dzulhijjah 1448 H (default)
-        
-        // Contoh jika tahun 1449 Ramadan maju 1 hari:
-        // '1449-8': -1,
+        '1448-8': 1,
+        '1448-9': 1,
     },
     
     isKabisat: function(hijriYear) {
@@ -3008,7 +2996,6 @@ const HIJRI = {
         return this.MONTH_DAYS[monthIndex];
     },
     
-    // Ambil koreksi untuk bulan tertentu
     getKoreksiBulan: function(hijriYear, monthIndex) {
         const key = `${hijriYear}-${monthIndex}`;
         return this.KOREKSI_BULAN_KRITIS[key] || 0;
@@ -3018,9 +3005,7 @@ const HIJRI = {
         let totalDays = 0;
         for (let year = 1; year < hijriYear; year++) {
             totalDays += this.daysInYear(year);
-            // Tambahkan koreksi untuk tahun sebelumnya jika perlu
             if (includeKoreksi) {
-                // Koreksi untuk bulan kritis di tahun sebelumnya
                 for (let m = 0; m < 12; m++) {
                     const key = `${year}-${m}`;
                     if (this.KOREKSI_BULAN_KRITIS[key]) {
@@ -3041,11 +3026,9 @@ const HIJRI = {
         let totalHijriDays = this.totalDaysFromEpoch(hijriYear);
         for (let m = 0; m < monthIndex; m++) {
             totalHijriDays += this.daysInMonth(hijriYear, m);
-            // Tambahkan koreksi untuk bulan ini
             totalHijriDays += this.getKoreksiBulan(hijriYear, m);
         }
         totalHijriDays += (hijriDay - 1);
-        
         totalHijriDays += this.KOREKSI_HARI;
         
         const epochDate = new Date(this.EPOCH_YEAR, this.EPOCH_MONTH - 1, this.EPOCH_DAY);
@@ -3069,10 +3052,8 @@ const HIJRI = {
         let hijriYear = 1;
         let remainingDays = diffDays;
         
-        // Cari tahun (dengan mempertimbangkan koreksi)
         while (true) {
             let yearDays = this.daysInYear(hijriYear);
-            // Tambahkan koreksi untuk tahun ini
             for (let m = 0; m < 12; m++) {
                 const key = `${hijriYear}-${m}`;
                 if (this.KOREKSI_BULAN_KRITIS[key]) {
@@ -3084,7 +3065,6 @@ const HIJRI = {
             hijriYear++;
         }
         
-        // Cari bulan
         let hijriMonth = 1;
         while (true) {
             let monthDays = this.daysInMonth(hijriYear, hijriMonth - 1);
@@ -3120,7 +3100,6 @@ const HIJRI = {
         return this.fromMasehi(now);
     },
     
-    // Fungsi untuk update koreksi dari admin panel
     setKoreksiBulan: function(tahun, bulanIndex, nilaiKoreksi) {
         const key = `${tahun}-${bulanIndex}`;
         if (nilaiKoreksi === 0) {
@@ -3128,15 +3107,13 @@ const HIJRI = {
         } else {
             this.KOREKSI_BULAN_KRITIS[key] = nilaiKoreksi;
         }
-        // Simpan ke localStorage
         localStorage.setItem('hijriKoreksi', JSON.stringify(this.KOREKSI_BULAN_KRITIS));
-        // Update tampilan
         updateHijriahDate();
         console.log(`✅ Koreksi ${this.MONTHS[bulanIndex]} ${tahun} H = ${nilaiKoreksi > 0 ? '+' : ''}${nilaiKoreksi} hari`);
     }
 };
 
-// ===== LOAD KOREKSI DARI LOCALSTORAGE =====
+// ===== LOAD KOREKSI =====
 (function loadKoreksi() {
     const saved = localStorage.getItem('hijriKoreksi');
     if (saved) {
@@ -3180,8 +3157,7 @@ function forceUpdateHijriah() {
 
 window.fetchHijriahDate = forceUpdateHijriah;
 
-// ===== ADMIN PANEL UNTUK KOREKSI =====
-// Tambahkan ke admin panel
+// ===== ADMIN KOREKSI =====
 function addKoreksiAdmin() {
     const adminPanel = document.querySelector('#adminPanelModal .p-6 .space-y-6');
     if (!adminPanel || document.getElementById('koreksiAdminSection')) return;
@@ -3193,16 +3169,16 @@ function addKoreksiAdmin() {
         <h4 class="text-green-400 font-bold mb-3">📅 Koreksi Bulan Kritis</h4>
         <div class="grid gap-3">
             <div class="flex gap-2">
-                <input type="number" id="koreksiTahun" placeholder="Tahun Hijriah" class="w-1/3 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
+                <input type="number" id="koreksiTahun" placeholder="Tahun" class="w-1/3 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
                 <select id="koreksiBulan" class="w-1/3 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
                     <option value="8">Ramadan</option>
                     <option value="9">Syawal</option>
                     <option value="11">Dzulhijjah</option>
                 </select>
-                <input type="number" id="koreksiNilai" placeholder="Nilai (+/-)" class="w-1/3 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
+                <input type="number" id="koreksiNilai" placeholder="Nilai" class="w-1/3 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm">
             </div>
             <button onclick="simpanKoreksi()" class="bg-green-600 hover:bg-green-500 text-black font-bold py-1 rounded transition">✅ Simpan Koreksi</button>
-            <button onclick="resetSemuaKoreksi()" class="bg-red-600 hover:bg-red-500 text-white font-bold py-1 rounded transition text-sm">🗑️ Reset Semua Koreksi</button>
+            <button onclick="resetSemuaKoreksi()" class="bg-red-600 hover:bg-red-500 text-white font-bold py-1 rounded transition text-sm">🗑️ Reset</button>
             <div id="daftarKoreksi" class="text-xs text-gray-400 max-h-32 overflow-y-auto"></div>
         </div>
     `;
@@ -3256,13 +3232,6 @@ function tampilkanDaftarKoreksi() {
     container.innerHTML = html;
 }
 
-// Tambahkan ke admin panel
-const originalOpenAdminPanelModal = window.openAdminPanelModal;
-window.openAdminPanelModal = function() {
-    originalOpenAdminPanelModal();
-    setTimeout(addKoreksiAdmin, 200);
-};
-
 // ===== TEST =====
 function testHijriConversion() {
     console.log('🧪 TEST KONVERSI HIJRIAH');
@@ -3307,40 +3276,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 console.log('✅ Sistem Hisab Urfi dengan koreksi bulan kritis aktif!');
-console.log('📅 Admin panel punya menu untuk koreksi Ramadan, Syawal, Dzulhijjah');
-
-// ===== PASTIKAN MENU KOREKSI MUNCUL =====
-// Override untuk memastikan menu koreksi muncul di admin panel
-
-// Cek apakah fungsi sudah ada
-if (typeof window.openAdminPanelModal === 'function') {
-    const originalOpen = window.openAdminPanelModal;
-    window.openAdminPanelModal = function() {
-        originalOpen();
-        // Tunggu sampai admin panel terbuka
-        setTimeout(() => {
-            // Cek apakah menu koreksi sudah ada
-            if (!document.getElementById('koreksiAdminSection')) {
-                addKoreksiAdmin();
-            }
-            // Refresh daftar koreksi
-            tampilkanDaftarKoreksi();
-        }, 500);
-    };
-} else {
-    // Jika fungsi belum ada, buat sendiri
-    window.openAdminPanelModal = function() {
-        const modal = document.getElementById('adminPanelModal');
-        if (modal) {
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            const box = modal.querySelector('div');
-            if (box) box.classList.remove('scale-95');
-            setTimeout(addKoreksiAdmin, 500);
-        }
-    };
-}
-
-console.log('✅ Menu koreksi akan muncul di admin panel');
 </script>
 </body>    
 </html>

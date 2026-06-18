@@ -2914,54 +2914,50 @@ function clearAllCache() {
     <div class="sticky top-0 bg-gray-900 flex justify-between items-center p-4 border-b border-gray-700 z-10">
       <h3 class="text-lg font-bold text-green-400">👑 Admin Panel</h3>
       <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
-<!-- Tambahkan di admin panel, setelah daftar pelanggan -->
-<div class="bg-gray-800/50 rounded-lg p-4 mt-4">
-    <h4 class="text-green-400 font-bold mb-3">🧹 Maintenance</h4>
-    <button onclick="clearAllCache()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2 rounded-lg transition">
-        🗑️ Hapus Semua Cache
-    </button>
-    <p class="text-xs text-gray-400 mt-2">Hapus cache untuk memuat data terbaru</p>
-</div>
     </div>
-    <div class="p-6">
-      <div class="space-y-6">
-        <div class="bg-gray-800/50 rounded-lg p-4">
-          <h4 class="text-green-400 font-bold mb-3">➕ Tambah Poin</h4>
-          <div class="grid gap-3">
-            <select id="adminIdType" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
-              <option value="phone">📱 Nomor HP</option>
-              <option value="game">🎮 ID Game</option>
-            </select>
-            <input type="text" id="adminCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
-            <div>
-              <label class="text-sm text-gray-300">Jumlah poin:</label>
-              <div class="flex gap-4 mt-1">
-                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="poinAmount" value="50" checked class="accent-green-500"> 50 poin</label>
-                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="poinAmount" value="100" class="accent-green-500"> 100 poin</label>
-              </div>
-            </div>
-            <button onclick="adminTambahPoin()" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition">✅ Tambah Poin</button>
-          </div>
+    
+    <!-- MENU UTAMA ADMIN -->
+    <div id="adminMainMenu" class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Menu Tambah Poin -->
+        <div onclick="showAdminMenu('poin')" class="bg-gray-800/50 hover:bg-gray-700/50 rounded-lg p-6 text-center cursor-pointer transition-all border border-gray-700 hover:border-green-500">
+          <div class="text-4xl mb-3">⭐</div>
+          <h4 class="text-green-400 font-bold text-lg">Tambah Poin</h4>
+          <p class="text-gray-400 text-sm mt-1">Kelola poin pelanggan</p>
         </div>
-        <div class="bg-gray-800/50 rounded-lg p-4">
-          <h4 class="text-green-400 font-bold mb-3">📋 Daftar Pelanggan</h4>
-          <div class="mb-3"><input type="text" id="searchCustomer" placeholder="Cari ID..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm"></div>
-          <div class="overflow-x-auto max-h-64 overflow-y-auto">
-            <table class="w-full text-sm">
-              <thead class="bg-gray-700 sticky top-0"><tr><th class="p-2 text-left">ID</th><th class="p-2 text-center">Klaim</th><th class="p-2 text-center">Poin</th></tr></thead>
-              <tbody id="adminCustomerTable"><tr><td colspan="3" class="text-center text-gray-400 p-4">Loading...</td></tr></tbody>
-            </table>
-          </div>
+        
+        <!-- Menu Notifikasi -->
+        <div onclick="showAdminMenu('notifikasi')" class="bg-gray-800/50 hover:bg-gray-700/50 rounded-lg p-6 text-center cursor-pointer transition-all border border-gray-700 hover:border-green-500">
+          <div class="text-4xl mb-3">🔔</div>
+          <h4 class="text-green-400 font-bold text-lg">Notifikasi</h4>
+          <p class="text-gray-400 text-sm mt-1">Atur notifikasi Telegram</p>
         </div>
-        <div class="bg-gray-800/50 rounded-lg p-4">
-          <h4 class="text-green-400 font-bold mb-3">🔔 Notifikasi</h4>
-          <div class="flex justify-between items-center">
-            <div><p class="text-sm text-gray-300">Notifikasi Kunjungan</p><p class="text-xs text-gray-400">Kirim notifikasi Telegram</p></div>
-            <div><button id="toggleNotifBtn" onclick="toggleNotifikasi()" class="relative inline-flex h-7 w-14 items-center rounded-full transition-colors bg-gray-600"><span id="toggleNotifCircle" class="inline-block h-5 w-5 transform rounded-full bg-white transition-transform translate-x-1"></span></button></div>
-          </div>
-          <div class="text-xs text-gray-400 mt-2">Status: <span id="notifStatusText" class="text-yellow-400">Memuat...</span></div>
+        
+        <!-- Menu Maintenance -->
+        <div onclick="showAdminMenu('maintenance')" class="bg-gray-800/50 hover:bg-gray-700/50 rounded-lg p-6 text-center cursor-pointer transition-all border border-gray-700 hover:border-green-500">
+          <div class="text-4xl mb-3">🧹</div>
+          <h4 class="text-green-400 font-bold text-lg">Maintenance</h4>
+          <p class="text-gray-400 text-sm mt-1">Bersihkan cache & data</p>
         </div>
       </div>
+      
+      <!-- Tombol Kembali ke Pengaturan -->
+      <div class="mt-6 text-center">
+        <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-sm transition">
+          ← Kembali ke Pengaturan
+        </button>
+      </div>
+    </div>
+    
+    <!-- KONTEN MENU (Awalnya tersembunyi) -->
+    <div id="adminContent" class="hidden p-6">
+      <!-- Tombol Kembali ke Menu -->
+      <button onclick="showAdminMenu('menu')" class="text-green-400 hover:text-green-300 text-sm mb-4 transition flex items-center gap-2">
+        ← Kembali ke Menu
+      </button>
+      
+      <!-- Konten Dinamis akan dimuat di sini -->
+      <div id="adminContentInner"></div>
     </div>
   </div>
 </div>

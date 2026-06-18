@@ -2956,13 +2956,12 @@ console.log('✅ Sistem navigasi dengan tombol perangkat aktif!');
 </script>
 
 <script>
-// ===== SISTEM HIJRIAH OTOMATIS (TANPA API) =====
+// ===== SISTEM HIJRIAH OTOMATIS (TANPA TOMBOL REFRESH) =====
 
 // Data referensi Hijriah yang akurat
 // Tanggal 18 Juni 2026 = 3 Muharram 1448 H
 const HIJRI_REFERENCE = {
-    // Format: [tahun, bulan, tanggal] Masehi -> [tanggal, bulan, tahun] Hijriah
-    // 18 Juni 2026 = 3 Muharram 1448 H
+    // Tambahkan data referensi untuk beberapa tanggal
     '2026-06-18': { day: 3, month: 'Muharram', year: 1448 },
     '2026-06-19': { day: 4, month: 'Muharram', year: 1448 },
     '2026-06-20': { day: 5, month: 'Muharram', year: 1448 },
@@ -2976,6 +2975,11 @@ const HIJRI_REFERENCE = {
     '2026-06-28': { day: 13, month: 'Muharram', year: 1448 },
     '2026-06-29': { day: 14, month: 'Muharram', year: 1448 },
     '2026-06-30': { day: 15, month: 'Muharram', year: 1448 },
+    '2026-07-01': { day: 16, month: 'Muharram', year: 1448 },
+    '2026-07-02': { day: 17, month: 'Muharram', year: 1448 },
+    '2026-07-03': { day: 18, month: 'Muharram', year: 1448 },
+    '2026-07-04': { day: 19, month: 'Muharram', year: 1448 },
+    '2026-07-05': { day: 20, month: 'Muharram', year: 1448 },
 };
 
 // Nama bulan Hijriah
@@ -2985,7 +2989,7 @@ const HIJRI_MONTHS = [
     'Ramadan', 'Syawal', 'Dzulqa\'dah', 'Dzulhijjah'
 ];
 
-// Jumlah hari per bulan Hijriah (tahun biasa)
+// Jumlah hari per bulan Hijriah
 const HIJRI_MONTH_DAYS = [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29];
 
 // Fungsi untuk menghitung tanggal Hijriah dari Masehi
@@ -3019,12 +3023,10 @@ function calculateHijriDate(masehiDate) {
         const refDateObj = new Date(closestDate);
         const dayDiff = Math.floor((masehiDate - refDateObj) / (1000 * 60 * 60 * 24));
         
-        // Hitung tanggal Hijriah
         let hijriDay = refData.day + dayDiff;
         let hijriMonthIndex = HIJRI_MONTHS.indexOf(refData.month);
         let hijriYear = refData.year;
         
-        // Normalisasi bulan
         while (hijriDay > HIJRI_MONTH_DAYS[hijriMonthIndex]) {
             hijriDay -= HIJRI_MONTH_DAYS[hijriMonthIndex];
             hijriMonthIndex++;
@@ -3049,7 +3051,6 @@ function calculateHijriDate(masehiDate) {
         };
     }
     
-    // Fallback
     return { day: 1, month: 'Muharram', year: 1448 };
 }
 
@@ -3064,7 +3065,6 @@ function updateHijriahDate() {
     
     hijriElement.textContent = hijriText;
     
-    // Simpan ke cache
     const dateKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
     localStorage.setItem('hijriahDate', JSON.stringify({ 
         date: dateKey, 
@@ -3072,89 +3072,40 @@ function updateHijriahDate() {
         hijri: hijri
     }));
     
-    console.log('✅ Tanggal Hijriah terupdate:', hijriText);
+    console.log('✅ Tanggal Hijriah:', hijriText);
     return hijri;
 }
 
-// Fungsi force update
+// Fungsi force update (bisa dipanggil dari console jika perlu)
 function forceUpdateHijriah() {
     localStorage.removeItem('hijriahDate');
     updateHijriahDate();
-    showToast('🔄 Tanggal Hijriah diperbarui');
 }
 
-// Fungsi showToast
-function showToast(message) {
-    const toast = document.createElement('div');
-    toast.textContent = message;
-    toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-4 py-2 rounded-full z-50 shadow-lg';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
-}
-
-// Tambahkan tombol refresh
-function addHijriRefreshButton() {
-    const header = document.querySelector('header');
-    if (!header) return;
-    if (document.getElementById('hijriRefreshBtn')) return;
-    
-    const refreshBtn = document.createElement('button');
-    refreshBtn.id = 'hijriRefreshBtn';
-    refreshBtn.innerHTML = '🔄';
-    refreshBtn.style.cssText = 'position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; background: none; border: none; cursor: pointer; z-index: 10; color: #22c55e;';
-    refreshBtn.title = 'Update tanggal Hijriah';
-    refreshBtn.onclick = forceUpdateHijriah;
-    header.appendChild(refreshBtn);
-}
-
-// Override checkHijriCache
-window.checkHijriCache = function() {
-    const now = new Date();
-    const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-    const cached = localStorage.getItem('hijriahDate');
-    
-    if (cached) {
-        try {
-            const parsed = JSON.parse(cached);
-            if (parsed.date !== today) {
-                updateHijriahDate();
-            }
-        } catch(e) {
-            updateHijriahDate();
-        }
-    } else {
-        updateHijriahDate();
-    }
-};
-
-// Override fetchHijriahDate
+// Override fetchHijriahDate yang lama
 window.fetchHijriahDate = forceUpdateHijriah;
 
 // Jalankan saat halaman siap
 document.addEventListener('DOMContentLoaded', function() {
     // Update langsung
-    updateHijriahDate();
-    
-    // Tambahkan tombol refresh
-    setTimeout(addHijriRefreshButton, 500);
+    setTimeout(updateHijriahDate, 200);
     
     // Update setiap 1 menit (seperti Masehi)
     setInterval(function() {
         const now = new Date();
-        const hijriElement = document.getElementById('hijriahDate');
-        if (hijriElement) {
-            const cached = localStorage.getItem('hijriahDate');
-            if (cached) {
-                try {
-                    const parsed = JSON.parse(cached);
-                    const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-                    if (parsed.date !== today) {
-                        updateHijriahDate();
-                    }
-                } catch(e) {
+        const cached = localStorage.getItem('hijriahDate');
+        if (cached) {
+            try {
+                const parsed = JSON.parse(cached);
+                const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+                if (parsed.date !== today) {
                     updateHijriahDate();
                 }
+            } catch(e) {
+                updateHijriahDate();
             }
+        } else {
+            updateHijriahDate();
         }
     }, 60000); // 1 menit
     
@@ -3162,7 +3113,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(updateHijriahDate, 3600000);
 });
 
-console.log('✅ Sistem Hijriah otomatis aktif!');
+console.log('✅ Sistem Hijriah otomatis aktif (tanpa tombol refresh)!');
 </script>
 </body>    
 </html>

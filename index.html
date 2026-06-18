@@ -521,7 +521,16 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
     opacity: 1;
     transform: scale(1);
 }
-</style>        
+</style> 
+<!-- ===== PWA META TAGS ===== -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PasirPogorCell">
+<meta name="msapplication-TileImage" content="icon-192.png">
+<meta name="msapplication-TileColor" content="#22c55e">
+<meta name="theme-color" content="#22c55e">       
 </head>        
 <body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">        
 <!-- MARQUEE -->        
@@ -3949,6 +3958,93 @@ window.openAdminPanelModal = function() {
 };
 
 console.log('✅ Menu koreksi akan muncul di admin panel');
+</script>
+
+<!-- ===== REGISTER SERVICE WORKER ===== -->
+<script>
+    // ============================================
+    // REGISTER SERVICE WORKER
+    // ============================================
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            console.log('📱 Mendaftarkan Service Worker...');
+            
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(function(registration) {
+                    console.log('✅ Service Worker berhasil didaftarkan!');
+                    console.log('📋 Scope:', registration.scope);
+                    
+                    // Cek update setiap 1 jam
+                    setInterval(() => {
+                        registration.update();
+                        console.log('🔄 Cek update Service Worker...');
+                    }, 60 * 60 * 1000);
+                })
+                .catch(function(error) {
+                    console.error('❌ Gagal mendaftarkan Service Worker:', error);
+                });
+        });
+    } else {
+        console.log('⚠️ Browser tidak mendukung Service Worker');
+    }
+
+    // ============================================
+    // TAMPILKAN INSTALL BANNER (Opsional)
+    // ============================================
+    let deferredPrompt;
+    const installBtn = document.createElement('button');
+    installBtn.textContent = '📱 Install App';
+    installBtn.style.cssText = `
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #22c55e;
+        color: black;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 24px;
+        font-weight: bold;
+        font-size: 14px;
+        z-index: 9999;
+        box-shadow: 0 4px 20px rgba(34,197,94,0.5);
+        display: none;
+        cursor: pointer;
+        font-family: Poppins, sans-serif;
+    `;
+    document.body.appendChild(installBtn);
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        console.log('📲 Event beforeinstallprompt terdeteksi!');
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.style.display = 'block';
+    });
+
+    installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const result = await deferredPrompt.userChoice;
+            console.log('📲 User choice:', result.outcome);
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
+        }
+    });
+
+    window.addEventListener('appinstalled', () => {
+        console.log('✅ Aplikasi berhasil diinstal!');
+        installBtn.style.display = 'none';
+        
+        // Kirim notifikasi ke admin
+        if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+                type: 'INSTALLED',
+                timestamp: Date.now()
+            });
+        }
+    });
+
+    console.log('✅ PWA Setup complete!');
 </script>
 </body>    
 </html>

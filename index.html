@@ -420,6 +420,45 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 .sholat-full-card .date-info { font-size: 0.65rem; color: #9ca3af; }
 #sholatDisplay { cursor: pointer; transition: all 0.2s ease; }
 #sholatDisplay:hover { border-color: rgba(34,197,94,0.5); box-shadow: 0 0 15px rgba(34,197,94,0.2); }
+/* PAKSA TOMBOL KEMBALI */
+#floatingBackBtn {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 99999 !important;
+    background: #22c55e !important;
+    color: #000 !important;
+    padding: 12px 24px !important;
+    border-radius: 50px !important;
+    font-weight: bold !important;
+    box-shadow: 0 0 20px rgba(34,197,94,0.9) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateZ(0) !important;
+    will-change: auto !important;
+}
+
+/* Matikan semua efek blur */
+* {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Kurangi animasi */
+.card::before {
+    animation: none !important;
+    display: none !important;
+}
+
+#hargaModal > div {
+    animation: none !important;
+}
+
+.glow-card {
+    animation: none !important;
+}
 </style>        
 </head>        
 <body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">        

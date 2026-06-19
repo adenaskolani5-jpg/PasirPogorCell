@@ -3952,49 +3952,91 @@ console.log('✅ Menu koreksi akan muncul di admin panel');
 </script>
 <script>
 // ============================================================
-//  SISTEM BACKUP POIN KE JSONBIN (VERSI FINAL)
+//  SISTEM BACKUP POIN KE JSONBIN (PUBLIC BIN - TANPA API KEY)
 // ============================================================
 
 // ===== 1. KONFIGURASI =====
+// Karena bin PUBLIC, kita tidak perlu API Key!
 const JSONBIN_CONFIG = {
-    BIN_ID: '6a34b0d6f5f4af5e290c88b8',
-    API_KEY: '$2a$10$HpYSOPL7oGu60QDqtrJ4p0v0tjIDDQyB0mSGjEN0KR1/9ii6rL2sW'
+    BIN_ID: '6a34b0d6f5f4af5e290c88b8'
+    // API_KEY tidak diperlukan untuk Public Bin!
 };
 
-// ===== 2. FUNGSI BACKUP =====
+// ===== 2. FUNGSI BACKUP (TANPA API KEY) =====
 async function backupToCloud(data) {
     try {
-        console.log('📤 Backup ke cloud...');
+        console.log('📤 Backup ke cloud (Public Bin)...');
+        console.log('📦 Data size:', JSON.stringify(data).length, 'bytes');
+        
+        // Cek apakah ada data
+        if (!data || Object.keys(data.customers || {}).length === 0) {
+            console.log('⚠️ Data kosong!');
+            const statusEl = document.getElementById('backupStatus');
+            if (statusEl) {
+                statusEl.textContent = '⚠️ Tidak ada data poin! Tambahkan poin dulu.';
+                statusEl.className = 'text-xs text-yellow-400 mt-2';
+            }
+            return false;
+        }
+        
+        // Backup ke JSONBin (tanpa API Key karena Public)
         const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.BIN_ID}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
-                'X-Master-Key': JSONBIN_CONFIG.API_KEY
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
         });
         
+        console.log('📊 Status Code:', response.status);
+        
         if (response.ok) {
             console.log('✅ Backup berhasil!');
+            const statusEl = document.getElementById('backupStatus');
+            if (statusEl) {
+                statusEl.textContent = '✅ Backup berhasil! ' + new Date().toLocaleString();
+                statusEl.className = 'text-xs text-green-400 mt-2';
+            }
             return true;
         } else {
-            console.log('❌ Backup gagal, status:', response.status);
+            const errorText = await response.text();
+            console.log('❌ Backup gagal:', response.status, errorText);
+            
+            let pesanError = '❌ Backup gagal! ';
+            if (response.status === 404) pesanError += 'Bin tidak ditemukan.';
+            else if (response.status === 403) pesanError += 'Bin tidak public atau CORS error.';
+            else if (response.status === 400) pesanError += 'Data tidak valid.';
+            else pesanError += 'Status: ' + response.status;
+            
+            const statusEl = document.getElementById('backupStatus');
+            if (statusEl) {
+                statusEl.textContent = pesanError;
+                statusEl.className = 'text-xs text-red-400 mt-2';
+            }
             return false;
         }
     } catch(e) {
         console.log('❌ Error:', e.message);
+        const statusEl = document.getElementById('backupStatus');
+        if (statusEl) {
+            statusEl.textContent = '❌ Gagal koneksi: ' + e.message;
+            statusEl.className = 'text-xs text-red-400 mt-2';
+        }
         return false;
     }
 }
 
-// ===== 3. FUNGSI RESTORE =====
+// ===== 3. FUNGSI RESTORE (TANPA API KEY) =====
 async function restoreFromCloud() {
     try {
-        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.BIN_ID}`, {
-            headers: { 'X-Master-Key': JSONBIN_CONFIG.API_KEY }
-        });
+        console.log('📥 Restore dari cloud...');
         
-        if (!response.ok) return false;
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.BIN_ID}`);
+        
+        if (!response.ok) {
+            console.log('❌ Gagal restore, status:', response.status);
+            return false;
+        }
         
         const result = await response.json();
         const cloudData = result.record;
@@ -4003,34 +4045,48 @@ async function restoreFromCloud() {
             localStorage.setItem('pasirpogor_poin_data', JSON.stringify(cloudData));
             console.log('✅ Data dipulihkan dari cloud!');
             return true;
+        } else {
+            console.log('⚠️ Tidak ada data di cloud');
+            return false;
         }
-        return false;
     } catch(e) {
-        console.log('⚠️ Gagal restore:', e.message);
+        console.log('❌ Gagal restore:', e.message);
         return false;
     }
 }
 
-// ===== 4. OVERRIDE SAVE =====
+// ===== 4. OVERRIDE FUNGSI SAVE =====
+const ORIGINAL_SAVE = window.savePoinData || function(data) {
+    localStorage.setItem('pasirpogor_poin_data', JSON.stringify(data));
+};
+
 window.savePoinData = async function(data) {
     localStorage.setItem('pasirpogor_poin_data', JSON.stringify(data));
     await backupToCloud(data);
 };
 
-// ===== 5. AUTO RESTORE =====
+// ===== 5. AUTO RESTORE SAAT LOAD =====
 document.addEventListener('DOMContentLoaded', async function() {
     const lokalData = localStorage.getItem('pasirpogor_poin_data');
+    
     if (!lokalData || lokalData === '{}' || JSON.parse(lokalData).customers === undefined) {
-        console.log('📂 Restore dari cloud...');
+        console.log('📂 Data lokal kosong, mencoba restore dari cloud...');
         await restoreFromCloud();
+    } else {
+        const parsed = JSON.parse(lokalData);
+        if (Object.keys(parsed.customers || {}).length === 0) {
+            console.log('📂 Data lokal kosong, mencoba restore dari cloud...');
+            await restoreFromCloud();
+        } else {
+            console.log('📂 Data lokal ditemukan:', Object.keys(parsed.customers).length, 'pelanggan');
+        }
     }
 });
 
-// ===== 6. FUNGSI TAMBAH TOMBOL (DIPANGGIL LANGSUNG) =====
+// ===== 6. TAMBAHKAN TOMBOL DI ADMIN PANEL =====
 function tambahTombolBackup() {
     console.log('🔍 Mencari elemen admin panel...');
     
-    // Cari di berbagai kemungkinan
     let adminPanel = document.querySelector('#adminPanelModal .p-4');
     if (!adminPanel) {
         adminPanel = document.querySelector('#adminPanelModal .space-y-6');
@@ -4080,15 +4136,37 @@ window.backupManual = async function() {
         status.className = 'text-xs text-yellow-400 mt-2';
     }
     
-    const data = JSON.parse(localStorage.getItem('pasirpogor_poin_data') || '{"customers":{}}');
-    const success = await backupToCloud(data);
+    // Ambil data dari localStorage
+    let data = localStorage.getItem('pasirpogor_poin_data');
     
-    if (status) {
-        if (success) {
-            status.textContent = '✅ Backup berhasil! ' + new Date().toLocaleString();
+    if (!data) {
+        if (status) {
+            status.textContent = '⚠️ Tidak ada data! Tambahkan poin dulu.';
+            status.className = 'text-xs text-yellow-400 mt-2';
+        }
+        return;
+    }
+    
+    try {
+        const parsedData = JSON.parse(data);
+        if (Object.keys(parsedData.customers || {}).length === 0) {
+            if (status) {
+                status.textContent = '⚠️ Data kosong! Tambahkan poin dulu.';
+                status.className = 'text-xs text-yellow-400 mt-2';
+            }
+            return;
+        }
+        
+        const success = await backupToCloud(parsedData);
+        
+        if (success && status) {
+            status.textContent = '✅ Backup berhasil! Data tersimpan di cloud.';
             status.className = 'text-xs text-green-400 mt-2';
-        } else {
-            status.textContent = '❌ Backup gagal! Cek console.';
+        }
+    } catch(e) {
+        console.log('❌ Error:', e);
+        if (status) {
+            status.textContent = '❌ Error: ' + e.message;
             status.className = 'text-xs text-red-400 mt-2';
         }
     }
@@ -4098,7 +4176,7 @@ window.backupManual = async function() {
 window.restoreManual = async function() {
     const status = document.getElementById('backupStatus');
     if (status) {
-        status.textContent = '⏳ Mengambil data...';
+        status.textContent = '⏳ Mengambil data dari cloud...';
         status.className = 'text-xs text-yellow-400 mt-2';
     }
     
@@ -4106,10 +4184,10 @@ window.restoreManual = async function() {
     
     if (success) {
         if (status) {
-            status.textContent = '✅ Restore berhasil!';
+            status.textContent = '✅ Restore berhasil! Data dipulihkan.';
             status.className = 'text-xs text-green-400 mt-2';
         }
-        alert('✅ Data berhasil dipulihkan!');
+        alert('✅ Data berhasil dipulihkan dari cloud!');
         location.reload();
     } else {
         if (status) {
@@ -4120,22 +4198,17 @@ window.restoreManual = async function() {
     }
 };
 
-// ===== 9. HOOK KE ADMIN PANEL (TAMBAHKAN TANPA MENIMPA) =====
-// Simpan fungsi asli jika ada
+// ===== 9. HOOK KE ADMIN PANEL =====
 const _origAdminOpen = window.openAdminPanelModal;
 
-// Buat fungsi baru yang memanggil asli + tambah tombol
 window.openAdminPanelModal = function() {
-    // Panggil fungsi asli
     if (typeof _origAdminOpen === 'function') {
         _origAdminOpen();
     }
-    
-    // Tambahkan tombol setelah modal terbuka
     setTimeout(tambahTombolBackup, 800);
 };
 
-// ===== 10. JIKA ADMIN PANEL SUDAH TERBUKA =====
+// ===== 10. CEK JIKA ADMIN PANEL SUDAH TERBUKA =====
 setTimeout(function() {
     const adminModal = document.getElementById('adminPanelModal');
     if (adminModal && !adminModal.classList.contains('opacity-0')) {
@@ -4144,8 +4217,9 @@ setTimeout(function() {
     }
 }, 2000);
 
-console.log('✅ Sistem backup JSONBin siap!');
+console.log('✅ Sistem backup JSONBin siap (Public Bin)!');
 console.log('📌 Bin ID:', JSONBIN_CONFIG.BIN_ID);
+console.log('🔓 Mode: Public (tanpa API Key)');
 </script>
 </body>    
 </html>

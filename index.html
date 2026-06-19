@@ -3952,8 +3952,7 @@ console.log('✅ Menu koreksi akan muncul di admin panel');
 </script>
 <script>
 // ============================================================
-//  SISTEM BACKUP POIN KE JSONBIN
-//  (Data sudah diisi dengan milik Anda)
+//  SISTEM BACKUP POIN KE JSONBIN (VERSI TERBAIK)
 // ============================================================
 
 // ===== 1. KONFIGURASI =====
@@ -3982,7 +3981,7 @@ async function backupToCloud(data) {
             return false;
         }
     } catch(e) {
-        console.log('⚠️ Backup gagal (offline?):', e.message);
+        console.log('⚠️ Backup gagal:', e.message);
         return false;
     }
 }
@@ -4014,17 +4013,12 @@ async function restoreFromCloud() {
 }
 
 // ===== 4. OVERRIDE FUNGSI SAVE =====
-// Simpan fungsi asli
 const ORIGINAL_SAVE = window.savePoinData || function(data) {
     localStorage.setItem('pasirpogor_poin_data', JSON.stringify(data));
 };
 
-// Ganti dengan fungsi yang backup otomatis
 window.savePoinData = async function(data) {
-    // 1. Simpan ke lokal
     localStorage.setItem('pasirpogor_poin_data', JSON.stringify(data));
-    
-    // 2. Backup ke cloud (background)
     await backupToCloud(data);
 };
 
@@ -4040,10 +4034,32 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
-// ===== 6. TAMBAHKAN TOMBOL DI ADMIN PANEL =====
+// ===== 6. FUNGSI TAMBAH TOMBOL BACKUP =====
 function tambahTombolBackup() {
-    const adminPanel = document.querySelector('#adminPanelModal .p-4');
-    if (!adminPanel || document.getElementById('backupSection')) return;
+    console.log('🔍 Mencari elemen admin panel...');
+    
+    // Cari berbagai kemungkinan selector
+    let adminPanel = document.querySelector('#adminPanelModal .p-4');
+    if (!adminPanel) {
+        adminPanel = document.querySelector('#adminPanelModal .space-y-6');
+    }
+    if (!adminPanel) {
+        adminPanel = document.querySelector('#adminPanelModal > div:last-child');
+    }
+    
+    if (!adminPanel) {
+        console.log('⚠️ Admin panel belum ditemukan, coba lagi nanti...');
+        setTimeout(tambahTombolBackup, 1000);
+        return;
+    }
+    
+    // Cek apakah sudah ada
+    if (document.getElementById('backupSection')) {
+        console.log('✅ Tombol backup sudah ada');
+        return;
+    }
+    
+    console.log('✅ Menambahkan tombol backup...');
     
     const section = document.createElement('div');
     section.id = 'backupSection';
@@ -4062,9 +4078,10 @@ function tambahTombolBackup() {
     `;
     
     adminPanel.appendChild(section);
+    console.log('✅ Tombol backup berhasil ditambahkan!');
 }
 
-// ===== 7. BACKUP MANUAL =====
+// ===== 7. FUNGSI BACKUP MANUAL =====
 window.backupManual = async function() {
     const status = document.getElementById('backupStatus');
     if (status) {
@@ -4086,7 +4103,7 @@ window.backupManual = async function() {
     }
 };
 
-// ===== 8. RESTORE MANUAL =====
+// ===== 8. FUNGSI RESTORE MANUAL =====
 window.restoreManual = async function() {
     const status = document.getElementById('backupStatus');
     if (status) {
@@ -4113,11 +4130,36 @@ window.restoreManual = async function() {
 };
 
 // ===== 9. TAMBAHKAN TOMBOL SAAT ADMIN PANEL DIBUKA =====
-const originalOpenAdmin = window.openAdminPanelModal || function() {};
+// Simpan semua fungsi yang sudah ada
+const existingOpenAdmin = window.openAdminPanelModal;
+
+// Buat fungsi baru yang menggabungkan semua
 window.openAdminPanelModal = function() {
-    originalOpenAdmin();
-    setTimeout(tambahTombolBackup, 500);
+    console.log('🔓 Membuka admin panel...');
+    
+    // Panggil fungsi asli jika ada
+    if (typeof existingOpenAdmin === 'function') {
+        existingOpenAdmin();
+    }
+    
+    // Tunggu modal terbuka, lalu tambahkan tombol
+    setTimeout(tambahTombolBackup, 800);
 };
+
+// ===== 10. TAMBAHKAN JUGA SAAT DOM READY =====
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ Sistem backup JSONBin siap!');
+    console.log('📌 Bin ID:', JSONBIN_CONFIG.BIN_ID);
+    
+    // Jika admin panel sudah terbuka (misal dari session), tambahkan tombol
+    setTimeout(function() {
+        const adminModal = document.getElementById('adminPanelModal');
+        if (adminModal && !adminModal.classList.contains('opacity-0')) {
+            console.log('🔍 Admin panel sudah terbuka, menambahkan tombol...');
+            tambahTombolBackup();
+        }
+    }, 1000);
+});
 
 console.log('✅ Sistem backup JSONBin siap!');
 console.log('📌 Bin ID:', JSONBIN_CONFIG.BIN_ID);

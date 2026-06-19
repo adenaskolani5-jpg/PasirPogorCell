@@ -1586,6 +1586,95 @@ function validateRobloxID(id) {
     return { valid: true, cleanId: cleanId };
 }
 
+// ============================================================
+//  VALIDASI NOMOR HP & ID GAME (TAMBAHKAN INI)
+// ============================================================
+
+// ===== DAFTAR PREFIX OPERATOR INDONESIA =====
+const OPERATOR_PREFIXES = {
+    telkomsel: ['0811', '0812', '0813', '0821', '0822', '0823', '0851', '0852', '0853'],
+    indosat: ['0814', '0815', '0816', '0855', '0856', '0857', '0858'],
+    xl: ['0817', '0818', '0819', '0859', '0877', '0878'],
+    axis: ['0831', '0832', '0833', '0838'],
+    tri: ['0895', '0896', '0897', '0898', '0899'],
+    smartfren: ['0881', '0882', '0883', '0884', '0885', '0886', '0887', '0888', '0889']
+};
+
+// Gabungkan semua prefix
+const ALL_PREFIXES = Object.values(OPERATOR_PREFIXES).flat();
+
+// ===== VALIDASI NOMOR HP =====
+function isValidPhoneNumber(phone) {
+    // Bersihkan dari spasi, strip, dll
+    const clean = phone.replace(/[\s\-()]/g, '');
+    
+    // Cek apakah hanya angka
+    if (!/^\d+$/.test(clean)) return false;
+    
+    // Cek panjang (10-13 digit)
+    if (clean.length < 10 || clean.length > 13) return false;
+    
+    // Cek apakah nomor diawali dengan prefix yang valid
+    return ALL_PREFIXES.some(prefix => clean.startsWith(prefix));
+}
+
+// ===== VALIDASI ID GAME (VERSI AKURAT) =====
+function isValidGameId(gameId) {
+    const clean = gameId.trim();
+    
+    // Jika kosong
+    if (!clean) return false;
+    
+    // ============================================================
+    //  ATURAN KHUSUS PER GAME
+    // ============================================================
+    
+    // 1. Mobile Legends: angka(angka) (contoh: 12345678(1011))
+    //    User ID: 4-10 digit, Zone ID: 4-5 digit
+    if (/^\d{4,10}\(\d{4,5}\)$/.test(clean)) return true;
+    
+    // 2. Free Fire: 8-11 digit angka
+    //    TIDAK diawali 08 (karena itu nomor HP)
+    if (/^\d{8,11}$/.test(clean) && !clean.startsWith('08')) return true;
+    
+    // 3. PUBG: 9-10 digit, diawali 5/6/7
+    //    TIDAK diawali 08
+    if (/^[5-7]\d{8,9}$/.test(clean) && !clean.startsWith('08')) return true;
+    
+    // 4. CODM: 19 digit angka
+    //    TIDAK diawali 08 (otomatis karena 19 digit)
+    if (/^\d{19}$/.test(clean)) return true;
+    
+    // 5. Honor of Kings: 11-12 digit
+    //    TIDAK diawali 08
+    if (/^\d{11,12}$/.test(clean) && !clean.startsWith('08')) return true;
+    
+    // 6. Genshin Impact: 9 digit, diawali 7
+    //    TIDAK diawali 08 (otomatis karena diawali 7)
+    if (/^7\d{8}$/.test(clean)) return true;
+    
+    // 7. Roblox: 1-10 digit angka
+    //    TIDAK diawali 08
+    if (/^\d{1,10}$/.test(clean) && !clean.startsWith('08')) return true;
+    
+    // ============================================================
+    //  FORMAT DENGAN HURUF (PASTI BUKAN NOMOR HP)
+    // ============================================================
+    
+    // 8. Kombinasi angka dan huruf (5-30 karakter), minimal ada 1 huruf
+    if (/^[A-Za-z][A-Za-z0-9]{4,29}$/.test(clean)) return true;
+    if (/^[A-Za-z0-9]{5,30}$/.test(clean) && !/^\d+$/.test(clean)) return true;
+    
+    // ============================================================
+    //  FORMAT KHUSUS (TANDA #, dll)
+    // ============================================================
+    
+    // 9. Clash of Clans: # di depan (contoh: #9PJ2VQ2V)
+    if (/^#[A-Za-z0-9]{4,10}$/.test(clean)) return true;
+    
+    return false;
+}
+
 // ===== VOUCHER MODE =====
 let voucherModeInitialized = false;
 function initVoucherInCalculator() {
@@ -2321,47 +2410,97 @@ function closePoinModal() {
     }
 }
 
+// ===== FUNGSI TOGGLE TIPE ID (DIPERBAIKI) =====
 function togglePoinIdType() {
     const input = document.getElementById('poinCustomerId');
     const phoneRadio = document.querySelector('input[value="phone"]');
+    const gameRadio = document.querySelector('input[value="game"]');
+    const errorMsg = document.getElementById('poinInputError');
+    
+    // Hapus error sebelumnya
+    input.classList.remove('border-red-500');
+    if (errorMsg) {
+        errorMsg.classList.add('hidden');
+        errorMsg.textContent = '';
+    }
+    
     if (phoneRadio && phoneRadio.checked) {
         input.placeholder = "Masukkan nomor HP (contoh: 081234567890)";
+        input.type = "tel";
+        input.maxLength = 13;
+        input.inputMode = "numeric";
+        input.dataset.type = "phone";
     } else {
         input.placeholder = "Masukkan ID Game (contoh: 12345678(1011))";
+        input.type = "text";
+        input.maxLength = 30;
+        input.inputMode = "text";
+        input.dataset.type = "game";
     }
+    
+    // Kosongkan input saat berganti tipe
+    input.value = '';
 }
 
+// ===== FUNGSI CEK POIN (DENGAN VALIDASI KETAT) =====
 function cekPoinPelanggan() {
-    const customerId = document.getElementById('poinCustomerId').value.trim();
+    const input = document.getElementById('poinCustomerId');
+    const customerId = input.value.trim();
+    const type = input.dataset.type || 'phone';
+    const errorMsg = document.getElementById('poinInputError');
+    
+    // Reset error
+    input.classList.remove('border-red-500');
+    if (errorMsg) {
+        errorMsg.classList.add('hidden');
+        errorMsg.textContent = '';
+    }
+    
+    // 1. Cek apakah input kosong
     if (!customerId) {
-        alert('⚠️ Masukkan ID terlebih dahulu!');
+        input.classList.add('border-red-500');
+        showPoinError('⚠️ Masukkan ID terlebih dahulu!');
         return;
     }
     
+    // 2. Validasi berdasarkan tipe
+    if (type === 'phone') {
+        // Validasi nomor HP
+        if (!isValidPhoneNumber(customerId)) {
+            input.classList.add('border-red-500');
+            showPoinError('❌ Nomor HP tidak valid! Masukkan nomor HP Indonesia yang benar (10-13 digit).');
+            return;
+        }
+    } else {
+        // Validasi ID Game
+        if (!isValidGameId(customerId)) {
+            input.classList.add('border-red-500');
+            showPoinError('❌ ID Game tidak valid! Masukkan ID game yang benar (contoh: 12345678(1011)).');
+            return;
+        }
+    }
+    
+    // 3. Jika valid, lanjutkan cek poin
     currentPoinCustomerId = customerId.toLowerCase();
     currentPoinCustomerData = cekPelanggan(customerId);
     
-    // ✅ SELALU TAMPILKAN HALAMAN POIN (BAIK ADA DATA ATAU TIDAK)
     document.getElementById('poinEmpty').classList.add('hidden');
     document.getElementById('poinHasil').classList.remove('hidden');
     
     if (!currentPoinCustomerData) {
-        // 🔹 Jika ID belum terdaftar, tampilkan poin 0 dengan pesan
         currentPoinCustomerData = {
             poin: 0,
             poinTertunda: 0,
             lastUpdate: Date.now(),
-            type: 'phone'
+            type: type
         };
-        // Tampilkan pesan khusus untuk pelanggan baru
         const statusMsg = document.getElementById('poinStatusMessage');
         if (statusMsg) {
-            statusMsg.textContent = '🛒 Silahkan lakukan pembelian untuk mendapatkan poin.';
+            statusMsg.textContent = '🛒 ID ini belum terdaftar. Silahkan lakukan pembelian untuk mendapatkan poin.';
             statusMsg.className = 'text-yellow-400 text-sm text-center mt-2';
             statusMsg.style.display = 'block';
         }
     } else {
-        // 🔹 Jika ID sudah terdaftar, sembunyikan pesan
         const statusMsg = document.getElementById('poinStatusMessage');
         if (statusMsg) {
             statusMsg.textContent = '';
@@ -2370,11 +2509,22 @@ function cekPoinPelanggan() {
         }
     }
     
-    // Update UI
     updatePoinUI();
-    
-    // Tampilkan riwayat klaim jika ada
     setTimeout(tambahkanRiwayatKlaim, 300);
+}
+
+// ===== FUNGSI TAMPILKAN ERROR =====
+function showPoinError(message) {
+    let errorMsg = document.getElementById('poinInputError');
+    if (!errorMsg) {
+        errorMsg = document.createElement('p');
+        errorMsg.id = 'poinInputError';
+        errorMsg.className = 'text-red-400 text-xs mt-2';
+        const input = document.getElementById('poinCustomerId');
+        input.parentNode.insertBefore(errorMsg, input.nextSibling);
+    }
+    errorMsg.textContent = message;
+    errorMsg.classList.remove('hidden');
 }
 
 function adminTambahPoin() {
@@ -2486,6 +2636,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchCustomer');
     if (searchInput) searchInput.addEventListener('input', () => adminRefreshTable());
 });
+
+// ===== VALIDASI REAL-TIME SAAT MENGETIK =====
+const input = document.getElementById('poinCustomerId');
+const errorMsg = document.getElementById('poinInputError');
+
+if (input) {
+    input.addEventListener('input', function() {
+        // Reset error saat mulai mengetik
+        this.classList.remove('border-red-500');
+        const errorEl = document.getElementById('poinInputError');
+        if (errorEl) {
+            errorEl.classList.add('hidden');
+            errorEl.textContent = '';
+        }
+    });
+}
 
 function contactAdmin() {
     const nomorAdmin = "6283844843020";
@@ -3194,7 +3360,10 @@ function clearAllCache() {
           <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="poinIdType" value="game" onchange="togglePoinIdType()" class="accent-green-500"><span>🎮 Game</span></label>
         </div>
       </div>
-      <div class="mb-4"><input type="text" id="poinCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300"></div>
+      <div class="mb-4">
+    <input type="text" id="poinCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300">
+    <p id="poinInputError" class="text-red-400 text-xs mt-1 hidden"></p>
+</div>
       <button onclick="cekPoinPelanggan()" class="w-full bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition mb-4">🔍 Cek & Klaim</button>
       <div id="poinHasil" class="hidden">
     <div class="border-t border-gray-700 pt-4 mt-2">
@@ -4783,6 +4952,14 @@ console.log('✅ Fitur Backup Manual siap!');
     'use strict';
     
     // 1. FUNGSI TAMBAHKAN RIWAYAT KLAIM DI MENU POIN
+    // ============================================================
+//  RIWAYAT KLAIM UNTUK PELANGGAN (VERSI FINAL - TIDAK DUPLIKAT)
+// ============================================================
+
+// Fungsi ini sudah didefinisikan di atas, kita hanya perlu memastikan tidak duplikat
+// Jika belum ada, definisikan sekali saja
+
+if (typeof tambahkanRiwayatKlaim === 'undefined') {
     function tambahkanRiwayatKlaim() {
         const poinHasil = document.getElementById('poinHasil');
         if (!poinHasil) return;
@@ -4854,32 +5031,19 @@ console.log('✅ Fitur Backup Manual siap!');
         riwayatDiv.innerHTML = html;
         poinHasil.appendChild(riwayatDiv);
     }
-    
-    // 2. OVERRIDE CEK PELANGGAN UNTUK TAMBAH RIWAYAT
-    const originalCekPoin = window.cekPoinPelanggan;
-    window.cekPoinPelanggan = function() {
-        // Panggil fungsi asli
-        if (typeof originalCekPoin === 'function') {
-            originalCekPoin();
+}
+
+// Override updatePoinUI untuk tambah riwayat (hanya jika belum di-override)
+if (typeof window._updatePoinUIOverridden === 'undefined') {
+    window._updatePoinUIOverridden = true;
+    const originalUpdateUI = window.updatePoinUI;
+    window.updatePoinUI = function() {
+        if (typeof originalUpdateUI === 'function') {
+            originalUpdateUI();
         }
-        
-        // Tambahkan riwayat klaim setelah data muncul
-        setTimeout(function() {
-            tambahkanRiwayatKlaim();
-        }, 300);
+        setTimeout(tambahkanRiwayatKlaim, 200);
     };
-    
-    // 3. UPDATE SAAT POIN DICEK
-    document.addEventListener('DOMContentLoaded', function() {
-        // Override updatePoinUI untuk tambah riwayat
-        const originalUpdateUI = window.updatePoinUI;
-        window.updatePoinUI = function() {
-            if (typeof originalUpdateUI === 'function') {
-                originalUpdateUI();
-            }
-            setTimeout(tambahkanRiwayatKlaim, 200);
-        };
-    });
+}
     
     console.log('✅ Riwayat klaim akan muncul di menu Poin pelanggan!');
     console.log('📌 Pelanggan bisa cek status klaimnya sendiri.');

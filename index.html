@@ -4505,5 +4505,356 @@ console.log('✅ Fitur Backup Manual siap!');
     
 })();
 </script>
+
+</script>
+
+<script>
+// ============================================================
+//  DAFTAR KLAIM - TAMPILAN LEBIH RINGKAS
+// ============================================================
+
+(function() {
+    'use strict';
+    
+    // Fungsi render daftar klaim yang ringkas
+    function renderKlaimRingkas() {
+        const container = document.getElementById('adminKlaimContainer');
+        if (!container) return;
+        
+        const history = getKlaimHistory();
+        
+        if (history.length === 0) {
+            container.innerHTML = `
+                <div class="text-center text-gray-400 py-4 text-sm">
+                    📭 Belum ada klaim
+                </div>
+            `;
+            return;
+        }
+        
+        // Ambil hanya 10 klaim terbaru
+        const recentKlaim = history.slice(0, 10);
+        
+        let html = `
+            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+        `;
+        
+        recentKlaim.forEach(k => {
+            const isPending = k.status === 'pending';
+            const statusIcons = {
+                pending: '⏳',
+                processed: '🔄',
+                done: '✅',
+                cancelled: '❌'
+            };
+            
+            const statusColors = {
+                pending: 'text-yellow-400',
+                processed: 'text-blue-400',
+                done: 'text-green-400',
+                cancelled: 'text-red-400'
+            };
+            
+            const icon = k.customerId.match(/^\d/) ? '📱' : '🎮';
+            
+            html += `
+                <div class="flex items-center justify-between bg-gray-800/30 hover:bg-gray-800/50 rounded-lg px-3 py-2 transition text-xs">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <span class="font-mono text-green-400 font-bold">${k.id}</span>
+                        <span class="text-gray-400">${icon}</span>
+                        <span class="text-gray-300 truncate">${escapeHtml(k.customerId)}</span>
+                    </div>
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                        <span class="text-yellow-400 font-bold">${k.poinDiklaim}</span>
+                        <span class="${statusColors[k.status] || 'text-gray-400'}">${statusIcons[k.status] || '❓'}</span>
+                        ${isPending ? `
+                            <button onclick="konfirmasiKlaim('${k.id}')" 
+                                    class="bg-green-600 hover:bg-green-500 text-black font-bold text-xs px-3 py-1 rounded-full transition transform hover:scale-105 shadow-lg shadow-green-600/30">
+                                ✅
+                            </button>
+                        ` : `
+                            <span class="text-gray-500 w-12 text-center">—</span>
+                        `}
+                    </div>
+                </div>
+            `;
+        });
+        
+        if (history.length > 10) {
+            html += `
+                <div class="text-center text-gray-500 text-xs py-1">
+                    + ${history.length - 10} klaim lainnya
+                </div>
+            `;
+        }
+        
+        html += `</div>`;
+        container.innerHTML = html;
+        
+        // Update statistik
+        updateStatistikRingkas(history);
+    }
+    
+    // Fungsi update statistik ringkas
+    function updateStatistikRingkas(history) {
+        const statsContainer = document.getElementById('klaimStatsRingkas');
+        if (!statsContainer) return;
+        
+        const total = history.length;
+        const pending = history.filter(k => k.status === 'pending').length;
+        const done = history.filter(k => k.status === 'done').length;
+        
+        statsContainer.innerHTML = `
+            <div class="flex gap-4 text-xs">
+                <span class="text-gray-400">📊 <strong class="text-white">${total}</strong></span>
+                <span class="text-yellow-400">⏳ <strong>${pending}</strong></span>
+                <span class="text-green-400">✅ <strong>${done}</strong></span>
+            </div>
+        `;
+    }
+    
+    // Fungsi konfirmasi klaim
+    window.konfirmasiKlaim = function(kodeKlaim) {
+        const history = getKlaimHistory();
+        const klaim = history.find(k => k.id === kodeKlaim);
+        
+        if (!klaim) {
+            alert('❌ Klaim tidak ditemukan!');
+            return;
+        }
+        
+        if (klaim.status !== 'pending') {
+            alert('⚠️ Klaim sudah diproses!');
+            return;
+        }
+        
+        if (!confirm(`✅ Konfirmasi klaim ${kodeKlaim}?\nID: ${klaim.customerId}\nPoin: ${klaim.poinDiklaim}`)) {
+            return;
+        }
+        
+        const updated = updateKlaimStatus(kodeKlaim, 'done', 'Dikonfirmasi oleh admin');
+        
+        if (updated) {
+            const pesan = `✅ KLAIM DIKONFIRMASI!\n🔑 ${kodeKlaim}\n🆔 ${klaim.customerId}\n⭐ ${klaim.poinDiklaim} poin`;
+            sendTelegramMessage(pesan);
+            renderKlaimRingkas();
+            showToast('✅ Klaim ' + kodeKlaim + ' dikonfirmasi!');
+        }
+    };
+    
+    // Fungsi toast
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-sm px-6 py-3 rounded-full z-50 shadow-lg font-bold';
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 2500);
+    }
+    
+    // Override konten Tambah Poin
+    const originalGetPoinContent = window.getAdminPoinContent;
+    window.getAdminPoinContent = function() {
+        return `
+            <div class="bg-gray-800/50 rounded-lg p-4">
+                <h4 class="text-green-400 font-bold mb-3 text-lg">⭐ Tambah Poin</h4>
+                <div class="grid gap-3">
+                    <select id="adminIdType" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+                        <option value="phone">📱 Nomor HP</option>
+                        <option value="game">🎮 ID Game</option>
+                    </select>
+                    <input type="text" id="adminCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+                    <div>
+                        <label class="text-sm text-gray-300">Jumlah poin:</label>
+                        <div class="flex gap-4 mt-1">
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="poinAmount" value="50" checked class="accent-green-500"> 50 poin</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="poinAmount" value="100" class="accent-green-500"> 100 poin</label>
+                        </div>
+                    </div>
+                    <button onclick="adminTambahPoin()" class="bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition">✅ Tambah Poin</button>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800/50 rounded-lg p-4 mt-4">
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="text-green-400 font-bold text-lg">📋 Daftar Klaim</h4>
+                    <div class="flex items-center gap-3">
+                        <div id="klaimStatsRingkas"></div>
+                        <button onclick="renderKlaimRingkas()" class="text-gray-400 hover:text-white text-xs transition">🔄</button>
+                    </div>
+                </div>
+                <div id="adminKlaimContainer"></div>
+                <div class="text-xs text-gray-400 mt-2 text-center">
+                    💡 Klik <span class="text-green-400">✅</span> untuk konfirmasi klaim
+                </div>
+            </div>
+            
+            <div class="bg-gray-800/50 rounded-lg p-4 mt-4">
+                <h4 class="text-green-400 font-bold mb-3 text-lg">📋 Daftar Pelanggan</h4>
+                <div class="mb-3">
+                    <input type="text" id="searchCustomer" placeholder="🔍 Cari ID pelanggan..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+                </div>
+                <div class="overflow-x-auto max-h-48 overflow-y-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-700 sticky top-0">
+                            <tr><th class="p-2 text-left text-xs">ID</th><th class="p-2 text-center text-xs">🔄</th><th class="p-2 text-center text-xs">⭐</th></tr>
+                        </thead>
+                        <tbody id="adminCustomerTable"><tr><td colspan="3" class="text-center text-gray-400 p-4">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    };
+    
+    // Override admin refresh
+    const originalRefreshKlaim = window.adminRefreshKlaimTable;
+    window.adminRefreshKlaimTable = function() {
+        renderKlaimRingkas();
+        if (typeof originalRefreshKlaim === 'function') {
+            // Panggil asli untuk update tabel pelanggan
+        }
+        adminRefreshTable();
+    };
+    
+    // Inisialisasi
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            renderKlaimRingkas();
+            console.log('✅ Daftar klaim ringkas siap!');
+        }, 500);
+    });
+    
+    // Override open admin panel
+    const origOpenAdmin2 = window.openAdminPanelModal;
+    window.openAdminPanelModal = function() {
+        if (typeof origOpenAdmin2 === 'function') {
+            origOpenAdmin2();
+        }
+        setTimeout(function() {
+            renderKlaimRingkas();
+            adminRefreshTable();
+        }, 500);
+    };
+    
+    console.log('✅ Script daftar klaim ringkas siap!');
+    
+})();
+</script>
+
+<script>
+// ============================================================
+//  PERBAIKAN - KLAIM & STATUS UNTUK PELANGGAN
+// ============================================================
+
+(function() {
+    'use strict';
+    
+    // 1. FUNGSI TAMBAHKAN RIWAYAT KLAIM DI MENU POIN
+    function tambahkanRiwayatKlaim() {
+        const poinHasil = document.getElementById('poinHasil');
+        if (!poinHasil) return;
+        
+        // Cek apakah sudah ada riwayat
+        if (document.getElementById('poinRiwayatKlaim')) return;
+        
+        const customerId = currentPoinCustomerId;
+        if (!customerId) return;
+        
+        // Ambil riwayat klaim untuk customer ini
+        const history = getKlaimHistory();
+        const riwayat = history.filter(k => k.customerId.toLowerCase() === customerId.toLowerCase());
+        
+        if (riwayat.length === 0) return;
+        
+        // Buat section riwayat
+        const riwayatDiv = document.createElement('div');
+        riwayatDiv.id = 'poinRiwayatKlaim';
+        riwayatDiv.className = 'border-t border-gray-700 pt-4 mt-4';
+        
+        const statusIcons = {
+            pending: '⏳ Menunggu',
+            processed: '🔄 Diproses',
+            done: '✅ Selesai',
+            cancelled: '❌ Dibatalkan'
+        };
+        
+        const statusColors = {
+            pending: 'text-yellow-400',
+            processed: 'text-blue-400',
+            done: 'text-green-400',
+            cancelled: 'text-red-400'
+        };
+        
+        let html = `
+            <h4 class="text-sm font-bold text-gray-300 mb-2">📋 Riwayat Klaim</h4>
+            <div class="space-y-1.5 max-h-32 overflow-y-auto">
+        `;
+        
+        riwayat.slice(0, 5).forEach(k => {
+            const waktu = new Date(k.timestamp);
+            const waktuText = waktu.toLocaleDateString('id-ID', { 
+                day: 'numeric', 
+                month: 'short', 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            html += `
+                <div class="flex items-center justify-between bg-gray-800/30 rounded-lg px-3 py-1.5 text-xs">
+                    <span class="font-mono text-green-400 font-bold">${k.id}</span>
+                    <span class="text-yellow-400 font-bold">${k.poinDiklaim} poin</span>
+                    <span class="${statusColors[k.status] || 'text-gray-400'}">${statusIcons[k.status] || k.status}</span>
+                    <span class="text-gray-500 text-[10px]">${waktuText}</span>
+                </div>
+            `;
+        });
+        
+        if (riwayat.length > 5) {
+            html += `
+                <div class="text-center text-gray-500 text-xs py-1">
+                    + ${riwayat.length - 5} klaim lainnya
+                </div>
+            `;
+        }
+        
+        html += `</div>`;
+        riwayatDiv.innerHTML = html;
+        poinHasil.appendChild(riwayatDiv);
+    }
+    
+    // 2. OVERRIDE CEK PELANGGAN UNTUK TAMBAH RIWAYAT
+    const originalCekPoin = window.cekPoinPelanggan;
+    window.cekPoinPelanggan = function() {
+        // Panggil fungsi asli
+        if (typeof originalCekPoin === 'function') {
+            originalCekPoin();
+        }
+        
+        // Tambahkan riwayat klaim setelah data muncul
+        setTimeout(function() {
+            tambahkanRiwayatKlaim();
+        }, 300);
+    };
+    
+    // 3. UPDATE SAAT POIN DICEK
+    document.addEventListener('DOMContentLoaded', function() {
+        // Override updatePoinUI untuk tambah riwayat
+        const originalUpdateUI = window.updatePoinUI;
+        window.updatePoinUI = function() {
+            if (typeof originalUpdateUI === 'function') {
+                originalUpdateUI();
+            }
+            setTimeout(tambahkanRiwayatKlaim, 200);
+        };
+    });
+    
+    console.log('✅ Riwayat klaim akan muncul di menu Poin pelanggan!');
+    console.log('📌 Pelanggan bisa cek status klaimnya sendiri.');
+    
+})();
+</script>
 </body>    
 </html>

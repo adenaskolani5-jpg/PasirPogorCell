@@ -4227,5 +4227,283 @@ console.log('✅ Fitur Backup Manual siap!');
     
 })();
 </script>
+
+<script>
+// ============================================================
+//  PERBAIKAN - TARUH BACKUP DI BAWAH SEBAGAI MENU KE-5
+// ============================================================
+
+(function() {
+    'use strict';
+    
+    // 1. HAPUS SEMUA BACKUP MANUAL YANG ADA
+    function hapusSemuaBackupLama() {
+        // Hapus section backup di bawah
+        document.querySelectorAll('#adminPanelModal .mt-4.pt-4.border-t').forEach(el => {
+            if (el.textContent && el.textContent.includes('Backup')) {
+                el.remove();
+                console.log('🗑️ Section backup dihapus');
+            }
+        });
+        
+        // Hapus elemen dengan ID backupManualSection
+        const section = document.getElementById('backupManualSection');
+        if (section) {
+            section.remove();
+            console.log('🗑️ backupManualSection dihapus');
+        }
+        
+        // Hapus menu backup yang mungkin sudah ada di grid
+        const existingBackup = document.getElementById('adminMenuBackup');
+        if (existingBackup) {
+            existingBackup.remove();
+            console.log('🗑️ Menu backup lama dihapus dari grid');
+        }
+    }
+    
+    // 2. TAMBAHKAN MENU BACKUP KE GRID (URUTAN TERAKHIR)
+    function tambahMenuBackupKeGrid() {
+        const mainMenu = document.getElementById('adminMainMenu');
+        if (!mainMenu) {
+            setTimeout(tambahMenuBackupKeGrid, 500);
+            return;
+        }
+        
+        const grid = mainMenu.querySelector('.grid');
+        if (!grid) return;
+        
+        // Cek apakah sudah ada menu backup
+        if (grid.querySelector('#adminMenuBackup')) {
+            console.log('✅ Menu backup sudah ada di grid');
+            return;
+        }
+        
+        // Buat item menu backup
+        const backupItem = document.createElement('div');
+        backupItem.id = 'adminMenuBackup';
+        backupItem.className = 'bg-gray-800/50 hover:bg-gray-700/50 rounded-lg p-3 text-center cursor-pointer transition-all border border-gray-700 hover:border-green-500';
+        backupItem.innerHTML = `
+            <div class="text-2xl mb-1">💾</div>
+            <h4 class="text-green-400 font-bold text-sm">Backup Data</h4>
+            <p class="text-gray-400 text-xs mt-0.5">Download/Upload</p>
+        `;
+        backupItem.onclick = function() {
+            showAdminMenu('backup');
+        };
+        
+        // Tambahkan ke grid (posisi terakhir)
+        grid.appendChild(backupItem);
+        console.log('✅ Menu Backup Data ditambahkan ke grid (urutan ke-5)');
+    }
+    
+    // 3. TAMBAHKAN KONTEN BACKUP KE showAdminMenu
+    function getAdminBackupContent() {
+        return `
+            <div class="bg-gray-800/50 rounded-lg p-4">
+                <h4 class="text-green-400 font-bold mb-3 text-lg">💾 Backup Data</h4>
+                <p class="text-xs text-gray-400 mb-4">Download backup data poin atau upload untuk memulihkan.</p>
+                
+                <div class="flex gap-3 flex-wrap">
+                    <button onclick="downloadBackup()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded transition text-sm">
+                        📥 Download Backup
+                    </button>
+                    <button onclick="uploadBackup()" class="flex-1 bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-3 px-4 rounded transition text-sm">
+                        📤 Upload Restore
+                    </button>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-gray-700">
+                    <div class="text-xs text-gray-400">
+                        💡 <strong>Tips:</strong>
+                        <ul class="list-disc list-inside mt-1 space-y-1">
+                            <li>Download backup secara rutin untuk keamanan data</li>
+                            <li>File backup berformat .json</li>
+                            <li>Upload file backup yang valid untuk memulihkan data</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-gray-700">
+                    <button onclick="resetAllData()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2 rounded transition text-sm">
+                        ⚠️ Reset Semua Data Poin
+                    </button>
+                    <p class="text-xs text-red-400 mt-2">⚠️ Hapus semua data poin pelanggan (tidak bisa dibatalkan)</p>
+                </div>
+            </div>
+        `;
+    }
+    
+    // 4. OVERRIDE showAdminMenu
+    const originalShowAdmin = window.showAdminMenu;
+    window.showAdminMenu = function(menu) {
+        const mainMenu = document.getElementById('adminMainMenu');
+        const content = document.getElementById('adminContent');
+        const contentInner = document.getElementById('adminContentInner');
+        
+        if (!mainMenu || !content || !contentInner) return;
+        
+        if (menu === 'menu') {
+            mainMenu.classList.remove('hidden');
+            content.classList.add('hidden');
+            return;
+        }
+        
+        mainMenu.classList.add('hidden');
+        content.classList.remove('hidden');
+        
+        switch(menu) {
+            case 'poin':
+                contentInner.innerHTML = getAdminPoinContent();
+                setTimeout(() => {
+                    if (typeof adminRefreshTable === 'function') adminRefreshTable();
+                    if (typeof adminRefreshKlaimTable === 'function') adminRefreshKlaimTable();
+                }, 100);
+                break;
+            case 'notifikasi':
+                contentInner.innerHTML = getAdminNotifikasiContent();
+                setTimeout(() => {
+                    if (typeof updateNotifikasiUI === 'function') updateNotifikasiUI();
+                }, 100);
+                break;
+            case 'maintenance':
+                contentInner.innerHTML = getAdminMaintenanceContent();
+                break;
+            case 'koreksi':
+                contentInner.innerHTML = getAdminKoreksiContent();
+                setTimeout(() => {
+                    if (typeof tampilkanDaftarKoreksi === 'function') tampilkanDaftarKoreksi();
+                }, 100);
+                break;
+            case 'backup':
+                contentInner.innerHTML = getAdminBackupContent();
+                break;
+            default:
+                contentInner.innerHTML = '<p class="text-gray-400">Menu tidak ditemukan</p>';
+        }
+    };
+    
+    // 5. INISIALISASI
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            hapusSemuaBackupLama();
+            tambahMenuBackupKeGrid();
+            console.log('✅ Menu admin dirapikan!');
+            console.log('📌 Urutan menu:');
+            console.log('  1. ⭐ Tambah Poin');
+            console.log('  2. 🔔 Notifikasi');
+            console.log('  3. 🧹 Maintenance');
+            console.log('  4. 📅 Koreksi Hijriah');
+            console.log('  5. 💾 Backup Data (baru di urutan ke-5)');
+        }, 1000);
+    });
+    
+    // 6. JIKA ADMIN PANEL SUDAH TERBUKA
+    setTimeout(function() {
+        const adminModal = document.getElementById('adminPanelModal');
+        if (adminModal && !adminModal.classList.contains('opacity-0')) {
+            hapusSemuaBackupLama();
+            tambahMenuBackupKeGrid();
+        }
+    }, 1500);
+    
+})();
+</script>
+
+<script>
+// ============================================================
+//  HAPUS SECTION BACKUP MANUAL YANG ADA DI ATAS
+// ============================================================
+
+(function() {
+    'use strict';
+    
+    function hapusSectionBackupAtas() {
+        console.log('🔍 Mencari section backup di atas...');
+        
+        // 1. Cari berdasarkan ID
+        const section1 = document.getElementById('backupManualSection');
+        if (section1) {
+            section1.remove();
+            console.log('🗑️ backupManualSection dihapus');
+        }
+        
+        // 2. Cari semua elemen dengan teks "Backup Manual (File)"
+        document.querySelectorAll('#adminPanelModal div, #adminPanelModal section, #adminPanelModal .p-4').forEach(el => {
+            if (el.innerHTML && el.innerHTML.includes('💾 Backup Manual')) {
+                // Pastikan ini BUKAN menu di grid
+                const isInGrid = el.closest('.grid');
+                if (!isInGrid) {
+                    el.remove();
+                    console.log('🗑️ Section "💾 Backup Manual" dihapus');
+                }
+            }
+        });
+        
+        // 3. Cari elemen dengan class yang mengandung backup
+        document.querySelectorAll('#adminPanelModal [class*="backup"]').forEach(el => {
+            // Jangan hapus menu di grid
+            const isInGrid = el.closest('.grid');
+            if (!isInGrid && el.id !== 'adminMenuBackup') {
+                el.remove();
+                console.log('🗑️ Elemen backup dihapus:', el.className);
+            }
+        });
+        
+        // 4. Cari section dengan border dan mt-4 yang mengandung Backup
+        document.querySelectorAll('#adminPanelModal .mt-4.pt-4.border-t.border-gray-700').forEach(el => {
+            if (el.textContent && el.textContent.includes('Backup')) {
+                const isInGrid = el.closest('.grid');
+                if (!isInGrid) {
+                    el.remove();
+                    console.log('🗑️ Section border backup dihapus');
+                }
+            }
+        });
+        
+        // 5. Cari semua div di dalam admin panel yang memiliki tombol Download/Upload
+        document.querySelectorAll('#adminPanelModal button').forEach(btn => {
+            if (btn.textContent && (btn.textContent.includes('Download Backup') || btn.textContent.includes('Upload Restore'))) {
+                // Cari parent div-nya
+                let parent = btn.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.tagName === 'DIV' && parent.id !== 'adminContentInner') {
+                        // Cek apakah ini di dalam grid
+                        const isInGrid = parent.closest('.grid');
+                        if (!isInGrid) {
+                            parent.remove();
+                            console.log('🗑️ Container tombol backup dihapus');
+                            break;
+                        }
+                    }
+                    parent = parent.parentElement;
+                }
+            }
+        });
+        
+        console.log('✅ Pembersihan selesai!');
+    }
+    
+    // Jalankan saat DOM siap
+    document.addEventListener('DOMContentLoaded', function() {
+        // Jalankan beberapa kali untuk memastikan
+        setTimeout(hapusSectionBackupAtas, 500);
+        setTimeout(hapusSectionBackupAtas, 1000);
+        setTimeout(hapusSectionBackupAtas, 2000);
+    });
+    
+    // Jalankan juga saat admin panel dibuka
+    const originalOpenAdmin = window.openAdminPanelModal;
+    window.openAdminPanelModal = function() {
+        if (typeof originalOpenAdmin === 'function') {
+            originalOpenAdmin();
+        }
+        setTimeout(hapusSectionBackupAtas, 300);
+        setTimeout(hapusSectionBackupAtas, 800);
+    };
+    
+    console.log('✅ Script penghapus section backup atas siap!');
+    
+})();
+</script>
 </body>    
 </html>

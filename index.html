@@ -4088,5 +4088,144 @@ setTimeout(function() {
 
 console.log('✅ Fitur Backup Manual siap!');
 </script>
+
+<script>
+// ============================================================
+//  PERBAIKAN TOTAL UNTUK TOMBOL VOUCHER & SCRIPT LAINNYA
+// ============================================================
+
+(function() {
+    'use strict';
+    
+    // 1. PASTIKAN DATA OPERATORS & GAMES TERSEDIA GLOBAL
+    if (typeof window.operators === 'undefined') {
+        window.operators = operators;
+    }
+    if (typeof window.games === 'undefined') {
+        window.games = games;
+    }
+    
+    // 2. PERBAIKI FUNGSI BUILD HARGA DATA
+    const originalBuildHarga = buildHargaData;
+    window.buildHargaData = function() {
+        if (typeof window.operators === 'undefined' || typeof window.games === 'undefined') {
+            console.warn('⚠️ Data operators/games belum siap, tunggu...');
+            setTimeout(window.buildHargaData, 500);
+            return;
+        }
+        originalBuildHarga();
+    };
+    
+    // 3. PERBAIKI FUNGSI TOGGLE VOUCHER
+    const originalToggle = toggleCalcMode;
+    window.toggleCalcMode = function() {
+        const normalDiv = document.getElementById('calcNormalMode');
+        const voucherDiv = document.getElementById('calcVoucherMode');
+        const headerTitle = document.querySelector('#calculatorModal .text-2xl');
+        
+        if (!normalDiv || !voucherDiv) {
+            console.error('❌ Elemen kalkulator tidak ditemukan!');
+            return;
+        }
+        
+        if (currentMode === 'calc') {
+            // PASTIKAN VOUCHER MODE TERINISIALISASI
+            try {
+                initVoucherInCalculator();
+                voucherCompactRender();
+            } catch(e) {
+                console.warn('⚠️ Gagal init voucher:', e);
+                // Buat container jika belum ada
+                if (!document.getElementById('voucherAppContainer')) {
+                    const container = document.createElement('div');
+                    container.id = 'voucherAppContainer';
+                    voucherDiv.appendChild(container);
+                    initVoucherInCalculator();
+                }
+            }
+            
+            normalDiv.classList.add('hidden');
+            voucherDiv.classList.remove('hidden');
+            if (headerTitle) headerTitle.textContent = 'Hitung Voucher';
+            currentMode = 'voucher';
+        } else {
+            normalDiv.classList.remove('hidden');
+            voucherDiv.classList.add('hidden');
+            if (headerTitle) headerTitle.textContent = 'Kalkulator';
+            currentMode = 'calc';
+        }
+    };
+    
+    // 4. INISIALISASI SAAT DOM READY
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tunggu sebentar agar semua elemen siap
+        setTimeout(function() {
+            // Inisialisasi voucher di background
+            try {
+                initVoucherInCalculator();
+                document.getElementById('calcVoucherMode').classList.add('hidden');
+                console.log('✅ Voucher mode siap digunakan');
+            } catch(e) {
+                console.warn('⚠️ Voucher mode init:', e);
+            }
+            
+            // Pastikan tombol toggle terhubung
+            const toggleBtn = document.getElementById('toggleCalcModeBtn');
+            if (toggleBtn) {
+                // Hapus event listener lama (jika ada)
+                const newBtn = toggleBtn.cloneNode(true);
+                toggleBtn.parentNode.replaceChild(newBtn, toggleBtn);
+                newBtn.addEventListener('click', window.toggleCalcMode);
+                console.log('✅ Tombol toggle voucher terhubung');
+            } else {
+                console.warn('⚠️ Tombol toggle tidak ditemukan!');
+            }
+            
+            // Build data harga
+            setTimeout(window.buildHargaData, 300);
+            
+        }, 500);
+    });
+    
+    // 5. PERBAIKI FUNGSI OPEN CALCULATOR
+    const originalOpenCalc = openCalculator;
+    window.openCalculator = function() {
+        const modal = document.getElementById('calculatorModal');
+        if (modal) {
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            const box = modal.querySelector('div');
+            if (box) box.classList.remove('scale-95');
+        }
+        
+        // Reset ke mode kalkulator normal
+        if (currentMode !== 'calc') {
+            const normalDiv = document.getElementById('calcNormalMode');
+            const voucherDiv = document.getElementById('calcVoucherMode');
+            const headerTitle = document.querySelector('#calculatorModal .text-2xl');
+            if (normalDiv && voucherDiv) {
+                normalDiv.classList.remove('hidden');
+                voucherDiv.classList.add('hidden');
+                if(headerTitle) headerTitle.textContent = 'Kalkulator';
+                currentMode = 'calc';
+            }
+        }
+    };
+    
+    // 6. TAMBAHKAN FUNGSI RESET VOUCHER
+    window.resetVoucherMode = function() {
+        // Hapus container voucher dan buat ulang
+        const container = document.getElementById('voucherAppContainer');
+        if (container) {
+            container.innerHTML = '';
+            initVoucherInCalculator();
+            voucherCompactRender();
+            console.log('✅ Voucher mode direset');
+        }
+    };
+    
+    console.log('✅ Semua perbaikan script telah diterapkan!');
+    
+})();
+</script>
 </body>    
 </html>

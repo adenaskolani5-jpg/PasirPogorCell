@@ -2386,7 +2386,6 @@ function openAdminPanelModal() {
   modal.classList.remove('opacity-0', 'pointer-events-none');
   const box = modal.querySelector('div');
   if (box) box.classList.remove('scale-95');
-  renderAdminLogoUpload();
 }
 
 function closeAdminPanelModal() {
@@ -3721,7 +3720,6 @@ function clearAllCache() {
       <h3 class="text-lg font-bold text-green-400">👑 Admin Panel</h3>
       <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
-    <div id="adminLogoUploadContainer" class="p-4"></div>
     
     <!-- MENU UTAMA ADMIN (Ukuran lebih kecil) -->
     <div id="adminMainMenu" class="p-4">

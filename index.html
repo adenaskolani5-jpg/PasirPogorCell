@@ -4104,14 +4104,40 @@ function updateCountdown() {
     const now = new Date();
     const currentMinutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
     
-    // Ambil waktu sholat berikutnya
+    // ===== PROGRESS BAR JAM BUKA TOKO (06:30 - 22:30) =====
+    const BUKA = 6 * 60 + 30;   // 06:30 = 390 menit
+    const TUTUP = 22 * 60 + 30; // 22:30 = 1350 menit
+    const totalMenitOperasional = TUTUP - BUKA; // 960 menit (16 jam)
+    
+    let percent = 0;
+    let status = '';
+    
+    if (currentMinutes < BUKA) {
+        // Sebelum jam 06:30 → progress 100% (toko tutup)
+        percent = 100;
+        status = '⏳ Belum buka';
+    } else if (currentMinutes >= BUKA && currentMinutes <= TUTUP) {
+        // Jam 06:30 - 22:30 → progress mengisi
+        const elapsed = currentMinutes - BUKA;
+        percent = Math.min((elapsed / totalMenitOperasional) * 100, 100);
+        status = '🟢 Buka';
+    } else {
+        // Setelah jam 22:30 → progress 100% (toko tutup)
+        percent = 100;
+        status = '🔴 Tutup';
+    }
+    
+    // Update progress bar
+    const progressBar = document.getElementById('sholatProgressBar');
+    if (progressBar) {
+        progressBar.style.width = percent + '%';
+    }
+    
+    // ===== UPDATE TEXT COUNTDOWN =====
     const [h, m] = allPrayerTimes[nextPrayerIndex].time.split(':').map(Number);
     const prayerMinutes = h * 60 + m;
-    
-    // Hitung selisih
     const diffMinutes = prayerMinutes - currentMinutes;
     
-    // Update countdown text
     if (diffMinutes <= 0) {
         updateNextPrayer();
         return;
@@ -4124,12 +4150,6 @@ function updateCountdown() {
     let countdownText = diffHours > 0 ? `${diffHours}j ${diffMins}m` : 
                         (diffMins > 0 ? `${diffMins}m ${diffSecs}s` : `${diffSecs}s`);
     document.getElementById('nextSholatCountdown').textContent = `⏳ ${countdownText}`;
-    
-    // ===== PROGRESS BAR 24 JAM =====
-    // Menghitung progress dari 00:00 sampai 23:59 (1440 menit)
-    const totalMinutesInDay = 24 * 60; // 1440 menit
-    const percent = Math.min((currentMinutes / totalMinutesInDay) * 100, 100);
-    document.getElementById('sholatProgressBar').style.width = percent + '%';
 }
 
 function scheduleMidnightUpdate() {

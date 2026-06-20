@@ -257,26 +257,7 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 #home .card { border-left: 4px solid #22c55e; transition: all 0.3s ease; }
 #home .card::before { display: none; }
 #home .card:hover { transform: scale(1.02); border-left-color: #4ade80; box-shadow: 0 0 20px rgba(34,197,94,0.6), -4px 0 20px rgba(34,197,94,0.5); }
-#internet .card, #paketTypes .card, #operatorDetail .card, #game .card, #gameDetail .card {
-  border: 1.5px solid rgba(34, 197, 94, 0.7);
-  box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
-  transition: all 0.2s ease;
-}
-#internet .card:hover, #paketTypes .card:hover, #operatorDetail .card:hover, #game .card:hover, #gameDetail .card:hover {
-  border-color: #4ade80;
-  box-shadow: 0 0 18px rgba(34, 197, 94, 0.7);
-}
-#internet .card, #paketTypes .card, #operatorDetail .card, #game .card, #gameDetail .card {
-  border: 1.5px solid rgba(34, 197, 94, 0.7) !important;
-  box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);
-  transition: all 0.2s ease;
-  flex-direction: column;
-  align-items: stretch;
-}
-#internet .card:hover, #paketTypes .card:hover, #operatorDetail .card:hover, #game .card:hover, #gameDetail .card:hover {
-  border-color: #4ade80 !important;
-  box-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
-}
+
 .card-main { display: flex; justify-content: space-between; align-items: center; width: 100%; }
 .card-detail { margin-top: 0.6rem; font-size: 0.7rem; color: #9ca3af; border-top: 1px dashed rgba(34,197,94,0.3); padding-top: 0.5rem; }
 .floating-back {
@@ -520,6 +501,309 @@ body{ font-family:Poppins,sans-serif; background:var(--bg); color:var(--text); }
 .card-enter.show {
     opacity: 1;
     transform: scale(1);
+}
+/* ===== LOGO DI SISI KANAN UKURAN BESAR ===== */
+.menu-logo {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.08);
+    padding: 6px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    border: 1.5px solid rgba(34,197,94,0.3);
+    margin-left: 10px;
+}
+.card:hover .menu-logo {
+    transform: scale(1.15) rotate(-3deg);
+    filter: drop-shadow(0 0 15px rgba(34,197,94,0.6));
+    border-color: #4ade80;
+}
+.menu-text {
+    flex: 1;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: left;
+    letter-spacing: 0.3px;
+}
+@media (max-width: 500px) {
+    .menu-text {
+        font-size: 1rem;
+    }
+}
+@media (min-width: 768px) {
+    .menu-text {
+        font-size: 1.4rem;
+    }
+}
+.menu-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+@media (max-width: 500px) {
+    .menu-logo {
+        width: 45px;
+        height: 45px;
+        padding: 4px;
+    }
+    .menu-text {
+        font-size: 0.85rem;
+    }
+}
+@media (min-width: 768px) {
+    .menu-logo {
+        width: 65px;
+        height: 65px;
+        padding: 8px;
+    }
+}
+.upload-preview {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 10px;
+    border: 2px solid #22c55e;
+    padding: 6px;
+    background: rgba(0,0,0,0.3);
+}
+/* ===== PERBAIKAN CARD UNTUK LOGO ===== */
+.card {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    min-height: 75px;
+}
+.card .menu-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 12px;
+}
+#internet .card, #paketTypes .card, #game .card {
+    flex-direction: row !important;
+    align-items: center !important;
+}
+#internet .card .menu-wrapper,
+#paketTypes .card .menu-wrapper,
+#game .card .menu-wrapper {
+    flex-direction: row !important;
+}
+/* ===== ANIMASI LOGO MASUK ===== */
+@keyframes logoPop {
+    0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+    70% { transform: scale(1.1) rotate(2deg); }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.card-enter.show .menu-logo {
+    animation: logoPop 0.4s ease forwards;
+}
+
+/* ===== PERBAIKAN CARD UNTUK MENU ===== */
+#internet .card,
+#paketTypes .card,
+#game .card {
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 1rem 1.5rem !important;
+    min-height: 70px !important;
+}
+
+#internet .card .menu-wrapper,
+#paketTypes .card .menu-wrapper,
+#game .card .menu-wrapper {
+    flex-direction: row !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+/* ===== OPERATOR DETAIL & GAME DETAIL TETAP VERTIKAL ===== */
+#operatorDetail .card,
+#gameDetail .card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 1rem !important;
+}
+
+#operatorDetail .card .card-main,
+#gameDetail .card .card-main {
+    flex-direction: row !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+/* ===== CARD UMUM ===== */
+.card {
+    display: flex;
+    align-items: center;
+    padding: 1.2rem 1.8rem;
+    min-height: 80px;
+    cursor: pointer;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(34,197,94,.35);
+    box-shadow: 0 0 12px rgba(34,197,94,.15);
+    background: var(--card);
+    color: var(--text);
+}
+.card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 25px rgba(34,197,94,.5), 0 0 60px rgba(59,130,246,.3);
+    border-color: #4ade80;
+}
+.card .menu-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 15px;
+}
+@media (max-width: 500px) {
+    .card {
+        padding: 0.9rem 1.2rem !important;
+        min-height: 65px !important;
+    }
+    .card .menu-wrapper {
+        gap: 10px;
+    }
+}
+@media (min-width: 768px) {
+    .card {
+        padding: 1.5rem 2rem !important;
+        min-height: 90px !important;
+    }
+}
+
+/* ===== LOGO DI SISI KANAN ===== */
+.menu-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.08);
+    padding: 6px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    border: 1.5px solid rgba(34,197,94,0.3);
+    margin-left: 10px;
+}
+.card:hover .menu-logo {
+    transform: scale(1.15) rotate(-3deg);
+    filter: drop-shadow(0 0 15px rgba(34,197,94,0.6));
+    border-color: #4ade80;
+}
+@media (max-width: 500px) {
+    .menu-logo {
+        width: 42px;
+        height: 42px;
+        padding: 4px;
+    }
+}
+@media (min-width: 768px) {
+    .menu-logo {
+        width: 60px;
+        height: 60px;
+        padding: 8px;
+    }
+}
+/* ===== JUDUL SECTION LEBIH BESAR ===== */
+#internet h2,
+#paketTypes h2,
+#operatorDetail h2,
+#game h2,
+#gameDetail h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.5px;
+}
+@media (max-width: 500px) {
+    #internet h2,
+    #paketTypes h2,
+    #operatorDetail h2,
+    #game h2,
+    #gameDetail h2 {
+        font-size: 1.4rem;
+    }
+}
+@media (min-width: 768px) {
+    #internet h2,
+    #paketTypes h2,
+    #operatorDetail h2,
+    #game h2,
+    #gameDetail h2 {
+        font-size: 2.2rem;
+    }
+}
+/* ===== UKURAN FONT NAMA OPERATOR & GAME ===== */
+
+/* Ukuran sedang - pas untuk HP */
+#internet .card .menu-text,
+#game .card .menu-text,
+#paketTypes .card .menu-text {
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* Kategori paket sedikit lebih kecil */
+#paketTypes .card .menu-text {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+}
+
+/* Ukuran di HP (sudah pas) */
+@media (max-width: 500px) {
+    #internet .card .menu-text,
+    #game .card .menu-text {
+        font-size: 1.1rem !important;
+    }
+    #paketTypes .card .menu-text {
+        font-size: 1rem !important;
+    }
+}
+
+/* Ukuran di Desktop sedikit lebih besar */
+@media (min-width: 768px) {
+    #internet .card .menu-text,
+    #game .card .menu-text {
+        font-size: 1.4rem !important;
+    }
+    #paketTypes .card .menu-text {
+        font-size: 1.2rem !important;
+    }
+}
+
+/* ===== PERBAIKAN CARD AGAR PROPORSIONAL ===== */
+#internet .card,
+#game .card,
+#paketTypes .card {
+    padding: 0.9rem 1.2rem !important;
+    min-height: 70px !important;
+}
+
+@media (max-width: 500px) {
+    #internet .card,
+    #game .card,
+    #paketTypes .card {
+        padding: 0.8rem 1rem !important;
+        min-height: 60px !important;
+    }
+}
+
+@media (min-width: 768px) {
+    #internet .card,
+    #game .card,
+    #paketTypes .card {
+        padding: 1.2rem 1.8rem !important;
+        min-height: 80px !important;
+    }
 }
 </style>        
 </head>        
@@ -1100,6 +1384,57 @@ const games = {
   "Gift Card IDR 950K Rp 997.000"    
 ]    
 };
+// ============================================================
+//  SISTEM UPLOAD LOGO (TARUH SETELAH games)
+// ============================================================
+const LOGO_STORAGE_KEY = 'pasirpogor_uploaded_logos';
+
+function getUploadedLogos() {
+    try {
+        const data = localStorage.getItem(LOGO_STORAGE_KEY);
+        return data ? JSON.parse(data) : {};
+    } catch(e) {
+        return {};
+    }
+}
+
+function saveUploadedLogo(key, dataUrl) {
+    const logos = getUploadedLogos();
+    logos[key] = dataUrl;
+    localStorage.setItem(LOGO_STORAGE_KEY, JSON.stringify(logos));
+}
+
+function deleteUploadedLogo(key) {
+    const logos = getUploadedLogos();
+    delete logos[key];
+    localStorage.setItem(LOGO_STORAGE_KEY, JSON.stringify(logos));
+}
+
+function getLogo(key) {
+    const logos = getUploadedLogos();
+    return logos[key] || null;
+}
+
+// ============================================================
+//  FUNGSI RENDER MENU DENGAN LOGO UPLOAD
+// ============================================================
+function renderMenuItem(name, type, clickHandler) {
+    const logo = getLogo(type + '_' + name);
+    const logoHtml = logo 
+        ? `<img src="${logo}" alt="${name}" class="menu-logo" loading="lazy" onerror="this.style.display='none'">`
+        : `<span class="text-3xl">${type === 'operator' ? '📶' : '🎮'}</span>`;
+    
+    const div = document.createElement('div');
+    div.className = 'card card-enter';
+    div.innerHTML = `
+        <div class="menu-wrapper">
+            <span class="menu-text">${name}</span>
+            ${logoHtml}
+        </div>
+    `;
+    div.onclick = clickHandler;
+    return div;
+}
 // ===== CACHE MANAGER =====
 const CacheManager = {
     // Simpan data dengan timestamp
@@ -2017,6 +2352,7 @@ function openAdminPanelModal() {
   modal.classList.remove('opacity-0', 'pointer-events-none');
   const box = modal.querySelector('div');
   if (box) box.classList.remove('scale-95');
+  renderAdminLogoUpload();
 }
 
 function closeAdminPanelModal() {
@@ -3000,15 +3336,9 @@ function renderOperatorList(operatorNames) {
     const list = document.getElementById('operatorList');
     list.innerHTML = "";
     
-    // Render semua sekaligus
     operatorNames.forEach((o) => {
-        const div = document.createElement('div');
-        div.className = 'card card-enter';
-        div.textContent = o;
-        div.onclick = () => openTypes(o);
+        const div = renderMenuItem(o, 'operator', () => openTypes(o));
         list.appendChild(div);
-        
-        // Trigger animasi setelah ditambahkan
         requestAnimationFrame(() => {
             div.classList.add('show');
         });
@@ -3030,21 +3360,27 @@ function openTypes(op) {
     `;
     
     setTimeout(() => {
-        // PERBAIKAN: Gunakan window.operators
         const dataOperator = window.operators || operators;
         const categories = Object.keys(dataOperator[op]);
         list.innerHTML = "";
         
+        const logo = getLogo('operator_' + op);
+        const logoHtml = logo 
+            ? `<img src="${logo}" alt="${op}" class="menu-logo" loading="lazy" onerror="this.style.display='none'">`
+            : `<span class="text-3xl">📦</span>`;
+        
         categories.forEach((t) => {
             const div = document.createElement('div');
             div.className = 'card card-enter';
-            div.textContent = t;
+            div.innerHTML = `
+                <div class="menu-wrapper">
+                    <span class="menu-text">${t}</span>
+                    ${logoHtml}
+                </div>
+            `;
             div.onclick = () => openPaket(op, t);
             list.appendChild(div);
-            
-            requestAnimationFrame(() => {
-                div.classList.add('show');
-            });
+            requestAnimationFrame(() => div.classList.add('show'));
         });
     }, 150);
 }
@@ -3082,11 +3418,8 @@ function openPaket(op, cat) {
 
 function renderPaketPage(pageData, currentPage, totalPages, op, cat) {
     const list = document.getElementById('paketList');
-    
-    // Kosongkan dulu
     list.innerHTML = '';
     
-    // Render item satu per satu dengan smooth
     pageData.forEach((p, index) => {
         const div = document.createElement('div');
         div.className = 'card card-enter';
@@ -3100,14 +3433,9 @@ function renderPaketPage(pageData, currentPage, totalPages, op, cat) {
             <div class="card-detail">${p.ket}</div>
         `;
         list.appendChild(div);
-        
-        // Trigger animasi
-        requestAnimationFrame(() => {
-            div.classList.add('show');
-        });
+        requestAnimationFrame(() => div.classList.add('show'));
     });
     
-    // Tambahkan paginasi
     const paginationDiv = document.createElement('div');
     paginationDiv.className = 'flex justify-between items-center mt-6 pt-4 border-t border-gray-700';
     paginationDiv.innerHTML = `
@@ -3137,8 +3465,6 @@ function openGame(b) {
     document.getElementById('game').classList.remove("hidden"); 
     
     const list = document.getElementById('gameList');
-    
-    // Tampilkan skeleton
     list.innerHTML = `
         <div class="skeleton" style="height:80px;"></div>
         <div class="skeleton" style="height:80px;"></div>
@@ -3146,19 +3472,11 @@ function openGame(b) {
     `;
     
     const gameNames = Object.keys(games);
-    
     setTimeout(() => {
         list.innerHTML = "";
-        
-        // Render game dengan smooth (tidak berkedip)
-        gameNames.forEach((game, index) => {
-            const div = document.createElement('div');
-            div.className = 'card card-enter';
-            div.style.transitionDelay = (index * 0.04) + 's';
-            div.textContent = game;
-            div.onclick = () => openGameDetail(game);
+        gameNames.forEach((game) => {
+            const div = renderMenuItem(game, 'game', () => openGameDetail(game));
             list.appendChild(div);
-            
             requestAnimationFrame(() => {
                 div.classList.add('show');
             });
@@ -3173,8 +3491,6 @@ function openGameDetail(g) {
     document.getElementById('gameTitle').innerText = g; 
     
     const list = document.getElementById('topupList');
-    
-    // Tampilkan skeleton
     list.innerHTML = `
         <div class="skeleton" style="height:60px;"></div>
         <div class="skeleton" style="height:60px;"></div>
@@ -3182,11 +3498,8 @@ function openGameDetail(g) {
     `;
     
     const items = games[g];
-    
     setTimeout(() => {
         list.innerHTML = "";
-        
-        // Render item topup dengan smooth
         items.forEach((item, index) => {
             const match = item.match(/^(.*?)\s*Rp\s*([\d.]+)$/);
             let harga = match ? "Rp " + match[2] : "";
@@ -3204,10 +3517,7 @@ function openGameDetail(g) {
                 <div class="card-detail">Top Up Game</div>
             `;
             list.appendChild(div);
-            
-            requestAnimationFrame(() => {
-                div.classList.add('show');
-            });
+            requestAnimationFrame(() => div.classList.add('show'));
         });
     }, 150);
 }
@@ -3377,6 +3687,7 @@ function clearAllCache() {
       <h3 class="text-lg font-bold text-green-400">👑 Admin Panel</h3>
       <button onclick="closeAdminPanelModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
+    <div id="adminLogoUploadContainer" class="p-4"></div>
     
     <!-- MENU UTAMA ADMIN (Ukuran lebih kecil) -->
     <div id="adminMainMenu" class="p-4">
@@ -5148,7 +5459,182 @@ if (typeof window._updatePoinUIOverridden === 'undefined') {
     console.log('📌 Pelanggan bisa cek status klaimnya sendiri.');
     
 })();
+// ============================================================
+//  ADMIN PANEL - UPLOAD LOGO
+// ============================================================
 
+function renderAdminLogoUpload() {
+    const container = document.getElementById('adminLogoUploadContainer');
+    if (!container) return;
+    
+    const operatorNames = Object.keys(operators);
+    const gameNames = Object.keys(games);
+    
+    let html = `
+        <div class="bg-gray-800/50 rounded-lg p-4 mb-4">
+            <h4 class="text-green-400 font-bold mb-3 text-lg">📷 Upload Logo</h4>
+            <p class="text-xs text-gray-400 mb-3">Upload logo untuk operator dan game. Logo akan tersimpan di browser Anda.</p>
+            
+            <div class="mb-4">
+                <label class="text-sm text-gray-300 font-semibold">Pilih Tipe:</label>
+                <select id="uploadLogoType" class="ml-2 bg-gray-700 border border-gray-600 rounded-lg px-3 py-1.5 text-white text-sm">
+                    <option value="operator">📶 Operator</option>
+                    <option value="game">🎮 Game</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label class="text-sm text-gray-300 font-semibold">Pilih Nama:</label>
+                <select id="uploadLogoName" class="ml-2 bg-gray-700 border border-gray-600 rounded-lg px-3 py-1.5 text-white text-sm"></select>
+            </div>
+            
+            <div class="flex gap-3 items-center flex-wrap">
+                <input type="file" id="uploadLogoFile" accept="image/*" class="text-sm text-gray-400 file:bg-green-600 file:text-black file:font-bold file:px-4 file:py-1.5 file:rounded-lg file:border-0 file:cursor-pointer hover:file:bg-green-500">
+                <button onclick="uploadLogo()" class="bg-green-600 hover:bg-green-500 text-black font-bold px-4 py-1.5 rounded-lg transition text-sm">Upload</button>
+                <button onclick="deleteLogo()" class="bg-red-600 hover:bg-red-500 text-white font-bold px-4 py-1.5 rounded-lg transition text-sm">Hapus</button>
+            </div>
+            <div id="uploadPreview" class="mt-3 hidden">
+                <p class="text-xs text-gray-400">Preview:</p>
+                <img id="uploadPreviewImg" class="upload-preview mt-1">
+            </div>
+        </div>
+        
+        <div class="bg-gray-800/50 rounded-lg p-4">
+            <h4 class="text-green-400 font-bold mb-3 text-lg">📋 Logo Terupload</h4>
+            <div id="uploadedLogosList" class="grid grid-cols-2 md:grid-cols-4 gap-2"></div>
+        </div>
+    `;
+    
+    container.innerHTML = html;
+    
+    // Isi dropdown nama
+    const typeSelect = document.getElementById('uploadLogoType');
+    const nameSelect = document.getElementById('uploadLogoName');
+    
+    function updateNameOptions() {
+        const type = typeSelect.value;
+        const names = type === 'operator' ? operatorNames : gameNames;
+        nameSelect.innerHTML = names.map(n => `<option value="${n}">${n}</option>`).join('');
+    }
+    updateNameOptions();
+    typeSelect.onchange = updateNameOptions;
+    
+    // Preview gambar
+    const fileInput = document.getElementById('uploadLogoFile');
+    const previewDiv = document.getElementById('uploadPreview');
+    const previewImg = document.getElementById('uploadPreviewImg');
+    
+    fileInput.onchange = function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                previewImg.src = event.target.result;
+                previewDiv.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            previewDiv.classList.add('hidden');
+        }
+    };
+    
+    // Tampilkan logo yang sudah diupload
+    renderUploadedLogos();
+}
+
+function renderUploadedLogos() {
+    const container = document.getElementById('uploadedLogosList');
+    if (!container) return;
+    
+    const logos = getUploadedLogos();
+    const keys = Object.keys(logos);
+    
+    if (keys.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-xs col-span-full text-center">Belum ada logo yang diupload</p>';
+        return;
+    }
+    
+    container.innerHTML = keys.map(key => {
+        const [type, name] = key.split('_');
+        const icon = type === 'operator' ? '📶' : '🎮';
+        return `
+            <div class="bg-gray-700/50 rounded-lg p-2 text-center">
+                <img src="${logos[key]}" alt="${name}" class="w-12 h-12 object-contain mx-auto rounded border border-green-500/30">
+                <p class="text-xs text-gray-300 mt-1 truncate">${name}</p>
+                <p class="text-[10px] text-gray-400">${type}</p>
+            </div>
+        `;
+    }).join('');
+}
+
+function uploadLogo() {
+    const type = document.getElementById('uploadLogoType').value;
+    const name = document.getElementById('uploadLogoName').value;
+    const fileInput = document.getElementById('uploadLogoFile');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert('Pilih gambar terlebih dahulu!');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const dataUrl = event.target.result;
+        const key = type + '_' + name;
+        saveUploadedLogo(key, dataUrl);
+        alert('✅ Logo untuk ' + name + ' berhasil diupload!');
+        renderUploadedLogos();
+        refreshMenus();
+    };
+    reader.readAsDataURL(file);
+}
+
+function deleteLogo() {
+    const type = document.getElementById('uploadLogoType').value;
+    const name = document.getElementById('uploadLogoName').value;
+    const key = type + '_' + name;
+    
+    if (!getLogo(key)) {
+        alert('Logo tidak ditemukan!');
+        return;
+    }
+    
+    if (confirm('Hapus logo untuk ' + name + '?')) {
+        deleteUploadedLogo(key);
+        alert('✅ Logo dihapus!');
+        renderUploadedLogos();
+        refreshMenus();
+    }
+}
+
+function refreshMenus() {
+    // Refresh operator list if visible
+    const internetSection = document.getElementById('internet');
+    if (!internetSection.classList.contains('hidden')) {
+        const list = document.getElementById('operatorList');
+        const operatorNames = Object.keys(operators);
+        list.innerHTML = "";
+        operatorNames.forEach((o) => {
+            const div = renderMenuItem(o, 'operator', () => openTypes(o));
+            list.appendChild(div);
+            requestAnimationFrame(() => div.classList.add('show'));
+        });
+    }
+    
+    // Refresh game list if visible
+    const gameSection = document.getElementById('game');
+    if (!gameSection.classList.contains('hidden')) {
+        const list = document.getElementById('gameList');
+        const gameNames = Object.keys(games);
+        list.innerHTML = "";
+        gameNames.forEach((game) => {
+            const div = renderMenuItem(game, 'game', () => openGameDetail(game));
+            list.appendChild(div);
+            requestAnimationFrame(() => div.classList.add('show'));
+        });
+    }
+}
 </script>
 </body>    
 </html>

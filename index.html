@@ -1561,6 +1561,40 @@ function lazyRenderItems(items, containerId, renderItem, batchSize = 5, delay = 
     // Mulai render
     renderBatch();
 }
+// ============================================================
+//  LOGO DARI IMGBB UNTUK SEMUA PENGUNJUNG
+// ============================================================
+const LOGO_URLS = {
+    "operator_Indosat": "https://i.ibb.co.com/tft6S9w/IMG-20260620-072917.jpg",
+    "operator_Telkomsel": "https://i.ibb.co.com/Ngz815fF/images-7e1bfd25-d741-45.jpg",
+    "operator_Axis": "https://i.ibb.co.com/0VtDmk2j/axis-198257.jpg",
+    "operator_XL": "https://i.ibb.co.com/dsWHnM00/IMG-20260620-075418.jpg",
+    "operator_Tri": "https://i.ibb.co.com/LdkPvqfQ/IMG-20260620-075555.jpg",
+    "operator_byU": "https://i.ibb.co.com/hbrnP0r/images.jpg",
+    "game_Mobile Legends": "https://i.ibb.co.com/fYs8TRBd/IMG-20260620-080306.jpg",
+    "game_Free Fire": "https://i.ibb.co.com/Fbzy6Y7v/IMG-20260620-080935.jpg",
+    "game_PUBG Mobile": "https://i.ibb.co.com/xKJJBFN8/IMG-20260620-081207.jpg",
+    "game_Call Of Duty Mobile": "https://i.ibb.co.com/8LhLZSjS/IMG-20260620-082153.jpg",
+    "game_Honor Of Kings": "https://i.ibb.co.com/93HRTpt8/IMG-20260620-082452.jpg",
+    "game_Genshin Impact": "https://i.ibb.co.com/gGpSvjy/IMG-20260620-083215.jpg",
+    "game_Roblox": "https://i.ibb.co.com/zVnj3Prr/IMG-20260620-083534.jpg"
+};
+
+// ===== OVERRIDE FUNGSI getLogo =====
+const originalGetLogo = getLogo;
+getLogo = function(key) {
+    // 1. Cek di localStorage (untuk admin yang upload via panel)
+    const localLogos = getUploadedLogos();
+    if (localLogos && localLogos[key]) {
+        return localLogos[key];
+    }
+    
+    // 2. Jika tidak ada, pakai URL dari ImgBB (untuk semua pengunjung)
+    return LOGO_URLS[key] || null;
+};
+
+console.log('✅ Logo dari ImgBB siap untuk semua pengunjung!');
+console.log('📊 Total logo:', Object.keys(LOGO_URLS).length);
 </script>
 
 <!-- SCRIPT UTAMA (FUNGSI & LOGIKA) -->

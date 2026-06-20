@@ -3363,22 +3363,21 @@ function clearActive() { document.querySelectorAll(".menu-active").forEach(x => 
 function openInternet(b) { 
     clearActive(); 
     b.classList.add("menu-active"); 
-    historyStack.push(() => document.getElementById('home').classList.remove("hidden")); 
+    historyStack.push(function() {
+        document.getElementById('home').classList.remove("hidden");
+    });
     hideAll(); 
     document.getElementById('internet').classList.remove("hidden"); 
+    history.pushState({ page: 'internet' }, '', '#internet');
     
     const list = document.getElementById('operatorList');
-    
-    // Tampilkan skeleton loading
     list.innerHTML = `
         <div class="skeleton" style="height:80px;"></div>
         <div class="skeleton" style="height:80px;"></div>
         <div class="skeleton" style="height:80px;"></div>
     `;
     
-    // Gunakan setTimeout kecil agar skeleton terlihat
     setTimeout(() => {
-        // PERBAIKAN: Gunakan nama variabel berbeda
         const operatorNames = Object.keys(window.operators || operators);
         renderOperatorList(operatorNames);
     }, 150);
@@ -3398,14 +3397,22 @@ function renderOperatorList(operatorNames) {
 }
 
 function openTypes(op) { 
-    historyStack.push(() => document.getElementById('internet').classList.remove("hidden")); 
+    // Simpan operator
+    window._lastOperator = op;
+    
+    historyStack.push(function() {
+        document.getElementById('internet').classList.remove("hidden");
+        // Render ulang operator list
+        const operatorNames = Object.keys(window.operators || operators);
+        renderOperatorList(operatorNames);
+    });
+    
     hideAll(); 
     document.getElementById('paketTypes').classList.remove("hidden"); 
     document.getElementById('paketTitle').innerText = op; 
+    history.pushState({ page: 'paketTypes', operator: op }, '', '#paket');
     
     const list = document.getElementById('paketTypeList');
-    
-    // Tampilkan skeleton
     list.innerHTML = `
         <div class="skeleton" style="height:80px;"></div>
         <div class="skeleton" style="height:80px;"></div>
@@ -3430,7 +3437,9 @@ function openTypes(op) {
                     ${logoHtml}
                 </div>
             `;
-            div.onclick = () => openPaket(op, t);
+            div.onclick = function() {
+                openPaket(op, t);
+            };
             list.appendChild(div);
             requestAnimationFrame(() => div.classList.add('show'));
         });
@@ -3438,14 +3447,51 @@ function openTypes(op) {
 }
 
 function openPaket(op, cat) { 
-    historyStack.push(() => document.getElementById('paketTypes').classList.remove("hidden")); 
+    // Simpan operator dan kategori ke variabel global sementara
+    window._lastOperator = op;
+    window._lastCategory = cat;
+    
+    // Simpan fungsi untuk kembali ke paketTypes dengan operator yang benar
+    historyStack.push(function() {
+        // Tampilkan paketTypes
+        document.getElementById('paketTypes').classList.remove("hidden");
+        document.getElementById('paketTitle').innerText = window._lastOperator;
+        
+        // Render ulang daftar kategori
+        const list = document.getElementById('paketTypeList');
+        const dataOperator = window.operators || operators;
+        const categories = Object.keys(dataOperator[window._lastOperator]);
+        list.innerHTML = "";
+        
+        const logo = getLogo('operator_' + window._lastOperator);
+        const logoHtml = logo 
+            ? `<img src="${logo}" alt="${window._lastOperator}" class="menu-logo" loading="lazy" onerror="this.style.display='none'">`
+            : `<span class="text-3xl">📦</span>`;
+        
+        categories.forEach((t) => {
+            const div = document.createElement('div');
+            div.className = 'card card-enter';
+            div.innerHTML = `
+                <div class="menu-wrapper">
+                    <span class="menu-text">${t}</span>
+                    ${logoHtml}
+                </div>
+            `;
+            div.onclick = function() {
+                openPaket(window._lastOperator, t);
+            };
+            list.appendChild(div);
+            requestAnimationFrame(() => div.classList.add('show'));
+        });
+    });
+    
+    // Tampilkan halaman detail
     hideAll(); 
     document.getElementById('operatorDetail').classList.remove("hidden"); 
     document.getElementById('operatorTitle').innerText = op + " - " + cat; 
+    history.pushState({ page: 'operatorDetail', operator: op, category: cat }, '', '#detail');
     
     const list = document.getElementById('paketList');
-    
-    // Tampilkan skeleton loading
     list.innerHTML = `
         <div class="skeleton" style="height:80px;"></div>
         <div class="skeleton" style="height:80px;"></div>
@@ -3453,7 +3499,6 @@ function openPaket(op, cat) {
         <div class="skeleton" style="height:80px;"></div>
     `;
     
-    // PERBAIKAN: Gunakan window.operators
     const dataOperator = window.operators || operators;
     const allPaket = dataOperator[op][cat];
     
@@ -3537,10 +3582,29 @@ function openGame(b) {
 }
 
 function openGameDetail(g) { 
-    historyStack.push(() => document.getElementById('game').classList.remove("hidden")); 
+    window._lastGame = g;
+    
+    historyStack.push(function() {
+        document.getElementById('game').classList.remove("hidden");
+        // Render ulang game list
+        const gameNames = Object.keys(games);
+        const list = document.getElementById('gameList');
+        list.innerHTML = "";
+        gameNames.forEach((game) => {
+            const div = renderMenuItem(game, 'game', function() {
+                openGameDetail(game);
+            });
+            list.appendChild(div);
+            requestAnimationFrame(() => {
+                div.classList.add('show');
+            });
+        });
+    });
+    
     hideAll(); 
     document.getElementById('gameDetail').classList.remove("hidden"); 
     document.getElementById('gameTitle').innerText = g; 
+    history.pushState({ page: 'gameDetail', game: g }, '', '#gamedetail');
     
     const list = document.getElementById('topupList');
     list.innerHTML = `
@@ -4121,292 +4185,348 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 <script>
-// ===== SISTEM NAVIGASI MENGGUNAKAN TOMBOL PERANGKAT =====
-// (Gabungan dari semua solusi)
+// ============================================================
+//  NAVIGASI + TEKAN LAGI UNTUK KELUAR (VERSI FINAL)
+// ============================================================
 
-// 1. PASTIKAN TOMBOL FLOATING SEMBUNYI PERMANEN
+// 1. HAPUS TOMBOL FLOATING
 (function() {
     const floatingBtn = document.getElementById('floatingBackBtn');
     if (floatingBtn) {
         floatingBtn.style.display = 'none !important';
-        floatingBtn.style.opacity = '0';
-        floatingBtn.style.pointerEvents = 'none';
-        // Hapus dari DOM sepenuhnya agar tidak mengganggu
         floatingBtn.remove();
     }
 })();
 
-// 2. FUNGSI BACK YANG DISEDERHANAKAN (hanya untuk historyStack)
-window.back = function() {
-    if (historyStack.length > 0) {
-        const f = historyStack.pop();
-        if (f) {
-            hideAll();
-            f();
-            // Update URL tanpa menambah history
-            history.replaceState({ page: 'previous' }, '', window.location.pathname);
-        }
-    }
-};
-
-// 3. TAMBAHKAN HISTORY STATE UNTUK SETIAP NAVIGASI
-// Simpan fungsi asli
-const origOpenInternet = window.openInternet;
-window.openInternet = function(b) {
-    origOpenInternet(b);
-    history.pushState({ page: 'internet' }, '', '#internet');
-};
-
-const origOpenGame = window.openGame;
-window.openGame = function(b) {
-    origOpenGame(b);
-    history.pushState({ page: 'game' }, '', '#game');
-};
-
-const origOpenTypes = window.openTypes;
-window.openTypes = function(op) {
-    origOpenTypes(op);
-    history.pushState({ page: 'paketTypes', operator: op }, '', '#paket');
-};
-
-const origOpenPaket = window.openPaket;
-window.openPaket = function(op, cat) {
-    origOpenPaket(op, cat);
-    history.pushState({ page: 'operatorDetail', operator: op, category: cat }, '', '#detail');
-};
-
-const origOpenGameDetail = window.openGameDetail;
-window.openGameDetail = function(g) {
-    origOpenGameDetail(g);
-    history.pushState({ page: 'gameDetail', game: g }, '', '#gamedetail');
-};
-
-// 4. DETEKSI TOMBOL KEMBALI PERANGKAT (POPSTATE)
-window.addEventListener('popstate', function(event) {
-    // Jika history stack kosong, kembali ke home
-    if (historyStack.length === 0) {
-        hideAll();
-        document.getElementById('home').classList.remove('hidden');
-        return;
-    }
-    
-    // Jalankan fungsi back()
-    window.back();
-});
-
-// 5. TAMBAHKAN STATE SAAT PERTAMA KALI LOAD
-document.addEventListener('DOMContentLoaded', function() {
-    history.replaceState({ page: 'home' }, '', window.location.pathname);
-    console.log('✅ Navigasi menggunakan tombol perangkat siap!');
-});
-
-// 6. PETUNJUK UNTUK PENGGUNA (hanya sekali)
-(function showNavigationHint() {
-    if (localStorage.getItem('nav_hint_shown')) return;
-    
-    setTimeout(() => {
-        const hint = document.createElement('div');
-        hint.style.cssText = `
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
-            color: #22c55e;
-            padding: 14px 24px;
-            border-radius: 14px;
-            border: 1px solid #22c55e;
-            font-size: 14px;
-            z-index: 9999;
-            text-align: center;
-            max-width: 90%;
-            box-shadow: 0 0 40px rgba(34,197,94,0.4);
-            animation: fadeInUp 0.5s ease;
-            font-family: Poppins, sans-serif;
-        `;
-        hint.innerHTML = `
-            📱 Gunakan tombol <strong>Kembali</strong> di perangkat Anda<br>
-            <span style="font-size:11px;color:#9ca3af;">(tombol panah kiri di bawah layar)</span>
-        `;
-        document.body.appendChild(hint);
-        
-        // Tambahkan animasi CSS jika belum ada
-        if (!document.getElementById('hintAnimation')) {
-            const style = document.createElement('style');
-            style.id = 'hintAnimation';
-            style.textContent = `
-                @keyframes fadeInUp {
-                    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-                    to { opacity: 1; transform: translateX(-50%) translateY(0); }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        setTimeout(() => {
-            hint.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-            hint.style.opacity = '0';
-            hint.style.transform = 'translateX(-50%) translateY(-20px)';
-            setTimeout(() => hint.remove(), 800);
-        }, 5000);
-        
-        localStorage.setItem('nav_hint_shown', 'true');
-    }, 1500);
-})();
-
-console.log('✅ Sistem navigasi dengan tombol perangkat aktif!');
-
-// ============================================================
-//  FITUR "TEKAN LAGI UNTUK KELUAR" DI HALAMAN UTAMA
-// ============================================================
-
+// 2. VARIABEL GLOBAL
+let historyStack = [];
 let exitTimer = null;
 let exitCount = 0;
 
-function handleBackToExit() {
-    // Cek apakah sedang di halaman HOME
-    const homeSection = document.getElementById('home');
-    const isOnHome = homeSection && !homeSection.classList.contains('hidden');
-    
-    // Cek apakah ada history navigasi (berarti user sedang di sub-menu)
-    const isInSubMenu = historyStack.length > 0;
-    
-    // Jika user sedang di sub-menu, jalankan back() normal
+// 3. FUNGSI DASAR
+function hideAll() {
+    document.querySelectorAll("section").forEach(function(s) {
+        s.classList.add("hidden");
+    });
+}
+
+function clearActive() {
+    document.querySelectorAll(".menu-active").forEach(function(x) {
+        x.classList.remove("menu-active");
+    });
+}
+
+// 4. FUNGSI BACK (KEMBALI SELANGKAH)
+function goBack() {
+    if (historyStack.length > 0) {
+        var f = historyStack.pop();
+        if (f) {
+            hideAll();
+            f();
+            history.replaceState({ page: 'previous' }, '', window.location.pathname);
+        }
+    }
+}
+
+// 5. HANDLE EXIT (TEKAN LAGI UNTUK KELUAR)
+function handleExit() {
+    var homeSection = document.getElementById('home');
+    var isOnHome = homeSection && !homeSection.classList.contains('hidden');
+    var isInSubMenu = historyStack.length > 0;
+
     if (isInSubMenu) {
-        window.back();
+        goBack();
         return;
     }
-    
-    // Jika user sudah di halaman HOME
+
     if (isOnHome) {
-        // Jika sudah tekan sekali sebelumnya dalam waktu dekat
         if (exitCount > 0) {
-            // Reset counter dan tutup halaman
             exitCount = 0;
             clearTimeout(exitTimer);
-            // Coba tutup tab/window
             window.close();
-            // Jika tidak bisa tutup, arahkan ke about:blank
             if (!window.closed) {
                 window.location.href = 'about:blank';
             }
             return;
         }
-        
-        // Pertama kali tekan
+
         exitCount = 1;
         showToast('⚠️ Tekan kembali sekali lagi untuk keluar');
-        
-        // Reset counter setelah 3 detik
+
         clearTimeout(exitTimer);
-        exitTimer = setTimeout(() => {
+        exitTimer = setTimeout(function() {
             exitCount = 0;
         }, 3000);
-        
         return;
     }
-    
-    // Fallback: jika tidak di home dan tidak ada history
-    window.back();
+
+    goBack();
 }
 
-// Fungsi toast kecil (jika belum ada)
+// 6. FUNGSI TOAST
 function showToast(message) {
-    // Hapus toast sebelumnya jika ada
-    const oldToast = document.querySelector('.exit-toast');
+    var oldToast = document.querySelector('.exit-toast');
     if (oldToast) oldToast.remove();
-    
-    const toast = document.createElement('div');
-    toast.className = 'exit-toast fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/90 border border-green-500 text-white px-6 py-4 rounded-xl z-[9999] shadow-2xl text-center';
-    toast.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(0,0,0,0.92);
-        color: white;
-        padding: 20px 30px;
-        border-radius: 16px;
-        border: 2px solid #22c55e;
-        z-index: 9999;
-        font-family: Poppins, sans-serif;
-        font-size: 1.1rem;
-        font-weight: 600;
-        box-shadow: 0 0 40px rgba(34,197,94,0.4);
-        text-align: center;
-        max-width: 90%;
-        animation: fadeInUp 0.3s ease;
-    `;
-    toast.innerHTML = `
-        <span style="font-size:2rem;display:block;margin-bottom:8px;">⚠️</span>
-        ${message}
-        <div style="font-size:0.75rem;color:#9ca3af;margin-top:8px;font-weight:400;">Tekan sekali lagi untuk keluar</div>
-    `;
-    
-    // Tambahkan animasi CSS jika belum ada
-    if (!document.getElementById('toastAnimation')) {
-        const style = document.createElement('style');
-        style.id = 'toastAnimation';
-        style.textContent = `
-            @keyframes fadeInUp {
-                from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-                to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            }
-            @keyframes fadeOutDown {
-                from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-                to { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
+
+    var toast = document.createElement('div');
+    toast.className = 'exit-toast';
+    toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.92);color:white;padding:20px 30px;border-radius:16px;border:2px solid #22c55e;z-index:9999;font-family:Poppins,sans-serif;font-size:1.1rem;font-weight:600;box-shadow:0 0 40px rgba(34,197,94,0.4);text-align:center;max-width:90%;animation:toastPop 0.3s ease forwards;';
+    toast.innerHTML = '<span style="font-size:2rem;display:block;margin-bottom:8px;">⚠️</span>' + message + '<div style="font-size:0.75rem;color:#9ca3af;margin-top:8px;font-weight:400;">Tekan sekali lagi untuk keluar</div>';
+
     document.body.appendChild(toast);
-    
-    // Auto hilang setelah 3 detik
-    setTimeout(() => {
+
+    setTimeout(function() {
         if (toast.parentNode) {
-            toast.style.animation = 'fadeOutDown 0.3s ease forwards';
-            setTimeout(() => toast.remove(), 300);
+            toast.style.animation = 'toastFade 0.3s ease forwards';
+            setTimeout(function() { toast.remove(); }, 300);
         }
     }, 3000);
 }
 
-// ===== OVERRIDE EVENT POPSTATE =====
-// Simpan fungsi popstate asli
-const originalPopstate = window._originalPopstate || null;
+// 7. OVERRIDE FUNGSI BACK GLOBAL
+window.back = goBack;
 
-// Hapus event listener popstate lama
-window.removeEventListener('popstate', window._popstateHandler);
-
-// Buat handler baru
-window._popstateHandler = function(event) {
-    // Jika history stack kosong dan sedang di home, jalankan exit confirmation
+// 8. HANDLER POPSTATE
+function handlePopState(event) {
     if (historyStack.length === 0) {
-        const homeSection = document.getElementById('home');
-        const isOnHome = homeSection && !homeSection.classList.contains('hidden');
+        var homeSection = document.getElementById('home');
+        var isOnHome = homeSection && !homeSection.classList.contains('hidden');
         if (isOnHome) {
-            handleBackToExit();
+            handleExit();
             return;
         }
     }
-    
-    // Jika ada history, jalankan back normal
+
     if (historyStack.length > 0) {
-        window.back();
+        goBack();
     } else {
-        // Fallback: jika tidak di home dan tidak ada history
         hideAll();
         document.getElementById('home').classList.remove('hidden');
     }
-};
+}
 
-// Pasang event listener baru
-window.addEventListener('popstate', window._popstateHandler);
+// 9. PASANG EVENT POPSTATE
+window.removeEventListener('popstate', handlePopState);
+window.addEventListener('popstate', handlePopState);
 
-// Simpan referensi
-window._originalPopstate = window._popstateHandler;
+// ============================================================
+//  FUNGSI NAVIGASI UTAMA
+// ============================================================
 
-console.log('✅ Fitur "Tekan lagi untuk keluar" aktif!');
+function openInternet(b) {
+    clearActive();
+    b.classList.add("menu-active");
+    
+    historyStack.push(function() {
+        document.getElementById('home').classList.remove("hidden");
+    });
+    
+    hideAll();
+    document.getElementById('internet').classList.remove("hidden");
+    history.pushState({ page: 'internet' }, '', '#internet');
+    
+    var list = document.getElementById('operatorList');
+    list.innerHTML = '<div class="skeleton" style="height:80px;"></div><div class="skeleton" style="height:80px;"></div><div class="skeleton" style="height:80px;"></div>';
+    
+    setTimeout(function() {
+        var operatorNames = Object.keys(window.operators || operators);
+        renderOperatorList(operatorNames);
+    }, 150);
+}
+
+function renderOperatorList(operatorNames) {
+    var list = document.getElementById('operatorList');
+    list.innerHTML = "";
+    
+    operatorNames.forEach(function(o) {
+        var div = renderMenuItem(o, 'operator', function() {
+            openTypes(o);
+        });
+        list.appendChild(div);
+        requestAnimationFrame(function() {
+            div.classList.add('show');
+        });
+    });
+}
+
+function openTypes(op) {
+    window._lastOperator = op;
+    
+    historyStack.push(function() {
+        document.getElementById('internet').classList.remove("hidden");
+        var operatorNames = Object.keys(window.operators || operators);
+        renderOperatorList(operatorNames);
+    });
+    
+    hideAll();
+    document.getElementById('paketTypes').classList.remove("hidden");
+    document.getElementById('paketTitle').innerText = op;
+    history.pushState({ page: 'paketTypes', operator: op }, '', '#paket');
+    
+    var list = document.getElementById('paketTypeList');
+    list.innerHTML = '<div class="skeleton" style="height:80px;"></div><div class="skeleton" style="height:80px;"></div>';
+    
+    setTimeout(function() {
+        var dataOperator = window.operators || operators;
+        var categories = Object.keys(dataOperator[op]);
+        list.innerHTML = "";
+        
+        var logo = getLogo('operator_' + op);
+        var logoHtml = logo 
+            ? '<img src="' + logo + '" alt="' + op + '" class="menu-logo" loading="lazy" onerror="this.style.display=\'none\'">'
+            : '<span class="text-3xl">📦</span>';
+        
+        categories.forEach(function(t) {
+            var div = document.createElement('div');
+            div.className = 'card card-enter';
+            div.innerHTML = '<div class="menu-wrapper"><span class="menu-text">' + t + '</span>' + logoHtml + '</div>';
+            div.onclick = function() {
+                openPaket(op, t);
+            };
+            list.appendChild(div);
+            requestAnimationFrame(function() {
+                div.classList.add('show');
+            });
+        });
+    }, 150);
+}
+
+function openPaket(op, cat) {
+    window._lastOperator = op;
+    window._lastCategory = cat;
+    
+    historyStack.push(function() {
+        document.getElementById('paketTypes').classList.remove("hidden");
+        document.getElementById('paketTitle').innerText = window._lastOperator;
+        
+        var list = document.getElementById('paketTypeList');
+        var dataOperator = window.operators || operators;
+        var categories = Object.keys(dataOperator[window._lastOperator]);
+        list.innerHTML = "";
+        
+        var logo = getLogo('operator_' + window._lastOperator);
+        var logoHtml = logo 
+            ? '<img src="' + logo + '" alt="' + window._lastOperator + '" class="menu-logo" loading="lazy" onerror="this.style.display=\'none\'">'
+            : '<span class="text-3xl">📦</span>';
+        
+        categories.forEach(function(t) {
+            var div = document.createElement('div');
+            div.className = 'card card-enter';
+            div.innerHTML = '<div class="menu-wrapper"><span class="menu-text">' + t + '</span>' + logoHtml + '</div>';
+            div.onclick = function() {
+                openPaket(window._lastOperator, t);
+            };
+            list.appendChild(div);
+            requestAnimationFrame(function() {
+                div.classList.add('show');
+            });
+        });
+    });
+    
+    hideAll();
+    document.getElementById('operatorDetail').classList.remove("hidden");
+    document.getElementById('operatorTitle').innerText = op + " - " + cat;
+    history.pushState({ page: 'operatorDetail', operator: op, category: cat }, '', '#detail');
+    
+    var list = document.getElementById('paketList');
+    list.innerHTML = '<div class="skeleton" style="height:80px;"></div><div class="skeleton" style="height:80px;"></div><div class="skeleton" style="height:80px;"></div><div class="skeleton" style="height:80px;"></div>';
+    
+    var dataOperator = window.operators || operators;
+    var allPaket = dataOperator[op][cat];
+    
+    setTimeout(function() {
+        PaginationHelper.setup(
+            allPaket,
+            function(pageData, currentPage, totalPages) {
+                renderPaketPage(pageData, currentPage, totalPages, op, cat);
+            },
+            8
+        );
+    }, 150);
+}
+
+function openGame(b) {
+    clearActive();
+    b.classList.add("menu-active");
+    
+    historyStack.push(function() {
+        document.getElementById('home').classList.remove("hidden");
+    });
+    
+    hideAll();
+    document.getElementById('game').classList.remove("hidden");
+    history.pushState({ page: 'game' }, '', '#game');
+    
+    var list = document.getElementById('gameList');
+    list.innerHTML = '<div class="skeleton" style="height:80px;"></div><div class="skeleton" style="height:80px;"></div><div class="skeleton" style="height:80px;"></div>';
+    
+    var gameNames = Object.keys(games);
+    setTimeout(function() {
+        list.innerHTML = "";
+        gameNames.forEach(function(game) {
+            var div = renderMenuItem(game, 'game', function() {
+                openGameDetail(game);
+            });
+            list.appendChild(div);
+            requestAnimationFrame(function() {
+                div.classList.add('show');
+            });
+        });
+    }, 150);
+}
+
+function openGameDetail(g) {
+    window._lastGame = g;
+    
+    historyStack.push(function() {
+        document.getElementById('game').classList.remove("hidden");
+        var gameNames = Object.keys(games);
+        var list = document.getElementById('gameList');
+        list.innerHTML = "";
+        gameNames.forEach(function(game) {
+            var div = renderMenuItem(game, 'game', function() {
+                openGameDetail(game);
+            });
+            list.appendChild(div);
+            requestAnimationFrame(function() {
+                div.classList.add('show');
+            });
+        });
+    });
+    
+    hideAll();
+    document.getElementById('gameDetail').classList.remove("hidden");
+    document.getElementById('gameTitle').innerText = g;
+    history.pushState({ page: 'gameDetail', game: g }, '', '#gamedetail');
+    
+    var list = document.getElementById('topupList');
+    list.innerHTML = '<div class="skeleton" style="height:60px;"></div><div class="skeleton" style="height:60px;"></div><div class="skeleton" style="height:60px;"></div>';
+    
+    var items = games[g];
+    setTimeout(function() {
+        list.innerHTML = "";
+        items.forEach(function(item, index) {
+            var match = item.match(/^(.*?)\s*Rp\s*([\d.]+)$/);
+            var harga = match ? "Rp " + match[2] : "";
+            var namaItem = match ? match[1].trim() : item;
+            
+            var div = document.createElement('div');
+            div.className = 'card card-enter';
+            div.style.transitionDelay = (index * 0.02) + 's';
+            div.innerHTML = '<div class="card-main"><div style="flex:1">' + namaItem + '</div><span class="price">' + harga + '</span><button class="whatsapp-btn" onclick="sendToWhatsApp(\'' + g + ' - ' + namaItem + '\', \'' + harga + '\')">💬 Beli</button></div><div class="card-detail">Top Up Game</div>';
+            list.appendChild(div);
+            requestAnimationFrame(function() {
+                div.classList.add('show');
+            });
+        });
+    }, 150);
+}
+
+// 10. INIT
+document.addEventListener('DOMContentLoaded', function() {
+    history.replaceState({ page: 'home' }, '', window.location.pathname);
+    console.log('✅ Navigasi bertahap + "Tekan lagi untuk keluar" siap!');
+});
 </script>
 
 <script>

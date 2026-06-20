@@ -3346,20 +3346,6 @@ function initSearchBarHome() {
 </footer>         
     
 <script>    
-// ===== NAVIGASI =====
-let historyStack = [];
-function hideAll() { document.querySelectorAll("section").forEach(s => s.classList.add("hidden")); }
-function back() { 
-    if (historyStack.length > 0) {
-        const f = historyStack.pop(); 
-        if (f) { 
-            hideAll(); 
-            f(); 
-        }
-    }
-}
-function clearActive() { document.querySelectorAll(".menu-active").forEach(x => x.classList.remove("menu-active")); }
-
 function openInternet(b) { 
     clearActive(); 
     b.classList.add("menu-active"); 
@@ -4120,197 +4106,6 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="footer-info">⏳ Waktu berdasarkan lokasi Lebak, Banten</div>
     </div>
 </div>
-<script>
-// ============================================================
-//  SISTEM NAVIGASI + TEKAN LAGI UNTUK KELUAR (GABUNGAN)
-// ============================================================
-
-let historyStack = [];
-let exitTimer = null;
-let exitCount = 0;
-let isNavigating = false;
-
-function hideAll() {
-    document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
-}
-
-function back() {
-    if (historyStack.length > 0) {
-        const f = historyStack.pop();
-        if (f) {
-            hideAll();
-            f();
-            // Update URL tanpa menambah history
-            history.replaceState({ page: 'previous' }, '', window.location.pathname);
-            return true;
-        }
-    }
-    return false;
-}
-
-// ===== HANDLE TOMBOL KEMBALI =====
-function handleBackButton() {
-    // Jika sedang dalam proses navigasi, abaikan
-    if (isNavigating) return;
-    
-    // Cek apakah ada history (berarti di sub-menu)
-    if (historyStack.length > 0) {
-        isNavigating = true;
-        back();
-        setTimeout(() => { isNavigating = false; }, 300);
-        return;
-    }
-    
-    // Cek apakah di halaman HOME
-    const homeSection = document.getElementById('home');
-    const isOnHome = homeSection && !homeSection.classList.contains('hidden');
-    
-    if (isOnHome) {
-        // Jika sudah tekan sekali sebelumnya
-        if (exitCount > 0) {
-            // Reset dan tutup
-            exitCount = 0;
-            clearTimeout(exitTimer);
-            // Coba tutup tab
-            window.close();
-            if (!window.closed) {
-                window.location.href = 'about:blank';
-            }
-            return;
-        }
-        
-        // Pertama kali tekan
-        exitCount = 1;
-        showExitToast('⚠️ Tekan kembali sekali lagi untuk keluar');
-        
-        clearTimeout(exitTimer);
-        exitTimer = setTimeout(() => {
-            exitCount = 0;
-        }, 3000);
-        return;
-    }
-    
-    // Fallback: jika tidak di home dan tidak ada history
-    // Coba kembali ke home
-    hideAll();
-    document.getElementById('home').classList.remove('hidden');
-    history.replaceState({ page: 'home' }, '', window.location.pathname);
-}
-
-// ===== TOAST EXIT =====
-function showExitToast(message) {
-    const oldToast = document.querySelector('.exit-toast');
-    if (oldToast) oldToast.remove();
-    
-    const toast = document.createElement('div');
-    toast.className = 'exit-toast';
-    toast.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(0,0,0,0.92);
-        color: white;
-        padding: 20px 30px;
-        border-radius: 16px;
-        border: 2px solid #22c55e;
-        z-index: 9999;
-        font-family: Poppins, sans-serif;
-        font-size: 1.1rem;
-        font-weight: 600;
-        box-shadow: 0 0 40px rgba(34,197,94,0.4);
-        text-align: center;
-        max-width: 90%;
-        animation: toastPop 0.3s ease forwards;
-    `;
-    toast.innerHTML = `
-        <span style="font-size:2rem;display:block;margin-bottom:8px;">⚠️</span>
-        ${message}
-        <div style="font-size:0.75rem;color:#9ca3af;margin-top:8px;font-weight:400;">Tekan sekali lagi untuk keluar</div>
-    `;
-    
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        if (toast.parentNode) {
-            toast.style.animation = 'toastFade 0.3s ease forwards';
-            setTimeout(() => toast.remove(), 300);
-        }
-    }, 3000);
-}
-
-// ===== NAVIGASI FUNGSI YANG DIPERBAIKI =====
-const origOpenInternet = window.openInternet;
-window.openInternet = function(b) {
-    exitCount = 0;
-    clearTimeout(exitTimer);
-    origOpenInternet(b);
-    history.pushState({ page: 'internet' }, '', '#internet');
-};
-
-const origOpenGame = window.openGame;
-window.openGame = function(b) {
-    exitCount = 0;
-    clearTimeout(exitTimer);
-    origOpenGame(b);
-    history.pushState({ page: 'game' }, '', '#game');
-};
-
-const origOpenTypes = window.openTypes;
-window.openTypes = function(op) {
-    exitCount = 0;
-    clearTimeout(exitTimer);
-    origOpenTypes(op);
-    history.pushState({ page: 'paketTypes', operator: op }, '', '#paket');
-};
-
-const origOpenPaket = window.openPaket;
-window.openPaket = function(op, cat) {
-    exitCount = 0;
-    clearTimeout(exitTimer);
-    origOpenPaket(op, cat);
-    history.pushState({ page: 'operatorDetail', operator: op, category: cat }, '', '#detail');
-};
-
-const origOpenGameDetail = window.openGameDetail;
-window.openGameDetail = function(g) {
-    exitCount = 0;
-    clearTimeout(exitTimer);
-    origOpenGameDetail(g);
-    history.pushState({ page: 'gameDetail', game: g }, '', '#gamedetail');
-};
-
-// ===== POPSTATE EVENT =====
-window.addEventListener('popstate', function(event) {
-    // Reset exit counter saat navigasi
-    exitCount = 0;
-    clearTimeout(exitTimer);
-    
-    // Hapus toast jika ada
-    const toast = document.querySelector('.exit-toast');
-    if (toast) toast.remove();
-    
-    // Jalankan handleBackButton
-    handleBackButton();
-});
-
-// ===== STATE AWAL =====
-document.addEventListener('DOMContentLoaded', function() {
-    history.replaceState({ page: 'home' }, '', window.location.pathname);
-    console.log('✅ Sistem navigasi dengan "Tekan lagi untuk keluar" aktif!');
-});
-
-// ===== HAPUS TOMBOL FLOATING BACK =====
-(function() {
-    const floatingBtn = document.getElementById('floatingBackBtn');
-    if (floatingBtn) {
-        floatingBtn.style.display = 'none !important';
-        floatingBtn.remove();
-    }
-})();
-
-console.log('✅ Sistem navigasi terintegrasi siap!');
-</script>
 
 <script>
 // ===== SISTEM HISAB URFI DENGAN KOREKSI BULAN KRITIS =====
@@ -5741,6 +5536,316 @@ function refreshMenus() {
         });
     }
 }
+// ============================================================
+//  SISTEM NAVIGASI + TEKAN LAGI UNTUK KELUAR (GABUNGAN)
+// ============================================================
+
+let historyStack = [];
+let exitTimer = null;
+let exitCount = 0;
+let isNavigating = false;
+
+function hideAll() {
+    document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
+}
+
+function back() {
+    if (historyStack.length > 0) {
+        const f = historyStack.pop();
+        if (f) {
+            hideAll();
+            f();
+            history.replaceState({ page: 'previous' }, '', window.location.pathname);
+            return true;
+        }
+    }
+    return false;
+}
+
+function clearActive() {
+    document.querySelectorAll(".menu-active").forEach(x => x.classList.remove("menu-active"));
+}
+
+// ===== FUNGSI NAVIGASI =====
+window.openInternet = function(b) {
+    clearActive();
+    b.classList.add("menu-active");
+    historyStack.push(() => document.getElementById('home').classList.remove("hidden"));
+    hideAll();
+    document.getElementById('internet').classList.remove("hidden");
+    
+    const list = document.getElementById('operatorList');
+    list.innerHTML = `
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+    `;
+    
+    setTimeout(() => {
+        const operatorNames = Object.keys(window.operators || operators);
+        renderOperatorList(operatorNames);
+    }, 150);
+    
+    // Reset exit counter
+    exitCount = 0;
+    clearTimeout(exitTimer);
+    history.pushState({ page: 'internet' }, '', '#internet');
+};
+
+window.openGame = function(b) {
+    clearActive();
+    b.classList.add("menu-active");
+    historyStack.push(() => document.getElementById('home').classList.remove("hidden"));
+    hideAll();
+    document.getElementById('game').classList.remove("hidden");
+    
+    const list = document.getElementById('gameList');
+    list.innerHTML = `
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+    `;
+    
+    const gameNames = Object.keys(games);
+    setTimeout(() => {
+        list.innerHTML = "";
+        gameNames.forEach((game) => {
+            const div = renderMenuItem(game, 'game', () => openGameDetail(game));
+            list.appendChild(div);
+            requestAnimationFrame(() => {
+                div.classList.add('show');
+            });
+        });
+    }, 150);
+    
+    exitCount = 0;
+    clearTimeout(exitTimer);
+    history.pushState({ page: 'game' }, '', '#game');
+};
+
+window.openTypes = function(op) {
+    historyStack.push(() => document.getElementById('internet').classList.remove("hidden"));
+    hideAll();
+    document.getElementById('paketTypes').classList.remove("hidden");
+    document.getElementById('paketTitle').innerText = op;
+    
+    const list = document.getElementById('paketTypeList');
+    list.innerHTML = `
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+    `;
+    
+    setTimeout(() => {
+        const dataOperator = window.operators || operators;
+        const categories = Object.keys(dataOperator[op]);
+        list.innerHTML = "";
+        
+        const logo = getLogo('operator_' + op);
+        const logoHtml = logo 
+            ? `<img src="${logo}" alt="${op}" class="menu-logo" loading="lazy" onerror="this.style.display='none'">`
+            : `<span class="text-3xl">📦</span>`;
+        
+        categories.forEach((t) => {
+            const div = document.createElement('div');
+            div.className = 'card card-enter';
+            div.innerHTML = `
+                <div class="menu-wrapper">
+                    <span class="menu-text">${t}</span>
+                    ${logoHtml}
+                </div>
+            `;
+            div.onclick = () => openPaket(op, t);
+            list.appendChild(div);
+            requestAnimationFrame(() => div.classList.add('show'));
+        });
+    }, 150);
+    
+    exitCount = 0;
+    clearTimeout(exitTimer);
+    history.pushState({ page: 'paket-' + op }, '', '#paket');
+};
+
+window.openPaket = function(op, cat) {
+    historyStack.push(() => document.getElementById('paketTypes').classList.remove("hidden"));
+    hideAll();
+    document.getElementById('operatorDetail').classList.remove("hidden");
+    document.getElementById('operatorTitle').innerText = op + " - " + cat;
+    
+    const list = document.getElementById('paketList');
+    list.innerHTML = `
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+    `;
+    
+    const dataOperator = window.operators || operators;
+    const allPaket = dataOperator[op][cat];
+    
+    setTimeout(() => {
+        PaginationHelper.setup(
+            allPaket,
+            function(pageData, currentPage, totalPages) {
+                renderPaketPage(pageData, currentPage, totalPages, op, cat);
+            },
+            8
+        );
+    }, 150);
+    
+    exitCount = 0;
+    clearTimeout(exitTimer);
+    history.pushState({ page: 'detail-' + op + '-' + cat }, '', '#detail');
+};
+
+window.openGameDetail = function(g) {
+    historyStack.push(() => document.getElementById('game').classList.remove("hidden"));
+    hideAll();
+    document.getElementById('gameDetail').classList.remove("hidden");
+    document.getElementById('gameTitle').innerText = g;
+    
+    const list = document.getElementById('topupList');
+    list.innerHTML = `
+        <div class="skeleton" style="height:60px;"></div>
+        <div class="skeleton" style="height:60px;"></div>
+        <div class="skeleton" style="height:60px;"></div>
+    `;
+    
+    const items = games[g];
+    setTimeout(() => {
+        list.innerHTML = "";
+        items.forEach((item, index) => {
+            const match = item.match(/^(.*?)\s*Rp\s*([\d.]+)$/);
+            let harga = match ? "Rp " + match[2] : "";
+            let namaItem = match ? match[1].trim() : item;
+            
+            const div = document.createElement('div');
+            div.className = 'card card-enter';
+            div.style.transitionDelay = (index * 0.02) + 's';
+            div.innerHTML = `
+                <div class="card-main">
+                    <div style="flex:1">${namaItem}</div>
+                    <span class="price">${harga}</span>
+                    <button class="whatsapp-btn" onclick="sendToWhatsApp('${g} - ${namaItem}', '${harga}')">💬 Beli</button>
+                </div>
+                <div class="card-detail">Top Up Game</div>
+            `;
+            list.appendChild(div);
+            requestAnimationFrame(() => div.classList.add('show'));
+        });
+    }, 150);
+    
+    exitCount = 0;
+    clearTimeout(exitTimer);
+    history.pushState({ page: 'gamedetail-' + g }, '', '#gamedetail');
+};
+
+// ===== HANDLE TOMBOL KEMBALI =====
+function handleBackButton() {
+    if (isNavigating) return;
+    
+    if (historyStack.length > 0) {
+        isNavigating = true;
+        back();
+        setTimeout(() => { isNavigating = false; }, 300);
+        return;
+    }
+    
+    const homeSection = document.getElementById('home');
+    const isOnHome = homeSection && !homeSection.classList.contains('hidden');
+    
+    if (isOnHome) {
+        if (exitCount > 0) {
+            exitCount = 0;
+            clearTimeout(exitTimer);
+            window.close();
+            if (!window.closed) {
+                window.location.href = 'about:blank';
+            }
+            return;
+        }
+        
+        exitCount = 1;
+        showExitToast('⚠️ Tekan kembali sekali lagi untuk keluar');
+        
+        clearTimeout(exitTimer);
+        exitTimer = setTimeout(() => {
+            exitCount = 0;
+        }, 3000);
+        return;
+    }
+    
+    hideAll();
+    document.getElementById('home').classList.remove('hidden');
+    history.replaceState({ page: 'home' }, '', window.location.pathname);
+}
+
+// ===== TOAST EXIT =====
+function showExitToast(message) {
+    const oldToast = document.querySelector('.exit-toast');
+    if (oldToast) oldToast.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = 'exit-toast';
+    toast.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0,0,0,0.92);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 16px;
+        border: 2px solid #22c55e;
+        z-index: 9999;
+        font-family: Poppins, sans-serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+        box-shadow: 0 0 40px rgba(34,197,94,0.4);
+        text-align: center;
+        max-width: 90%;
+        animation: toastPop 0.3s ease forwards;
+    `;
+    toast.innerHTML = `
+        <span style="font-size:2rem;display:block;margin-bottom:8px;">⚠️</span>
+        ${message}
+        <div style="font-size:0.75rem;color:#9ca3af;margin-top:8px;font-weight:400;">Tekan sekali lagi untuk keluar</div>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.style.animation = 'toastFade 0.3s ease forwards';
+            setTimeout(() => toast.remove(), 300);
+        }
+    }, 3000);
+}
+
+// ===== POPSTATE EVENT =====
+window.addEventListener('popstate', function(event) {
+    exitCount = 0;
+    clearTimeout(exitTimer);
+    const toast = document.querySelector('.exit-toast');
+    if (toast) toast.remove();
+    handleBackButton();
+});
+
+// ===== STATE AWAL =====
+document.addEventListener('DOMContentLoaded', function() {
+    history.replaceState({ page: 'home' }, '', window.location.pathname);
+    console.log('✅ Sistem navigasi dengan "Tekan lagi untuk keluar" aktif!');
+});
+
+// ===== HAPUS TOMBOL FLOATING BACK =====
+(function() {
+    const floatingBtn = document.getElementById('floatingBackBtn');
+    if (floatingBtn) {
+        floatingBtn.style.display = 'none !important';
+        floatingBtn.remove();
+    }
+})();
+
+console.log('✅ Sistem navigasi terintegrasi siap!');
 </script>
 </body>    
 </html>

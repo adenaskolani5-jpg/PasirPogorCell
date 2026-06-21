@@ -1297,6 +1297,57 @@ body::before {
 .device-low .card:hover {
     transform: scale(1.01) !important;
 }
+/* ===== TAMBAHAN UNTUK DETEKSI DEVICE ===== */
+
+/* Default: tanpa glass (low-end) */
+.card {
+    background: var(--card) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+.futuristic-btn {
+    background: var(--card) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Hanya device high-end yang dapat glass */
+.device-high .card {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.device-high .futuristic-btn {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.device-high .futuristic-btn:hover {
+    background: rgba(34, 197, 94, 0.15) !important;
+    border-color: rgba(34, 197, 94, 0.4) !important;
+}
+
+.device-high #paketList .card,
+.device-high #topupList .card {
+    background: rgba(255, 255, 255, 0.06) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+}
+
+.device-high #calculatorModal > div,
+.device-high #hargaModal > div,
+.device-high #poinModal > div,
+.device-high #settingsModal > div,
+.device-high #adminPanelModal > div {
+    background: rgba(17, 24, 39, 0.85) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+}
 </style>        
 </head>        
 <body class="min-h-screen text-white">        
@@ -6398,131 +6449,240 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 console.log('✅ Sistem navigasi terintegrasi siap!');
-// ===== DETEKSI KEMAMPUAN DEVICE =====
-const DeviceCapability = {
-    // Cek apakah device mendukung backdrop-filter
-    supportsBackdropFilter: function() {
-        const test = document.createElement('div');
-        test.style.cssText = 'backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px);';
-        return test.style.backdropFilter !== '' || test.style.webkitBackdropFilter !== '';
+// ============================================================
+//  DETEKSI DEVICE HIGH-END (RAM > 6GB + Chipset Kencang)
+// ============================================================
+
+const DeviceDetector = {
+    // Daftar chipset high-end
+    HIGH_END_CHIPSETS: [
+        // Snapdragon 7 Gen 2 ke atas
+        'Snapdragon 7 Gen', 'Snapdragon 8 Gen', 'Snapdragon 8s',
+        'Snapdragon 8+', 'Snapdragon 888', 'Snapdragon 870',
+        'Snapdragon 865', 'Snapdragon 860', 'Snapdragon 855',
+        // MediaTek Dimensity 7000 series ke atas
+        'Dimensity 7200', 'Dimensity 7300', 'Dimensity 8000',
+        'Dimensity 8200', 'Dimensity 8300', 'Dimensity 9000',
+        'Dimensity 9200', 'Dimensity 9300',
+        // MediaTek Helio G series (G99 ke atas)
+        'Helio G99', 'Helio G100', 'Helio G96', 'Helio G95',
+        // Exynos
+        'Exynos 1480', 'Exynos 2200', 'Exynos 2100', 'Exynos 990',
+        // Apple
+        'A14', 'A15', 'A16', 'A17', 'A18', 'A19', 'A20',
+        // Google Tensor
+        'Tensor G2', 'Tensor G3', 'Tensor G4',
+        // Kirin
+        'Kirin 9000', 'Kirin 9010', 'Kirin 990'
+    ],
+    
+    // Daftar chipset mid-range (masih bisa glass ringan)
+    MID_RANGE_CHIPSETS: [
+        'Snapdragon 6 Gen', 'Snapdragon 7s', 'Snapdragon 780',
+        'Snapdragon 778', 'Snapdragon 765', 'Snapdragon 750',
+        'Dimensity 700', 'Dimensity 800', 'Dimensity 1000',
+        'Dimensity 1050', 'Dimensity 1080', 'Dimensity 1100',
+        'Dimensity 1200', 'Dimensity 1300',
+        'Helio G85', 'Helio G88', 'Helio G90', 'Helio G95',
+        'Exynos 1380', 'Exynos 1280', 'Exynos 1080'
+    ],
+    
+    // Dapatkan informasi chipset dari User Agent
+    getChipsetInfo: function() {
+        const ua = navigator.userAgent;
+        
+        // Cek Snapdragon
+        const sdMatch = ua.match(/Snapdragon\s*([0-9]+)/i);
+        if (sdMatch) {
+            const gen = parseInt(sdMatch[1]);
+            return { brand: 'Snapdragon', gen: gen, raw: sdMatch[0] };
+        }
+        
+        // Cek MediaTek Dimensity
+        const dimensityMatch = ua.match(/Dimensity\s*([0-9]+)/i);
+        if (dimensityMatch) {
+            const gen = parseInt(dimensityMatch[1]);
+            return { brand: 'Dimensity', gen: gen, raw: dimensityMatch[0] };
+        }
+        
+        // Cek MediaTek Helio
+        const helioMatch = ua.match(/Helio\s*([A-Z0-9]+)/i);
+        if (helioMatch) {
+            return { brand: 'Helio', raw: helioMatch[0], gen: helioMatch[1] };
+        }
+        
+        // Cek Exynos
+        const exynosMatch = ua.match(/Exynos\s*([0-9]+)/i);
+        if (exynosMatch) {
+            const gen = parseInt(exynosMatch[1]);
+            return { brand: 'Exynos', gen: gen, raw: exynosMatch[0] };
+        }
+        
+        return null;
     },
     
-    // Cek RAM (perkiraan)
-    getMemoryInfo: function() {
+    // Cek apakah chipset termasuk high-end
+    isHighEndChipset: function() {
+        const info = this.getChipsetInfo();
+        if (!info) return false;
+        
+        // Cek dari daftar high-end
+        for (let chip of this.HIGH_END_CHIPSETS) {
+            if (info.raw && info.raw.includes(chip)) return true;
+        }
+        
+        // Cek berdasarkan angka generasi
+        if (info.brand === 'Snapdragon' && info.gen >= 7) return true;
+        if (info.brand === 'Dimensity' && info.gen >= 7200) return true;
+        if (info.brand === 'Exynos' && info.gen >= 1480) return true;
+        
+        return false;
+    },
+    
+    // Cek apakah chipset mid-range
+    isMidRangeChipset: function() {
+        const info = this.getChipsetInfo();
+        if (!info) return false;
+        
+        for (let chip of this.MID_RANGE_CHIPSETS) {
+            if (info.raw && info.raw.includes(chip)) return true;
+        }
+        
+        if (info.brand === 'Snapdragon' && info.gen >= 6) return true;
+        if (info.brand === 'Dimensity' && info.gen >= 700 && info.gen < 7200) return true;
+        if (info.brand === 'Helio' && info.gen.includes('G')) {
+            const num = parseInt(info.gen.replace('G', ''));
+            if (num >= 85) return true;
+        }
+        
+        return false;
+    },
+    
+    // Estimasi RAM dari performance.memory
+    getRAMEstimate: function() {
         if (performance.memory) {
-            return {
-                total: performance.memory.totalJSHeapSize,
-                used: performance.memory.usedJSHeapSize,
-                limit: performance.memory.jsHeapSizeLimit
-            };
+            const ramGB = performance.memory.totalJSHeapSize / (1024 * 1024 * 1024);
+            return ramGB;
         }
         return null;
     },
     
+    // Cek apakah RAM >= 6GB
+    hasEnoughRAM: function() {
+        const ram = this.getRAMEstimate();
+        if (ram === null) {
+            // Jika tidak bisa deteksi, asumsikan true untuk device flagship
+            return this.isHighEndChipset();
+        }
+        return ram >= 6;
+    },
+    
     // Cek jumlah core CPU
-    getCPUCount: function() {
-        return navigator.hardwareConcurrency || 4; // default 4
+    getCPUCores: function() {
+        return navigator.hardwareConcurrency || 4;
     },
     
-    // Cek apakah device mobile
-    isMobile: function() {
-        return /Android|iPhone|iPad|iPod|BlackBerry|Opera Mini|IEMobile/i.test(navigator.userAgent);
-    },
-    
-    // Cek layar sentuh
-    isTouchDevice: function() {
-        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    },
-    
-    // Skor kemampuan device (0-100)
-    getScore: function() {
-        let score = 50; // default sedang
-        
-        // 1. Cek backdrop-filter
-        if (this.supportsBackdropFilter()) score += 10;
-        else score -= 10;
-        
-        // 2. Cek CPU
-        const cpu = this.getCPUCount();
-        if (cpu >= 8) score += 15;
-        else if (cpu >= 4) score += 5;
-        else score -= 10;
-        
-        // 3. Cek RAM (jika tersedia)
-        const mem = this.getMemoryInfo();
-        if (mem) {
-            const ramGB = mem.total / (1024 * 1024 * 1024);
-            if (ramGB > 4) score += 15;
-            else if (ramGB > 2) score += 5;
-            else score -= 10;
+    // Deteksi akhir: apakah device high-end?
+    isHighEnd: function() {
+        // 1. Cek chipset high-end
+        if (this.isHighEndChipset()) {
+            console.log('✅ Chipset terdeteksi HIGH-END');
+            return true;
         }
         
-        // 4. Mobile device cenderung lebih lemah
-        if (this.isMobile()) score -= 10;
+        // 2. Cek RAM >= 6GB
+        if (this.hasEnoughRAM()) {
+            console.log('✅ RAM terdeteksi >= 6GB');
+            return true;
+        }
         
-        // 5. Touch device cenderung lebih lemah
-        if (this.isTouchDevice()) score -= 5;
+        // 3. Cek CPU core >= 8
+        if (this.getCPUCores() >= 8) {
+            console.log('✅ CPU 8+ core terdeteksi');
+            return true;
+        }
         
-        return Math.max(0, Math.min(100, score));
+        return false;
     },
     
-    // Apakah device kencang?
-    isHighEnd: function() {
-        return this.getScore() >= 60;
-    },
-    
-    // Apakah device sedang?
+    // Deteksi apakah mid-range?
     isMidRange: function() {
-        const score = this.getScore();
-        return score >= 35 && score < 60;
+        if (this.isHighEnd()) return false;
+        
+        // 1. Cek chipset mid-range
+        if (this.isMidRangeChipset()) {
+            console.log('✅ Chipset terdeteksi MID-RANGE');
+            return true;
+        }
+        
+        // 2. Cek RAM 4-6GB
+        const ram = this.getRAMEstimate();
+        if (ram !== null && ram >= 4 && ram < 6) {
+            console.log('✅ RAM 4-6GB terdeteksi');
+            return true;
+        }
+        
+        // 3. Cek CPU 6-7 core
+        const cores = this.getCPUCores();
+        if (cores >= 6 && cores < 8) {
+            console.log('✅ CPU 6-7 core terdeteksi');
+            return true;
+        }
+        
+        return false;
     },
     
-    // Apakah device lemah?
+    // Deteksi apakah low-end?
     isLowEnd: function() {
-        return this.getScore() < 35;
+        return !this.isHighEnd() && !this.isMidRange();
     },
     
-    // Terapkan efek sesuai kemampuan
+    // Terapkan efek
     applyEffects: function() {
-        const score = this.getScore();
         const isHigh = this.isHighEnd();
         const isMid = this.isMidRange();
         const isLow = this.isLowEnd();
         
-        console.log(`📊 Skor Device: ${score}/100`);
-        console.log(`📱 Tipe: ${isHigh ? 'High-End' : isMid ? 'Mid-Range' : 'Low-End'}`);
+        console.log('📱 === DETEKSI DEVICE ===');
+        console.log(`  - Chipset: ${this.getChipsetInfo() ? this.getChipsetInfo().raw : 'Tidak terdeteksi'}`);
+        console.log(`  - RAM: ${this.getRAMEstimate() ? this.getRAMEstimate().toFixed(1) + ' GB' : 'Tidak terdeteksi'}`);
+        console.log(`  - CPU Core: ${this.getCPUCores()}`);
+        console.log(`  - Kategori: ${isHigh ? '🟢 HIGH-END' : isMid ? '🟡 MID-RANGE' : '🔴 LOW-END'}`);
         
-        // Tambahkan class ke body
+        // Hapus semua class
         document.body.classList.remove('device-high', 'device-mid', 'device-low');
         
         if (isHigh) {
             document.body.classList.add('device-high');
-            console.log('✅ Menggunakan efek GLASS penuh');
+            console.log('✅ Menggunakan efek GLASS FULL');
         } else if (isMid) {
             document.body.classList.add('device-mid');
-            console.log('✅ Menggunakan efek GLASS ringan');
+            console.log('✅ Menggunakan efek GLASS RINGAN');
         } else {
             document.body.classList.add('device-low');
-            console.log('✅ Menggunakan tampilan HITAM (tanpa glass)');
+            console.log('✅ Menggunakan tampilan HITAM');
         }
         
-        return { score, isHigh, isMid, isLow };
+        return { isHigh, isMid, isLow };
     }
 };
 
+// ===== OVERRIDE DeviceCapability =====
+// Hapus DeviceCapability yang lama dan gunakan yang baru
+window.DeviceCapability = DeviceDetector;
+
 // ===== JALANKAN SAAT LOAD =====
 document.addEventListener('DOMContentLoaded', function() {
-    const result = DeviceCapability.applyEffects();
+    const result = window.DeviceCapability.applyEffects();
     
     // Tampilkan info di console
     console.log('🔍 Detail Device:');
-    console.log(`  - CPU: ${DeviceCapability.getCPUCount()} core`);
-    console.log(`  - Mobile: ${DeviceCapability.isMobile()}`);
-    console.log(`  - Touch: ${DeviceCapability.isTouchDevice()}`);
-    console.log(`  - Backdrop-filter: ${DeviceCapability.supportsBackdropFilter()}`);
+    console.log(`  - CPU: ${window.DeviceCapability.getCPUCores()} core`);
+    console.log(`  - Mobile: ${/Android|iPhone|iPad|iPod|BlackBerry|Opera Mini|IEMobile/i.test(navigator.userAgent)}`);
+    console.log(`  - Touch: ${'ontouchstart' in window || navigator.maxTouchPoints > 0}`);
+    console.log(`  - Backdrop-filter: ${window.DeviceCapability.supportsBackdropFilter ? window.DeviceCapability.supportsBackdropFilter() : 'Tidak terdeteksi'}`);
     
-    // Simpan ke sessionStorage agar tidak perlu cek ulang
-    sessionStorage.setItem('deviceScore', result.score);
+    // Simpan ke sessionStorage
     sessionStorage.setItem('deviceType', result.isHigh ? 'high' : result.isMid ? 'mid' : 'low');
 });
 </script>

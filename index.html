@@ -936,7 +936,37 @@ body::before {
     box-shadow: 0 0 12px rgba(34, 197, 94, 0.15) !important;
     color: var(--text) !important;
 }
+/* ===== OPTIMASI RENDER ===== */
 
+/* Kurangi transition time untuk card-enter */
+.card-enter {
+    opacity: 0;
+    transform: scale(0.98);
+    transition: all 0.15s ease; /* dari 0.2s ke 0.15s */
+}
+
+.card-enter.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Skeleton loading lebih cepat */
+.skeleton {
+    animation-duration: 0.8s !important; /* dari 1.5s ke 0.8s */
+}
+
+/* Hapus animasi yang tidak perlu saat scroll */
+.card:hover {
+    transform: scale(1.02) !important; /* dari 1.03 ke 1.02 */
+    transition: all 0.15s ease !important;
+}
+
+/* Pagination lebih ringan */
+.pagination-btn {
+    transition: all 0.15s ease;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+}
 </style>        
 </head>        
 <body class="min-h-screen text-white">        
@@ -1712,7 +1742,7 @@ const PaginationHelper = {
         this.render();
     },
     
-    // Render dengan callback
+    // Render dengan callback    
     render() {
         if (this.currentCallback) {
             const pageData = this.getCurrentPageData();
@@ -3628,14 +3658,19 @@ function openPaket(op, cat) {
     }, 150);
 }
 
+// ===== RENDER PAKET LEBIH CEPAT (TANPA ANIMASI BERAT) =====
 function renderPaketPage(pageData, currentPage, totalPages, op, cat) {
     const list = document.getElementById('paketList');
     list.innerHTML = '';
     
+    // Gunakan DocumentFragment untuk render lebih cepat
+    const fragment = document.createDocumentFragment();
+    
     pageData.forEach((p, index) => {
         const div = document.createElement('div');
         div.className = 'card card-enter';
-        div.style.transitionDelay = (index * 0.03) + 's';
+        // Hapus transitionDelay untuk render lebih cepat
+        // div.style.transitionDelay = (index * 0.03) + 's';
         div.innerHTML = `
             <div class="card-main">
                 <div style="flex:1">${p.nama}</div>
@@ -3644,10 +3679,19 @@ function renderPaketPage(pageData, currentPage, totalPages, op, cat) {
             </div>
             <div class="card-detail">${p.ket}</div>
         `;
-        list.appendChild(div);
-        requestAnimationFrame(() => div.classList.add('show'));
+        fragment.appendChild(div);
     });
     
+    list.appendChild(fragment);
+    
+    // Gunakan requestAnimationFrame untuk animasi yang lebih smooth
+    requestAnimationFrame(() => {
+        list.querySelectorAll('.card-enter').forEach((el, i) => {
+            setTimeout(() => el.classList.add('show'), i * 10);
+        });
+    });
+    
+    // Pagination
     const paginationDiv = document.createElement('div');
     paginationDiv.className = 'flex justify-between items-center mt-6 pt-4 border-t border-gray-700';
     paginationDiv.innerHTML = `
@@ -3703,6 +3747,8 @@ function openGameDetail(g) {
     document.getElementById('gameTitle').innerText = g; 
     
     const list = document.getElementById('topupList');
+    
+    // Tampilkan skeleton loading
     list.innerHTML = `
         <div class="skeleton" style="height:60px;"></div>
         <div class="skeleton" style="height:60px;"></div>
@@ -3710,8 +3756,14 @@ function openGameDetail(g) {
     `;
     
     const items = games[g];
+    
+    // Gunakan setTimeout kecil agar skeleton terlihat
     setTimeout(() => {
-        list.innerHTML = "";
+        list.innerHTML = '';
+        
+        // Gunakan DocumentFragment untuk render lebih cepat
+        const fragment = document.createDocumentFragment();
+        
         items.forEach((item, index) => {
             const match = item.match(/^(.*?)\s*Rp\s*([\d.]+)$/);
             let harga = match ? "Rp " + match[2] : "";
@@ -3719,7 +3771,8 @@ function openGameDetail(g) {
             
             const div = document.createElement('div');
             div.className = 'card card-enter';
-            div.style.transitionDelay = (index * 0.02) + 's';
+            // Hapus transitionDelay untuk render lebih cepat
+            // div.style.transitionDelay = (index * 0.02) + 's';
             div.innerHTML = `
                 <div class="card-main">
                     <div style="flex:1">${namaItem}</div>
@@ -3728,10 +3781,19 @@ function openGameDetail(g) {
                 </div>
                 <div class="card-detail">Top Up Game</div>
             `;
-            list.appendChild(div);
-            requestAnimationFrame(() => div.classList.add('show'));
+            fragment.appendChild(div);
         });
-    }, 150);
+        
+        list.appendChild(fragment);
+        
+        // Animasi lebih cepat
+        requestAnimationFrame(() => {
+            list.querySelectorAll('.card-enter').forEach((el, i) => {
+                setTimeout(() => el.classList.add('show'), i * 8);
+            });
+        });
+        
+    }, 100); // Kurangi delay dari 150ms ke 100ms
 }
 
 async function sendToWhatsApp(nama, harga) {
@@ -6038,6 +6100,36 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 console.log('✅ Sistem navigasi terintegrasi siap!');
+// ===== VIRTUAL SCROLLING UNTUK DATA BANYAK =====
+const VirtualScroll = {
+    observer: null,
+    
+    init(containerId, itemHeight = 80) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        // Hanya aktifkan jika data > 50 item
+        const items = container.querySelectorAll('.card');
+        if (items.length < 50) return;
+        
+        // Intersection Observer untuk lazy render
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, { rootMargin: '50px' });
+        
+        items.forEach(item => this.observer.observe(item));
+    },
+    
+    destroy() {
+        if (this.observer) {
+            this.observer.disconnect();
+        }
+    }
+};
 </script>
 </body>    
 </html>

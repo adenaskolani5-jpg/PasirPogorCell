@@ -6666,6 +6666,85 @@ const DeviceDetector = {
         return { isHigh, isMid, isLow };
     }
 };
+// ============================================================
+//  DETEKSI MANUAL UNTUK DEVICE SPEK RENDAH (REALME C35 DLL)
+// ============================================================
+
+function detectLowEndDeviceManual() {
+    const ua = navigator.userAgent.toLowerCase();
+    
+    // 1. DAFTAR HP SPEK RENDAH (berdasarkan model)
+    const lowEndModels = [
+        'realme c35', 'realme c31', 'realme c33', 'realme c30',
+        'realme 9', 'realme 8', 'realme 7',
+        'redmi 9', 'redmi 10', 'redmi 10a', 'redmi 10c',
+        'redmi note 11', 'redmi note 10', 'redmi 9a', 'redmi 9c',
+        'samsung a03', 'samsung a04', 'samsung a05', 'samsung a13',
+        'samsung a14', 'samsung a15',
+        'infinix', 'itel', 'tecno', 'oppo a', 'vivo y'
+    ];
+    
+    for (let model of lowEndModels) {
+        if (ua.includes(model)) {
+            console.log('🔍 Deteksi manual: ' + model + ' = LOW-END');
+            return true;
+        }
+    }
+    
+    // 2. Cek berdasarkan RAM (jika terdeteksi)
+    if (performance.memory) {
+        const ramGB = performance.memory.totalJSHeapSize / (1024 * 1024 * 1024);
+        if (ramGB < 5) {
+            console.log('🔍 Deteksi RAM: ' + ramGB.toFixed(1) + 'GB = LOW-END');
+            return true;
+        }
+    }
+    
+    // 3. Cek chipset Unisoc / Spreadtrum (biasanya low-end)
+    if (ua.includes('unisoc') || ua.includes('spreadtrum') || ua.includes('tiger')) {
+        console.log('🔍 Deteksi chipset Unisoc = LOW-END');
+        return true;
+    }
+    
+    // 4. Cek CPU core (4 core atau kurang = low-end)
+    const cores = navigator.hardwareConcurrency || 4;
+    if (cores <= 4) {
+        console.log('🔍 Deteksi CPU core: ' + cores + ' = LOW-END');
+        return true;
+    }
+    
+    // 5. Cek Android versi (10 ke bawah = low-end)
+    const androidMatch = ua.match(/android\s([\d.]+)/);
+    if (androidMatch && parseFloat(androidMatch[1]) <= 10) {
+        console.log('🔍 Deteksi Android: ' + androidMatch[1] + ' = LOW-END');
+        return true;
+    }
+    
+    // 6. Cek RAM melalui navigator.deviceMemory (jika ada)
+    if (navigator.deviceMemory && navigator.deviceMemory < 5) {
+        console.log('🔍 Deteksi deviceMemory: ' + navigator.deviceMemory + 'GB = LOW-END');
+        return true;
+    }
+    
+    return false;
+}
+
+// ===== OVERRIDE applyEffects =====
+const originalApply = DeviceDetector.applyEffects;
+DeviceDetector.applyEffects = function() {
+    // Cek manual dulu (paling akurat)
+    if (detectLowEndDeviceManual()) {
+        document.body.classList.remove('device-high', 'device-mid');
+        document.body.classList.add('device-low');
+        console.log('📱 === DETEKSI DEVICE ===');
+        console.log('  - Kategori: 🔴 LOW-END (deteksi manual)');
+        console.log('✅ Menggunakan tampilan HITAM');
+        return { isHigh: false, isMid: false, isLow: true };
+    }
+    
+    // Jalankan deteksi normal
+    return originalApply.call(this);
+};
 
 // ===== OVERRIDE DeviceCapability =====
 // Hapus DeviceCapability yang lama dan gunakan yang baru
@@ -6673,16 +6752,17 @@ window.DeviceCapability = DeviceDetector;
 
 // ===== JALANKAN SAAT LOAD =====
 document.addEventListener('DOMContentLoaded', function() {
-    const result = window.DeviceCapability.applyEffects();
+    const result = DeviceCapability.applyEffects();
     
     // Tampilkan info di console
     console.log('🔍 Detail Device:');
-    console.log(`  - CPU: ${window.DeviceCapability.getCPUCores()} core`);
-    console.log(`  - Mobile: ${/Android|iPhone|iPad|iPod|BlackBerry|Opera Mini|IEMobile/i.test(navigator.userAgent)}`);
-    console.log(`  - Touch: ${'ontouchstart' in window || navigator.maxTouchPoints > 0}`);
-    console.log(`  - Backdrop-filter: ${window.DeviceCapability.supportsBackdropFilter ? window.DeviceCapability.supportsBackdropFilter() : 'Tidak terdeteksi'}`);
+    console.log(`  - CPU: ${DeviceCapability.getCPUCount()} core`);
+    console.log(`  - Mobile: ${DeviceCapability.isMobile()}`);
+    console.log(`  - Touch: ${DeviceCapability.isTouchDevice()}`);
+    console.log(`  - Backdrop-filter: ${DeviceCapability.supportsBackdropFilter()}`);
     
-    // Simpan ke sessionStorage
+    // Simpan ke sessionStorage agar tidak perlu cek ulang
+    sessionStorage.setItem('deviceScore', result.score);
     sessionStorage.setItem('deviceType', result.isHigh ? 'high' : result.isMid ? 'mid' : 'low');
 });
 </script>

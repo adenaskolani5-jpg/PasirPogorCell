@@ -282,9 +282,8 @@
 }
 .floating-back:hover { transform: scale(1.05); background: #4ade80; box-shadow: 0 0 25px rgba(34,197,94,1); }
 #home .futuristic-btn.border-green-400 {
-  background-color: #000000 !important;
-  border: 1px solid #22c55e !important;
-  color: #22c55e !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
 }
 #home .futuristic-btn.border-green-400:hover {
   background-color: #22c55e !important;
@@ -1043,7 +1042,189 @@ body::before {
     background: rgba(255, 255, 255, 0.1) !important;
     border-color: rgba(34, 197, 94, 0.3) !important;
 }
+/* ===== EFEK KACA RINGAN (OPTIMASI HP SPEK RENDAH) ===== */
 
+/* 1. Gunakan warna transparan dengan opacity, tanpa blur */
+.card {
+    background: rgba(255, 255, 255, 0.08) !important;
+    /* HAPUS backdrop-filter blur - ini yang berat */
+    /* backdrop-filter: blur(16px) !important; */
+    /* -webkit-backdrop-filter: blur(16px) !important; */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 1.25rem !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+.card:hover {
+    background: rgba(255, 255, 255, 0.14) !important;
+    border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+/* 2. Tombol aksi tanpa blur */
+.futuristic-btn {
+    background: rgba(255, 255, 255, 0.08) !important;
+    /* HAPUS blur */
+    /* backdrop-filter: blur(12px) !important; */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 2rem !important;
+    padding: 0.6rem 1.2rem !important;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15) !important;
+    transition: all 0.3s ease !important;
+}
+
+.futuristic-btn:hover {
+    background: rgba(34, 197, 94, 0.15) !important;
+    border-color: rgba(34, 197, 94, 0.35) !important;
+}
+
+/* 3. Card detail paket */
+#paketList .card,
+#topupList .card {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 4. Hapus efek glow yang berat */
+.card::before {
+    display: none !important;
+}
+
+/* 5. Hapus animasi yang berat */
+@keyframes glow {
+    /* Hapus atau kosongkan */
+}
+
+/* 6. Tombol pagination ringan */
+.pagination-btn {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 2rem !important;
+    padding: 0.4rem 1rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: rgba(34, 197, 94, 0.12) !important;
+    border-color: rgba(34, 197, 94, 0.25) !important;
+}
+
+/* 7. Modal tetap transparan tapi tanpa blur berat */
+#calculatorModal > div,
+#hargaModal > div,
+#poinModal > div,
+#settingsModal > div,
+#adminPanelModal > div {
+    background: rgba(17, 24, 39, 0.9) !important;
+    /* HAPUS blur berat */
+    /* backdrop-filter: blur(24px) !important; */
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+/* Default: tanpa blur (ringan) */
+.card {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 1.25rem !important;
+}
+
+/* Hanya untuk HP spek tinggi (deteksi GPU) */
+@media (hover: hover) and (pointer: fine) {
+    .card {
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        background: rgba(255, 255, 255, 0.06) !important;
+    }
+    
+    .futuristic-btn {
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+    }
+}
+/* ===== EFFECT SESUAI KEMAMPUAN DEVICE ===== */
+
+/* 1. Default untuk Low-End (tanpa blur) */
+.card {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 1.25rem !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+    transition: all 0.2s ease !important;
+}
+
+.futuristic-btn {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 2rem !important;
+    padding: 0.5rem 1rem !important;
+    transition: all 0.2s ease !important;
+}
+
+/* 2. Mid-Range (blur ringan) */
+.device-mid .card {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.device-mid .futuristic-btn {
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 3. High-End (blur penuh) */
+.device-high .card {
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+.device-high .futuristic-btn {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.device-high .futuristic-btn:hover {
+    background: rgba(34, 197, 94, 0.15) !important;
+    border-color: rgba(34, 197, 94, 0.4) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* 4. Hover efek lebih ringan di low-end */
+.device-low .card:hover {
+    transform: scale(1.01) !important;
+    background: rgba(255, 255, 255, 0.14) !important;
+}
+
+.device-low .futuristic-btn:hover {
+    background: rgba(34, 197, 94, 0.12) !important;
+}
+
+/* 5. Hapus efek berat */
+.card::before {
+    display: none !important;
+}
+
+#home .card::before {
+    display: none !important;
+}
+
+/* 6. Animasi lebih ringan di low-end */
+.device-low * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+}
+
+.device-low .card-enter {
+    transition: all 0.1s ease !important;
+}
 </style>        
 </head>        
 <body class="min-h-screen text-white">        
@@ -6145,6 +6326,131 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 console.log('✅ Sistem navigasi terintegrasi siap!');
+// ===== DETEKSI KEMAMPUAN DEVICE =====
+const DeviceCapability = {
+    // Cek apakah device mendukung backdrop-filter
+    supportsBackdropFilter: function() {
+        const test = document.createElement('div');
+        test.style.cssText = 'backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px);';
+        return test.style.backdropFilter !== '' || test.style.webkitBackdropFilter !== '';
+    },
+    
+    // Cek RAM (perkiraan)
+    getMemoryInfo: function() {
+        if (performance.memory) {
+            return {
+                total: performance.memory.totalJSHeapSize,
+                used: performance.memory.usedJSHeapSize,
+                limit: performance.memory.jsHeapSizeLimit
+            };
+        }
+        return null;
+    },
+    
+    // Cek jumlah core CPU
+    getCPUCount: function() {
+        return navigator.hardwareConcurrency || 4; // default 4
+    },
+    
+    // Cek apakah device mobile
+    isMobile: function() {
+        return /Android|iPhone|iPad|iPod|BlackBerry|Opera Mini|IEMobile/i.test(navigator.userAgent);
+    },
+    
+    // Cek layar sentuh
+    isTouchDevice: function() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    },
+    
+    // Skor kemampuan device (0-100)
+    getScore: function() {
+        let score = 50; // default sedang
+        
+        // 1. Cek backdrop-filter
+        if (this.supportsBackdropFilter()) score += 10;
+        else score -= 10;
+        
+        // 2. Cek CPU
+        const cpu = this.getCPUCount();
+        if (cpu >= 8) score += 15;
+        else if (cpu >= 4) score += 5;
+        else score -= 10;
+        
+        // 3. Cek RAM (jika tersedia)
+        const mem = this.getMemoryInfo();
+        if (mem) {
+            const ramGB = mem.total / (1024 * 1024 * 1024);
+            if (ramGB > 4) score += 15;
+            else if (ramGB > 2) score += 5;
+            else score -= 10;
+        }
+        
+        // 4. Mobile device cenderung lebih lemah
+        if (this.isMobile()) score -= 10;
+        
+        // 5. Touch device cenderung lebih lemah
+        if (this.isTouchDevice()) score -= 5;
+        
+        return Math.max(0, Math.min(100, score));
+    },
+    
+    // Apakah device kencang?
+    isHighEnd: function() {
+        return this.getScore() >= 60;
+    },
+    
+    // Apakah device sedang?
+    isMidRange: function() {
+        const score = this.getScore();
+        return score >= 35 && score < 60;
+    },
+    
+    // Apakah device lemah?
+    isLowEnd: function() {
+        return this.getScore() < 35;
+    },
+    
+    // Terapkan efek sesuai kemampuan
+    applyEffects: function() {
+        const score = this.getScore();
+        const isHigh = this.isHighEnd();
+        const isMid = this.isMidRange();
+        const isLow = this.isLowEnd();
+        
+        console.log(`📊 Skor Device: ${score}/100`);
+        console.log(`📱 Tipe: ${isHigh ? 'High-End' : isMid ? 'Mid-Range' : 'Low-End'}`);
+        
+        // Tambahkan class ke body
+        if (isHigh) {
+            document.body.classList.add('device-high');
+            document.body.classList.remove('device-mid', 'device-low');
+        } else if (isMid) {
+            document.body.classList.add('device-mid');
+            document.body.classList.remove('device-high', 'device-low');
+        } else {
+            document.body.classList.add('device-low');
+            document.body.classList.remove('device-high', 'device-mid');
+        }
+        
+        return { score, isHigh, isMid, isLow };
+    }
+};
+
+// ===== JALANKAN SAAT LOAD =====
+document.addEventListener('DOMContentLoaded', function() {
+    const result = DeviceCapability.applyEffects();
+    
+    // Tampilkan info di console
+    console.log('🔍 Detail Device:');
+    console.log(`  - CPU: ${DeviceCapability.getCPUCount()} core`);
+    console.log(`  - Mobile: ${DeviceCapability.isMobile()}`);
+    console.log(`  - Touch: ${DeviceCapability.isTouchDevice()}`);
+    console.log(`  - Backdrop-filter: ${DeviceCapability.supportsBackdropFilter()}`);
+    
+    // Simpan ke sessionStorage agar tidak perlu cek ulang
+    sessionStorage.setItem('deviceScore', result.score);
+    sessionStorage.setItem('deviceType', result.isHigh ? 'high' : result.isMid ? 'mid' : 'low');
+});
 </script>
 </body>    
 </html>

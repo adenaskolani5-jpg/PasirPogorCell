@@ -847,126 +847,7 @@ body::before {
     background: rgba(0, 0, 0, 0.4); /* 20% gelap, sangat tipis */
     z-index: -1;
 }
-/* ===== EFEK KACA / GLASS UNTUK BACKGROUND CARD ===== */
 
-/* 1. Card Menu Utama (Paket Internet & TopUp Game) */
-.card {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 
-                inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
-}
-
-.card:hover {
-    background: rgba(255, 255, 255, 0.12) !important;
-    border-color: rgba(34, 197, 94, 0.35) !important;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25),
-                0 0 40px rgba(34, 197, 94, 0.06) !important;
-}
-/* ===== EFEK KACA KHUSUS UNTUK TOMBOL AKSI ===== */
-
-/* 1. Tombol Kalkulator, Rekomend, Info, Poin */
-.futuristic-btn {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-radius: 2rem !important;
-    padding: 0.6rem 1.2rem !important;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2), 
-                inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
-    transition: all 0.3s ease !important;
-    color: #e5e7eb !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-}
-
-.futuristic-btn:hover {
-    background: rgba(34, 197, 94, 0.15) !important;
-    border-color: rgba(34, 197, 94, 0.4) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 30px rgba(34, 197, 94, 0.15) !important;
-}
-
-/* 2. Hapus efek border hijau default */
-.futuristic-btn.border-green-400 {
-    border-color: rgba(255, 255, 255, 0.12) !important;
-}
-
-.futuristic-btn.border-green-400:hover {
-    border-color: rgba(34, 197, 94, 0.4) !important;
-}
-
-/* 3. Hapus background hitam */
-#home .futuristic-btn.border-green-400 {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border-color: rgba(255, 255, 255, 0.12) !important;
-}
-
-#home .futuristic-btn.border-green-400::before {
-    display: none !important;
-}
-
-#home .futuristic-btn.border-green-400:hover {
-    background: rgba(34, 197, 94, 0.15) !important;
-    border-color: rgba(34, 197, 94, 0.4) !important;
-    color: #ffffff !important;
-}
-
-/* 4. Perbaiki teks tombol */
-.futuristic-btn {
-    color: #e5e7eb !important;
-    font-size: 0.8rem !important;
-}
-
-.futuristic-btn:hover {
-    color: #ffffff !important;
-}
-/* ===== MENU HARGA (DETAIL PAKET & TOPUP) TETAP HITAM ===== */
-
-/* 1. Detail Paket & TopUp Game tetap hitam (tidak glass) */
-#paketList .card,
-#topupList .card {
-    background: var(--card) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    border: 1px solid rgba(34, 197, 94, 0.35) !important;
-    box-shadow: 0 0 12px rgba(34, 197, 94, 0.15) !important;
-    color: var(--text) !important;
-}
-/* ===== OPTIMASI RENDER ===== */
-
-/* Kurangi transition time untuk card-enter */
-.card-enter {
-    opacity: 0;
-    transform: scale(0.98);
-    transition: all 0.15s ease; /* dari 0.2s ke 0.15s */
-}
-
-.card-enter.show {
-    opacity: 1;
-    transform: scale(1);
-}
-
-/* Skeleton loading lebih cepat */
-.skeleton {
-    animation-duration: 0.8s !important; /* dari 1.5s ke 0.8s */
-}
-
-/* Hapus animasi yang tidak perlu saat scroll */
-.card:hover {
-    transform: scale(1.02) !important; /* dari 1.03 ke 1.02 */
-    transition: all 0.15s ease !important;
-}
-
-/* Pagination lebih ringan */
-.pagination-btn {
-    transition: all 0.15s ease;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.75rem;
-}
 </style>        
 </head>        
 <body class="min-h-screen text-white">        
@@ -1742,7 +1623,7 @@ const PaginationHelper = {
         this.render();
     },
     
-    // Render dengan callback    
+    // Render dengan callback
     render() {
         if (this.currentCallback) {
             const pageData = this.getCurrentPageData();
@@ -3658,19 +3539,14 @@ function openPaket(op, cat) {
     }, 150);
 }
 
-// ===== RENDER PAKET LEBIH CEPAT (TANPA ANIMASI BERAT) =====
 function renderPaketPage(pageData, currentPage, totalPages, op, cat) {
     const list = document.getElementById('paketList');
     list.innerHTML = '';
     
-    // Gunakan DocumentFragment untuk render lebih cepat
-    const fragment = document.createDocumentFragment();
-    
     pageData.forEach((p, index) => {
         const div = document.createElement('div');
         div.className = 'card card-enter';
-        // Hapus transitionDelay untuk render lebih cepat
-        // div.style.transitionDelay = (index * 0.03) + 's';
+        div.style.transitionDelay = (index * 0.03) + 's';
         div.innerHTML = `
             <div class="card-main">
                 <div style="flex:1">${p.nama}</div>
@@ -3679,19 +3555,10 @@ function renderPaketPage(pageData, currentPage, totalPages, op, cat) {
             </div>
             <div class="card-detail">${p.ket}</div>
         `;
-        fragment.appendChild(div);
+        list.appendChild(div);
+        requestAnimationFrame(() => div.classList.add('show'));
     });
     
-    list.appendChild(fragment);
-    
-    // Gunakan requestAnimationFrame untuk animasi yang lebih smooth
-    requestAnimationFrame(() => {
-        list.querySelectorAll('.card-enter').forEach((el, i) => {
-            setTimeout(() => el.classList.add('show'), i * 10);
-        });
-    });
-    
-    // Pagination
     const paginationDiv = document.createElement('div');
     paginationDiv.className = 'flex justify-between items-center mt-6 pt-4 border-t border-gray-700';
     paginationDiv.innerHTML = `
@@ -3747,8 +3614,6 @@ function openGameDetail(g) {
     document.getElementById('gameTitle').innerText = g; 
     
     const list = document.getElementById('topupList');
-    
-    // Tampilkan skeleton loading
     list.innerHTML = `
         <div class="skeleton" style="height:60px;"></div>
         <div class="skeleton" style="height:60px;"></div>
@@ -3756,14 +3621,8 @@ function openGameDetail(g) {
     `;
     
     const items = games[g];
-    
-    // Gunakan setTimeout kecil agar skeleton terlihat
     setTimeout(() => {
-        list.innerHTML = '';
-        
-        // Gunakan DocumentFragment untuk render lebih cepat
-        const fragment = document.createDocumentFragment();
-        
+        list.innerHTML = "";
         items.forEach((item, index) => {
             const match = item.match(/^(.*?)\s*Rp\s*([\d.]+)$/);
             let harga = match ? "Rp " + match[2] : "";
@@ -3771,8 +3630,7 @@ function openGameDetail(g) {
             
             const div = document.createElement('div');
             div.className = 'card card-enter';
-            // Hapus transitionDelay untuk render lebih cepat
-            // div.style.transitionDelay = (index * 0.02) + 's';
+            div.style.transitionDelay = (index * 0.02) + 's';
             div.innerHTML = `
                 <div class="card-main">
                     <div style="flex:1">${namaItem}</div>
@@ -3781,19 +3639,10 @@ function openGameDetail(g) {
                 </div>
                 <div class="card-detail">Top Up Game</div>
             `;
-            fragment.appendChild(div);
+            list.appendChild(div);
+            requestAnimationFrame(() => div.classList.add('show'));
         });
-        
-        list.appendChild(fragment);
-        
-        // Animasi lebih cepat
-        requestAnimationFrame(() => {
-            list.querySelectorAll('.card-enter').forEach((el, i) => {
-                setTimeout(() => el.classList.add('show'), i * 8);
-            });
-        });
-        
-    }, 100); // Kurangi delay dari 150ms ke 100ms
+    }, 150);
 }
 
 async function sendToWhatsApp(nama, harga) {
@@ -6100,36 +5949,6 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 console.log('✅ Sistem navigasi terintegrasi siap!');
-// ===== VIRTUAL SCROLLING UNTUK DATA BANYAK =====
-const VirtualScroll = {
-    observer: null,
-    
-    init(containerId, itemHeight = 80) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        
-        // Hanya aktifkan jika data > 50 item
-        const items = container.querySelectorAll('.card');
-        if (items.length < 50) return;
-        
-        // Intersection Observer untuk lazy render
-        this.observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('show');
-                }
-            });
-        }, { rootMargin: '50px' });
-        
-        items.forEach(item => this.observer.observe(item));
-    },
-    
-    destroy() {
-        if (this.observer) {
-            this.observer.disconnect();
-        }
-    }
-};
 </script>
 </body>    
 </html>

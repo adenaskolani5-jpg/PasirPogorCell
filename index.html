@@ -99,7 +99,18 @@
 :root{
   --bg:#050505; --card:#0b0b0b; --text:#e5e7eb; --muted:#9ca3af; --accent:#22c55e; --blue:#3b82f6; --yellow:#facc15;
 }
-
+.light{
+  --bg:#f5f7fb; --card:#ffffff; --text:#0f172a; --muted:#64748b; --accent:#22c55e; --blue:#2563eb; --yellow:#f59e0b;
+}
+.light body{ background:linear-gradient(135deg,#eef2ff,#f8fafc); }
+.light .card{ background:white; color:#0f172a; border:1px solid rgba(34,197,94,.4); box-shadow:0 6px 20px rgba(0,0,0,.08),0 0 20px rgba(34,197,94,.15); }
+.light .card::before{ filter:blur(20px); opacity:.35; }
+.light .price{ color:#16a34a; text-shadow:none; }
+.light header{ background:white; border-color:#e5e7eb; }
+.light header p{ color:#64748b; }
+.light footer{ background:#f8fafc; color:#334155; }
+.light .marquee{ background:#e5e7eb; border-color:#22c55e; }
+.light .marquee span{ color:#0f172a; text-shadow:none; }
 
 .page{ animation:fadeIn 0.2s ease; }
 @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
@@ -108,7 +119,12 @@
   display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:.35s;
   border:1px solid rgba(34,197,94,.35); box-shadow:0 0 12px rgba(34,197,94,.25),0 0 40px rgba(34,197,94,.15);
 }
-
+.card::before{
+  content:""; position:absolute; inset:-2px; border-radius:1rem; background:linear-gradient(120deg,var(--accent),var(--blue),var(--accent));
+  filter:blur(18px); opacity:.55; z-index:-1; animation:glow 3s infinite alternate;
+}
+@keyframes glow{ from{opacity:.3} to{opacity:.7} }
+.card:hover{ transform:scale(1.05); box-shadow:0 0 20px rgba(34,197,94,.8),0 0 60px rgba(59,130,246,.7); }
 /* ===== KARTU DENGAN GLOW TAPI TIDAK BERKEDIP ===== */
 .card {
     position: relative;
@@ -146,9 +162,11 @@
     border-color: #4ade80;
 }
 .menu-active{ border-color:var(--accent)!important; box-shadow:0 0 30px var(--accent),0 0 80px rgba(59,130,246,.9)!important; }
-
+.back-btn{ padding:.6rem 1.3rem; border-radius:999px; background:black; color:white; font-weight:600; border:1px solid #22c55e; box-shadow:0 0 15px rgba(34,197,94,.6); transition:.3s; }
+.back-btn:hover{ transform:scale(1.05); }
 .price{ color:var(--accent); font-weight:700; text-shadow:0 0 6px rgba(34,197,94,.7),0 0 14px rgba(34,197,94,.4); }
-
+.ket-btn{ background:var(--yellow); color:#000; padding:.25rem .6rem; border-radius:.5rem; font-size:.75rem; font-weight:700; box-shadow:0 0 8px rgba(250,204,21,.6); }
+.ket-box{ display:none; color:var(--yellow); font-size:.85rem; padding-left:.6rem; margin-top:.4rem; line-height:1.5; }
 .marquee { width:100%; overflow:hidden; background:#000; border-top:1px solid #22c55e; border-bottom:1px solid #22c55e; position:relative; }
 .marquee-track {
   display: flex;
@@ -161,7 +179,16 @@
 }
 .marquee span { flex-shrink:0; padding:12px 40px; white-space:nowrap; font-weight:600; color:#ffffff; text-shadow:0 0 10px rgba(34,197,94,.8); font-size:.95rem; }
 @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
+.tab-btn{ transition:.25s; }
+.tab-btn.active{ background:#22c55e; color:black; box-shadow:0 0 15px rgba(34,197,94,.8); }
+.popular-item {
+  background: rgba(20,20,30,0.7); backdrop-filter: blur(4px); border:1px solid rgba(34,197,94,0.3); border-radius:1rem;
+  padding:0.75rem 1rem; margin-bottom:0.75rem; display:flex; align-items:center; gap:0.75rem; transition:all 0.25s ease;
+  cursor:default; font-weight:500; color:#e5e7eb;
+}
+.popular-item:hover { transform:translateX(5px); border-color:#22c55e; box-shadow:0 0 12px rgba(34,197,94,0.4); background:rgba(34,197,94,0.1); }
+.popular-icon { font-size:1.25rem; width:2rem; text-align:center; }
+.popular-text { flex:1; font-size:0.9rem; line-height:1.3; }
 /* ===== STYLE HASIL PENCARIAN ===== */
 .harga-item {
   background: rgba(10,10,15,0.75); backdrop-filter:blur(2px); border-left:4px solid #22c55e; border-radius:0.75rem;
@@ -233,10 +260,31 @@
 
 .card-main { display: flex; justify-content: space-between; align-items: center; width: 100%; }
 .card-detail { margin-top: 0.6rem; font-size: 0.7rem; color: #9ca3af; border-top: 1px dashed rgba(34,197,94,0.3); padding-top: 0.5rem; }
-
+.floating-back {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: #22c55e;
+    color: #000;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(34,197,94,0.8);
+    transition: all 0.3s ease;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+.floating-back:hover { transform: scale(1.05); background: #4ade80; box-shadow: 0 0 25px rgba(34,197,94,1); }
 #home .futuristic-btn.border-green-400 {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border-color: rgba(255, 255, 255, 0.12) !important;
+  background-color: #000000 !important;
+  border: 1px solid #22c55e !important;
+  color: #22c55e !important;
 }
 #home .futuristic-btn.border-green-400:hover {
   background-color: #22c55e !important;
@@ -268,7 +316,30 @@
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(34,197,94,.8), 0 0 60px rgba(59,130,246,.7);
 }
-
+#home .btn-card-style {
+  background: var(--card);
+  border: 1px solid rgba(34,197,94,.35);
+  box-shadow: 0 0 12px rgba(34,197,94,.25), 0 0 40px rgba(34,197,94,.15);
+  color: var(--text);
+  transition: all 0.35s;
+  position: relative;
+  overflow: hidden;
+}
+#home .btn-card-style::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 1rem;
+  background: linear-gradient(120deg, var(--accent), var(--blue), var(--accent));
+  filter: blur(18px);
+  opacity: 0.55;
+  z-index: -1;
+  animation: glow 3s infinite alternate;
+}
+#home .btn-card-style:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(34,197,94,.8), 0 0 60px rgba(59,130,246,.7);
+}
 .glow-card {
   background: #0a0a0a;
   border: 1px solid #22c55e;
@@ -794,84 +865,6 @@ body::before {
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25),
                 0 0 40px rgba(34, 197, 94, 0.06) !important;
 }
-
-/* 2. Card Detail Paket & TopUp */
-#paketList .card,
-#topupList .card {
-    background: rgba(255, 255, 255, 0.06) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15) !important;
-}
-
-#paketList .card:hover,
-#topupList .card:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(34, 197, 94, 0.25) !important;
-}
-
-/* 3. Tombol Aksi (Kalkulator, Rekomend, Info, Poin) */
-.futuristic-btn {
-    background: rgba(255, 255, 255, 0.07) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15) !important;
-}
-
-.futuristic-btn:hover {
-    background: rgba(34, 197, 94, 0.15) !important;
-    border-color: rgba(34, 197, 94, 0.35) !important;
-}
-
-/* 4. Tombol Pagination */
-.pagination-btn {
-    background: rgba(255, 255, 255, 0.06) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12) !important;
-}
-
-.pagination-btn:hover:not(:disabled) {
-    background: rgba(34, 197, 94, 0.12) !important;
-    border-color: rgba(34, 197, 94, 0.3) !important;
-}
-
-/* 5. Hapus background hitam pada card yang ada */
-.card::before {
-    display: none !important;
-}
-
-/* 6. Hapus background gelap berlebihan */
-#home .card {
-    background: rgba(255, 255, 255, 0.08) !important;
-}
-
-#home .card::before {
-    display: none !important;
-}
-
-/* 7. Untuk card di internet, game, dll */
-#internet .card,
-#game .card,
-#paketTypes .card {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-}
-/* Modal juga jadi glass */
-#calculatorModal > div,
-#hargaModal > div,
-#poinModal > div,
-#settingsModal > div,
-#adminPanelModal > div {
-    background: rgba(17, 24, 39, 0.85) !important;
-    backdrop-filter: blur(24px) !important;
-    -webkit-backdrop-filter: blur(24px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-}
 /* ===== EFEK KACA KHUSUS UNTUK TOMBOL AKSI ===== */
 
 /* 1. Tombol Kalkulator, Rekomend, Info, Poin */
@@ -931,8 +924,6 @@ body::before {
 .futuristic-btn:hover {
     color: #ffffff !important;
 }
-
-
 /* ===== MENU HARGA (DETAIL PAKET & TOPUP) TETAP HITAM ===== */
 
 /* 1. Detail Paket & TopUp Game tetap hitam (tidak glass) */
@@ -946,112 +937,6 @@ body::before {
     color: var(--text) !important;
 }
 
-#paketList .card:hover,
-#topupList .card:hover {
-    background: var(--card) !important;
-    transform: scale(1.02) !important;
-    box-shadow: 0 0 25px rgba(34, 197, 94, 0.5) !important;
-    border-color: #4ade80 !important;
-}
-
-/* 2. Tombol WhatsApp di detail tetap stylish */
-#paketList .whatsapp-btn,
-#topupList .whatsapp-btn {
-    background: #25D366 !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 2rem !important;
-    padding: 0.3rem 0.8rem !important;
-    font-size: 0.7rem !important;
-    font-weight: bold !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 0.3rem !important;
-    cursor: pointer !important;
-    margin-left: 0.5rem !important;
-    transition: all 0.2s !important;
-}
-
-#paketList .whatsapp-btn:hover,
-#topupList .whatsapp-btn:hover {
-    background: #128C7E !important;
-    transform: scale(1.05) !important;
-    box-shadow: 0 0 10px #25D366 !important;
-}
-
-/* 3. Harga di detail tetap hijau neon */
-#paketList .price,
-#topupList .price {
-    color: var(--accent) !important;
-    font-weight: 700 !important;
-    text-shadow: 0 0 6px rgba(34, 197, 94, 0.7), 0 0 14px rgba(34, 197, 94, 0.4) !important;
-}
-
-/* 4. Card detail tetap memakai card-enter untuk animasi */
-#paketList .card-enter,
-#topupList .card-enter {
-    opacity: 0;
-    transform: scale(0.98);
-    transition: all 0.2s ease;
-}
-
-#paketList .card-enter.show,
-#topupList .card-enter.show {
-    opacity: 1;
-    transform: scale(1);
-}
-
-/* 5. Untuk device high-end, detail tetap hitam (tidak ikut glass) */
-.device-high #paketList .card,
-.device-high #topupList .card {
-    background: var(--card) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-}
-
-/* 6. Untuk device low-end, detail tetap hitam (sudah default) */
-.device-low #paketList .card,
-.device-low #topupList .card {
-    background: var(--card) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-}
-
-/* 7. Card di Internet & Game (menu utama) tetap glass untuk high-end */
-.device-high #internet .card,
-.device-high #game .card,
-.device-high #paketTypes .card {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-}
-
-/* 8. Tombol aksi tetap glass untuk high-end */
-.device-high .futuristic-btn {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-}
-
-.device-high .futuristic-btn:hover {
-    background: rgba(34, 197, 94, 0.15) !important;
-    border-color: rgba(34, 197, 94, 0.4) !important;
-}
-
-/* 9. Card di home tetap glass untuk high-end */
-.device-high #home .card {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.device-high #home .card:hover {
-    background: rgba(255, 255, 255, 0.13) !important;
-    border-color: rgba(34, 197, 94, 0.35) !important;
-}
 </style>        
 </head>        
 <body class="min-h-screen text-white">        
@@ -1836,7 +1721,38 @@ const PaginationHelper = {
         }
     }
 };
+
+// ===== LAZY RENDER HELPER =====
+function lazyRenderItems(items, containerId, renderItem, batchSize = 5, delay = 50) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
     
+    let currentIndex = 0;
+    let isRendering = false;
+    
+    function renderBatch() {
+        if (isRendering) return;
+        isRendering = true;
+        
+        const endIndex = Math.min(currentIndex + batchSize, items.length);
+        
+        for (let i = currentIndex; i < endIndex; i++) {
+            const html = renderItem(items[i], i);
+            container.innerHTML += html;
+        }
+        
+        currentIndex = endIndex;
+        isRendering = false;
+        
+        // Jika masih ada item, render batch berikutnya
+        if (currentIndex < items.length) {
+            setTimeout(renderBatch, delay);
+        }
+    }
+    
+    // Mulai render
+    renderBatch();
+}
 // ============================================================
 //  LOGO DARI IMGBB UNTUK SEMUA PENGUNJUNG
 // ============================================================
@@ -1876,6 +1792,11 @@ console.log('📊 Total logo:', Object.keys(LOGO_URLS).length);
 
 <!-- SCRIPT UTAMA (FUNGSI & LOGIKA) -->
 <script>          
+const popularItems = {          
+  paket: [ "Freedom Mini 9GB 7 Hari Rp 26.000", "Freedom Mini 5 GB 2 Hari Rp 13.000", "Freedom Mini 6GB 5 Hari Rp 18.000", "Indosat Yellow 1GB 7 Hari Rp 10.000" ],          
+  game: [ "Top Up Free Fire 100 Diamond", "Top Up Mobile Legends 50 Diamond", "Top Up PUBG Mobile 300 UC" ]          
+};          
+
 // Data rekomendasi paket per operator
 const rekomendasiData = {
   "Indosat": [
@@ -3919,6 +3840,11 @@ function checkPerformance() {
         Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) + ' MB' : 
         'Not available');
 }
+
+// Jalankan setelah load
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(checkPerformance, 2000);
+});
 
 // ===== CLEAR CACHE (untuk admin) =====
 function clearAllCache() {
@@ -6112,7 +6038,6 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 console.log('✅ Sistem navigasi terintegrasi siap!');
-
 </script>
 </body>    
 </html>

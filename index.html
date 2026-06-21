@@ -1225,6 +1225,78 @@ body::before {
 .device-low .card-enter {
     transition: all 0.1s ease !important;
 }
+/* ===== TAMPILAN KUSTOM SESUAI KEMAMPUAN DEVICE ===== */
+
+/* 1. DEFAULT UNTUK DEVICE LOW-END (TANPA GLASS, HITAM) */
+.device-low .card {
+    background: var(--card) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid rgba(34, 197, 94, 0.35) !important;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.15) !important;
+    color: var(--text) !important;
+}
+
+.device-low .card:hover {
+    background: var(--card) !important;
+    transform: scale(1.03) !important;
+    box-shadow: 0 0 25px rgba(34, 197, 94, 0.5) !important;
+}
+
+.device-low .futuristic-btn {
+    background: var(--card) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid rgba(34, 197, 94, 0.35) !important;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.15) !important;
+    color: var(--text) !important;
+}
+
+.device-low .futuristic-btn:hover {
+    background: rgba(34, 197, 94, 0.15) !important;
+    border-color: #22c55e !important;
+}
+
+.device-low .pagination-btn {
+    background: rgba(34, 197, 94, 0.1) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid rgba(34, 197, 94, 0.3) !important;
+}
+
+/* 2. PASTIKAN CARD DETAIL JUGA HITAM */
+.device-low #paketList .card,
+.device-low #topupList .card {
+    background: var(--card) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* 3. PASTIKAN MODAL JUGA HITAM */
+.device-low #calculatorModal > div,
+.device-low #hargaModal > div,
+.device-low #poinModal > div,
+.device-low #settingsModal > div,
+.device-low #adminPanelModal > div {
+    background: rgba(0, 0, 0, 0.95) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* 4. HAPUS EFEK BLUR DI LOW-END */
+.device-low * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* 5. HAPUS ANIMASI YANG BERAT DI LOW-END */
+.device-low .card-enter {
+    transition: all 0.1s ease !important;
+}
+
+.device-low .card:hover {
+    transform: scale(1.01) !important;
+}
 </style>        
 </head>        
 <body class="min-h-screen text-white">        
@@ -6421,15 +6493,17 @@ const DeviceCapability = {
         console.log(`📱 Tipe: ${isHigh ? 'High-End' : isMid ? 'Mid-Range' : 'Low-End'}`);
         
         // Tambahkan class ke body
+        document.body.classList.remove('device-high', 'device-mid', 'device-low');
+        
         if (isHigh) {
             document.body.classList.add('device-high');
-            document.body.classList.remove('device-mid', 'device-low');
+            console.log('✅ Menggunakan efek GLASS penuh');
         } else if (isMid) {
             document.body.classList.add('device-mid');
-            document.body.classList.remove('device-high', 'device-low');
+            console.log('✅ Menggunakan efek GLASS ringan');
         } else {
             document.body.classList.add('device-low');
-            document.body.classList.remove('device-high', 'device-mid');
+            console.log('✅ Menggunakan tampilan HITAM (tanpa glass)');
         }
         
         return { score, isHigh, isMid, isLow };

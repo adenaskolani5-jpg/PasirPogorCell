@@ -99,18 +99,7 @@
 :root{
   --bg:#050505; --card:#0b0b0b; --text:#e5e7eb; --muted:#9ca3af; --accent:#22c55e; --blue:#3b82f6; --yellow:#facc15;
 }
-.light{
-  --bg:#f5f7fb; --card:#ffffff; --text:#0f172a; --muted:#64748b; --accent:#22c55e; --blue:#2563eb; --yellow:#f59e0b;
-}
-.light body{ background:linear-gradient(135deg,#eef2ff,#f8fafc); }
-.light .card{ background:white; color:#0f172a; border:1px solid rgba(34,197,94,.4); box-shadow:0 6px 20px rgba(0,0,0,.08),0 0 20px rgba(34,197,94,.15); }
-.light .card::before{ filter:blur(20px); opacity:.35; }
-.light .price{ color:#16a34a; text-shadow:none; }
-.light header{ background:white; border-color:#e5e7eb; }
-.light header p{ color:#64748b; }
-.light footer{ background:#f8fafc; color:#334155; }
-.light .marquee{ background:#e5e7eb; border-color:#22c55e; }
-.light .marquee span{ color:#0f172a; text-shadow:none; }
+
 
 .page{ animation:fadeIn 0.2s ease; }
 @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
@@ -119,12 +108,7 @@
   display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:.35s;
   border:1px solid rgba(34,197,94,.35); box-shadow:0 0 12px rgba(34,197,94,.25),0 0 40px rgba(34,197,94,.15);
 }
-.card::before{
-  content:""; position:absolute; inset:-2px; border-radius:1rem; background:linear-gradient(120deg,var(--accent),var(--blue),var(--accent));
-  filter:blur(18px); opacity:.55; z-index:-1; animation:glow 3s infinite alternate;
-}
-@keyframes glow{ from{opacity:.3} to{opacity:.7} }
-.card:hover{ transform:scale(1.05); box-shadow:0 0 20px rgba(34,197,94,.8),0 0 60px rgba(59,130,246,.7); }
+
 /* ===== KARTU DENGAN GLOW TAPI TIDAK BERKEDIP ===== */
 .card {
     position: relative;
@@ -162,11 +146,9 @@
     border-color: #4ade80;
 }
 .menu-active{ border-color:var(--accent)!important; box-shadow:0 0 30px var(--accent),0 0 80px rgba(59,130,246,.9)!important; }
-.back-btn{ padding:.6rem 1.3rem; border-radius:999px; background:black; color:white; font-weight:600; border:1px solid #22c55e; box-shadow:0 0 15px rgba(34,197,94,.6); transition:.3s; }
-.back-btn:hover{ transform:scale(1.05); }
+
 .price{ color:var(--accent); font-weight:700; text-shadow:0 0 6px rgba(34,197,94,.7),0 0 14px rgba(34,197,94,.4); }
-.ket-btn{ background:var(--yellow); color:#000; padding:.25rem .6rem; border-radius:.5rem; font-size:.75rem; font-weight:700; box-shadow:0 0 8px rgba(250,204,21,.6); }
-.ket-box{ display:none; color:var(--yellow); font-size:.85rem; padding-left:.6rem; margin-top:.4rem; line-height:1.5; }
+
 .marquee { width:100%; overflow:hidden; background:#000; border-top:1px solid #22c55e; border-bottom:1px solid #22c55e; position:relative; }
 .marquee-track {
   display: flex;
@@ -179,16 +161,7 @@
 }
 .marquee span { flex-shrink:0; padding:12px 40px; white-space:nowrap; font-weight:600; color:#ffffff; text-shadow:0 0 10px rgba(34,197,94,.8); font-size:.95rem; }
 @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.tab-btn{ transition:.25s; }
-.tab-btn.active{ background:#22c55e; color:black; box-shadow:0 0 15px rgba(34,197,94,.8); }
-.popular-item {
-  background: rgba(20,20,30,0.7); backdrop-filter: blur(4px); border:1px solid rgba(34,197,94,0.3); border-radius:1rem;
-  padding:0.75rem 1rem; margin-bottom:0.75rem; display:flex; align-items:center; gap:0.75rem; transition:all 0.25s ease;
-  cursor:default; font-weight:500; color:#e5e7eb;
-}
-.popular-item:hover { transform:translateX(5px); border-color:#22c55e; box-shadow:0 0 12px rgba(34,197,94,0.4); background:rgba(34,197,94,0.1); }
-.popular-icon { font-size:1.25rem; width:2rem; text-align:center; }
-.popular-text { flex:1; font-size:0.9rem; line-height:1.3; }
+
 /* ===== STYLE HASIL PENCARIAN ===== */
 .harga-item {
   background: rgba(10,10,15,0.75); backdrop-filter:blur(2px); border-left:4px solid #22c55e; border-radius:0.75rem;
@@ -260,27 +233,7 @@
 
 .card-main { display: flex; justify-content: space-between; align-items: center; width: 100%; }
 .card-detail { margin-top: 0.6rem; font-size: 0.7rem; color: #9ca3af; border-top: 1px dashed rgba(34,197,94,0.3); padding-top: 0.5rem; }
-.floating-back {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-    background: #22c55e;
-    color: #000;
-    border: none;
-    border-radius: 50px;
-    padding: 12px 24px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 0 15px rgba(34,197,94,0.8);
-    transition: all 0.3s ease;
-    display: none;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
-    font-family: inherit;
-}
-.floating-back:hover { transform: scale(1.05); background: #4ade80; box-shadow: 0 0 25px rgba(34,197,94,1); }
+
 #home .futuristic-btn.border-green-400 {
     background: rgba(255, 255, 255, 0.08) !important;
     border-color: rgba(255, 255, 255, 0.12) !important;
@@ -315,30 +268,7 @@
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(34,197,94,.8), 0 0 60px rgba(59,130,246,.7);
 }
-#home .btn-card-style {
-  background: var(--card);
-  border: 1px solid rgba(34,197,94,.35);
-  box-shadow: 0 0 12px rgba(34,197,94,.25), 0 0 40px rgba(34,197,94,.15);
-  color: var(--text);
-  transition: all 0.35s;
-  position: relative;
-  overflow: hidden;
-}
-#home .btn-card-style::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: 1rem;
-  background: linear-gradient(120deg, var(--accent), var(--blue), var(--accent));
-  filter: blur(18px);
-  opacity: 0.55;
-  z-index: -1;
-  animation: glow 3s infinite alternate;
-}
-#home .btn-card-style:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(34,197,94,.8), 0 0 60px rgba(59,130,246,.7);
-}
+
 .glow-card {
   background: #0a0a0a;
   border: 1px solid #22c55e;
@@ -1001,230 +931,8 @@ body::before {
 .futuristic-btn:hover {
     color: #ffffff !important;
 }
-/* ===== CARD MENU PAKET INTERNET & TOPUP GAME ===== */
 
-/* Card di home */
-#home .card {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 1.25rem !important;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 
-                inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
-}
 
-#home .card::before {
-    display: none !important;
-}
-
-#home .card:hover {
-    background: rgba(255, 255, 255, 0.13) !important;
-    border-color: rgba(34, 197, 94, 0.35) !important;
-    box-shadow: 0 8px 40px rgba(34, 197, 94, 0.08) !important;
-}
-
-/* Card di Internet & Game */
-#internet .card,
-#game .card,
-#paketTypes .card {
-    background: rgba(255, 255, 255, 0.06) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 1.25rem !important;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15) !important;
-}
-
-#internet .card:hover,
-#game .card:hover,
-#paketTypes .card:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(34, 197, 94, 0.3) !important;
-}
-/* ===== EFEK KACA RINGAN (OPTIMASI HP SPEK RENDAH) ===== */
-
-/* 1. Gunakan warna transparan dengan opacity, tanpa blur */
-.card {
-    background: rgba(255, 255, 255, 0.08) !important;
-    /* HAPUS backdrop-filter blur - ini yang berat */
-    /* backdrop-filter: blur(16px) !important; */
-    /* -webkit-backdrop-filter: blur(16px) !important; */
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 1.25rem !important;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2) !important;
-    transition: all 0.3s ease !important;
-}
-
-.card:hover {
-    background: rgba(255, 255, 255, 0.14) !important;
-    border-color: rgba(34, 197, 94, 0.3) !important;
-}
-
-/* 2. Tombol aksi tanpa blur */
-.futuristic-btn {
-    background: rgba(255, 255, 255, 0.08) !important;
-    /* HAPUS blur */
-    /* backdrop-filter: blur(12px) !important; */
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 2rem !important;
-    padding: 0.6rem 1.2rem !important;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15) !important;
-    transition: all 0.3s ease !important;
-}
-
-.futuristic-btn:hover {
-    background: rgba(34, 197, 94, 0.15) !important;
-    border-color: rgba(34, 197, 94, 0.35) !important;
-}
-
-/* 3. Card detail paket */
-#paketList .card,
-#topupList .card {
-    background: rgba(255, 255, 255, 0.06) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15) !important;
-}
-
-/* 4. Hapus efek glow yang berat */
-.card::before {
-    display: none !important;
-}
-
-/* 5. Hapus animasi yang berat */
-@keyframes glow {
-    /* Hapus atau kosongkan */
-}
-
-/* 6. Tombol pagination ringan */
-.pagination-btn {
-    background: rgba(255, 255, 255, 0.06) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 2rem !important;
-    padding: 0.4rem 1rem !important;
-    transition: all 0.2s ease !important;
-}
-
-.pagination-btn:hover:not(:disabled) {
-    background: rgba(34, 197, 94, 0.12) !important;
-    border-color: rgba(34, 197, 94, 0.25) !important;
-}
-
-/* 7. Modal tetap transparan tapi tanpa blur berat */
-#calculatorModal > div,
-#hargaModal > div,
-#poinModal > div,
-#settingsModal > div,
-#adminPanelModal > div {
-    background: rgba(17, 24, 39, 0.9) !important;
-    /* HAPUS blur berat */
-    /* backdrop-filter: blur(24px) !important; */
-    border: 1px solid rgba(255, 255, 255, 0.06) !important;
-}
-/* Default: tanpa blur (ringan) */
-.card {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 1.25rem !important;
-}
-
-/* Hanya untuk HP spek tinggi (deteksi GPU) */
-@media (hover: hover) and (pointer: fine) {
-    .card {
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
-        background: rgba(255, 255, 255, 0.06) !important;
-    }
-    
-    .futuristic-btn {
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
-    }
-}
-/* ===== EFFECT SESUAI KEMAMPUAN DEVICE ===== */
-
-/* 1. Default untuk Low-End (tanpa blur) */
-.card {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 1.25rem !important;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
-    transition: all 0.2s ease !important;
-}
-
-.futuristic-btn {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 2rem !important;
-    padding: 0.5rem 1rem !important;
-    transition: all 0.2s ease !important;
-}
-
-/* 2. Mid-Range (blur ringan) */
-.device-mid .card {
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
-    background: rgba(255, 255, 255, 0.06) !important;
-}
-
-.device-mid .futuristic-btn {
-    backdrop-filter: blur(6px) !important;
-    -webkit-backdrop-filter: blur(6px) !important;
-    background: rgba(255, 255, 255, 0.06) !important;
-}
-
-/* 3. High-End (blur penuh) */
-.device-high .card {
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
-}
-
-.device-high .futuristic-btn {
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15) !important;
-}
-
-.device-high .futuristic-btn:hover {
-    background: rgba(34, 197, 94, 0.15) !important;
-    border-color: rgba(34, 197, 94, 0.4) !important;
-    transform: translateY(-2px) !important;
-}
-
-/* 4. Hover efek lebih ringan di low-end */
-.device-low .card:hover {
-    transform: scale(1.01) !important;
-    background: rgba(255, 255, 255, 0.14) !important;
-}
-
-.device-low .futuristic-btn:hover {
-    background: rgba(34, 197, 94, 0.12) !important;
-}
-
-/* 5. Hapus efek berat */
-.card::before {
-    display: none !important;
-}
-
-#home .card::before {
-    display: none !important;
-}
-
-/* 6. Animasi lebih ringan di low-end */
-.device-low * {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-}
-
-.device-low .card-enter {
-    transition: all 0.1s ease !important;
-}
 /* ===== MENU HARGA (DETAIL PAKET & TOPUP) TETAP HITAM ===== */
 
 /* 1. Detail Paket & TopUp Game tetap hitam (tidak glass) */
@@ -2128,38 +1836,7 @@ const PaginationHelper = {
         }
     }
 };
-
-// ===== LAZY RENDER HELPER =====
-function lazyRenderItems(items, containerId, renderItem, batchSize = 5, delay = 50) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
     
-    let currentIndex = 0;
-    let isRendering = false;
-    
-    function renderBatch() {
-        if (isRendering) return;
-        isRendering = true;
-        
-        const endIndex = Math.min(currentIndex + batchSize, items.length);
-        
-        for (let i = currentIndex; i < endIndex; i++) {
-            const html = renderItem(items[i], i);
-            container.innerHTML += html;
-        }
-        
-        currentIndex = endIndex;
-        isRendering = false;
-        
-        // Jika masih ada item, render batch berikutnya
-        if (currentIndex < items.length) {
-            setTimeout(renderBatch, delay);
-        }
-    }
-    
-    // Mulai render
-    renderBatch();
-}
 // ============================================================
 //  LOGO DARI IMGBB UNTUK SEMUA PENGUNJUNG
 // ============================================================
@@ -2167,17 +1844,17 @@ const LOGO_URLS = {
     "operator_Indosat": "https://i.ibb.co.com/tft6S9w/IMG-20260620-072917.jpg",
     "operator_Telkomsel": "https://i.ibb.co.com/Ngz815fF/images-7e1bfd25-d741-45.jpg",
     "operator_Axis": "https://i.ibb.co.com/0VtDmk2j/axis-198257.jpg",
-    "operator_XL": "https://i.ibb.co.com/dsWHnM00/IMG-20260620-075418.jpg",
-    "operator_Tri": "https://i.ibb.co.com/LdkPvqfQ/IMG-20260620-075555.jpg",
-    "operator_byU": "https://i.ibb.co.com/hbrnP0r/images.jpg",
+    "operator_XL": "https://i.ibb.co.com/hbrnP0r/IMG-20260620-075418.jpg",
+    "operator_Tri": "https://i.ibb.co.com/dsWHnM00/IMG-20260620-075555.jpg",
+    "operator_byU": "https://i.ibb.co.com/LdkPvqfQ/images.jpg",
     "operator_Smartfren": "https://i.ibb.co.com/ymyhf7HW/smartfren-logo.jpg",
     "game_Mobile Legends": "https://i.ibb.co.com/fYs8TRBd/IMG-20260620-080306.jpg",
     "game_Free Fire": "https://i.ibb.co.com/Fbzy6Y7v/IMG-20260620-080935.jpg",
     "game_PUBG Mobile": "https://i.ibb.co.com/xKJJBFN8/IMG-20260620-081207.jpg",
     "game_Call Of Duty Mobile": "https://i.ibb.co.com/8LhLZSjS/IMG-20260620-082153.jpg",
-    "game_Honor Of Kings": "https://i.ibb.co.com/93HRTpt8/IMG-20260620-082452.jpg",
-    "game_Genshin Impact": "https://i.ibb.co.com/gGpSvjy/IMG-20260620-083215.jpg",
-    "game_Roblox": "https://i.ibb.co.com/zVnj3Prr/IMG-20260620-083534.jpg"
+    "game_Honor Of Kings": "https://i.ibb.co.com/zVnj3Prr/IMG-20260620-082452.jpg",
+    "game_Genshin Impact": "https://i.ibb.co.com/93HRTpt8/IMG-20260620-083215.jpg",
+    "game_Roblox": "https://i.ibb.co.com/gGpSvjy/IMG-20260620-083534.jpg"
 };
 
 // ===== OVERRIDE FUNGSI getLogo =====
@@ -2199,11 +1876,6 @@ console.log('📊 Total logo:', Object.keys(LOGO_URLS).length);
 
 <!-- SCRIPT UTAMA (FUNGSI & LOGIKA) -->
 <script>          
-const popularItems = {          
-  paket: [ "Freedom Mini 9GB 7 Hari Rp 26.000", "Freedom Mini 5 GB 2 Hari Rp 13.000", "Freedom Mini 6GB 5 Hari Rp 18.000", "Indosat Yellow 1GB 7 Hari Rp 10.000" ],          
-  game: [ "Top Up Free Fire 100 Diamond", "Top Up Mobile Legends 50 Diamond", "Top Up PUBG Mobile 300 UC" ]          
-};          
-
 // Data rekomendasi paket per operator
 const rekomendasiData = {
   "Indosat": [
@@ -4247,11 +3919,6 @@ function checkPerformance() {
         Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) + ' MB' : 
         'Not available');
 }
-
-// Jalankan setelah load
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(checkPerformance, 2000);
-});
 
 // ===== CLEAR CACHE (untuk admin) =====
 function clearAllCache() {
@@ -6445,131 +6112,7 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 console.log('✅ Sistem navigasi terintegrasi siap!');
-// ===== DETEKSI KEMAMPUAN DEVICE =====
-const DeviceCapability = {
-    // Cek apakah device mendukung backdrop-filter
-    supportsBackdropFilter: function() {
-        const test = document.createElement('div');
-        test.style.cssText = 'backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px);';
-        return test.style.backdropFilter !== '' || test.style.webkitBackdropFilter !== '';
-    },
-    
-    // Cek RAM (perkiraan)
-    getMemoryInfo: function() {
-        if (performance.memory) {
-            return {
-                total: performance.memory.totalJSHeapSize,
-                used: performance.memory.usedJSHeapSize,
-                limit: performance.memory.jsHeapSizeLimit
-            };
-        }
-        return null;
-    },
-    
-    // Cek jumlah core CPU
-    getCPUCount: function() {
-        return navigator.hardwareConcurrency || 4; // default 4
-    },
-    
-    // Cek apakah device mobile
-    isMobile: function() {
-        return /Android|iPhone|iPad|iPod|BlackBerry|Opera Mini|IEMobile/i.test(navigator.userAgent);
-    },
-    
-    // Cek layar sentuh
-    isTouchDevice: function() {
-        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    },
-    
-    // Skor kemampuan device (0-100)
-    getScore: function() {
-        let score = 50; // default sedang
-        
-        // 1. Cek backdrop-filter
-        if (this.supportsBackdropFilter()) score += 10;
-        else score -= 10;
-        
-        // 2. Cek CPU
-        const cpu = this.getCPUCount();
-        if (cpu >= 8) score += 15;
-        else if (cpu >= 4) score += 5;
-        else score -= 10;
-        
-        // 3. Cek RAM (jika tersedia)
-        const mem = this.getMemoryInfo();
-        if (mem) {
-            const ramGB = mem.total / (1024 * 1024 * 1024);
-            if (ramGB > 4) score += 15;
-            else if (ramGB > 2) score += 5;
-            else score -= 10;
-        }
-        
-        // 4. Mobile device cenderung lebih lemah
-        if (this.isMobile()) score -= 10;
-        
-        // 5. Touch device cenderung lebih lemah
-        if (this.isTouchDevice()) score -= 5;
-        
-        return Math.max(0, Math.min(100, score));
-    },
-    
-    // Apakah device kencang?
-    isHighEnd: function() {
-        return this.getScore() >= 60;
-    },
-    
-    // Apakah device sedang?
-    isMidRange: function() {
-        const score = this.getScore();
-        return score >= 35 && score < 60;
-    },
-    
-    // Apakah device lemah?
-    isLowEnd: function() {
-        return this.getScore() < 35;
-    },
-    
-    // Terapkan efek sesuai kemampuan
-    applyEffects: function() {
-        const score = this.getScore();
-        const isHigh = this.isHighEnd();
-        const isMid = this.isMidRange();
-        const isLow = this.isLowEnd();
-        
-        console.log(`📊 Skor Device: ${score}/100`);
-        console.log(`📱 Tipe: ${isHigh ? 'High-End' : isMid ? 'Mid-Range' : 'Low-End'}`);
-        
-        // Tambahkan class ke body
-        if (isHigh) {
-            document.body.classList.add('device-high');
-            document.body.classList.remove('device-mid', 'device-low');
-        } else if (isMid) {
-            document.body.classList.add('device-mid');
-            document.body.classList.remove('device-high', 'device-low');
-        } else {
-            document.body.classList.add('device-low');
-            document.body.classList.remove('device-high', 'device-mid');
-        }
-        
-        return { score, isHigh, isMid, isLow };
-    }
-};
 
-// ===== JALANKAN SAAT LOAD =====
-document.addEventListener('DOMContentLoaded', function() {
-    const result = DeviceCapability.applyEffects();
-    
-    // Tampilkan info di console
-    console.log('🔍 Detail Device:');
-    console.log(`  - CPU: ${DeviceCapability.getCPUCount()} core`);
-    console.log(`  - Mobile: ${DeviceCapability.isMobile()}`);
-    console.log(`  - Touch: ${DeviceCapability.isTouchDevice()}`);
-    console.log(`  - Backdrop-filter: ${DeviceCapability.supportsBackdropFilter()}`);
-    
-    // Simpan ke sessionStorage agar tidak perlu cek ulang
-    sessionStorage.setItem('deviceScore', result.score);
-    sessionStorage.setItem('deviceType', result.isHigh ? 'high' : result.isMid ? 'mid' : 'low');
-});
 </script>
 </body>    
 </html>

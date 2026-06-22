@@ -959,6 +959,104 @@ body::before {
     color: #facc15 !important;
     text-shadow: 0 0 6px rgba(250, 204, 21, 0.4);
 }
+{
+    margin: 0;
+    min-height: 200vh;
+    background: #0a0a0a;
+    position: relative;
+}
+
+/* Konten dummy untuk testing scroll */
+.content {
+    height: 200vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: Arial;
+    font-size: 24px;
+    flex-direction: column;
+}
+
+.content p {
+    margin: 10px;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    position: absolute;
+    top: 179px;
+    right: 115px;
+    animation: blink 0.6s infinite alternate ease-in-out;
+    z-index: 9999;
+    cursor: pointer;
+}
+
+@keyframes blink {
+    0% { 
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% { 
+        opacity: 0.15;
+        transform: scale(0.7);
+    }
+}
+
+/* Style untuk popup informasi */
+.info-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 30px 50px;
+    border-radius: 15px;
+    font-family: Arial, sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    z-index: 10000;
+    display: none;
+    border: 2px solid;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    text-align: center;
+}
+
+.info-popup.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.info-popup .sub {
+    font-size: 16px;
+    font-weight: normal;
+    margin-top: 10px;
+    opacity: 0.7;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Tombol close */
+.close-btn {
+    margin-top: 20px;
+    padding: 8px 25px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.close-btn:hover {
+    background: #555;
+}
 </style>        
 </head>        
 <body class="min-h-screen text-white">        
@@ -1127,7 +1225,7 @@ const operators = {
       {nama: "Axis Data Paket Warnet Unlimited 48 Jam", harga: "Rp 23.000", ket: "- Untuk Warnet Perjam Hanya Bisa di Aktivasi 16x Dalam 7 Hari, Akan di Reset Setiap Minggunya.                           - Untuk Warnet Unlimited Hanya Bisa di Aktivasi 3x Dalam 7 Hari & 7x Dalam 30 Hari."},
       {nama: "Axis Data Paket Warnet Unlimited 72 Jam", harga: "Rp 28.000", ket: "- Untuk Warnet Perjam Hanya Bisa di Aktivasi 16x Dalam 7 Hari, Akan di Reset Setiap Minggunya.                           - Untuk Warnet Unlimited Hanya Bisa di Aktivasi 3x Dalam 7 Hari & 7x Dalam 30 Hari."}    
     ],    
-    "Aigo Kuota Mini (Paket Internet Harian)": [    
+    "Aigo Kuota Mini (Kuota Harian)": [    
       {nama: "Mini 5GB + Bonus Aigo 1 Hari", harga: "Rp 10.000", ket: "Bonus kuota sampai dengan 6GB berlaku di wilayah tertentu di Kota-mu"},    
       {nama: "Mini Axis 15GB 1 Hari", harga: "Rp 10.000", ket: "Bonus kuota sampai dengan 6GB berlaku di wilayah tertentu di Kota-mu"},    
       {nama: "Mini Axis 5GB + Bonus Aigo 2 Hari", harga: "Rp 12.000", ket: "- Berlaku masa aktif 48 jam (contoh transaksi tanggal 13 Feb Jam 13.00 akan berakhir 15 Feb Jam 13.00). - Bonus kuota sampai dengan 6GB berlaku di wilayah tertentu di Kota-mu"},    
@@ -1146,27 +1244,38 @@ const operators = {
        {nama: "Mini Axis 30GB + Bonus Aigo 3 Hari", harga: "Rp 20.000", ket: "Bonus kuota sampai dengan 30GB berlaku di wilayah tertentu di Kota-mu (cek detail)"},
        {nama: "Mini Axis Aigo Unlimited 24 jam 1 Hari", harga: "Rp 20.000", ket: "Kuota Tanpa Batas"},  
     ],    
-    "Paket Internet Bulanan": [    
-      {nama: "Axis Data 1GB Semua 30 Hari", harga: "Rp 10.000", ket: "Paket dasar bulanan"},    
-      {nama: "Bronet 2GB + Bonus Aigo 30 Hari", harga: "Rp 18.000", ket: "Kuota + bonus AIGO"},    
-      {nama: "Bronet 3GB + Bonus Aigo 30 Hari", harga: "Rp 21.000", ket: "Pilihan hemat"},    
-      {nama: "Bronet 6GB + Bonus Aigo 30 Hari", harga: "Rp 32.000", ket: "Kuota sedang"},    
-      {nama: "Bronet 8GB + Bonus Aigo 30 Hari", harga: "Rp 41.000", ket: "Streaming ringan"},    
-      {nama: "Bronet 14GB + Bonus Aigo 30 Hari", harga: "Rp 62.000", ket: "Kuota besar"},    
-      {nama: "Axis Bronet 16GB Semua 30 Hari", harga: "Rp 74.000", ket: "Semua jaringan"},    
-      {nama: "Bronet 20GB + Bonus Aigo 30 Hari", harga: "Rp 74.000", ket: "Aktivitas padat"},    
-      {nama: "Bronet 30GB + Bonus Aigo 30 Hari", harga: "Rp 91.000", ket: "Kuota jumbo"},    
-      {nama: "Bronet 2GB Semua 24 Jam 60 Hari", harga: "Rp 32.000", ket: "Masa aktif panjang"},    
-      {nama: "Bronet 3GB Semua 24 Jam 60 Hari", harga: "Rp 41.000", ket: "Internet stabil"},    
-      {nama: "Bronet 5GB Semua 24 Jam 60 Hari", harga: "Rp 58.000", ket: "Hemat jangka panjang"},    
-      {nama: "Bronet 8GB Semua 24 Jam 60 Hari", harga: "Rp 78.000", ket: "Streaming bulanan"},    
-      {nama: "Bronet 10GB Semua 24 Jam 60 Hari", harga: "Rp 89.000", ket: "Kuota besar"},    
-      {nama: "Bronet 12GB Semua 24 Jam 60 Hari", harga: "Rp 100.000", ket: "Pemakaian aktif"},    
-      {nama: "Bronet 35GB + Bonus Aigo 60 Hari", harga: "Rp 110.000", ket: "Kuota super besar"},    
-      {nama: "Bronet 16GB Semua 24 Jam 60 Hari", harga: "Rp 119.000", ket: "All network"},    
-      {nama: "Bronet 75GB + Bonus Aigo 60 Hari", harga: "Rp 171.000", ket: "Kuota ekstrem"}    
-    ]    
+  "30 Hari / Bronet Isi Ulang 28 Hari": [
+    { "nama": "Axis Data 1GB All 30 Hari", "harga": "Rp 11.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 3GB + Bonus Aigo 28 Hari", "harga": "Rp 22.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 5GB 30Hari", "harga": "Rp 31.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 7GB + Bonus Aigo 28 Hari", "harga": "Rp 35.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 10GB 28Hari", "harga": "Rp 37.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 16GB 28Hari", "harga": "Rp 47.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 26GB 28Hari", "harga": "Rp 63.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 40GB 28Hari", "harga": "Rp 78.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 35GB + Bonus Aigo 30 Hari", "harga": "Rp 80.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 65GB 28Hari", "harga": "Rp 100.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 100GB 28Hari", "harga": "Rp 125.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 150GB 28Hari", "harga": "Rp 152.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 105GB + Bonus Aigo 28Hari", "harga": "Rp 173.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 250GB 28 Hari", "harga": "Rp 199.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 150GB + Bonus Aigo 30 Hari", "harga": "Rp 240.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 400GB 28 Hari", "harga": "Rp 248.000", "ket": "Bronet Isi Ulang 28 Hari" },
+    { "nama": "Bronet 600GB 28 Hari", "harga": "Rp 297.000", "ket": "Bronet Isi Ulang 28 Hari" }
+  ],
+  "60 Hari": [
+    { "nama": "Bronet 2GB All 24 Jam 60 Hari", "harga": "Rp 32.000", "ket": "Bronet Isi Ulang 60 Hari" },
+    { "nama": "Bronet 3GB All 24 Jam 60 Hari", "harga": "Rp 39.000", "ket": "Bronet Isi Ulang 60 Hari" },
+    { "nama": "Bronet 5GB All 24 Jam 60 Hari", "harga": "Rp 58.000", "ket": "Bronet Isi Ulang 60 Hari" },
+    { "nama": "Bronet 8GB All 24 Jam 60 Hari", "harga": "Rp 78.000", "ket": "Bronet Isi Ulang 60 Hari" },
+    { "nama": "Bronet 10GB All 24 Jam 60 Hari", "harga": "Rp 90.000", "ket": "Bronet Isi Ulang 60 Hari" },
+    { "nama": "Bronet 12GB All 24 Jam 60 Hari", "harga": "Rp 99.000", "ket": "Bronet Isi Ulang 60 Hari" },
+    { "nama": "Bronet 16GB All 24 Jam 60 Hari", "harga": "Rp 114.000", "ket": "Bronet Isi Ulang 60 Hari" },
+    { "nama": "Bronet 50GB 60Hari", "harga": "Rp 117.000", "ket": "Bronet Isi Ulang 60 Hari" },
+    { "nama": "Bronet 90GB 60Hari", "harga": "Rp 182.000", "ket": "Bronet Isi Ulang 60 Hari" }
+  ]
   },    
+  
   XL: {    
     "XL Data Harian":[    
       {nama: "XL Reguler 800MB 24 Jam 30 Hari", harga: "Rp 10.000", ket: "Kuota ringan harian"},    
@@ -1308,67 +1417,105 @@ const operators = {
     ]    
   } ,
 
-Smartfren: {
-    "Paket Harian / Mingguan": [
-      {nama: "Smartfren 1GB 1 Hari", harga: "Rp 8.000", ket: "Kuota utama 1GB, berlaku 1x24 jam"},
-      {nama: "Smartfren 2GB 1 Hari", harga: "Rp 12.000", ket: "Kuota utama 2GB, berlaku 1x24 jam"},
-      {nama: "Smartfren 3GB 1 Hari", harga: "Rp 15.000", ket: "Kuota utama 3GB, berlaku 1x24 jam"},
-      {nama: "Smartfren 1GB 3 Hari", harga: "Rp 10.000", ket: "Kuota utama 1GB, berlaku 3 hari"},
-      {nama: "Smartfren 2GB 3 Hari", harga: "Rp 14.000", ket: "Kuota utama 2GB, berlaku 3 hari"},
-      {nama: "Smartfren 3GB 3 Hari", harga: "Rp 17.000", ket: "Kuota utama 3GB, berlaku 3 hari"},
-      {nama: "Smartfren 5GB 3 Hari", harga: "Rp 22.000", ket: "Kuota utama 5GB, berlaku 3 hari"},
-      {nama: "Smartfren 2GB 7 Hari", harga: "Rp 16.000", ket: "Kuota utama 2GB, berlaku 7 hari"},
-      {nama: "Smartfren 3GB 7 Hari", harga: "Rp 19.000", ket: "Kuota utama 3GB, berlaku 7 hari"},
-      {nama: "Smartfren 5GB 7 Hari", harga: "Rp 25.000", ket: "Kuota utama 5GB, berlaku 7 hari"},
-      {nama: "Smartfren 8GB 7 Hari", harga: "Rp 32.000", ket: "Kuota utama 8GB, berlaku 7 hari"},
-      {nama: "Smartfren 10GB 7 Hari", harga: "Rp 38.000", ket: "Kuota utama 10GB, berlaku 7 hari"},
-      {nama: "Smartfren 15GB 7 Hari", harga: "Rp 50.000", ket: "Kuota utama 15GB, berlaku 7 hari"},
-    ],
-    "Paket Internet Bulanan": [
-      {nama: "Smartfren 2GB 30 Hari", harga: "Rp 20.000", ket: "Kuota utama 2GB, berlaku 30 hari"},
-      {nama: "Smartfren 3GB 30 Hari", harga: "Rp 24.000", ket: "Kuota utama 3GB, berlaku 30 hari"},
-      {nama: "Smartfren 5GB 30 Hari", harga: "Rp 32.000", ket: "Kuota utama 5GB, berlaku 30 hari"},
-      {nama: "Smartfren 6GB 30 Hari", harga: "Rp 38.000", ket: "Kuota utama 6GB, berlaku 30 hari"},
-      {nama: "Smartfren 8GB 30 Hari", harga: "Rp 45.000", ket: "Kuota utama 8GB, berlaku 30 hari"},
-      {nama: "Smartfren 10GB 30 Hari", harga: "Rp 52.000", ket: "Kuota utama 10GB, berlaku 30 hari"},
-      {nama: "Smartfren 12GB 30 Hari", harga: "Rp 58.000", ket: "Kuota utama 12GB, berlaku 30 hari"},
-      {nama: "Smartfren 15GB 30 Hari", harga: "Rp 68.000", ket: "Kuota utama 15GB, berlaku 30 hari"},
-      {nama: "Smartfren 20GB 30 Hari", harga: "Rp 85.000", ket: "Kuota utama 20GB, berlaku 30 hari"},
-      {nama: "Smartfren 25GB 30 Hari", harga: "Rp 100.000", ket: "Kuota utama 25GB, berlaku 30 hari"},
-      {nama: "Smartfren 30GB 30 Hari", harga: "Rp 115.000", ket: "Kuota utama 30GB, berlaku 30 hari"},
-      {nama: "Smartfren 40GB 30 Hari", harga: "Rp 140.000", ket: "Kuota utama 40GB, berlaku 30 hari"},
-      {nama: "Smartfren 50GB 30 Hari", harga: "Rp 165.000", ket: "Kuota utama 50GB, berlaku 30 hari"},
-      {nama: "Smartfren 60GB 30 Hari", harga: "Rp 190.000", ket: "Kuota utama 60GB, berlaku 30 hari"},
-      {nama: "Smartfren 80GB 30 Hari", harga: "Rp 230.000", ket: "Kuota utama 80GB, berlaku 30 hari"},
-      {nama: "Smartfren 100GB 30 Hari", harga: "Rp 275.000", ket: "Kuota utama 100GB, berlaku 30 hari"},
-    ],
-    "Paket Combo (Internet + Telpon)": [
-      {nama: "Combo 1GB + 30 Menit 30 Hari", harga: "Rp 22.000", ket: "1GB kuota + 30 menit telpon all operator"},
-      {nama: "Combo 2GB + 30 Menit 30 Hari", harga: "Rp 28.000", ket: "2GB kuota + 30 menit telpon all operator"},
-      {nama: "Combo 3GB + 60 Menit 30 Hari", harga: "Rp 35.000", ket: "3GB kuota + 60 menit telpon all operator"},
-      {nama: "Combo 5GB + 60 Menit 30 Hari", harga: "Rp 45.000", ket: "5GB kuota + 60 menit telpon all operator"},
-      {nama: "Combo 8GB + 100 Menit 30 Hari", harga: "Rp 60.000", ket: "8GB kuota + 100 menit telpon all operator"},
-      {nama: "Combo 10GB + 100 Menit 30 Hari", harga: "Rp 72.000", ket: "10GB kuota + 100 menit telpon all operator"},
-      {nama: "Combo 15GB + 150 Menit 30 Hari", harga: "Rp 95.000", ket: "15GB kuota + 150 menit telpon all operator"},
-    ],
-    "Paket Unlimited (Kecepatan Terbatas)": [
-      {nama: "Unlimited 1GB (Setelah Habis 64kbps) 30 Hari", harga: "Rp 30.000", ket: "1GB kuota cepat, setelah habis 64kbps unlimited"},
-      {nama: "Unlimited 2GB (Setelah Habis 64kbps) 30 Hari", harga: "Rp 40.000", ket: "2GB kuota cepat, setelah habis 64kbps unlimited"},
-      {nama: "Unlimited 3GB (Setelah Habis 64kbps) 30 Hari", harga: "Rp 50.000", ket: "3GB kuota cepat, setelah habis 64kbps unlimited"},
-      {nama: "Unlimited 5GB (Setelah Habis 64kbps) 30 Hari", harga: "Rp 65.000", ket: "5GB kuota cepat, setelah habis 64kbps unlimited"},
-      {nama: "Unlimited 10GB (Setelah Habis 64kbps) 30 Hari", harga: "Rp 95.000", ket: "10GB kuota cepat, setelah habis 64kbps unlimited"},
-    ],
-    "Paket Malam (02.00 - 06.00)": [
-      {nama: "Malam 2GB + 1GB Utama 1 Hari", harga: "Rp 6.000", ket: "2GB kuota malam (02.00-06.00) + 1GB utama 1x24 jam"},
-      {nama: "Malam 5GB + 1GB Utama 1 Hari", harga: "Rp 10.000", ket: "5GB kuota malam (02.00-06.00) + 1GB utama 1x24 jam"},
-      {nama: "Malam 10GB + 2GB Utama 3 Hari", harga: "Rp 18.000", ket: "10GB kuota malam (02.00-06.00) + 2GB utama 3 hari"},
-      {nama: "Malam 20GB + 3GB Utama 7 Hari", harga: "Rp 30.000", ket: "20GB kuota malam (02.00-06.00) + 3GB utama 7 hari"},
-      {nama: "Malam 30GB + 5GB Utama 7 Hari", harga: "Rp 45.000", ket: "30GB kuota malam (02.00-06.00) + 5GB utama 7 hari"},
-      {nama: "Malam 50GB + 10GB Utama 30 Hari", harga: "Rp 85.000", ket: "50GB kuota malam (02.00-06.00) + 10GB utama 30 hari"},
-    ]
-}   
+ Smartfren: {
+  "Unlimited All": [
+    { "nama": "Smart Unlimited FUP 1GB 1 Hari", "harga": "Rp 10.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 3GB 1 Hari", "harga": "Rp 12.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 2GB 1 Hari", "harga": "Rp 14.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 2GB 3 Hari", "harga": "Rp 15.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 1GB 3 Hari", "harga": "Rp 15.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 3GB 3 Hari", "harga": "Rp 18.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 1GB 7 Hari", "harga": "Rp 20.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 5GB 1 Hari", "harga": "Rp 20.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 5GB 3 Hari", "harga": "Rp 23.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 2GB 7 Hari", "harga": "Rp 27.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 3GB 7 Hari", "harga": "Rp 33.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 1GB 14 Hari", "harga": "Rp 25.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 5GB 7 Hari", "harga": "Rp 42.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 2GB 14 Hari", "harga": "Rp 50.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Unlimited FUP 500MB All + FUP 1.5GB Lokal Tapal Kuda 30 Hari", "harga": "Rp 66.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 700MB 28 Hari", "harga": "Rp 69.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 1GB 28 Hari", "harga": "Rp 69.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 500MB 28 Hari", "harga": "Rp 69.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 5GB 14 Hari", "harga": "Rp 82.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 1,5GB 28 Hari", "harga": "Rp 83.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 2GB 28 Hari", "harga": "Rp 95.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 3GB 28 Hari", "harga": "Rp 125.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 5GB 28 Hari", "harga": "Rp 150.000", "ket": "Data Smart Unlimited" },
+    { "nama": "Smart Unlimited FUP 4GB 28 Hari", "harga": "Rp 185.000", "ket": "Data Smart Unlimited" }
+  ],
+  "Unlimited 5G": [
+    { "nama": "Smart Data Unlimited FUP 5G 4GB 7 Hari", "harga": "Rp 38.000", "ket": "Data Smart Unlimited 5G" },
+    { "nama": "Smart Data Unlimited FUP 5G 3GB 14 Hari", "harga": "Rp 68.000", "ket": "Data Smart Unlimited 5G" },
+    { "nama": "Smart Data Unlimited FUP 5G 2GB 28 Hari", "harga": "Rp 108.000", "ket": "Data Smart Unlimited 5G" },
+    { "nama": "Smart Data Unlimited FUP 5G 5.5GB 28 Hari", "harga": "Rp 162.000", "ket": "Data Smart Unlimited 5G" },
+    { "nama": "Smart Data Big Kuota 5G 180GB 28 Hari", "harga": "Rp 183.000", "ket": "Data Smart Unlimited 5G" },
+    { "nama": "Smart Data Unlimited FUP 5G 6GB 28 Hari", "harga": "Rp 187.000", "ket": "Data Smart Unlimited 5G" }
+  ],
+  "Nonstop App": [
+    { "nama": "Smart Data Nonstop 10GB 1 Hari", "harga": "Rp 11.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "6GB + Unlimited Apps 3 Hari", "harga": "Rp 15.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "2GB + Unlimited Apps 10 Hari", "harga": "Rp 16.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "10GB + Unlimited Apps 3 Hari", "harga": "Rp 18.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "10GB + Unlimited Apps 7 Hari", "harga": "Rp 22.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "4GB + Unlimited Apps 14 Hari", "harga": "Rp 22.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "20GB + Unlimited Apps 3 Hari", "harga": "Rp 23.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "3GB + Unlimited Apps 14 Hari", "harga": "Rp 23.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "Smart Data Nonstop 12GB 14 Hari", "harga": "Rp 32.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "10GB + Unlimited Apps 14 Hari", "harga": "Rp 32.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "7GB + Unlimited Apps 28 Hari", "harga": "Rp 35.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "20GB + Unlimited Apps 14 Hari", "harga": "Rp 40.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "10GB + Unlimited Apps 28 Hari", "harga": "Rp 42.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "16GB + Unlimited Apps 28 Hari", "harga": "Rp 48.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "24GB + Unlimited Apps 28 Hari", "harga": "Rp 61.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "35GB + Unlimited Apps 30 Hari", "harga": "Rp 78.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "75GB + Unlimited Apps 30 Hari", "harga": "Rp 120.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "100GB + Unlimited Apps 30 Hari", "harga": "Rp 125.000", "ket": "Data Kuota Nonstop New" },
+    { "nama": "Smart Data Nonstop 150GB 28 Hari", "harga": "Rp 149.000", "ket": "Data Kuota Nonstop New" }
+  ],
+  "Nonstop Old": [
+    { "nama": "Smart 10GB + Unlimited 14 Hari", "harga": "Rp 28.000", "ket": "Data Kuota Nonstop" },
+    { "nama": "Smart 10GB + Unlimited 30 Hari", "harga": "Rp 42.000", "ket": "Data Kuota Nonstop" },
+    { "nama": "Smart 30GB + Unlimited 7 Hari", "harga": "Rp 42.000", "ket": "Data Kuota Nonstop" },
+    { "nama": "Smart 20GB + Unlimited 30 Hari", "harga": "Rp 64.000", "ket": "Data Kuota Nonstop" },
+    { "nama": "Smart 30GB + Unlimited 30 Hari", "harga": "Rp 78.000", "ket": "Data Kuota Nonstop" },
+    { "nama": "Smart 35GB + Unlimited 30 Hari", "harga": "Rp 82.000", "ket": "Data Kuota Nonstop" }
+  ],
+  "Nonstop 5G": [
+    { "nama": "Smart Data Nonstop 5G 30GB 14 Hari", "harga": "Rp 51.000", "ket": "Data Kuota Nonstop 5G" },
+    { "nama": "Smart Data Nonstop 5G 70GB 7 Hari", "harga": "Rp 65.000", "ket": "Data Kuota Nonstop 5G" },
+    { "nama": "Smart Data Nonstop 5G 75GB 14 Hari", "harga": "Rp 78.000", "ket": "Data Kuota Nonstop 5G" },
+    { "nama": "Smart Data Nonstop 5G 50GB 28 Hari", "harga": "Rp 90.000", "ket": "Data Kuota Nonstop 5G" },
+    { "nama": "Smart Data Nonstop 5G 55GB 30 hari", "harga": "Rp 108.000", "ket": "Data Kuota Nonstop 5G" },
+    { "nama": "Smart Data Nonstop 5G 70GB 28 Hari", "harga": "Rp 113.000", "ket": "Data Kuota Nonstop 5G" },
+    { "nama": "Smart Data Nonstop 5G 100GB 28 Hari", "harga": "Rp 132.000", "ket": "Data Kuota Nonstop 5G" }
+  ],
+  "Volume Based": [
+    { "nama": "Smart Data 10GB 6 Hari", "harga": "Rp 22.000", "ket": "Data Smart Volume Based" },
+    { "nama": "Smart Data 5GB 14 Hari", "harga": "Rp 24.000", "ket": "Data Smart Volume Based" },
+    { "nama": "Smart Data 15GB 10 Hari", "harga": "Rp 31.000", "ket": "Data Smart Volume Based" },
+    { "nama": "Smart Data 7GB 30 Hari", "harga": "Rp 36.000", "ket": "Data Smart Volume Based" },
+    { "nama": "Smart Data 17GB 14 Hari", "harga": "Rp 39.000", "ket": "Data Smart Volume Based" },
+    { "nama": "Smart Data 40GB 7 Hari", "harga": "Rp 42.000", "ket": "Data Smart Volume Based" },
+    { "nama": "Smart Data 40GB 14 Hari", "harga": "Rp 68.000", "ket": "Data Smart Volume Based" },
+    { "nama": "Smart Data 50GB 30 Hari", "harga": "Rp 103.000", "ket": "Data Smart Volume Based" },
+    { "nama": "Smart Data 66GB 28 Hari", "harga": "Rp 108.000", "ket": "Data Smart Volume Based" },
+    { "nama": "Smart Data 150GB 28 Hari", "harga": "Rp 149.000", "ket": "Data Smart Volume Based" }
+  ],
+  "Mini Data Smart": [
+    { "nama": "Smart 1GB All 3 Hari", "harga": "Rp 10.000", "ket": "Mini Data Smart" },
+    { "nama": "Smart 4GB All 3 Hari", "harga": "Rp 13.000", "ket": "Mini Data Smart" },
+    { "nama": "Smart 2GB All 3 Hari", "harga": "Rp 13.000", "ket": "Mini Data Smart" },
+    { "nama": "Smart 1GB All 7 Hari", "harga": "Rp 13.000", "ket": "Mini Data Smart" },
+    { "nama": "Smart 3GB All 5 Hari", "harga": "Rp 17.000", "ket": "Mini Data Smart" },
+    { "nama": "Smart Data 4GB 5 Hari", "harga": "Rp 17.000", "ket": "Mini Data Smart" },
+    { "nama": "Smart 1,5GB All 7 Hari", "harga": "Rp 18.000", "ket": "Mini Data Smart" },
+    { "nama": "Smart 6GB All 7 Hari", "harga": "Rp 18.000", "ket": "Mini Data Smart" },
+    { "nama": "Smart 4GB + Unli App 14 Hari", "harga": "Rp 23.000", "ket": "Mini Data Smart" }
+  ]
+}
 };    
-      
+     
 const games = {    
   "Mobile Legends":[  
   "3 Diamond Rp 2.500",
@@ -6028,6 +6175,95 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 console.log('✅ Sistem navigasi terintegrasi siap!');
+</script>
+<div class="dot" id="dot"></div>
+
+<!-- Popup informasi -->
+<div class="info-popup" id="popup">
+    <div id="popupMessage">Toko Buka</div>
+    <div class="sub" id="popupSub">Klik di luar untuk menutup</div>
+    <button class="close-btn" onclick="closePopup()">Tutup</button>
+</div>
+
+<script>
+let currentStatus = 'buka'; // 'buka' atau 'tutup'
+
+function updateColor() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const currentTime = hours + minutes / 60;
+    
+    const dot = document.getElementById('dot');
+    
+    // Hijau: 06:30 sampai 22:00
+    // Merah: 22:00 sampai 06:30
+    if (currentTime >= 6.5 && currentTime < 22.0) {
+        // Warna Hijau - Toko Buka
+        currentStatus = 'buka';
+        dot.style.background = 'radial-gradient(circle, #00ff00, #00cc00)';
+        dot.style.boxShadow = `
+            0 0 5px #00ff00,
+            0 0 10px #00ff00,
+            0 0 20px #00ff00,
+            0 0 30px #00ff00
+        `;
+    } else {
+        // Warna Merah - Toko Tutup
+        currentStatus = 'tutup';
+        dot.style.background = 'radial-gradient(circle, #ff0000, #cc0000)';
+        dot.style.boxShadow = `
+            0 0 5px #ff0000,
+            0 0 10px #ff0000,
+            0 0 20px #ff0000,
+            0 0 30px #ff0000
+        `;
+    }
+}
+
+// Fungsi untuk menampilkan popup
+function showPopup(message, color, status) {
+    const popup = document.getElementById('popup');
+    const msg = document.getElementById('popupMessage');
+    const sub = document.getElementById('popupSub');
+    
+    msg.textContent = message;
+    popup.style.borderColor = color;
+    popup.style.boxShadow = `0 0 50px ${color}33`; // 33 = 20% opacity
+    
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    sub.textContent = `Status: ${status} • ${timeStr}`;
+    
+    popup.classList.add('show');
+}
+
+// Fungsi untuk menutup popup
+function closePopup() {
+    document.getElementById('popup').classList.remove('show');
+}
+
+// Event klik pada titik
+document.getElementById('dot').addEventListener('click', function() {
+    if (currentStatus === 'buka') {
+        showPopup('Toko Buka✅', '#00ff00', 'Buka');
+    } else {
+        showPopup('Toko Tutup❗', '#ff0000', 'Tutup');
+    }
+});
+
+// Tutup popup jika klik di luar
+document.addEventListener('click', function(event) {
+    const popup = document.getElementById('popup');
+    const dot = document.getElementById('dot');
+    if (!popup.contains(event.target) && event.target !== dot) {
+        closePopup();
+    }
+});
+
+// Update warna setiap detik
+updateColor();
+setInterval(updateColor, 1000);
 </script>
 </body>    
 </html>

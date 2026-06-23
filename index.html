@@ -4276,47 +4276,46 @@ function updateCountdown() {
         progressBar.className = 'progress-bar tutup';
         progressBar.style.width = '100%';
     }
-    // Di dalam fungsi updateCountdown(), tambahkan:
-const statusText = document.createElement('div');
-statusText.id = 'tokoStatusText';
-statusText.className = 'text-xs text-center mt-1 font-semibold';
-
-// Cek apakah sudah ada, jika belum tambahkan
-let existingStatus = document.getElementById('tokoStatusText');
-if (!existingStatus) {
-    const container = document.querySelector('.progress-container');
-    if (container) {
-        container.parentNode.insertBefore(statusText, container.nextSibling);
-    }
-} else {
-    statusText = existingStatus;
-}
-
-// Update status
-if (isBuka) {
-    const sisaJam = Math.floor((TUTUP - currentMinutes) / 60);
-    const sisaMenit = Math.floor((TUTUP - currentMinutes) % 60);
-    statusText.textContent = `🟢 Buka - Tutup dalam ${sisaJam}j ${sisaMenit}m`;
-    statusText.className = 'text-green-400 text-xs text-center mt-1 font-semibold';
-} else {
-    let sisaJam, sisaMenit;
-    if (currentMinutes < BUKA) {
-        // Sebelum buka
-        const selisih = BUKA - currentMinutes;
-        sisaJam = Math.floor(selisih / 60);
-        sisaMenit = Math.floor(selisih % 60);
-        statusText.textContent = `🔴 Toko buka dalam ${sisaJam}j ${sisaMenit}m`;
-    } else {
-        // Setelah tutup
-        const besokBuka = (24 * 60) - currentMinutes + BUKA;
-        sisaJam = Math.floor(besokBuka / 60);
-        sisaMenit = Math.floor(besokBuka % 60);
-        statusText.textContent = `🔴 Toko buka dalam ${sisaJam}j ${sisaMenit}m`;
-    }
-    statusText.className = 'text-red-400 text-xs text-center mt-1 font-semibold';
-}
     
-    // ===== UPDATE TEXT COUNTDOWN =====
+    // ===== UPDATE STATUS TOKO (PERBAIKAN) =====
+    let statusText = document.getElementById('tokoStatusText');
+    
+    // Jika elemen belum ada, buat sekali saja
+    if (!statusText) {
+        statusText = document.createElement('div');
+        statusText.id = 'tokoStatusText';
+        statusText.className = 'text-xs text-center mt-1 font-semibold';
+        const container = document.querySelector('.progress-container');
+        if (container) {
+            container.parentNode.insertBefore(statusText, container.nextSibling);
+        }
+    }
+    
+    // Update teks status (tanpa membuat elemen baru setiap detik)
+    if (isBuka) {
+        const sisaJam = Math.floor((TUTUP - currentMinutes) / 60);
+        const sisaMenit = Math.floor((TUTUP - currentMinutes) % 60);
+        statusText.textContent = `🟢 Toko tutup dalam ${sisaJam}j ${sisaMenit}m`;
+        statusText.className = 'text-green-400 text-xs text-center mt-1 font-semibold';
+    } else {
+        let sisaJam, sisaMenit;
+        if (currentMinutes < BUKA) {
+            // Sebelum buka
+            const selisih = BUKA - currentMinutes;
+            sisaJam = Math.floor(selisih / 60);
+            sisaMenit = Math.floor(selisih % 60);
+            statusText.textContent = `🔴 Toko buka dalam ${sisaJam}j ${sisaMenit}m`;
+        } else {
+            // Setelah tutup
+            const besokBuka = (24 * 60) - currentMinutes + BUKA;
+            sisaJam = Math.floor(besokBuka / 60);
+            sisaMenit = Math.floor(besokBuka % 60);
+            statusText.textContent = `🔴 Toko buka dalam ${sisaJam}j ${sisaMenit}m`;
+        }
+        statusText.className = 'text-red-400 text-xs text-center mt-1 font-semibold';
+    }
+    
+    // ===== UPDATE TEXT COUNTDOWN SHOLAT =====
     const [h, m] = allPrayerTimes[nextPrayerIndex].time.split(':').map(Number);
     const prayerMinutes = h * 60 + m;
     const diffMinutes = prayerMinutes - currentMinutes;

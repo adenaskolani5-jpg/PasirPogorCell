@@ -3821,57 +3821,148 @@ function closePoinModal() {
 }
 
 // ============================================================
-//  SAVE/LOAD POIN ID (SEPERTI FITUR CHAT)
+//  SAVE/LOAD POIN ID (SEPERTI FITUR CHAT) - VERSI DIPERBAIKI
 // ============================================================
 
 const POIN_ID_STORAGE_KEY = 'pasirpogor_poin_last_id';
 
 // Simpan ID terakhir yang dicek
 function saveLastPoinId(id) {
-    if (id) {
-        localStorage.setItem(POIN_ID_STORAGE_KEY, id);
+    if (id && id.trim()) {
+        localStorage.setItem(POIN_ID_STORAGE_KEY, id.trim());
+        console.log('💾 ID Poin tersimpan:', id.trim());
     }
 }
 
 // Load ID terakhir yang dicek
 function loadLastPoinId() {
-    return localStorage.getItem(POIN_ID_STORAGE_KEY) || '';
+    const saved = localStorage.getItem(POIN_ID_STORAGE_KEY);
+    console.log('📂 Load ID Poin:', saved || '(kosong)');
+    return saved || '';
 }
 
-// Override fungsi cekPoinPelanggan untuk menyimpan ID
-const originalCekPoin = cekPoinPelanggan;
-cekPoinPelanggan = function() {
-    const input = document.getElementById('poinCustomerId');
-    const customerId = input.value.trim();
-    
-    // Simpan ID jika valid
-    if (customerId) {
-        saveLastPoinId(customerId);
-    }
-    
-    // Panggil fungsi asli
-    return originalCekPoin.call(this);
-};
+// Hapus ID tersimpan (opsional)
+function clearLastPoinId() {
+    localStorage.removeItem(POIN_ID_STORAGE_KEY);
+    console.log('🗑️ ID Poin dihapus');
+}
 
-// Override fungsi openPoinModal untuk memuat ID tersimpan
-const originalOpenPoin = openPoinModal;
-openPoinModal = function() {
-    // Panggil fungsi asli
-    originalOpenPoin.call(this);
-    
-    // Muat ID tersimpan
-    const savedId = loadLastPoinId();
-    if (savedId) {
-        const input = document.getElementById('poinCustomerId');
-        if (input) {
-            input.value = savedId;
-            // Otomatis cek poin jika ada ID tersimpan
-            setTimeout(() => {
-                cekPoinPelanggan();
-            }, 300);
+// ===== OVERRIDE CEK POIN UNTUK MENYIMPAN ID =====
+const originalCekPoin2 = window.cekPoinPelanggan || cekPoinPelanggan;
+
+window.cekPoinPelanggan = function() {
+    const input = document.getElementById('poinCustomerId');
+    if (input) {
+        const customerId = input.value.trim();
+        if (customerId) {
+            saveLastPoinId(customerId);
         }
     }
+    
+    if (typeof originalCekPoin2 === 'function') {
+        return originalCekPoin2.call(this);
+    }
 };
+
+// ===== OVERRIDE OPEN POIN MODAL UNTUK MEMUAT ID =====
+const originalOpenPoin2 = window.openPoinModal || openPoinModal;
+
+window.openPoinModal = function() {
+    console.log('🔓 Membuka modal Poin...');
+    
+    // Panggil fungsi asli
+    if (typeof originalOpenPoin2 === 'function') {
+        originalOpenPoin2.call(this);
+    }
+    
+    // Tunggu modal terbuka, lalu isi ID
+    setTimeout(function() {
+        const input = document.getElementById('poinCustomerId');
+        const savedId = loadLastPoinId();
+        
+        if (input && savedId) {
+            console.log('📝 Mengisi ID:', savedId);
+            input.value = savedId;
+            
+            // Update placeholder sesuai tipe
+            const phoneRadio = document.querySelector('input[name="poinIdType"][value="phone"]');
+            if (phoneRadio && phoneRadio.checked) {
+                input.placeholder = "Masukkan nomor HP (contoh: 081234567890)";
+                input.type = "tel";
+                input.dataset.type = "phone";
+            } else {
+                input.placeholder = "Masukkan ID Game (contoh: 12345678(1011))";
+                input.type = "text";
+                input.dataset.type = "game";
+            }
+            
+            // Auto cek poin setelah ID terisi
+            setTimeout(function() {
+                console.log('🔄 Auto cek poin untuk:', savedId);
+                if (typeof window.cekPoinPelanggan === 'function') {
+                    window.cekPoinPelanggan();
+                }
+            }, 200);
+        } else if (input) {
+            console.log('📝 Tidak ada ID tersimpan');
+            input.value = '';
+        }
+    }, 300);
+};
+
+// ===== OVERRIDE CLOSE POIN MODAL =====
+const originalClosePoin = window.closePoinModal || closePoinModal;
+
+window.closePoinModal = function() {
+    console.log('🔒 Menutup modal Poin...');
+    
+    // Pastikan ID tersimpan sebelum ditutup
+    const input = document.getElementById('poinCustomerId');
+    if (input && input.value.trim()) {
+        saveLastPoinId(input.value.trim());
+    }
+    
+    if (typeof originalClosePoin === 'function') {
+        originalClosePoin.call(this);
+    }
+};
+
+// ===== SAVE ID SAAT INPUT BERUBAH (REAL-TIME) =====
+document.addEventListener('DOMContentLoaded', function() {
+    // Tunggu elemen input tersedia
+    setTimeout(function() {
+        const input = document.getElementById('poinCustomerId');
+        if (input) {
+            // Simpan ID setiap kali user mengetik (dengan debounce)
+            let saveTimer = null;
+            input.addEventListener('input', function() {
+                clearTimeout(saveTimer);
+                saveTimer = setTimeout(function() {
+                    const val = input.value.trim();
+                    if (val) {
+                        saveLastPoinId(val);
+                        console.log('💾 Auto-save saat mengetik:', val);
+                    }
+                }, 500);
+            });
+            
+            // Simpan saat user berpindah fokus (blur)
+            input.addEventListener('blur', function() {
+                const val = input.value.trim();
+                if (val) {
+                    saveLastPoinId(val);
+                    console.log('💾 Save on blur:', val);
+                }
+            });
+            
+            console.log('✅ Event listener input poin terpasang');
+        } else {
+            console.log('⚠️ Input poinCustomerId belum ditemukan, akan coba lagi...');
+            // Coba lagi setelah 1 detik
+            setTimeout(arguments.callee, 1000);
+        }
+    }, 500);
+});
 
 // ===== FUNGSI TOGGLE TIPE ID (DIPERBAIKI) =====
 function togglePoinIdType() {

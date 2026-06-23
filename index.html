@@ -856,6 +856,241 @@ body::before {
     background: linear-gradient(90deg, #ef4444, #dc2626) !important;
     box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
 }
+/* Tambahkan di bagian CSS */
+.member-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.member-badge.bronze {
+    background: linear-gradient(135deg, #cd7f32, #b8860b);
+    color: #1a1a1a;
+    border: 1px solid #cd7f32;
+}
+
+.member-badge.silver {
+    background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+    color: #1a1a1a;
+    border: 1px solid #c0c0c0;
+}
+
+.member-badge.gold {
+    background: linear-gradient(135deg, #ffd700, #f0c000);
+    color: #1a1a1a;
+    border: 1px solid #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.member-badge.platinum {
+    background: linear-gradient(135deg, #e5e4e2, #c8c8c8);
+    color: #0a0a0a;
+    border: 1px solid #b8b8b8;
+    box-shadow: 0 0 20px rgba(229, 228, 226, 0.3);
+}
+
+.member-badge.diamond {
+    background: linear-gradient(135deg, #b9f2ff, #7dd3fc);
+    color: #0a0a0a;
+    border: 1px solid #38bdf8;
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+    animation: diamondGlow 2s infinite alternate;
+}
+
+@keyframes diamondGlow {
+    0% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.3); }
+    100% { box-shadow: 0 0 40px rgba(56, 189, 248, 0.6); }
+}
+
+.member-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 2px solid rgba(34, 197, 94, 0.3);
+    padding: 4px;
+    background: rgba(0,0,0,0.3);
+}
+
+.member-logo.bronze { border-color: #cd7f32; }
+.member-logo.silver { border-color: #c0c0c0; }
+.member-logo.gold { border-color: #ffd700; }
+.member-logo.platinum { border-color: #e5e4e2; }
+.member-logo.diamond { border-color: #38bdf8; animation: diamondBorderGlow 2s infinite alternate; }
+
+@keyframes diamondBorderGlow {
+    0% { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
+    100% { border-color: #7dd3fc; box-shadow: 0 0 30px rgba(56, 189, 248, 0.5); }
+}
+/* ===== MEMBER LEVEL STYLES ===== */
+
+/* --- BRONZE --- */
+.poin-card.bronze {
+    background: linear-gradient(145deg, #1a140e, #0d0a07);
+    border: 1px solid #8B6914;
+    box-shadow: 0 0 15px rgba(139, 105, 20, 0.15);
+}
+.poin-card.bronze .poin-header {
+    border-bottom: 1px solid rgba(139, 105, 20, 0.3);
+}
+.poin-card.bronze .poin-value {
+    color: #cd7f32;
+    text-shadow: 0 0 10px rgba(205, 127, 50, 0.2);
+}
+
+/* --- SILVER --- */
+.poin-card.silver {
+    background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+    border: 1px solid #a8a8a8;
+    box-shadow: 0 0 20px rgba(192, 192, 192, 0.15);
+}
+.poin-card.silver .poin-header {
+    border-bottom: 1px solid rgba(192, 192, 192, 0.3);
+}
+.poin-card.silver .poin-value {
+    color: #c0c0c0;
+    text-shadow: 0 0 15px rgba(192, 192, 192, 0.3);
+}
+.poin-card.silver .glow-effect {
+    background: radial-gradient(ellipse at center, rgba(192,192,192,0.05), transparent 70%);
+}
+
+/* --- GOLD --- */
+.poin-card.gold {
+    background: linear-gradient(145deg, #1a1508, #0d0a03);
+    border: 1px solid #ffd700;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+.poin-card.gold::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(255,215,0,0.03), transparent 70%);
+    animation: goldShimmer 4s infinite;
+}
+@keyframes goldShimmer {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.poin-card.gold .poin-header {
+    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+}
+.poin-card.gold .poin-value {
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+.poin-card.gold .poin-progress {
+    background: linear-gradient(90deg, #ffd700, #f0c000, #ffd700);
+    background-size: 200% 100%;
+    animation: goldProgress 2s linear infinite;
+}
+@keyframes goldProgress {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* --- PLATINUM --- */
+.poin-card.platinum {
+    background: linear-gradient(145deg, #14141a, #0a0a0f);
+    border: 2px solid #e5e4e2;
+    box-shadow: 0 0 40px rgba(229, 228, 226, 0.2), inset 0 0 40px rgba(229, 228, 226, 0.03);
+    position: relative;
+}
+.poin-card.platinum::before {
+    content: '✦';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    color: rgba(229, 228, 226, 0.1);
+    animation: platinumSparkle 3s infinite;
+}
+@keyframes platinumSparkle {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.2); }
+}
+.poin-card.platinum .poin-header {
+    border-bottom: 2px solid rgba(229, 228, 226, 0.2);
+}
+.poin-card.platinum .poin-value {
+    color: #e5e4e2;
+    text-shadow: 0 0 25px rgba(229, 228, 226, 0.4);
+}
+.poin-card.platinum .platinum-ring {
+    border: 1px solid rgba(229, 228, 226, 0.1);
+    border-radius: 50%;
+    padding: 8px;
+    animation: ringPulse 2s infinite;
+}
+@keyframes ringPulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(229, 228, 226, 0.05); }
+    50% { box-shadow: 0 0 30px rgba(229, 228, 226, 0.15); }
+}
+
+/* --- DIAMOND --- */
+.poin-card.diamond {
+    background: linear-gradient(145deg, #0a0a1a, #050510);
+    border: 2px solid #38bdf8;
+    box-shadow: 0 0 50px rgba(56, 189, 248, 0.2), inset 0 0 50px rgba(56, 189, 248, 0.05);
+    position: relative;
+    animation: diamondCardPulse 3s infinite;
+}
+@keyframes diamondCardPulse {
+    0%, 100% { box-shadow: 0 0 50px rgba(56, 189, 248, 0.2), inset 0 0 50px rgba(56, 189, 248, 0.05); }
+    50% { box-shadow: 0 0 80px rgba(56, 189, 248, 0.4), inset 0 0 60px rgba(56, 189, 248, 0.1); }
+}
+.poin-card.diamond::before {
+    content: '◆';
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 2rem;
+    color: rgba(56, 189, 248, 0.1);
+    animation: diamondFloat 4s infinite;
+}
+@keyframes diamondFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+    50% { transform: translateY(-5px) rotate(45deg); opacity: 0.8; }
+}
+.poin-card.diamond .poin-header {
+    border-bottom: 2px solid rgba(56, 189, 248, 0.2);
+}
+.poin-card.diamond .poin-value {
+    color: #7dd3fc;
+    text-shadow: 0 0 30px rgba(56, 189, 248, 0.5);
+    animation: diamondTextGlow 2s infinite alternate;
+}
+@keyframes diamondTextGlow {
+    0% { text-shadow: 0 0 30px rgba(56, 189, 248, 0.3); }
+    100% { text-shadow: 0 0 60px rgba(56, 189, 248, 0.6); }
+}
+.poin-card.diamond .diamond-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #38bdf8;
+    border-radius: 50%;
+    animation: particleFloat 6s infinite;
+}
+.poin-card.diamond .diamond-particle:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+.poin-card.diamond .diamond-particle:nth-child(2) { top: 20%; right: 15%; animation-delay: 2s; }
+.poin-card.diamond .diamond-particle:nth-child(3) { bottom: 25%; left: 20%; animation-delay: 4s; }
+.poin-card.diamond .diamond-particle:nth-child(4) { bottom: 15%; right: 10%; animation-delay: 1s; }
+.poin-card.diamond .diamond-particle:nth-child(5) { top: 50%; left: 50%; animation-delay: 3s; }
+@keyframes particleFloat {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(2); box-shadow: 0 0 10px #38bdf8; }
+}
 </style>        
 </head>        
 <body class="min-h-screen text-white">        
@@ -2774,6 +3009,32 @@ function getAdminPoinContent() {
             </div>
         </div>
         
+        <!-- ===== CUSTOM POIN UNTUK UJICOBA ===== -->
+        <div class="bg-gray-800/50 rounded-lg p-4 mt-4 border border-yellow-500/30">
+            <h4 class="text-yellow-400 font-bold mb-2 text-lg">🎯 Custom Poin (Ujicoba)</h4>
+            <p class="text-xs text-gray-400 mb-3">Set poin customer untuk melihat tampilan member di berbagai level.</p>
+            
+            <div class="grid gap-3">
+                <div class="flex gap-2 flex-wrap">
+                    <input type="number" id="adminCustomPoinAmount" placeholder="Jumlah poin (0-10000)" 
+                           class="flex-1 min-w-[120px] bg-gray-700 border border-yellow-500/50 rounded-lg px-3 py-2 text-white text-sm">
+                    <button onclick="adminCustomPoin()" class="bg-yellow-600 hover:bg-yellow-500 text-black font-bold px-4 py-2 rounded-lg transition">
+                        🎯 Set Poin
+                    </button>
+                </div>
+                <div class="flex gap-2 flex-wrap text-xs text-gray-400">
+                    <span class="bg-gray-700 px-2 py-1 rounded">Bronze: 0-1499</span>
+                    <span class="bg-gray-700 px-2 py-1 rounded">Silver: 1500-2499</span>
+                    <span class="bg-gray-700 px-2 py-1 rounded">Gold: 2500-4999</span>
+                    <span class="bg-gray-700 px-2 py-1 rounded">Platinum: 5000-9999</span>
+                    <span class="bg-gray-700 px-2 py-1 rounded">Diamond: 10000</span>
+                </div>
+                <div class="text-xs text-yellow-400/70">
+                    💡 1 pembelian = 50 poin. Poin akan otomatis dihitung pembeliannya.
+                </div>
+            </div>
+        </div>
+        
         <div class="bg-gray-800/50 rounded-lg p-4 mt-4">
             <div class="flex justify-between items-center mb-3">
                 <h4 class="text-green-400 font-bold text-lg">📋 Daftar Klaim</h4>
@@ -2937,12 +3198,74 @@ function tambahPoin(customerId, amount) {
     const normalizedId = customerId.trim().toLowerCase();
     const data = loadPoinData();
     if (!data.customers[normalizedId]) {
-        data.customers[normalizedId] = { poinTertunda: 0, poin: 0, lastUpdate: Date.now(), type: 'phone' };
+        data.customers[normalizedId] = { 
+            poinTertunda: 0, 
+            poin: 0, 
+            totalPembelian: 0, // Tambahkan counter pembelian
+            lastUpdate: Date.now(), 
+            type: 'phone' 
+        };
     }
-    data.customers[normalizedId].poinTertunda += amount;
+    
+    // Batasi poin maksimal 10.000
+    const maxPoin = 10000;
+    const currentPoin = data.customers[normalizedId].poin || 0;
+    const poinTertunda = data.customers[normalizedId].poinTertunda || 0;
+    const totalSaatIni = currentPoin + poinTertunda;
+    
+    // Hitung poin yang bisa ditambahkan (tidak melebihi 10.000)
+    let poinDitambahkan = amount;
+    if (totalSaatIni + amount > maxPoin) {
+        poinDitambahkan = maxPoin - totalSaatIni;
+        if (poinDitambahkan <= 0) {
+            alert('⚠️ Poin sudah mencapai batas maksimal 10.000!');
+            return data.customers[normalizedId];
+        }
+    }
+    
+    data.customers[normalizedId].poinTertunda += poinDitambahkan;
+    data.customers[normalizedId].totalPembelian = (data.customers[normalizedId].totalPembelian || 0) + 1;
     data.customers[normalizedId].lastUpdate = Date.now();
     savePoinData(data);
     return data.customers[normalizedId];
+}
+
+// ===== SISTEM PERINGKAT MEMBER =====
+const MEMBER_LEVELS = {
+    BRONZE: { name: 'Bronze Member', minPoin: 0, minPembelian: 0, maxPoin: 1499, icon: '🥉', color: 'bronze' },
+    SILVER: { name: 'Silver Member', minPoin: 1500, minPembelian: 25, maxPoin: 2499, icon: '🥈', color: 'silver' },
+    GOLD: { name: 'Gold Member', minPoin: 2500, minPembelian: 50, maxPoin: 4999, icon: '🥇', color: 'gold' },
+    PLATINUM: { name: 'Platinum Member', minPoin: 5000, minPembelian: 100, maxPoin: 9999, icon: '💎', color: 'platinum' },
+    DIAMOND: { name: 'Diamond Member', minPoin: 10000, minPembelian: 200, maxPoin: Infinity, icon: '👑', color: 'diamond' }
+};
+
+function getMemberLevel(customerData) {
+    const pembelian = customerData?.totalPembelian || 0;
+    
+    // ===== PERINGKAT BERDASARKAN TOTAL PEMBELIAN =====
+    // Level tidak turun meskipun poin digunakan
+    if (pembelian >= 200) return MEMBER_LEVELS.DIAMOND;
+    if (pembelian >= 100) return MEMBER_LEVELS.PLATINUM;
+    if (pembelian >= 50) return MEMBER_LEVELS.GOLD;
+    if (pembelian >= 25) return MEMBER_LEVELS.SILVER;
+    return MEMBER_LEVELS.BRONZE;
+}
+
+function getNextLevel(currentLevel) {
+    const levels = Object.values(MEMBER_LEVELS);
+    const currentIndex = levels.findIndex(l => l.name === currentLevel.name);
+    if (currentIndex < levels.length - 1) {
+        return levels[currentIndex + 1];
+    }
+    return null;
+}
+
+function getPoinToNextLevel(customerData) {
+    const currentLevel = getMemberLevel(customerData);
+    const nextLevel = getNextLevel(currentLevel);
+    if (!nextLevel) return null;
+    // Yang dibutuhkan untuk naik level adalah jumlah pembelian, bukan poin
+    return (nextLevel.minPembelian - (customerData?.totalPembelian || 0)) + ' pembelian lagi';
 }
 
 function cekPelanggan(customerId) {
@@ -2951,6 +3274,51 @@ function cekPelanggan(customerId) {
     return data.customers[normalizedId] || null;
 }
 
+function klaimSemuaPoin() {
+    if (!currentPoinCustomerId || !currentPoinCustomerData) {
+        alert('⚠️ Silakan cek ID terlebih dahulu!');
+        return;
+    }
+    
+    if (currentPoinCustomerData.poinTertunda <= 0) {
+        alert('❌ Tidak ada poin tertunda!');
+        return;
+    }
+    
+    const poinToKlaim = currentPoinCustomerData.poinTertunda;
+    const maxPoin = 10000;
+    
+    // Cek apakah total poin + poin tertunda tidak melebihi 10000
+    if (currentPoinCustomerData.poin + poinToKlaim > maxPoin) {
+        const bisaDiKlaim = maxPoin - currentPoinCustomerData.poin;
+        if (bisaDiKlaim <= 0) {
+            alert('⚠️ Poin Anda sudah mencapai batas maksimal 10.000!');
+            return;
+        }
+        if (!confirm(`⚠️ Poin tertunda (${poinToKlaim}) akan membuat melewati batas 10.000.\nHanya ${bisaDiKlaim} poin yang bisa diklaim.\nLanjutkan?`)) {
+            return;
+        }
+        // Klaim sebagian
+        currentPoinCustomerData.poin += bisaDiKlaim;
+        currentPoinCustomerData.poinTertunda -= bisaDiKlaim;
+        const data = loadPoinData();
+        data.customers[currentPoinCustomerId] = currentPoinCustomerData;
+        savePoinData(data);
+        alert(`✅ Berhasil klaim ${bisaDiKlaim} poin!`);
+        updatePoinUI();
+        return;
+    }
+    
+    if (!confirm(`🎁 Klaim ${poinToKlaim} poin sekarang?`)) return;
+    
+    const result = klaimPoin(currentPoinCustomerId);
+    if (result.success) {
+        alert(`✅ Berhasil klaim ${result.poinDidapat} poin!\nTotal poin: ${result.totalPoin}`);
+        updatePoinUI();
+    } else {
+        alert(`❌ ${result.message}`);
+    }
+}
 function klaimPoin(customerId) {
     const normalizedId = customerId.trim().toLowerCase();
     const data = loadPoinData();
@@ -3056,31 +3424,220 @@ async function klaimReward() {
 
 function updatePoinUI() {
     if (!currentPoinCustomerData) return;
-    document.getElementById('poinDisplayId').textContent = currentPoinCustomerData.poin;
-    document.getElementById('poinKlaimTersedia').textContent = currentPoinCustomerData.poinTertunda;
-    const poin = currentPoinCustomerData.poin;
-    const percent = Math.min((poin / 1000) * 100, 100);
-    document.getElementById('poinProgressBar').style.width = percent + '%';
-    document.getElementById('poinProgressText').textContent = poin + ' / 1000';
-    const rewardBtn = document.getElementById('rewardBtn');
-    if (poin >= 1000) {
-        rewardBtn.disabled = false;
-        rewardBtn.textContent = '📨 Kirim Informasi ke Penjual (1000 poin)';
-        rewardBtn.classList.add('bg-green-600', 'text-black');
-        rewardBtn.classList.remove('poin-reward-btn');
-    } else {
-        rewardBtn.disabled = true;
-        rewardBtn.textContent = '📨 Kirim Informasi (butuh 1000 poin)';
-        rewardBtn.classList.remove('bg-green-600', 'text-black');
-        rewardBtn.classList.add('poin-reward-btn');
+    
+    const poin = currentPoinCustomerData.poin || 0;
+    const pembelian = currentPoinCustomerData.totalPembelian || 0;
+    const maxPoin = 10000;
+    
+    // ===== DAPATKAN LEVEL DARI TOTAL PEMBELIAN =====
+    const level = getMemberLevel(currentPoinCustomerData);
+    const nextLevel = getNextLevel(level);
+    const poinToNext = getPoinToNextLevel(currentPoinCustomerData);
+    
+    // ===== UPDATE CLASS PADA CARD =====
+    const poinCard = document.querySelector('.poin-card');
+    if (poinCard) {
+        poinCard.classList.remove('bronze', 'silver', 'gold', 'platinum', 'diamond');
+        poinCard.classList.add(level.color);
     }
+    
+    // ===== UPDATE TAMPILAN =====
+    const poinDisplay = document.getElementById('poinDisplayId');
+    const poinKlaim = document.getElementById('poinKlaimTersedia');
+    const progressBar = document.getElementById('poinProgressBar');
+    const progressText = document.getElementById('poinProgressText');
+    const rewardBtn = document.getElementById('rewardBtn');
     const klaimSection = document.getElementById('poinKlaimSection');
     const klaimBtn = document.getElementById('klaimBtn');
-    if (currentPoinCustomerData.poinTertunda > 0) {
-        klaimSection.classList.remove('hidden');
-        klaimBtn.textContent = `🎁 KLAIM (${currentPoinCustomerData.poinTertunda} poin)`;
-    } else {
-        klaimSection.classList.add('hidden');
+    const badgeContainer = document.getElementById('memberBadgeContainer');
+    const statusMsg = document.getElementById('poinStatusMessage');
+    
+    // Update poin
+    if (poinDisplay) poinDisplay.textContent = poin;
+    if (poinKlaim) poinKlaim.textContent = currentPoinCustomerData.poinTertunda || 0;
+    
+    // Progress bar (berdasarkan poin yang tersisa)
+    const percent = Math.min((poin / maxPoin) * 100, 100);
+    if (progressBar) {
+        progressBar.style.width = percent + '%';
+        if (level.color === 'gold' || level.color === 'platinum' || level.color === 'diamond') {
+            progressBar.classList.add('poin-progress');
+        } else {
+            progressBar.classList.remove('poin-progress');
+        }
+    }
+    if (progressText) progressText.textContent = poin + ' / ' + maxPoin;
+    
+    // ===== BADGE MEMBER =====
+    if (badgeContainer) {
+        const levelIcons = {
+            bronze: '🥉',
+            silver: '🥈',
+            gold: '🥇',
+            platinum: '💎',
+            diamond: '👑'
+        };
+        
+        const levelNames = {
+            bronze: 'Bronze Member',
+            silver: 'Silver Member',
+            gold: 'Gold Member',
+            platinum: 'Platinum Member',
+            diamond: 'Diamond Member'
+        };
+        
+        const levelColors = {
+            bronze: 'text-amber-600',
+            silver: 'text-gray-300',
+            gold: 'text-yellow-400',
+            platinum: 'text-gray-200',
+            diamond: 'text-sky-300'
+        };
+        
+        let badgeHtml = '';
+        
+        switch(level.color) {
+            case 'bronze':
+                badgeHtml = `
+                    <div class="text-center">
+                        <div class="text-3xl mb-1">🥉</div>
+                        <div class="text-amber-600 font-bold text-sm">Bronze Member</div>
+                        <div class="text-xs text-gray-500 mt-1">Total Pembelian: ${pembelian}x</div>
+                        <div class="text-xs text-gray-500 mt-0.5">⭐ ${poin} poin tersisa</div>
+                    </div>
+                `;
+                break;
+                
+            case 'silver':
+                badgeHtml = `
+                    <div class="text-center">
+                        <div class="text-3xl mb-1">🥈</div>
+                        <div class="text-gray-300 font-bold text-sm">Silver Member</div>
+                        <div class="text-xs text-gray-400 mt-1">Total Pembelian: ${pembelian}x</div>
+                        <div class="text-xs text-gray-400 mt-0.5">⭐ ${poin} poin tersisa</div>
+                        <div class="text-xs text-gray-500 mt-0.5">✨ Mulai terlihat eksklusif</div>
+                    </div>
+                `;
+                break;
+                
+            case 'gold':
+                badgeHtml = `
+                    <div class="text-center relative">
+                        <div class="text-4xl mb-1 animate-pulse">🥇</div>
+                        <div class="text-yellow-400 font-bold text-base">✦ Gold Member ✦</div>
+                        <div class="text-xs text-yellow-400/70 mt-1">Total Pembelian: ${pembelian}x</div>
+                        <div class="text-xs text-yellow-400/70 mt-0.5">⭐ ${poin} poin tersisa</div>
+                        <div class="text-xs text-yellow-400/50 mt-0.5">⭐ Member Premium</div>
+                    </div>
+                `;
+                break;
+                
+            case 'platinum':
+                badgeHtml = `
+                    <div class="text-center relative">
+                        <div class="text-4xl mb-1 animate-bounce">💎</div>
+                        <div class="text-gray-200 font-bold text-base">✦ PLATINUM MEMBER ✦</div>
+                        <div class="text-xs text-gray-300/70 mt-1">Total Pembelian: ${pembelian}x</div>
+                        <div class="text-xs text-gray-300/70 mt-0.5">⭐ ${poin} poin tersisa</div>
+                        <div class="text-xs text-gray-300/50 mt-0.5">⭐ Exclusive Member</div>
+                        <div class="text-[10px] text-gray-400/40 mt-1">✦ Privilege Access ✦</div>
+                    </div>
+                `;
+                break;
+                
+            case 'diamond':
+                badgeHtml = `
+                    <div class="text-center relative">
+                        <div class="text-5xl mb-1 animate-pulse">👑</div>
+                        <div class="text-sky-300 font-bold text-lg">◆ DIAMOND MEMBER ◆</div>
+                        <div class="text-xs text-sky-300/70 mt-1">Total Pembelian: ${pembelian}x</div>
+                        <div class="text-xs text-sky-300/70 mt-0.5">⭐ ${poin} poin tersisa</div>
+                        <div class="text-xs text-sky-300/50 mt-0.5">★ VIP Elite Member ★</div>
+                        <div class="text-[10px] text-sky-400/40 mt-1">✦ Ultimate Privilege ✦</div>
+                        <div class="text-[8px] text-sky-400/30 mt-0.5">◆ Highest Tier ◆</div>
+                    </div>
+                `;
+                break;
+        }
+        
+        // Info next level
+        if (nextLevel && pembelian < nextLevel.minPembelian) {
+            const nextIcons = {
+                bronze: '🥉',
+                silver: '🥈',
+                gold: '🥇',
+                platinum: '💎',
+                diamond: '👑'
+            };
+            const sisaPembelian = nextLevel.minPembelian - pembelian;
+            badgeHtml += `
+                <div class="text-center mt-2 text-xs text-gray-500">
+                    ⏳ ${sisaPembelian} pembelian lagi ke ${nextIcons[nextLevel.color]} ${nextLevel.name}
+                </div>
+            `;
+        } else if (level.color === 'diamond') {
+            badgeHtml += `
+                <div class="text-center mt-2">
+                    <div class="text-xs text-sky-400 animate-pulse">👑 Anda telah mencapai level tertinggi!</div>
+                    <div class="text-[10px] text-sky-400/50 mt-0.5">✦ VIP Seumur Hidup ✦</div>
+                </div>
+            `;
+        }
+        
+        badgeContainer.innerHTML = badgeHtml;
+    }
+    
+    // ===== REWARD BUTTON =====
+    if (rewardBtn) {
+        if (poin >= 1000) {
+            rewardBtn.disabled = false;
+            let rewardText = '📨 Kirim Informasi ke Penjual (1000 poin)';
+            if (poin >= 1500) {
+                const options = [];
+                for (let p = 1000; p <= Math.min(poin, maxPoin); p += 500) {
+                    options.push(p);
+                }
+                rewardText = `💎 Tukar Poin (${options.length} pilihan)`;
+            }
+            
+            if (level.color === 'gold') {
+                rewardBtn.className = 'w-full mt-3 bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-2 rounded-lg transition transform hover:scale-105';
+            } else if (level.color === 'platinum') {
+                rewardBtn.className = 'w-full mt-3 bg-gradient-to-r from-gray-400 to-gray-300 hover:from-gray-300 hover:to-gray-200 text-black font-bold py-2 rounded-lg transition transform hover:scale-105 shadow-lg';
+            } else if (level.color === 'diamond') {
+                rewardBtn.className = 'w-full mt-3 bg-gradient-to-r from-sky-500 to-blue-400 hover:from-sky-400 hover:to-blue-300 text-black font-bold py-2 rounded-lg transition transform hover:scale-105 shadow-lg shadow-sky-500/30 animate-pulse';
+            } else {
+                rewardBtn.className = 'w-full mt-3 bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition';
+            }
+            rewardBtn.textContent = rewardText;
+        } else {
+            rewardBtn.disabled = true;
+            rewardBtn.textContent = '📨 Kirim Informasi (butuh 1000 poin)';
+            rewardBtn.className = 'w-full mt-3 poin-reward-btn text-green-400 text-sm py-2 rounded-lg transition';
+        }
+    }
+    
+    // ===== KLAIM SECTION =====
+    if (klaimSection && klaimBtn) {
+        if (currentPoinCustomerData.poinTertunda > 0) {
+            klaimSection.classList.remove('hidden');
+            klaimBtn.textContent = `🎁 KLAIM (${currentPoinCustomerData.poinTertunda} poin)`;
+        } else {
+            klaimSection.classList.add('hidden');
+        }
+    }
+    
+    // ===== STATUS MESSAGE =====
+    if (statusMsg) {
+        if (!currentPoinCustomerData || (currentPoinCustomerData.poin === 0 && currentPoinCustomerData.poinTertunda === 0)) {
+            statusMsg.textContent = '🛒 ID ini belum terdaftar. Silahkan lakukan pembelian untuk mendapatkan poin.';
+            statusMsg.className = 'text-yellow-400 text-sm text-center mt-2';
+            statusMsg.style.display = 'block';
+        } else {
+            statusMsg.textContent = '';
+            statusMsg.className = 'hidden';
+            statusMsg.style.display = 'none';
+        }
     }
 }
 
@@ -3110,8 +3667,8 @@ function closePoinModal() {
 // ===== FUNGSI TOGGLE TIPE ID (DIPERBAIKI) =====
 function togglePoinIdType() {
     const input = document.getElementById('poinCustomerId');
-    const phoneRadio = document.querySelector('input[value="phone"]');
-    const gameRadio = document.querySelector('input[value="game"]');
+    const phoneRadio = document.querySelector('input[name="poinIdType"][value="phone"]');
+    const gameRadio = document.querySelector('input[name="poinIdType"][value="game"]');
     const errorMsg = document.getElementById('poinInputError');
     
     // Hapus error sebelumnya
@@ -3137,6 +3694,10 @@ function togglePoinIdType() {
     
     // Kosongkan input saat berganti tipe
     input.value = '';
+    
+    // Reset hasil
+    document.getElementById('poinHasil').classList.add('hidden');
+    document.getElementById('poinEmpty').classList.remove('hidden');
 }
 
 // ===== FUNGSI CEK POIN (DENGAN VALIDASI KETAT) =====
@@ -3534,6 +4095,70 @@ function initSearchBarHome() {
 
     toggleClearButton();
     console.log('✅ Search bar home siap!');
+}
+// ===== CUSTOM POIN UNTUK UJICOBA MEMBER =====
+function adminCustomPoin() {
+    const idType = document.getElementById('adminIdType').value;
+    let customerId = document.getElementById('adminCustomerId').value.trim();
+    const poinAmount = parseInt(document.getElementById('adminCustomPoinAmount').value);
+    
+    if (!customerId) {
+        alert('⚠️ Masukkan ID terlebih dahulu!');
+        return;
+    }
+    
+    if (idType === 'phone' && !/^\d{10,13}$/.test(customerId.replace(/\s/g, ''))) {
+        alert('❌ Nomor HP harus 10-13 digit!');
+        return;
+    }
+    
+    if (isNaN(poinAmount) || poinAmount < 0) {
+        alert('⚠️ Masukkan jumlah poin yang valid!');
+        return;
+    }
+    
+    if (poinAmount > 10000) {
+        alert('❌ Maksimal poin adalah 10.000!');
+        return;
+    }
+    
+    if (!confirm(`⚠️ Set poin ${customerId} menjadi ${poinAmount} poin?\n\nIni akan mengganti total poin customer saat ini.\n(${poinAmount > 0 ? 'Untuk ujicoba tampilan member' : 'Reset poin ke 0'})`)) {
+        return;
+    }
+    
+    const normalizedId = customerId.trim().toLowerCase();
+    const data = loadPoinData();
+    
+    // Jika customer belum ada, buat baru
+    if (!data.customers[normalizedId]) {
+        data.customers[normalizedId] = {
+            poin: 0,
+            poinTertunda: 0,
+            totalPembelian: 0,
+            lastUpdate: Date.now(),
+            type: idType
+        };
+    }
+    
+    // Set poin sesuai custom (maks 10000)
+    data.customers[normalizedId].poin = Math.min(poinAmount, 10000);
+    
+    // Hapus poin tertunda agar tidak membingungkan
+    data.customers[normalizedId].poinTertunda = 0;
+    
+    // Hitung totalPembelian berdasarkan poin (50 poin = 1 pembelian)
+    data.customers[normalizedId].totalPembelian = Math.floor(data.customers[normalizedId].poin / 50);
+    
+    data.customers[normalizedId].lastUpdate = Date.now();
+    savePoinData(data);
+    
+    // Tampilkan hasil
+    const level = getMemberLevel(data.customers[normalizedId]);
+    alert(`✅ Poin ${customerId} diupdate!\n\n📊 Poin: ${data.customers[normalizedId].poin}\n🔄 Pembelian: ${data.customers[normalizedId].totalPembelian}x\n👑 Level: ${level.icon} ${level.name}`);
+    
+    document.getElementById('adminCustomerId').value = '';
+    document.getElementById('adminCustomPoinAmount').value = '';
+    adminRefreshTable();
 }
 </script>    
 
@@ -4028,49 +4653,92 @@ function clearAllCache() {
 </div>
 
 <div id="poinModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none z-50 transition-all duration-300">
-  <div class="bg-gray-900/95 border border-green-500 rounded-xl w-full max-w-md max-h-[85vh] overflow-auto transform scale-95 transition-all duration-300 shadow-2xl poin-card">
+  <div class="poin-card bg-gray-900/95 border border-green-500 rounded-xl w-full max-w-md max-h-[85vh] overflow-auto transform scale-95 transition-all duration-300 shadow-2xl">
+    <!-- Tambahkan particle untuk diamond -->
+    <div class="diamond-particle"></div>
+    <div class="diamond-particle"></div>
+    <div class="diamond-particle"></div>
+    <div class="diamond-particle"></div>
+    <div class="diamond-particle"></div>
+    
     <div class="sticky top-0 bg-gray-900 flex justify-between items-center p-4 border-b border-gray-700">
       <h3 class="text-lg font-bold text-green-400">🎁 Klaim Poin</h3>
       <button onclick="closePoinModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
     </div>
+    
     <div class="p-5">
+      <!-- Tipe ID -->
       <div class="mb-4">
         <label class="text-sm text-gray-400 block mb-2">Tipe ID:</label>
         <div class="flex gap-4">
-          <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="poinIdType" value="phone" checked onchange="togglePoinIdType()" class="accent-green-500"><span>📱 HP</span></label>
-          <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="poinIdType" value="game" onchange="togglePoinIdType()" class="accent-green-500"><span>🎮 Game</span></label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="poinIdType" value="phone" checked onchange="togglePoinIdType()" class="accent-green-500">
+            <span>📱 HP</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="poinIdType" value="game" onchange="togglePoinIdType()" class="accent-green-500">
+            <span>🎮 Game</span>
+          </label>
         </div>
       </div>
+      
+      <!-- Input ID -->
       <div class="mb-4">
-    <input type="text" id="poinCustomerId" placeholder="Masukkan nomor HP atau ID Game" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300">
-    <p id="poinInputError" class="text-red-400 text-xs mt-1 hidden"></p>
-</div>
-      <button onclick="cekPoinPelanggan()" class="w-full bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition mb-4">🔍 Cek & Klaim</button>
+        <input type="text" id="poinCustomerId" placeholder="Masukkan nomor HP (contoh: 081234567890)" class="w-full border border-green-400 bg-gray-800 text-white text-sm py-2 px-3 rounded-md focus:outline-none focus:border-green-300">
+        <p id="poinInputError" class="text-red-400 text-xs mt-1 hidden"></p>
+      </div>
+      
+      <!-- Tombol Cek -->
+      <button onclick="cekPoinPelanggan()" class="w-full bg-green-600 hover:bg-green-500 text-black font-bold py-2 rounded-lg transition mb-4">
+        🔍 Cek & Klaim
+      </button>
+      
+      <!-- Hasil (awal tersembunyi) -->
       <div id="poinHasil" class="hidden">
-    <div class="border-t border-gray-700 pt-4 mt-2">
-        <div class="text-center mb-3">
-            <div class="text-2xl font-bold text-green-400" id="poinDisplayId">-</div>
-            <div class="text-xs text-gray-400">Total Poin</div>
-        </div>
-        <div class="text-center mb-4">
+        <div class="border-t border-gray-700 pt-4 mt-2">
+          <!-- MEMBER BADGE -->
+          <div id="memberBadgeContainer" class="text-center mb-3"></div>
+          
+          <!-- Total Poin -->
+          <div class="text-center mb-3">
+            <div class="text-2xl font-bold poin-value" id="poinDisplayId">-</div>
+            <div class="text-xs text-gray-400">Total Poin (Maks 10.000)</div>
+          </div>
+          
+          <!-- Klaim Tersedia -->
+          <div class="text-center mb-4">
             <div class="text-sm text-gray-300">🎫 Klaim tersedia: <span id="poinKlaimTersedia" class="text-yellow-400 font-bold">0</span></div>
-        </div>
-        <div id="poinKlaimSection" class="hidden mb-4">
-            <button onclick="klaimSemuaPoin()" id="klaimBtn" class="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-2 rounded-lg transition">🎁 KLAIM SEMUA</button>
-        </div>
-        <div id="poinStatusMessage" class="hidden"></div>       
-        <div class="bg-gray-800 rounded-lg p-4 mt-4">
+          </div>
+          
+          <!-- Tombol Klaim -->
+          <div id="poinKlaimSection" class="hidden mb-4">
+            <button onclick="klaimSemuaPoin()" id="klaimBtn" class="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-2 rounded-lg transition">
+              🎁 KLAIM SEMUA
+            </button>
+          </div>
+          
+          <!-- Status Message -->
+          <div id="poinStatusMessage" class="hidden"></div>
+          
+          <!-- Progress Reward -->
+          <div class="bg-gray-800 rounded-lg p-4 mt-4">
             <div class="flex justify-between text-sm mb-2">
-                <span>🏆 Reward 1000 Poin</span>
-                <span id="poinProgressText">0 / 1000</span>
+              <span>🏆 Reward 1000 Poin</span>
+              <span id="poinProgressText">0 / 1000</span>
             </div>
             <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
-                <div id="poinProgressBar" class="poin-progress-bar h-3" style="width:0%"></div>
+              <div id="poinProgressBar" class="poin-progress-bar h-3" style="width:0%"></div>
             </div>
-            <button id="rewardBtn" onclick="klaimReward()" disabled class="w-full mt-3 poin-reward-btn text-green-400 text-sm py-2 rounded-lg transition">📨 Kirim ke Penjual (butuh 1000 poin)</button>
+            <button id="rewardBtn" onclick="klaimReward()" disabled class="w-full mt-3 poin-reward-btn text-green-400 text-sm py-2 rounded-lg transition">
+              📨 Kirim ke Penjual (butuh 1000 poin)
+            </button>
+          </div>
+          
+          <!-- Riwayat Klaim akan ditambahkan oleh JavaScript -->
         </div>
-    </div>
-</div>
+      </div>
+      
+      <!-- Empty State (awal terlihat) -->
       <div id="poinEmpty" class="text-center text-gray-400 py-8">🔍 Masukkan ID Anda</div>
     </div>
   </div>

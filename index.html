@@ -927,169 +927,191 @@ body::before {
     0% { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
     100% { border-color: #7dd3fc; box-shadow: 0 0 30px rgba(56, 189, 248, 0.5); }
 }
-/* ===== MEMBER LEVEL STYLES ===== */
+/* ============================================================
+   MEMBER LEVEL STYLES - VERSI DIPERBAIKI
+   ============================================================ */
+
+/* --- BASE POIN CARD --- */
+.poin-card {
+    background: linear-gradient(145deg, #111111, #0a0a0a);
+    border: 1px solid rgba(34, 197, 94, 0.5);
+    border-radius: 1rem;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
 
 /* --- BRONZE --- */
 .poin-card.bronze {
     background: linear-gradient(145deg, #1a140e, #0d0a07);
     border: 1px solid #8B6914;
-    box-shadow: 0 0 15px rgba(139, 105, 20, 0.15);
-}
-.poin-card.bronze .poin-header {
-    border-bottom: 1px solid rgba(139, 105, 20, 0.3);
+    box-shadow: 0 0 20px rgba(139, 105, 20, 0.1);
 }
 .poin-card.bronze .poin-value {
     color: #cd7f32;
-    text-shadow: 0 0 10px rgba(205, 127, 50, 0.2);
+}
+.poin-card.bronze .member-badge {
+    background: linear-gradient(135deg, #cd7f32, #b8860b);
+    color: #1a1a1a;
+    border: 1px solid #cd7f32;
 }
 
 /* --- SILVER --- */
 .poin-card.silver {
     background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
     border: 1px solid #a8a8a8;
-    box-shadow: 0 0 20px rgba(192, 192, 192, 0.15);
-}
-.poin-card.silver .poin-header {
-    border-bottom: 1px solid rgba(192, 192, 192, 0.3);
+    box-shadow: 0 0 25px rgba(192, 192, 192, 0.08);
 }
 .poin-card.silver .poin-value {
     color: #c0c0c0;
-    text-shadow: 0 0 15px rgba(192, 192, 192, 0.3);
+    text-shadow: 0 0 10px rgba(192, 192, 192, 0.15);
 }
-.poin-card.silver .glow-effect {
-    background: radial-gradient(ellipse at center, rgba(192,192,192,0.05), transparent 70%);
+.poin-card.silver .member-badge {
+    background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+    color: #1a1a1a;
+    border: 1px solid #c0c0c0;
 }
 
 /* --- GOLD --- */
 .poin-card.gold {
     background: linear-gradient(145deg, #1a1508, #0d0a03);
     border: 1px solid #ffd700;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
-    position: relative;
-    overflow: hidden;
-}
-.poin-card.gold::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(ellipse at center, rgba(255,215,0,0.03), transparent 70%);
-    animation: goldShimmer 4s infinite;
-}
-@keyframes goldShimmer {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-.poin-card.gold .poin-header {
-    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.12);
 }
 .poin-card.gold .poin-value {
     color: #ffd700;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
 }
-.poin-card.gold .poin-progress {
-    background: linear-gradient(90deg, #ffd700, #f0c000, #ffd700);
-    background-size: 200% 100%;
-    animation: goldProgress 2s linear infinite;
+.poin-card.gold .member-badge {
+    background: linear-gradient(135deg, #ffd700, #f0c000);
+    color: #1a1a1a;
+    border: 1px solid #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
 }
-@keyframes goldProgress {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+.poin-card.gold .reward-btn {
+    background: #ffd700;
+    color: #1a1a1a;
+    border: none;
+    font-weight: bold;
+}
+.poin-card.gold .reward-btn:hover {
+    background: #f0c000;
+    transform: scale(1.02);
 }
 
 /* --- PLATINUM --- */
 .poin-card.platinum {
     background: linear-gradient(145deg, #14141a, #0a0a0f);
-    border: 2px solid #e5e4e2;
-    box-shadow: 0 0 40px rgba(229, 228, 226, 0.2), inset 0 0 40px rgba(229, 228, 226, 0.03);
-    position: relative;
-}
-.poin-card.platinum::before {
-    content: '✦';
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 1.5rem;
-    color: rgba(229, 228, 226, 0.1);
-    animation: platinumSparkle 3s infinite;
-}
-@keyframes platinumSparkle {
-    0%, 100% { opacity: 0.2; transform: scale(1); }
-    50% { opacity: 0.8; transform: scale(1.2); }
-}
-.poin-card.platinum .poin-header {
-    border-bottom: 2px solid rgba(229, 228, 226, 0.2);
+    border: 1.5px solid #e5e4e2;
+    box-shadow: 0 0 35px rgba(229, 228, 226, 0.08);
 }
 .poin-card.platinum .poin-value {
     color: #e5e4e2;
-    text-shadow: 0 0 25px rgba(229, 228, 226, 0.4);
+    text-shadow: 0 0 15px rgba(229, 228, 226, 0.2);
 }
-.poin-card.platinum .platinum-ring {
-    border: 1px solid rgba(229, 228, 226, 0.1);
-    border-radius: 50%;
-    padding: 8px;
-    animation: ringPulse 2s infinite;
+.poin-card.platinum .member-badge {
+    background: linear-gradient(135deg, #e5e4e2, #c8c8c8);
+    color: #0a0a0a;
+    border: 1px solid #b8b8b8;
+    box-shadow: 0 0 20px rgba(229, 228, 226, 0.1);
 }
-@keyframes ringPulse {
-    0%, 100% { box-shadow: 0 0 10px rgba(229, 228, 226, 0.05); }
-    50% { box-shadow: 0 0 30px rgba(229, 228, 226, 0.15); }
+.poin-card.platinum .reward-btn {
+    background: linear-gradient(135deg, #e5e4e2, #c8c8c8);
+    color: #0a0a0a;
+    border: none;
+    font-weight: bold;
+}
+.poin-card.platinum .reward-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(229, 228, 226, 0.2);
 }
 
 /* --- DIAMOND --- */
 .poin-card.diamond {
     background: linear-gradient(145deg, #0a0a1a, #050510);
     border: 2px solid #38bdf8;
-    box-shadow: 0 0 50px rgba(56, 189, 248, 0.2), inset 0 0 50px rgba(56, 189, 248, 0.05);
-    position: relative;
-    animation: diamondCardPulse 3s infinite;
-}
-@keyframes diamondCardPulse {
-    0%, 100% { box-shadow: 0 0 50px rgba(56, 189, 248, 0.2), inset 0 0 50px rgba(56, 189, 248, 0.05); }
-    50% { box-shadow: 0 0 80px rgba(56, 189, 248, 0.4), inset 0 0 60px rgba(56, 189, 248, 0.1); }
-}
-.poin-card.diamond::before {
-    content: '◆';
-    position: absolute;
-    top: 8px;
-    right: 12px;
-    font-size: 2rem;
-    color: rgba(56, 189, 248, 0.1);
-    animation: diamondFloat 4s infinite;
-}
-@keyframes diamondFloat {
-    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
-    50% { transform: translateY(-5px) rotate(45deg); opacity: 0.8; }
-}
-.poin-card.diamond .poin-header {
-    border-bottom: 2px solid rgba(56, 189, 248, 0.2);
+    box-shadow: 0 0 40px rgba(56, 189, 248, 0.1);
 }
 .poin-card.diamond .poin-value {
     color: #7dd3fc;
-    text-shadow: 0 0 30px rgba(56, 189, 248, 0.5);
-    animation: diamondTextGlow 2s infinite alternate;
+    text-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
 }
-@keyframes diamondTextGlow {
-    0% { text-shadow: 0 0 30px rgba(56, 189, 248, 0.3); }
-    100% { text-shadow: 0 0 60px rgba(56, 189, 248, 0.6); }
+.poin-card.diamond .member-badge {
+    background: linear-gradient(135deg, #b9f2ff, #7dd3fc);
+    color: #0a0a0a;
+    border: 1px solid #38bdf8;
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.15);
 }
-.poin-card.diamond .diamond-particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: #38bdf8;
-    border-radius: 50%;
-    animation: particleFloat 6s infinite;
+.poin-card.diamond .reward-btn {
+    background: linear-gradient(135deg, #7dd3fc, #38bdf8);
+    color: #0a0a0a;
+    border: none;
+    font-weight: bold;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
 }
-.poin-card.diamond .diamond-particle:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
-.poin-card.diamond .diamond-particle:nth-child(2) { top: 20%; right: 15%; animation-delay: 2s; }
-.poin-card.diamond .diamond-particle:nth-child(3) { bottom: 25%; left: 20%; animation-delay: 4s; }
-.poin-card.diamond .diamond-particle:nth-child(4) { bottom: 15%; right: 10%; animation-delay: 1s; }
-.poin-card.diamond .diamond-particle:nth-child(5) { top: 50%; left: 50%; animation-delay: 3s; }
-@keyframes particleFloat {
-    0%, 100% { opacity: 0.2; transform: scale(1); }
-    50% { opacity: 0.8; transform: scale(2); box-shadow: 0 0 10px #38bdf8; }
+.poin-card.diamond .reward-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+}
+
+/* --- PROGRESS BAR PER LEVEL --- */
+.poin-card .poin-progress-bar {
+    height: 100%;
+    border-radius: 1rem;
+    transition: width 0.5s ease;
+}
+
+.poin-card.bronze .poin-progress-bar {
+    background: linear-gradient(90deg, #cd7f32, #b8860b);
+}
+.poin-card.silver .poin-progress-bar {
+    background: linear-gradient(90deg, #c0c0c0, #a8a8a8);
+}
+.poin-card.gold .poin-progress-bar {
+    background: linear-gradient(90deg, #ffd700, #f0c000);
+}
+.poin-card.platinum .poin-progress-bar {
+    background: linear-gradient(90deg, #e5e4e2, #c8c8c8);
+}
+.poin-card.diamond .poin-progress-bar {
+    background: linear-gradient(90deg, #7dd3fc, #38bdf8);
+}
+
+/* --- BADGE MEMBER --- */
+.member-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    margin: 0.3rem 0;
+}
+.member-badge.bronze {
+    background: linear-gradient(135deg, #cd7f32, #b8860b);
+    color: #1a1a1a;
+    border: 1px solid #cd7f32;
+}
+.member-badge.silver {
+    background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+    color: #1a1a1a;
+    border: 1px solid #c0c0c0;
+}
+.member-badge.gold {
+    background: linear-gradient(135deg, #ffd700, #f0c000);
+    color: #1a1a1a;
+    border: 1px solid #ffd700;
+}
+.member-badge.platinum {
+    background: linear-gradient(135deg, #e5e4e2, #c8c8c8);
+    color: #0a0a0a;
+    border: 1px solid #b8b8b8;
+}
+.member-badge.diamond {
+    background: linear-gradient(135deg, #b9f2ff, #7dd3fc);
+    color: #0a0a0a;
+    border: 1px solid #38bdf8;
 }
 </style>        
 </head>        

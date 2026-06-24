@@ -852,6 +852,81 @@ body::before {
     background: linear-gradient(90deg, #ef4444, #dc2626) !important;
     box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
 }
+/* ============================================================
+   LOCK VIEWPORT - CEGAH ZOOM OUT BERLEBIHAN
+   ============================================================ */
+
+/* Cegah scroll horizontal yang menyebabkan zoom-out */
+html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    position: relative;
+}
+
+/* Pastikan semua konten tidak melebar */
+* {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Perbaiki container */
+.max-w-4xl, .max-w-6xl {
+    max-width: 100% !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    overflow-x: hidden !important;
+}
+
+/* Perbaiki card agar tidak melebar */
+#operatorDetail .card,
+#gameDetail .card {
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+
+/* Nama paket di-wrap jika terlalu panjang */
+#operatorDetail .card .card-main > div:first-child {
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto;
+}
+
+/* ===== PERBAIKAN UNTUK LAYAR KECIL (HP) ===== */
+@media (max-width: 480px) {
+    /* Perbaiki card paket agar tidak melebar */
+    #operatorDetail .card {
+        padding: 0.7rem !important;
+    }
+    
+    #operatorDetail .card .card-main {
+        flex-wrap: wrap !important;
+        gap: 0.3rem !important;
+    }
+    
+    #operatorDetail .card .card-main > div:first-child {
+        flex: 1 1 100% !important;
+        font-size: 0.8rem !important;
+        word-break: break-word !important;
+    }
+    
+    #operatorDetail .card .card-main .price {
+        font-size: 0.85rem !important;
+    }
+    
+    #operatorDetail .card .card-main .whatsapp-btn {
+        font-size: 0.6rem !important;
+        padding: 0.15rem 0.5rem !important;
+    }
+    
+    .card-detail {
+        font-size: 0.6rem !important;
+    }
+    
+    /* Pastikan tidak ada elemen yang melebar */
+    .skeleton {
+        max-width: 100% !important;
+    }
+}
 </style>        
 </head>        
 <body class="min-h-screen text-white">        
@@ -3228,12 +3303,14 @@ function renderPaketPage(pageData, currentPage, totalPages, op, cat) {
         div.className = 'card card-enter';
         div.style.transitionDelay = (index * 0.03) + 's';
         div.innerHTML = `
-            <div class="card-main">
-                <div style="flex:1">${p.nama}</div>
-                <span class="price">${p.harga}</span>
-                <button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')">💬 Beli</button>
+            <div class="card-main" style="flex-wrap: wrap; gap: 0.3rem; max-width: 100%;">
+                <div style="flex: 1 1 100%; font-size: 0.85rem; word-break: break-word; line-height: 1.4;">${p.nama}</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 0.5rem;">
+                    <span class="price" style="font-size: 0.9rem; flex-shrink: 0;">${p.harga}</span>
+                    <button class="whatsapp-btn" onclick="sendToWhatsApp('${p.nama}', '${p.harga}')" style="font-size: 0.65rem; padding: 0.2rem 0.6rem; flex-shrink: 0;">💬 Beli</button>
+                </div>
             </div>
-            <div class="card-detail">${p.ket}</div>
+            <div class="card-detail" style="font-size: 0.65rem; margin-top: 0.3rem;">${p.ket}</div>
         `;
         list.appendChild(div);
         requestAnimationFrame(() => div.classList.add('show'));

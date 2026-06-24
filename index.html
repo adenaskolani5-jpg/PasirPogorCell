@@ -119,12 +119,8 @@
   display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:.35s;
   border:1px solid rgba(34,197,94,.35); box-shadow:0 0 12px rgba(34,197,94,.25),0 0 40px rgba(34,197,94,.15);
 }
-.card::before{
-  content:""; position:absolute; inset:-2px; border-radius:1rem; background:linear-gradient(120deg,var(--accent),var(--blue),var(--accent));
-  filter:blur(18px); opacity:.55; z-index:-1; animation:glow 3s infinite alternate;
-}
-@keyframes glow{ from{opacity:.3} to{opacity:.7} }
-.card:hover{ transform:scale(1.05); box-shadow:0 0 20px rgba(34,197,94,.8),0 0 60px rgba(59,130,246,.7); }
+
+.card:hover{ transform:scale(1.03); box-shadow:0 0 15px rgba(34,197,94,.3); border-color:#4ade80; }
 /* ===== KARTU DENGAN GLOW TAPI TIDAK BERKEDIP ===== */
 .card {
     position: relative;
@@ -143,25 +139,13 @@
     /* HAPUS animasi glow yang bikin berkedip */
     /* animation: glow 3s infinite alternate; HAPUS INI */
 }
-.card::before {
-    /* HAPUS atau KOMENTAR bagian ini */
-    /* content: ""; */
-    /* position: absolute; */
-    /* inset: -2px; */
-    /* border-radius: 1rem; */
-    /* background: linear-gradient(120deg, var(--accent), var(--blue), var(--accent)); */
-    /* filter: blur(18px); */
-    /* opacity: .55; */
-    /* z-index: -1; */
-    /* animation: glow 3s infinite alternate; */
-    display: none;
-}
+
 .card:hover {
     transform: scale(1.03);
     box-shadow: 0 0 25px rgba(34,197,94,.5), 0 0 60px rgba(59,130,246,.3);
     border-color: #4ade80;
 }
-.menu-active{ border-color:var(--accent)!important; box-shadow:0 0 30px var(--accent),0 0 80px rgba(59,130,246,.9)!important; }
+.menu-active{ border-color:var(--accent)!important; }
 .back-btn{ padding:.6rem 1.3rem; border-radius:999px; background:black; color:white; font-weight:600; border:1px solid #22c55e; box-shadow:0 0 15px rgba(34,197,94,.6); transition:.3s; }
 .back-btn:hover{ transform:scale(1.05); }
 .price{ color:var(--accent); font-weight:700; text-shadow:0 0 6px rgba(34,197,94,.7),0 0 14px rgba(34,197,94,.4); }
@@ -256,7 +240,7 @@
 .table-wrapper { max-height: 160px; }
 #home .card { border-left: 4px solid #22c55e; transition: all 0.3s ease; }
 #home .card::before { display: none; }
-#home .card:hover { transform: scale(1.02); border-left-color: #4ade80; box-shadow: 0 0 20px rgba(34,197,94,0.6), -4px 0 20px rgba(34,197,94,0.5); }
+#home .card:hover { transform: scale(1.02); border-left-color: #4ade80; }
 
 .card-main { display: flex; justify-content: space-between; align-items: center; width: 100%; }
 .card-detail { margin-top: 0.6rem; font-size: 0.7rem; color: #9ca3af; border-top: 1px dashed rgba(34,197,94,0.3); padding-top: 0.5rem; }
@@ -301,17 +285,7 @@
   position: relative;
   overflow: hidden;
 }
-#home .futuristic-btn.border-green-400::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: 1rem;
-  background: linear-gradient(120deg, var(--accent), var(--blue), var(--accent));
-  filter: blur(18px);
-  opacity: 0.55;
-  z-index: -1;
-  animation: glow 3s infinite alternate;
-}
+
 #home .futuristic-btn.border-green-400:hover {
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(34,197,94,.8), 0 0 60px rgba(59,130,246,.7);
@@ -325,17 +299,7 @@
   position: relative;
   overflow: hidden;
 }
-#home .btn-card-style::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: 1rem;
-  background: linear-gradient(120deg, var(--accent), var(--blue), var(--accent));
-  filter: blur(18px);
-  opacity: 0.55;
-  z-index: -1;
-  animation: glow 3s infinite alternate;
-}
+
 #home .btn-card-style:hover {
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(34,197,94,.8), 0 0 60px rgba(59,130,246,.7);

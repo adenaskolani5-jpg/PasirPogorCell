@@ -1650,6 +1650,35 @@ backTop.onclick = () => window.scrollTo({top: 0, behavior: 'smooth'});
 initCustomSelect();
 showSelection();
 
+// CEGAH LANGSUNG KELUAR PAS PENCET BACK DEVICE
+let backPressTime = 0;
+const EXIT_DELAY = 2000; // 2 detik jeda antara back pertama & kedua
+
+function handleBackButton() {
+  // Kalau lagi di halaman list paket, back = balik ke pilih operator/game
+  if (listScreen.style.display !== 'none') {
+    showSelection();
+    return;
+  }
+  
+  // Kalau udah di halaman selection, baru kasih warning keluar
+  const now = Date.now();
+  if (now - backPressTime > EXIT_DELAY) {
+    backPressTime = now;
+    showToast('Klik sekali lagi untuk keluar');
+    // Push state lagi biar gak langsung close
+    history.pushState(null, null, location.href);
+  } else {
+    // Back kedua dalam 2 detik = keluar beneran
+    window.history.back();
+  }
+}
+
+// Daftarin event back button
+window.addEventListener('popstate', handleBackButton);
+
+// Inisialisasi: push state pertama biar ada history
+history.pushState(null, null, location.href);
 </script>
 </body>
 </html>

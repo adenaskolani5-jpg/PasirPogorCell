@@ -312,14 +312,36 @@ header {
 }
 
 .grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px; margin-bottom: 40px;
+  display: grid; 
+  grid-template-columns: 1fr; /* HP = 1 kolom full 100% */
+  gap: 16px; 
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .grid { 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* PC baru multi kolom */
+  }
 }
 
 .card {
-  background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
-  padding: 18px; transition: all 0.3s; backdrop-filter: blur(10px);
-  animation: fadeUp 0.4s ease backwards; position: relative;
+  background: var(--bg-card); 
+  border: 1px solid var(--border); 
+  border-radius: 14px;
+  padding: 18px; 
+  transition: all 0.3s; 
+  backdrop-filter: blur(10px);
+  animation: fadeUp 0.4s ease backwards; 
+  position: relative;
+  width: 100%; /* WAJIB: Paksa selebar layar */
+  min-height: 165px; /* BIAR TINGGI SAMA SEMUA */
+  display: flex; 
+  flex-direction: column;
+  box-sizing: border-box;
+}
+.card .btn {
+  margin-top: auto; /* Tombol selalu nempel bawah */
 }
 .card:hover {
   border-color: var(--accent); transform: translateY(-4px);
@@ -456,11 +478,6 @@ footer {
   font-size: 26px; font-weight: 700; color: #050D08; border: none; padding: 0;
   font-family: 'Orbitron', sans-serif;
 }
-.operator-icon.loading {
-  background: linear-gradient(90deg, var(--bg-card) 25%, var(--border) 50%, var(--bg-card) 75%);
-  background-size: 200% 100%; animation: shimmer 1.5s infinite;
-}
-@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
 .operator-name { font-size: 14px; font-weight: 600; color: var(--text); }
 .operator-count { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
@@ -677,6 +694,7 @@ const LOGO_URLS = {
     "game_Honor Of Kings": "https://i.ibb.co.com/zVnj3Prr/IMG-20260620-082452.jpg",
     "game_Genshin Impact": "https://i.ibb.co.com/93HRTpt8/IMG-20260620-083215.jpg",
     "game_Roblox": "https://i.ibb.co.com/gGpSvjy/IMG-20260620_083534.jpg",
+    "game_Arena of Valor": "https://i.ibb.co.com/DcP2gLW/IMG-20260620_083674.jpg",
 };
 
 const LAST_UPDATE = "5 Juli 2026 14:30 WIB";
@@ -1292,7 +1310,16 @@ const games = {
     {nama: "Gift Card IDR 500K", harga: 470000},    
     {nama: "4500 (4050+450) Robux", harga: 829000},    
     {nama: "Roblox USD 50 Global", harga: 873000},    
-    {nama: "Gift Card IDR 950K", harga: 997000}    
+    {nama: "Gift Card IDR 950K", harga: 997000}  
+   ],
+  "Arena of Valor": [
+    {nama: "40 AOV Game", harga: 13000},
+    {nama: "90 AOV Game", harga: 22000},
+    {nama: "230 AOV Game", harga: 49000},
+    {nama: "470 AOV Game", harga: 98000},
+    {nama: "950 AOV Game", harga: 195000},
+    {nama: "1430 AOV Game", harga: 297000},
+    {nama: "2390 AOV Game", harga: 491000}  
   ],    
 };
 

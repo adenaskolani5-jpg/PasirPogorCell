@@ -137,14 +137,150 @@ header {
 }
 .ticker:hover .ticker-content { animation-play-state: paused; }
 
-.tabs {
-  display: flex; gap: 8px; border-bottom: 1px solid var(--border); margin: 32px 0 24px;
-  backdrop-filter: blur(8px); background: var(--bg-glass); padding: 8px; border-radius: 12px;
-}
 .tab {
+  position: relative;
   padding: 12px 20px; 
-  background: var(--bg-card); 
-  border: 1.5px solid var(--border);
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  color: var(--text-muted); 
+  font-size: 14px; 
+  font-weight: 700; /* TEBELIN */
+  font-family: 'Orbitron', sans-serif; /* FONT GAMING */
+  letter-spacing: 0.8px; /* JARAK HURUF */
+  text-transform: uppercase; /* KAPITAL SEMUA */
+  cursor: pointer; 
+  transition: all 0.3s;
+  z-index: 1;
+  flex: 1;
+  text-align: center;
+  /* TEXT SHADOW BIAR GLOW DIKIT */
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.tab:hover {
+  color: var(--text);
+  transform: translateY(-2px);
+  text-shadow: 0 0 12px var(--accent-glow);
+}
+
+.tab.active {
+  color: #FFFFFF; /* PUTIH TERANG */
+  border: 1.5px solid transparent;
+  box-shadow: none;
+  /* GLOW NEON KUAT */
+  text-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.8),
+    0 0 20px var(--accent-glow),
+    0 0 30px var(--accent-glow),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+  animation: textPulse 2s ease-in-out infinite;
+}
+
+/* ANIMASI PULSE BIAR HIDUP */
+@keyframes textPulse {
+  0%, 100% { 
+    text-shadow: 
+      0 0 10px rgba(255, 255, 255, 0.8),
+      0 0 20px var(--accent-glow),
+      0 0 30px var(--accent-glow),
+      0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  50% { 
+    text-shadow: 
+      0 0 15px rgba(255, 255, 255, 1),
+      0 0 30px var(--accent-glow),
+      0 0 45px var(--accent-glow),
+      0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ICON TAMBAHAN BIAR GAK POLOS */
+.tab::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  vertical-align: middle;
+  background-size: contain;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 0 4px var(--accent-glow));
+  opacity: 0.7;
+  transition: all 0.3s;
+}
+
+.tab[data-tab="internet"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2'%3E%3Cpath d='M5 12.55a11 11 0 0 1 14.08 0'/%3E%3Cpath d='M1.42 9a16 16 0 0 1 21.16 0'/%3E%3Cpath d='M8.53 16.11a6 6 0 0 1 6.95 0'/%3E%3Cline x1='12' y1='20' x2='12.01' y2='20'/%3E%3C/svg%3E");
+}
+
+.tab[data-tab="game"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2'%3E%3Cline x1='6' y1='12' x2='10' y2='12'/%3E%3Cline x1='8' y1='10' x2='8' y2='14'/%3E%3Cline x1='15' y1='13' x2='15.01' y2='13'/%3E%3Cline x1='18' y1='11' x2='18.01' y2='11'/%3E%3Crect x='2' y='6' width='20' height='12' rx='2'/%3E%3C/svg%3E");
+}
+
+.tab.active::before {
+  opacity: 1;
+  filter: drop-shadow(0 0 8px #FFFFFF) drop-shadow(0 0 12px var(--accent-glow));
+  animation: iconSpin 3s linear infinite;
+}
+
+@keyframes iconSpin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* === TAB SWITCH ANIMATION === */
+.tabs {
+  position: relative;
+  display: flex; 
+  gap: 8px; 
+  border-bottom: 1px solid var(--border); 
+  margin: 32px 0 24px;
+  backdrop-filter: blur(8px); 
+  background: var(--bg-glass); 
+  padding: 8px; 
+  border-radius: 12px;
+}
+
+/* BLOB BACKGROUND YANG GERAK */
+.tab-indicator {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  height: calc(100% - 16px);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-glow) 100%);
+  border-radius: 8px;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 
+    0 0 20px var(--accent-glow),
+    0 0 40px var(--shadow),
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes tabGlow {
+  0%, 100% { 
+    box-shadow: 
+      0 0 20px var(--accent-glow),
+      0 0 40px var(--shadow),
+      0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  50% { 
+    box-shadow: 
+      0 0 35px var(--accent-glow),
+      0 0 60px var(--accent-glow),
+      0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.tab {
+  position: relative;
+  padding: 12px 20px; 
+  background: transparent; /* TRANSPARENT BIAR BLOB KELIATAN */
+  border: 1.5px solid transparent;
   border-radius: 8px;
   color: var(--text-muted); 
   font-size: 14px; 
@@ -152,28 +288,125 @@ header {
   cursor: pointer; 
   transition: all 0.3s;
   backdrop-filter: blur(8px);
-}
-.tab:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.tab.active {
-  color: var(--accent); 
-  background: var(--bg-card);
-  border: 1.5px solid var(--accent);
-  box-shadow: 0 0 8px var(--shadow);
+  z-index: 1;
+  flex: 1;
+  text-align: center;
 }
 
+.tab:hover {
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.tab.active {
+  color: #050D08; /* WARNA GELAP BIAR KONTRAS SAMA BLOB IJO */
+  border: 1.5px solid transparent;
+  box-shadow: none;
+}
+
+/* === CONTENT SWITCH ANIMATION === */
+.tab-content-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+#selectionScreen,
+#listScreen {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* KELUAR KE KIRI */
+.slide-out-left {
+  animation: slideOutLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* MASUK DARI KANAN */
+.slide-in-right {
+  animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* KELUAR KE KANAN */
+.slide-out-right {
+  animation: slideOutRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* MASUK DARI KIRI */
+.slide-in-left {
+  animation: slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideOutLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-40px) scale(0.96);
+    filter: blur(4px);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.96);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(40px) scale(0.96);
+    filter: blur(4px);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px) scale(0.96);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* GLOW PULSE PAS GANTI TAB */
+@keyframes tabGlow {
+  0%, 100% { box-shadow: 0 0 20px var(--shadow), 0 4px 12px var(--shadow); }
+  50% { box-shadow: 0 0 30px var(--accent-glow), 0 4px 16px var(--shadow); }
+}
+
+.tab-indicator.glowing {
+  animation: tabGlow 0.6s ease;
+}
+
+/* === CONTROLS === */
 .controls {
   display: flex;
+  flex-direction: column; /* ATAS BAWAH */
   gap: 10px;
   margin-bottom: 16px;
-  flex-wrap: wrap;
-  align-items: center;
 }
 
+/* SEARCH FULL WIDTH */
 .controls input {
-  padding: 12px 16px 12px 44px;
+  width: 100%;
+  padding: 12px 16px 12px 42px;
   border: 1.5px solid var(--border);
   border-radius: 12px;
   background: var(--bg-card);
@@ -181,23 +414,134 @@ header {
   font-size: 14px;
   font-weight: 500;
   outline: none;
-  flex: 1;
-  min-width: 180px;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24' fill='none' stroke='%234A6B5A' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%234A6B5A' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: 14px center;
 }
 
-[data-theme="dark"] .controls input {
+[data-theme="dark"].controls input {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%237FAA90' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
 }
 
-.custom-select {
+.controls input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 196, 106, 0.1);
+}
+
+/* ROW 3 FILTER */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.custom-select.compact {
   position: relative;
-  flex: 1;
-  min-width: 180px;
+  flex: 1; /* BAGI RATA 3 KOLOM */
+  min-width: 0;
+}
+
+.custom-select.compact .select-btn {
+  width: 100%;
+  padding: 11px 30px 11px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  user-select: none;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.custom-select.compact .select-btn::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234A6B5A' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  transition: transform 0.25s ease;
+}
+
+[data-theme="dark"].custom-select.compact .select-btn::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237FAA90' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+}
+
+.custom-select.compact .active.select-btn::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.custom-select.compact .select-btn:active {
+  transform: scale(0.97);
+}
+
+.custom-select.compact.active.select-btn {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 196, 106, 0.12);
+}
+
+.custom-select.compact .select-options {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  backdrop-filter: blur(20px);
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.96);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  padding: 4px 0;
+}
+
+.custom-select.compact.active.select-options {
+  max-height: 260px;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  overflow-y: auto;
+}
+
+.custom-select.compact .select-options li {
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  list-style: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin: 0 4px;
+  border-radius: 8px;
+}
+
+.custom-select.compact .select-options li:hover {
+  background: var(--accent);
+  color: #050D08;
+  transform: translateX(3px);
+}
+
+.custom-select.compact .select-options li.selected {
+  background: var(--accent);
+  color: #050D08;
+  font-weight: 600;
+}
+
+.custom-select.hide {
+  display: none!important;
 }
 
 /* FIX UTAMA: INI YANG BIKIN HILANG DI TAB GAME */
@@ -575,6 +919,80 @@ footer {
   transform:translateX(-120%);transition:transform .5s;z-index:97;max-width:220px;
 }
 .live-order.show{transform:translateX(0)}
+
+/* === ANIMASI KLIK OPERATOR - GESER KE ATAS === */
+@keyframes slideUpOut {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-80px) scale(0.9);
+    opacity: 0;
+  }
+}
+
+.operator-card.clicked {
+  animation: slideUpOut 0.45s cubic-bezier(0.55, 0, 0.1, 1) forwards;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Card lain ikut fade + geser dikit ke bawah */
+.operator-card.fade-out {
+  transition: all 0.35s ease;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+}
+
+/* === ANIMASI MASUK LIST HARGA - DARI BAWAH === */
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#listScreen.animate-in {
+  animation: slideInFromBottom 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+#listScreen {
+  opacity: 0;
+}
+#listScreen.active-show {
+  opacity: 1;
+}
+
+/* Efek trail ijo pas geser ke atas */
+.operator-card.clicked::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(to top, var(--accent-glow), transparent);
+  opacity: 0;
+  border-radius: 16px;
+  animation: trailUp 0.45s ease-out;
+}
+
+@keyframes trailUp {
+  0% {
+    opacity: 0.6;
+    transform: translateX(-50%) scaleY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scaleY(1.5);
+  }
+}
 </style>
 </head>
 <body>
@@ -601,11 +1019,14 @@ footer {
 </section>
 
 <main class="container">
-  <div class="tabs">
-    <button class="tab active" data-tab="internet">Paket Internet</button>
-    <button class="tab" data-tab="game">Top Up Game</button>
-  </div>
+<div class="tabs">
+  <div class="tab-indicator"></div> <!-- TAMBAH INI -->
+  <button class="tab active" data-tab="internet">Paket Internet</button>
+  <button class="tab" data-tab="game">Top Up Game</button>
+</div>
 
+  <!-- TAMBAH WRAPPER INI -->
+  <div class="tab-content-wrapper">
   <div id="selectionScreen" class="selection-screen active">
     <div class="selection-title" id="selectionTitle">Pilih Operator</div>
     <div class="operator-grid" id="operatorGrid"></div>
@@ -614,23 +1035,26 @@ footer {
   <div id="listScreen" style="display:none">
     <button class="back-btn" id="backBtn">← Kembali</button>
     <div class="breadcrumb" id="breadcrumb"></div>
-    <div class="controls">
-      <input type="text" id="search" placeholder="Cari paket atau nominal...">
-      
-      <div class="custom-select" id="filterCat">
-        <div class="select-btn">📂 Semua Kategori</div>
-        <ul class="select-options"></ul>
-      </div>
+<div class="controls">
+  <input type="text" id="search" placeholder="Cari paket...">
+  
+  <div class="filter-row">
+    <div class="custom-select compact" id="filterCat">
+      <div class="select-btn">Semua</div>
+      <ul class="select-options"></ul>
+    </div>
 
-      <div class="custom-select" id="filterKuota">
-        <div class="select-btn">📊 Semua Kuota</div>
-        <ul class="select-options"></ul>
-      </div>
+    <div class="custom-select compact" id="filterKuota">
+      <div class="select-btn">Kuota</div>
+      <ul class="select-options"></ul>
+    </div>
 
-      <div class="custom-select" id="sortPrice">
-        <div class="select-btn">🔃 Urutkan Harga</div>
-        <ul class="select-options"></ul>
-      </div>
+    <div class="custom-select compact" id="sortPrice">
+      <div class="select-btn">Urutan</div>
+      <ul class="select-options"></ul>
+    </div>
+  </div>
+</div>
     <div class="result-info">
       <span id="resultCount">Menampilkan 0 paket</span>
       <span id="lastUpdate">Update: -</span>
@@ -1346,17 +1770,17 @@ const lastUpdate = document.getElementById('lastUpdate');
 const footerUpdate = document.getElementById('footerUpdate');
 
 const selectData = {
-  filterCat: [{val: '', text: '📂 Semua Kategori'}],
+  filterCat: [{val: '', text: 'Semua'}],
   filterKuota: [
-    {val: '', text: '📊 Semua Kuota'},
+    {val: '', text: 'Kuota'},
     {val: '1', text: '> 1 GB'},
     {val: '5', text: '> 5 GB'},
     {val: 'unlimited', text: '♾️ Unlimited'}
   ],
   sortPrice: [
-    {val: '', text: '🔃 Urutkan Harga'},
-    {val: 'asc', text: '💰 Termurah'},
-    {val: 'desc', text: '💎 Termahal'}
+    {val: '', text: 'Urutkan'},
+    {val: 'asc', text: 'Termurah'},
+    {val: 'desc', text: 'Termahal'}
   ]
 };
 
@@ -1443,6 +1867,7 @@ function initCustomSelect() {
 function showSelection() {
   selectionScreen.classList.add('active');
   listScreen.style.display = 'none';
+  listScreen.classList.remove('active-show', 'animate-in');
   search.value = '';
   document.getElementById('filterCat').dataset.value = '';
   document.getElementById('filterKuota').dataset.value = '';
@@ -1456,44 +1881,75 @@ function showSelection() {
   document.getElementById('filterCat').classList.remove('hide');
   document.getElementById('filterKuota').classList.remove('hide');
 
-  Object.keys(data).forEach(name => {
+  Object.keys(data).forEach((name, index) => {
     const count = isInternet? Object.values(data[name]).flat().length : data[name].length;
     const logoKey = isInternet? `operator_${name}` : `game_${name}`;
     const logoUrl = LOGO_URLS[logoKey];
     const card = document.createElement('div');
     card.className = 'operator-card';
+    card.style.animationDelay = `${index * 0.05}s`;
     const iconHTML = logoUrl
-? `<div class="operator-icon loading"><img src="${logoUrl}" alt="${name}" loading="lazy" onload="this.parentElement.classList.remove('loading')"></div>`
+     ? `<div class="operator-icon loading"><img src="${logoUrl}" alt="${name}" loading="lazy" onload="this.parentElement.classList.remove('loading')"></div>`
       : `<div class="operator-icon fallback">${iconMap[name] || name[0]}</div>`;
     card.innerHTML = `
       ${iconHTML}
       <div class="operator-name">${name}</div>
       <div class="operator-count">${count} paket</div>
     `;
-    card.onclick = () => selectOperator(name);
+    card.onclick = function() { selectOperator(name, this); }; // PASS THIS
     operatorGrid.appendChild(card);
   });
 }
 
-function selectOperator(name) {
-  selectedOperator = name;
-  selectionScreen.classList.remove('active');
-  listScreen.style.display = 'block';
-  breadcrumb.innerHTML = `${currentTab === 'internet'? 'Paket Internet' : 'Top Up Game'} / <span>${name}</span>`;
+function selectOperator(name, clickedCard) {
+  const allCards = document.querySelectorAll('.operator-card');
 
-  const filterKuotaEl = document.getElementById('filterKuota');
-  const filterCatEl = document.getElementById('filterCat');
+  // 1. Card yang diklik geser ke atas
+  clickedCard.classList.add('clicked');
 
-  if (currentTab === 'game') {
-    filterKuotaEl.classList.add('hide');
-    filterCatEl.classList.add('hide');
-  } else {
-    filterKuotaEl.classList.remove('hide');
-    filterCatEl.classList.remove('hide');
-  }
+  // 2. Card lain fade out + geser ke bawah dikit
+  allCards.forEach(card => {
+    if (card!== clickedCard) {
+      card.classList.add('fade-out');
+    }
+  });
 
-  populateCategoryFilter();
-  render();
+  // 3. Tunggu animasi selesai baru pindah screen
+  setTimeout(() => {
+    selectedOperator = name;
+    selectionScreen.classList.remove('active');
+    listScreen.style.display = 'block';
+
+    // Reset class biar ga nyangkut
+    allCards.forEach(card => {
+      card.classList.remove('clicked', 'fade-out');
+    });
+
+    // 4. List harga slide in dari bawah
+    listScreen.classList.add('animate-in', 'active-show');
+
+    breadcrumb.innerHTML = `${currentTab === 'internet'? 'Paket Internet' : 'Top Up Game'} / <span>${name}</span>`;
+
+    const filterKuotaEl = document.getElementById('filterKuota');
+    const filterCatEl = document.getElementById('filterCat');
+
+    if (currentTab === 'game') {
+      filterKuotaEl.classList.add('hide');
+      filterCatEl.classList.add('hide');
+    } else {
+      filterKuotaEl.classList.remove('hide');
+      filterCatEl.classList.remove('hide');
+    }
+
+    populateCategoryFilter();
+    render();
+
+    // Bersihin class animasi
+    setTimeout(() => {
+      listScreen.classList.remove('animate-in');
+    }, 550);
+
+  }, 450);
 }
 
 backBtn.onclick = () => showSelection();
@@ -1632,13 +2088,68 @@ document.getElementById('detailModal').onclick = (e) => {
   }
 };
 
-tabs.forEach(tab => {
+const tabIndicator = document.querySelector('.tab-indicator');
+let prevTabIndex = 0;
+
+// Fungsi update posisi blob
+function updateTabIndicator() {
+  const activeTab = document.querySelector('.tab.active');
+  if (!activeTab) return;
+  
+  const tabRect = activeTab.getBoundingClientRect();
+  const tabsRect = activeTab.parentElement.getBoundingClientRect();
+  
+  tabIndicator.style.width = `${tabRect.width}px`;
+  tabIndicator.style.left = `${tabRect.left - tabsRect.left}px`;
+}
+
+// Init posisi blob pas load
+setTimeout(updateTabIndicator, 100);
+window.addEventListener('resize', updateTabIndicator);
+
+tabs.forEach((tab, index) => {
   tab.onclick = () => {
+    if (tab.classList.contains('active')) return;
+    
+    const isForward = index > prevTabIndex; // KANAN = TRUE, KIRI = FALSE
+    const currentContent = document.querySelector('#selectionScreen.active, #listScreen[style*="block"]');
+    
+    // 1. Update tab active + blob
     tabs.forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
-    currentTab = tab.dataset.tab;
-    selectedOperator = null;
-    showSelection();
+    updateTabIndicator();
+    
+    // 2. Blob glow effect
+    tabIndicator.classList.add('glowing');
+    setTimeout(() => tabIndicator.classList.remove('glowing'), 600);
+    
+    // 3. Animasi konten keluar
+    if (currentContent) {
+      currentContent.classList.add(isForward ? 'slide-out-left' : 'slide-out-right');
+    }
+    
+    // 4. Ganti tab + animasi masuk
+    setTimeout(() => {
+      currentTab = tab.dataset.tab;
+      selectedOperator = null;
+      
+      // Reset content
+      if (currentContent) {
+        currentContent.classList.remove('slide-out-left', 'slide-out-right');
+      }
+      
+      showSelection();
+      
+      // Animasi masuk
+      setTimeout(() => {
+        selectionScreen.classList.add(isForward ? 'slide-in-right' : 'slide-in-left');
+        setTimeout(() => {
+          selectionScreen.classList.remove('slide-in-right', 'slide-in-left');
+        }, 500);
+      }, 50);
+      
+      prevTabIndex = index;
+    }, 400);
   };
 });
 

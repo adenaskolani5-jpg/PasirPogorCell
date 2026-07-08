@@ -993,6 +993,45 @@ footer {
     transform: translateX(-50%) scaleY(1.5);
   }
 }
+.feedback-btn {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  transition: all 0.3s;
+  backdrop-filter: blur(8px);
+}
+.feedback-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #050D08;
+  box-shadow: 0 0 16px var(--shadow);
+  transform: translateY(-1px);
+}
+
+.feedback-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: all 0.3s;
+}
+.feedback-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 196, 106, 0.1);
+}
+textarea.feedback-input {
+  resize: none;
+}
 </style>
 </head>
 <body>
@@ -1001,7 +1040,7 @@ footer {
     <div class="header-content">
       <div class="logo">PasirPogorCell</div>
       <div class="header-right">
-        <span class="copy-wa" id="copyWA">📱 083844843020</span>
+        <button class="feedback-btn" id="feedbackBtn">💬 Kritik & Saran</button>
         <button class="theme-toggle" id="themeToggle">🌙 Gelap</button>
       </div>
     </div>
@@ -1062,11 +1101,34 @@ footer {
     <div id="content" class="grid"></div>
     <div id="empty" class="empty" style="display:none">Paket tidak ditemukan</div>
   </div>
+  </div>
 </main>
+
+<!-- MODAL KRITIK & SARAN -->
+<div class="modal" id="feedbackModal">
+  <div class="modal-content">
+    <button class="modal-close" id="feedbackClose">✕</button>
+    <div class="modal-title">🗳️ Kritik & Saran</div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Apa yang ingin kamu sampaikan?</p>
+    
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <select id="feedbackType" class="feedback-input">
+        <option value="Saran">💡 Saran Fitur</option>
+        <option value="Kritik"> 🔥 kritikan</option>
+        <option value="Bug">❗Lapor Bug</option>
+      </select>
+      <textarea id="feedbackMessage" class="feedback-input" placeholder="Tulis disini... bakal langsung masuk Telegram admin" rows="4"></textarea>
+      <input id="feedbackName" class="feedback-input" placeholder="Nama (opsional, bisa anonim)">
+      <button class="btn" id="sendFeedback">Kirim ke Development</button>
+      <button class="btn btn-secondary" id="cancelFeedback">Batal</button>
+      <small style="text-align:center;color:var(--text-muted);font-size:11px;">Powered by PasirPogorCell • Toko Pulsa</small>
+    </div>
+  </div>
+</div>
 
 <footer>
   <div class="container">
-    PasirPogorCell | WhatsApp: 083844843020 | 06:30 - 21:30 WIB<br>
+    PasirPogorCell | Jam Operasional 06:30 - 21:30 WIB<br>
     <small style="opacity:0.7">Lokasi: Kp.Ciparasi, Banten • <span id="footerUpdate">Update: -</span></small>
   </div>
 </footer>
@@ -1763,7 +1825,6 @@ const breadcrumb = document.getElementById('breadcrumb');
 const tabs = document.querySelectorAll('.tab');
 const themeToggle = document.getElementById('themeToggle');
 const backTop = document.getElementById('backTop');
-const copyWA = document.getElementById('copyWA');
 const toast = document.getElementById('toast');
 const resultCount = document.getElementById('resultCount');
 const lastUpdate = document.getElementById('lastUpdate');
@@ -1807,13 +1868,9 @@ themeToggle.onclick = () => {
 
 function updateThemeButton() {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  themeToggle.textContent = isDark? '☀️ Terang' : '🌙 Gelap';
+  themeToggle.textContent = isDark? '☀️' : '🌙';
 }
 
-copyWA.onclick = () => {
-  navigator.clipboard.writeText('083844843020');
-  showToast('Nomor WhatsApp disalin!');
-};
 
 function showToast(msg) {
   toast.textContent = msg;
@@ -1900,6 +1957,77 @@ function showSelection() {
     operatorGrid.appendChild(card);
   });
 }
+// === CONFIG TELEGRAM - GANTI INI ===
+const TELEGRAM_BOT_TOKEN = "8303767615:AAHIloX2OXO3imC3tVnjfN_W_n2joaNSnro"; 
+const TELEGRAM_CHAT_ID = "5725724854"; 
+
+// === FEEDBACK LOGIC TELEGRAM (KAYAK MADING DIGITAL) ===
+const feedbackBtn = document.getElementById('feedbackBtn');
+const feedbackModal = document.getElementById('feedbackModal');
+const feedbackClose = document.getElementById('feedbackClose');
+const cancelFeedback = document.getElementById('cancelFeedback');
+const sendFeedback = document.getElementById('sendFeedback');
+
+function openFeedback() { feedbackModal.classList.add('active'); }
+function closeFeedback() { feedbackModal.classList.remove('active'); }
+
+if(feedbackBtn) {
+  feedbackBtn.onclick = openFeedback;
+  feedbackClose.onclick = closeFeedback;
+  cancelFeedback.onclick = closeFeedback;
+  feedbackModal.onclick = (e) => { if(e.target.id === 'feedbackModal') closeFeedback(); };
+  
+  sendFeedback.onclick = async () => {
+    const type = document.getElementById('feedbackType').value;
+    const message = document.getElementById('feedbackMessage').value.trim();
+    const name = document.getElementById('feedbackName').value.trim() || 'Anonim';
+
+    if(!message) { showToast('Tulis dulu pesannya 🙏'); return; }
+
+    sendFeedback.textContent = '⏳ Mengirim...';
+    sendFeedback.disabled = true;
+
+    const text = `📨 *KRITIK & SARAN BARU - PasirPogorCell*\n\n` +
+                 `*Jenis:* ${type}\n` +
+                 `*Dari:* ${name}\n\n` +
+                 `*Pesan:*\n${message}\n\n` +
+                 `*Waktu:* ${new Date().toLocaleString('id-ID')}\n` +
+                 `_Via Website PasirPogorCell_`;
+
+    try {
+      const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: text,
+          parse_mode: 'Markdown'
+        })
+      });
+      
+      const data = await res.json();
+      
+      if(data.ok) {
+        closeFeedback();
+        document.getElementById('feedbackMessage').value = '';
+        document.getElementById('feedbackName').value = '';
+        showToast('✅ Terkirim anonim ke Telegram!');
+      } else {
+        throw new Error(data.description);
+      }
+    } catch (e) {
+      console.error(e);
+      showToast('❌ Gagal, cek Token/Chat ID!');
+      alert('Error: ' + e.message + '\n\nPastikan TOKEN & CHAT ID bener!\nBuka https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/getUpdates');
+    } finally {
+      sendFeedback.textContent = 'Kirim ke Development';
+      sendFeedback.disabled = false;
+    }
+  };
+}
+
+initCustomSelect();
+showSelection();
 
 function selectOperator(name, clickedCard) {
   const allCards = document.querySelectorAll('.operator-card');

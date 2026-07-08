@@ -67,102 +67,100 @@ body::before {
 }
 
 .container { max-width: 1280px; margin: 0 auto; padding: 0 16px; position: relative; z-index: 1; }
-
-header {
-  position: sticky; top: 0; background: var(--bg-glass); backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border); z-index: 50; padding: 16px 0;
-}
-
-.header-content {
-  display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
-}
-
-.logo {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 22px; font-weight: 700; color: var(--accent);
-  text-shadow: 0 0 12px var(--accent-glow); letter-spacing: 1px;
-}
-
-.header-right {
-  display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text-muted);
-}
-
-.copy-wa {
-  cursor: pointer; padding: 6px 10px; border-radius: 8px; background: var(--bg-card);
-  border: 1px solid var(--border); transition: all 0.3s;
-}
-.copy-wa:hover { border-color: var(--accent); box-shadow: 0 0 8px var(--shadow); }
-
-.theme-toggle {
-  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
-  padding: 8px 14px; cursor: pointer; font-size: 14px; color: var(--text);
-  transition: all 0.3s; backdrop-filter: blur(8px);
-}
-.theme-toggle:hover {
-  border-color: var(--accent); box-shadow: 0 0 12px var(--shadow);
-}
-
-.hero {
-  padding: 48px 0 32px; text-align: center; position: relative;
-}
-.hero h1 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 32px; font-weight: 700; margin-bottom: 10px; line-height: 1.2;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-glow) 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
+header { position: sticky; top: 0; background: var(--bg-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 50; padding: 16px 0; }
+.header-content { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.logo { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); letter-spacing: 1px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.feedback-btn { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 14px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text); transition: all 0.3s; backdrop-filter: blur(8px); }
+.feedback-btn:hover { border-color: var(--accent); background: var(--accent); color: #050D08; box-shadow: 0 0 16px var(--shadow); transform: translateY(-1px); }
+.theme-toggle { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 8px 14px; cursor: pointer; font-size: 14px; color: var(--text); transition: all 0.3s; backdrop-filter: blur(8px); }
+.theme-toggle:hover { border-color: var(--accent); box-shadow: 0 0 12px var(--shadow); }
+.hero { padding: 48px 0 32px; text-align: center; position: relative; }
+.hero h1 { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 700; margin-bottom: 10px; line-height: 1.2; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-glow) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .hero p { color: var(--text-muted); font-size: 15px; margin-bottom: 16px; }
-
-.ticker {
-  background: rgba(0, 0, 0, 0.15);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 0;
-  overflow: hidden;
-  backdrop-filter: blur(8px);
-  width: 100%;
-}
-.ticker-content {
-  display: inline-block;
-  white-space: nowrap;
-  animation: scroll 30s linear infinite;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-  padding-left: 100%;
-}
-@keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-.ticker:hover .ticker-content { animation-play-state: paused; }
-
-.tab {
-  position: relative;
-  padding: 12px 20px; 
-  background: transparent;
-  border: 1.5px solid transparent;
-  border-radius: 8px;
-  color: var(--text-muted); 
-  font-size: 14px; 
-  font-weight: 700; /* TEBELIN */
-  font-family: 'Orbitron', sans-serif; /* FONT GAMING */
-  letter-spacing: 0.8px; /* JARAK HURUF */
-  text-transform: uppercase; /* KAPITAL SEMUA */
-  cursor: pointer; 
-  transition: all 0.3s;
-  z-index: 1;
-  flex: 1;
-  text-align: center;
-  /* TEXT SHADOW BIAR GLOW DIKIT */
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-}
-
-.tab:hover {
-  color: var(--text);
-  transform: translateY(-2px);
-  text-shadow: 0 0 12px var(--accent-glow);
-}
+.ticker { background: rgba(0, 0, 0, 0.15); border: 1px solid var(--border); border-radius: 10px; padding: 10px 0; overflow: hidden; backdrop-filter: blur(8px); width: 100%; }
+.ticker-content { display: inline-block; white-space: nowrap; animation: scroll 30s linear infinite; font-size: 13px; font-weight: 500; color: var(--text); padding-left: 100%; }
+@keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+.tabs { position: relative; display: flex; gap: 8px; border-bottom: 1px solid var(--border); margin: 32px 0 24px; backdrop-filter: blur(8px); background: var(--bg-glass); padding: 8px; border-radius: 12px; }
+.tab-indicator { position: absolute; top: 8px; left: 8px; height: calc(100% - 16px); background: linear-gradient(135deg, var(--accent) 0%, var(--accent-glow) 100%); border-radius: 8px; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--shadow), 0 4px 12px rgba(0, 0, 0, 0.3); z-index: 0; pointer-events: none; }
+.tab { position: relative; padding: 12px 20px; background: transparent; border: 1.5px solid transparent; border-radius: 8px; color: var(--text-muted); font-size: 14px; font-weight: 700; font-family: 'Orbitron', sans-serif; letter-spacing: 0.8px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; z-index: 1; flex: 1; text-align: center; }
+.tab.active { color: #050D08; }
+.tab::before { content: ''; display: inline-block; width: 16px; height: 16px; margin-right: 6px; vertical-align: middle; background-size: contain; opacity: 0.7; }
+.tab[data-tab="internet"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M5 12.55a11 11 0 0 1 14.08 0'/%3E%3C/svg%3E"); }
+.tab[data-tab="game"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Crect x='2' y='6' width='20' height='12' rx='2'/%3E%3C/svg%3E"); }
+.tab-content-wrapper { position: relative; overflow: hidden; }
+.controls { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.controls input { width: 100%; padding: 12px 16px 12px 42px; border: 1.5px solid var(--border); border-radius: 12px; background: var(--bg-card); color: var(--text); font-size: 14px; outline: none; transition: all 0.3s; }
+.controls input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 196, 106, 0.1); }
+.filter-row { display: flex; gap: 8px; }
+.custom-select.compact { position: relative; flex: 1; min-width: 0; }
+.custom-select.compact .select-btn { width: 100%; padding: 11px 30px 11px 12px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--bg-card); color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; position: relative; user-select: none; text-align: center; }
+.custom-select.compact .select-btn::after { content: '▼'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 10px; transition: 0.25s; }
+.custom-select.active .select-btn::after { transform: translateY(-50%) rotate(180deg); }
+.custom-select.compact .select-options { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 12px; backdrop-filter: blur(20px); max-height: 0; overflow: hidden; opacity: 0; transform: translateY(-8px); transition: all 0.25s; z-index: 100; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); }
+.custom-select.active .select-options { max-height: 260px; opacity: 1; transform: translateY(0); overflow-y: auto; }
+.custom-select .select-options li { padding: 10px 14px; cursor: pointer; list-style: none; font-size: 13px; margin: 4px; border-radius: 8px; }
+.custom-select .select-options li:hover, .custom-select .select-options li.selected { background: var(--accent); color: #050D08; }
+.custom-select.hide { display: none !important; }
+.result-info { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; display: flex; justify-content: space-between; }
+.grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 40px; width: 100%; }
+@media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); } }
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; transition: all 0.3s; backdrop-filter: blur(10px); width: 100%; min-height: 165px; display: flex; flex-direction: column; }
+.card .btn { margin-top: auto; }
+.card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 8px 24px var(--shadow); }
+.badge-wrapper { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+.badge { padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 11px; display: inline-block; }
+.badge-gangguan { background: #FF3B30; color: white; }
+.badge-rekomend { background: linear-gradient(135deg, #FF9500, #FFD700); color: #111; }
+.badge-promo { background: linear-gradient(135deg, #FF006E, #FBC02D); color: white; }
+.badge-hot { background: linear-gradient(135deg, #FF4500, #E65100); color: white; }
+.badge-populer { background: linear-gradient(135deg, #007AFF, #00C7BE); color: white; }
+.badge-baru { background: linear-gradient(135deg, #2E7D32, #00E676); color: white; }
+.card-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.price-wrapper { margin: 14px 0 10px; }
+.price-coret { font-size: 12px; color: var(--text-muted); text-decoration: line-through; margin-right: 6px; }
+.card-price { font-size: 20px; font-weight: 700; color: var(--accent); }
+.btn { width: 100%; padding: 11px; background: var(--accent); color: #050D08; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; display: block; text-align: center; transition: all 0.3s; font-family: 'Orbitron', sans-serif; }
+.btn:hover { background: var(--accent-hover); box-shadow: 0 0 20px var(--accent-glow); }
+.btn-secondary { background: var(--bg-card); color: var(--text); border: 1px solid var(--border); margin-top: 8px; }
+footer { border-top: 1px solid var(--border); padding: 28px 0; text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 40px; }
+#backTop { position: fixed; bottom: 80px; right: 24px; background: var(--accent); color: #050D08; border: none; border-radius: 12px; width: 48px; height: 48px; cursor: pointer; display: none; font-size: 20px; font-weight: 700; box-shadow: 0 0 20px var(--shadow); z-index: 99; }
+.empty { text-align: center; padding: 40px 0; color: var(--text-muted); }
+.selection-screen { display: none; }
+.selection-screen.active { display: block; }
+.selection-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; font-family: 'Orbitron', sans-serif; }
+.operator-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 28px; }
+@media (min-width: 768px) { .operator-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } }
+.operator-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 22px 14px; text-align: center; cursor: pointer; transition: all 0.3s; }
+.operator-card:hover { border-color: var(--accent); transform: translateY(-6px); box-shadow: 0 12px 28px var(--shadow); }
+.operator-icon { width: 60px; height: 60px; margin: 0 auto 14px; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: var(--bg); border: 1px solid var(--border); overflow: hidden; padding: 8px; }
+.operator-icon img { width: 100%; height: 100%; object-fit: contain; }
+.operator-icon.fallback { background: linear-gradient(135deg, var(--accent), var(--accent-glow)); font-weight: 700; color: #050D08; }
+.operator-name { font-size: 14px; font-weight: 600; }
+.operator-count { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
+.back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; font-size: 13px; cursor: pointer; margin-bottom: 18px; }
+.breadcrumb { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
+.breadcrumb span { color: var(--accent); font-weight: 600; }
+.sticky-wa { position: fixed; bottom: 0; left: 0; right: 0; background: var(--accent); z-index: 100; text-align: center; }
+.sticky-wa a { display: block; color: #050D08; padding: 16px; font-weight: 700; font-size: 15px; text-decoration: none; font-family: 'Orbitron', sans-serif; }
+.modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); }
+.modal.active { display: flex; align-items: center; justify-content: center; padding: 16px; }
+.modal-content { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px; max-width: 480px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto; }
+.modal-close { position: absolute; top: 12px; right: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; width: 32px; height: 32px; cursor: pointer; }
+.modal-title { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 700; color: var(--accent); margin-bottom: 16px; padding-right: 32px; }
+.modal-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.modal-price { font-size: 24px; font-weight: 700; color: var(--accent); margin: 16px 0; }
+.toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--accent); color: #050D08; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 14px; z-index: 300; opacity: 0; transition: all 0.3s; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.feedback-input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--bg-card); color: var(--text); font-size: 14px; font-family: 'Inter', sans-serif; outline: none; }
+.feedback-input:focus { border-color: var(--accent); }
+@keyframes slideUpOut { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-80px) scale(0.9); opacity: 0; } }
+.operator-card.clicked { animation: slideUpOut 0.45s forwards; pointer-events: none; }
+.operator-card.fade-out { opacity: 0; transform: translateY(20px) scale(0.95); transition: all 0.35s; }
+#listScreen { opacity: 0; display: none; }
+#listScreen.active-show { opacity: 1; display: block; }
+#listScreen.animate-in { animation: slideInFromBottom 0.55s forwards; }
+@keyframes slideInFromBottom { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
 .tab.active {
   color: #FFFFFF; /* PUTIH TERANG */
@@ -1032,6 +1030,7 @@ footer {
 textarea.feedback-input {
   resize: none;
 }
+
 </style>
 </head>
 <body>
@@ -1104,24 +1103,22 @@ textarea.feedback-input {
   </div>
 </main>
 
-<!-- MODAL KRITIK & SARAN -->
+<!-- MODAL FEEDBACK TELEGRAM - TANPA DROPDOWN -->
 <div class="modal" id="feedbackModal">
   <div class="modal-content">
     <button class="modal-close" id="feedbackClose">✕</button>
-    <div class="modal-title">🗳️ Kritik & Saran</div>
-    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Apa yang ingin kamu sampaikan?</p>
-    
+    <div class="modal-title">💬 Kritik & Saran</div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
+      Kirim pesan langsung ke tim pengembang PasirPogorCell
+    </p>
     <div style="display:flex;flex-direction:column;gap:12px;">
-      <select id="feedbackType" class="feedback-input">
-        <option value="Saran">💡 Saran Fitur</option>
-        <option value="Kritik"> 🔥 kritikan</option>
-        <option value="Bug">❗Lapor Bug</option>
-      </select>
-      <textarea id="feedbackMessage" class="feedback-input" placeholder="Tulis disini... bakal langsung masuk Telegram admin" rows="4"></textarea>
+      <textarea id="feedbackMessage" class="feedback-input" placeholder="Tulis pesan, saran, kritik, atau lapor bug di sini..." rows="5"></textarea>
       <input id="feedbackName" class="feedback-input" placeholder="Nama (opsional, bisa anonim)">
-      <button class="btn" id="sendFeedback">Kirim ke Development</button>
-      <button class="btn btn-secondary" id="cancelFeedback">Batal</button>
-      <small style="text-align:center;color:var(--text-muted);font-size:11px;">Powered by PasirPogorCell • Toko Pulsa</small>
+      <button class="btn" id="sendFeedback">📨 Kirim Pesan</button>
+      <button class="btn btn-secondary" id="cancelFeedback">❌ Batal</button>
+      <small style="text-align:center;color:var(--text-muted);font-size:11px;">
+        PasirPogorCell • Toko Pulsa & Game
+      </small>
     </div>
   </div>
 </div>
@@ -1571,168 +1568,211 @@ const operators = {
 
 const games = {    
   "Mobile Legends":[  
-    {nama: "3 Diamond", harga: 2500},
-    {nama: "5 Diamond", harga: 3000},
-    {nama: "12 (11+1) Diamond", harga: 6000},            
-    {nama: "19 (17+2) Diamond", harga: 9000},    
-    {nama: "28 (25+3) Diamond", harga: 11000},    
-    {nama: "36 (33+3) Diamond", harga: 13000},    
-    {nama: "44 (40+4) Diamond", harga: 15000},    
-    {nama: "56 (51+5) Diamond", harga: 18000},    
-    {nama: "59 (53+6) Diamond", harga: 19000},    
-    {nama: "74 (69+5) Diamond", harga: 22000},    
-    {nama: "85 (77+8) Diamond", harga: 25000},    
-    {nama: "86 (78+8) Diamond", harga: 25000, populer: true},    
-    {nama: "100 Diamond", harga: 28000},    
-    {nama: "Weekly Diamond Pass 220 (80+20/Day)", harga: 31000},    
-    {nama: "112 (102+10) Diamond", harga: 32000},    
-    {nama: "144 (130+14) Diamond", harga: 40000},    
-    {nama: "170 (154+16) Diamond", harga: 50000},    
-    {nama: "172 (156+16) Diamond", harga: 50000},    
-    {nama: "185 (167+18) Diamond", harga: 52000},        
-    {nama: "222 (200+22) Diamond", harga: 60000},
-    {nama: "2x Weekly Diamond Pass 440 (80+20/Day)", harga: 60000},    
-    {nama: "229 (207+22) Diamond", harga: 65000},    
-    {nama: "240 (217+23) Diamond", harga: 65000},    
-    {nama: "257 (234+23) Diamond", harga: 70000},    
-    {nama: "Pass Coupon", harga: 77000},    
-    {nama: "278 (251+27) Diamond", harga: 78000},    
-    {nama: "284 (254+30) Diamond", harga: 78000},    
-    {nama: "296 (256+40) Diamond", harga: 80000},    
-    {nama: "301 (261+40) Diamond", harga: 84000},    
-    {nama: "Starlight Membership", harga: 86000},    
-    {nama: "3x Weekly Diamond Pass 660 (80+20/Day)", harga: 88000},    
-    {nama: "344 (312+32) Diamond", harga: 94000},    
-    {nama: "345 (301+44) Diamond", harga: 95000},    
-    {nama: "355 (309+46) Diamond", harga: 97000},    
-    {nama: "374 (326+48) Diamond", harga: 104000},    
-    {nama: "381 (333+48) Diamond", harga: 105000},    
-    {nama: "384 (346+38) Diamond", harga: 111000},    
-    {nama: "408 (367+41) Diamond", harga: 110000},    
-    {nama: "4x Weekly Diamond Pass 880 (80+20/Day)", harga: 117000},    
-    {nama: "429 (390+39) Diamond", harga: 115000},    
-    {nama: "425 (373+52) Diamond", harga: 117000},
-    {nama: "514 (468+46) Diamond", harga: 138000},    
-    {nama: "460 (415+45) Diamond", harga: 140000},        
-    {nama: "448 (403+45) Diamond", harga: 142000},
-    {nama: "522 (471+51) Diamond", harga: 143000},
-    {nama: "500 (452+49) Diamond", harga: 144000},          
-    {nama: "5x Weekly Diamond Pass 1100 (80+20/Day)", harga: 145000},      
-    {nama: "568 (503+65) Diamond", harga: 152000},
-    {nama: "Twilight Pass", harga: 152000},        
-    {nama: "601 (533+68) Diamond", harga: 160000},    
-    {nama: "642 (570+72) Diamond", harga: 180000},    
-    {nama: "706 (625+81) Diamond", harga: 185000},    
-    {nama: "712 (633+79) Diamond", harga: 188000},    
-    {nama: "717 (638+79) Diamond", harga: 195000},    
-    {nama: "Starlight Plus Member", harga: 205000},    
-    {nama: "875 (774+101) Diamond", harga: 225000},    
-    {nama: "965 (856+109) Diamond", harga: 247000},    
-    {nama: "963 (859+104) Diamond", harga: 255000},    
-    {nama: "977 (867+110) Diamond", harga: 257000},
-    {nama: "1050 (937+113) Diamond", harga: 270000},
-    {nama: "1136 (1006+130) Diamond", harga: 298000},
-    {nama: "1139 (1013+126) Diamond", harga: 300000},
-    {nama: "1159 (1031+128) Diamond", harga: 305000},
-    {nama: "1164 (1036+128) Diamond", harga: 306000},
-    {nama: "1163 (1041+122) Diamond", harga: 311000},
-    {nama: "1220 (1089+131) Diamond", harga: 324000},
-    {nama: "1233 (1139+94) Diamond", harga: 324000},
-    {nama: "1360 (1210+150) Diamond", harga: 360000},
-    {nama: "1412 (1250+162) Diamond", harga: 372000},
-    {nama: "1440 (1274+166) Diamond", harga: 379000},
-    {nama: "1455 (1299+156) Diamond", harga: 380000},
-    {nama: "1507 (1335+172) Diamond", harga: 394000},
-    {nama: "1672 (1484+188) Diamond", harga: 438000},
-    {nama: "1706 (1509+197) Diamond", harga: 449000},
-    {nama: "1750 (1548+202) Diamond", harga: 454000},
-    {nama: "1910 (1708+202) Diamond", harga: 493000},
-    {nama: "2183 (1945+238) Diamond", harga: 556000},
-    {nama: "2195 (1959+236) Diamond", harga: 557000},
-    {nama: "2195 (1960+235) Diamond", harga: 559000},
-    {nama: "2330 (2077+253) Diamond", harga: 589000},
-    {nama: "2365 (2115+250) Diamond", harga: 589000},
-    {nama: "2382 (2133+249) Diamond", harga: 594000},
-    {nama: "2526 (2192+334) Diamond", harga: 634000},
-    {nama: "2575 (2211+364) Diamond", harga: 641000},
-    {nama: "2885 (2482+403) Diamond", harga: 716000},
-    {nama: "2964 (2409+555) Diamond", harga: 754000},
-    {nama: "3453 (2985+468) Diamond", harga: 863000},
-    {nama: "3481 (3010+471) Diamond", harga: 874000},
-    {nama: "3673 (3202+471) Diamond", harga: 911000},
-    {nama: "4020 (3416+604) Diamond", harga: 1004000},
-    {nama: "4404 (3755+649) Diamond", harga: 1093000},
-    {nama: "4804 (4123+681) Diamond", harga: 1204000},
-    {nama: "4873 (4201+672) Diamond", harga: 1222000},
-    {nama: "4933 (4252+681) Diamond", harga: 1233000},
-    {nama: "5272 (4626+646) Diamond", harga: 1326000},
-    {nama: "5290 (4596+694) Diamond", harga: 1327000},
-    {nama: "6033 (5124+909) Diamond", harga: 1520000},
-    {nama: "6063 (5171+892) Diamond", harga: 1526000},
-    {nama: "6201 (5333+868) Diamond", harga: 1546000},
-    {nama: "6237 (5274+963) Diamond", harga: 1550000},
-    {nama: "6813 (5784+1029) Diamond", harga: 1730000},
-    {nama: "7195 (6020+1175) Diamond", harga: 1834000},
-    {nama: "7563 (6442+1121) Diamond", harga: 1938000},
-    {nama: "7723 (6387+1336) Diamond", harga: 1974000},
-    {nama: "8063 (6855+1208) Diamond", harga: 2049000},
-    {nama: "8345 (7038+1307) Diamond", harga: 2126000}
-  ],    
-  "Free Fire":[  
-    {nama: "5 (0+5) Diamond", harga: 2000, promo: true, hargaCoret: 3000},    
-    {nama: "12 (9+3) Diamond", harga: 4000}, 
-    {nama: "15 Diamond", harga: 5000}, 
-    {nama: "20 Diamond", harga: 6000},   
-    {nama: "25 Diamond", harga: 7000},   
-    {nama: "30 Diamond", harga: 8000},          
-    {nama: "50 (45+5) Diamond", harga: 10000, populer: true},    
-    {nama: "70 (63+7) Diamond", harga: 12000},    
-    {nama: "100 (90+10) Diamond", harga: 16000},    
-    {nama: "Membership Level Up Pass", harga: 17000},    
-    {nama: "140 (126+14) Diamond", harga: 20000, populer: true, promo: true, hargaCoret: 21000},    
-    {nama: "210 (189+21) Diamond", harga: 30000},    
-    {nama: "Membership Mingguan 50 Diamond", harga: 31000},    
-    {nama: "300 (270+30) Diamond", harga: 43000},    
-    {nama: "Booyah Pass (BP Card)", harga: 45000},    
-    {nama: "355 (320+35) Diamond", harga: 50000},    
-    {nama: "500 (450+50) Diamond", harga: 70000},    
-    {nama: "Membership Bulanan 50 Diamond", harga: 86000},    
-    {nama: "720 (648+72) Diamond", harga: 92000},    
-    {nama: "1000 (900+100) Diamond", harga: 132000},    
-    {nama: "1450 (1305+145) Diamond", harga: 190000},    
-    {nama: "2180 (1962+218) Diamond", harga: 290000},    
-    {nama: "3640 (3276+364) Diamond", harga: 480000},    
-    {nama: "4000 (3600+400) Diamond", harga: 530000},    
-    {nama: "7290 (6561+729) Diamond", harga: 950000}    
-  ],    
+    {nama: "3 Diamond Mobile Legend", harga: 4000},
+    {nama: "5 Diamond Mobile Legend", harga: 4000},
+    {nama: "12 (11+1) Diamond Mobile Legend", harga: 6000},
+    {nama: "19 (17+2) Diamond Mobile Legend", harga: 8000},
+    {nama: "28 (25+3) Diamond Mobile Legend", harga: 10000},
+    {nama: "36 (33+3) Diamond Mobile Legend", harga: 13000},
+    {nama: "44 (40+4) Diamond Mobile Legend", harga: 15000},
+    {nama: "56 (51+5) Diamond Mobile Legend", harga: 18000},
+    {nama: "59 (53+6) Diamond Mobile Legend", harga: 18000},
+    {nama: "74 (69+5) Diamond Mobile Legend", harga: 22000},
+    {nama: "85 (77+8) Diamond Mobile Legend", harga: 26000},
+    {nama: "86 (78+8) Diamond Mobile Legend", harga: 26000},
+    {nama: "100 (91+9) Diamond Mobile Legend", harga: 29000},
+    {nama: "1X Weekly Diamond Pass 220 (80+20/Hari)", harga: 32000},
+    {nama: "112 (102+10) Diamond Mobile Legend", harga: 33000},
+    {nama: "144 (130+14) Diamond Mobile Legend", harga: 41000},
+    {nama: "172 (156+16) Diamond Mobile Legend", harga: 49000},
+    {nama: "170 (154+16) Diamond Mobile Legend", harga: 49000},
+    {nama: "185 (167+18) Diamond Mobile Legend", harga: 51000},
+    {nama: "222 (200+22) Diamond Mobile Legend", harga: 60000},
+    {nama: "2X Weekly Diamond Pass 440 (80+20/Hari)", harga: 61000},
+    {nama: "240 (217+23) Diamond Mobile Legend", harga: 65000},
+    {nama: "229 (207+22) Diamond Mobile Legend", harga: 65000},
+    {nama: "257 (234+23) Diamond Mobile Legend", harga: 70000},
+    {nama: "Mobile Legend Coupon Pass", harga: 76000},
+    {nama: "284 (254+30) Diamond Mobile Legend", harga: 78000},
+    {nama: "278 (251+27) Diamond Mobile Legend", harga: 78000},
+    {nama: "277 (250+27) Diamond Mobile Legend", harga: 79000},
+    {nama: "264 Diamond Mobile Legend", harga: 79000},
+    {nama: "296 (256+40) Diamond Mobile Legend", harga: 79000},
+    {nama: "301 (261+40) Diamond Mobile Legend", harga: 84000},
+    {nama: "Starlight Membership", harga: 86000},
+    {nama: "3X Weekly Diamond Pass 660 (80+20/Hari)", harga: 88000},
+    {nama: "344 (312+32) Diamond Mobile Legend", harga: 94000},
+    {nama: "345 (301+44) Diamond Mobile Legend", harga: 95000},
+    {nama: "355 (309+46) Diamond Mobile Legend", harga: 97000},
+    {nama: "374 (326+48) Diamond Mobile Legend", harga: 103000},
+    {nama: "381 (333+48) Diamond Mobile Legend", harga: 104000},
+    {nama: "370 (333+37) Diamond Mobile Legend", harga: 110000},
+    {nama: "408 (367+41) Diamond Mobile Legend", harga: 113000},
+    {nama: "384 (346+38) Diamond Mobile Legend", harga: 115000},
+    {nama: "429 (390+39) Diamond Mobile Legend", harga: 118000},
+    {nama: "4X Weekly Diamond Pass 880 (80+20/Hari)", harga: 121000},
+    {nama: "425 (373+52) Diamond Mobile Legend", harga: 121000},
+    {nama: "514 (468+46) Diamond Mobile Legend", harga: 141000},
+    {nama: "512 (461+51) Diamond Mobile Legend", harga: 143000},
+    {nama: "460 (415+45) Diamond Mobile Legend", harga: 144000},
+    {nama: "522 (471+51) Diamond Mobile Legend", harga: 146000},
+    {nama: "448 (403+45) Diamond Mobile Legend", harga: 146000},
+    {nama: "500 (452+49) Diamond Mobile Legend", harga: 147000},
+    {nama: "5X Weekly Diamond Pass 1100 (80+20/Hari)", harga: 148000},
+    {nama: "518 (469+52) Diamond Mobile Legend", harga: 148000},
+    {nama: "568 (503+65) Diamond Mobile Legend", harga: 154000},
+    {nama: "Mobile Legend Twilight Pass", harga: 155000},
+    {nama: "600 (568+32) Diamond Mobile Legend", harga: 161000},
+    {nama: "601 (533+68) Diamond Mobile Legend", harga: 163000},
+    {nama: "642 (570+72) Diamond Mobile Legend", harga: 183000},
+    {nama: "706 (625+81) Diamond Mobile Legend", harga: 186000},
+    {nama: "712 (633+79) Diamond Mobile Legend", harga: 191000},
+    {nama: "717 (638+79) Diamond Mobile Legend", harga: 193000},
+    {nama: "Starlight Member Plus", harga: 205000},
+    {nama: "750 (675+75) Diamond Mobile Legend", harga: 208000},
+    {nama: "875 (774+101) Diamond Mobile Legend", harga: 231000},
+    {nama: "963 (859+104) Diamond Mobile Legend", harga: 252000},
+    {nama: "965 (856+109) Diamond Mobile Legend", harga: 260000},
+    {nama: "977 (867+110) Diamond Mobile Legend", harga: 263000},
+    {nama: "1050 (937+113) Diamond Mobile Legend", harga: 275000},
+    {nama: "1136 (1006+130) Diamond Mobile Legend", harga: 303000},
+    {nama: "1134 (1008+126) Diamond Mobile Legend", harga: 303000},
+    {nama: "1139 (1013+126) Diamond Mobile Legend", harga: 305000},
+    {nama: "1159 (1031+128) Diamond Mobile Legend", harga: 310000},
+    {nama: "1164 (1036+128) Diamond Mobile Legend", harga: 311000},
+    {nama: "1183 (1041+142) Diamond Mobile Legend", harga: 321000},
+    {nama: "1230 (1083+147) Diamond Mobile Legend", harga: 333000},
+    {nama: "1220 (1159+61) Diamond Mobile Legend", harga: 333000},
+    {nama: "1368 (1218+150) Diamond Mobile Legend", harga: 368000},
+    {nama: "1412 (1250+162) Diamond Mobile Legend", harga: 382000},
+    {nama: "1443 (1277+166) Diamond Mobile Legend", harga: 384000},
+    {nama: "1453 (1295+158) Diamond Mobile Legend", harga: 390000},
+    {nama: "1507 (1335+172) Diamond Mobile Legend", harga: 401000},
+    {nama: "1672 (1484+188) Diamond Mobile Legend", harga: 448000},
+    {nama: "1704 (1509+195) Diamond Mobile Legend", harga: 456000},
+    {nama: "1750 (1548+202) Diamond Mobile Legend", harga: 465000},
+    {nama: "2010 (1708+302) Diamond Mobile Legend", harga: 503000},
+    {nama: "2180 (1862+318) Diamond Mobile Legend", harga: 557000},
+    {nama: "2199 (1879+320) Diamond Mobile Legend", harga: 562000},
+    {nama: "2195 (1860+335) Diamond Mobile Legend", harga: 566000},
+    {nama: "2350 (2017+333) Diamond Mobile Legend", harga: 601000},
+    {nama: "2380 (2041+339) Diamond Mobile Legend", harga: 605000},
+    {nama: "2382 (2033+349) Diamond Mobile Legend", harga: 609000},
+    {nama: "2536 (2182+354) Diamond Mobile Legend", harga: 659000},
+    {nama: "2578 (2211+367) Diamond Mobile Legend", harga: 666000},
+    {nama: "2885 (2482+403) Diamond Mobile Legend", harga: 742000},
+    {nama: "2904 (2499+405) Diamond Mobile Legend", harga: 757000},
+    {nama: "3453 (2985+468) Diamond Mobile Legend", harga: 905000},
+    {nama: "3481 (3010+471) Diamond Mobile Legend", harga: 912000},
+    {nama: "3693 (3202+491) Diamond Mobile Legend", harga: 976000},
+    {nama: "4020 (3416+604) Diamond Mobile Legend", harga: 1029000},
+    {nama: "4404 (3763+641) Diamond Mobile Legend", harga: 1138000},
+    {nama: "4804 (4323+481) Diamond Mobile Legend", harga: 1199000},
+    {nama: "4678 (4001+677) Diamond Mobile Legend", harga: 1215000},
+    {nama: "4830 (4003+827) Diamond Mobile Legend", harga: 1239000},
+    {nama: "5372 (4826+546) Diamond Mobile Legend", harga: 1392000},
+    {nama: "5398 (4506+892) Diamond Mobile Legend", harga: 1392000},
+    {nama: "6030 (5124+906) Diamond Mobile Legend", harga: 1555000},
+    {nama: "5940 (5118+822) Diamond Mobile Legend", harga: 1560000},
+    {nama: "6001 (5033+968) Diamond Mobile Legend", harga: 1564000},
+    {nama: "6257 (5274+983) Diamond Mobile Legend", harga: 1640000},
+    {nama: "6840 (5711+1129) Diamond Mobile Legend", harga: 1765000},
+    {nama: "7195 (6020+1175) Diamond Mobile Legend", harga: 1866000},
+    {nama: "7660 (6442+1218) Diamond Mobile Legend", harga: 1993000},
+    {nama: "7723 (6487+1236) Diamond Mobile Legend", harga: 2009000},
+    {nama: "8040 (6832+1208) Diamond Mobile Legend", harga: 2080000},
+    {nama: "8303 (7005+1297) Diamond Mobile Legend", harga: 2161000},
+],
+
+  "Free Fire": [
+    {nama: "5 Diamond Free Fire", harga: 4000},
+    {nama: "10 Diamond Free Fire", harga: 5000},
+    {nama: "12 Diamond Free Fire", harga: 5000},
+    {nama: "15 Diamond Free Fire", harga: 6000},
+    {nama: "20 Diamond Free Fire", harga: 7000},
+    {nama: "25 Diamond Free Fire", harga: 8000},
+    {nama: "30 Diamond Free Fire", harga: 9000},
+    {nama: "50 Diamond Free Fire", harga: 10000},
+    {nama: "40 Diamond Free Fire", harga: 10000},
+    {nama: "55 Diamond Free Fire", harga: 11000},
+    {nama: "70 Diamond Free Fire", harga: 12000},
+    {nama: "75 Diamond Free Fire", harga: 13000},
+    {nama: "80 Diamond Free Fire", harga: 14000},
+    {nama: "90 Diamond Free Fire", harga: 15000},
+    {nama: "100 Diamond Free Fire", harga: 16000},
+    {nama: "120 Diamond Free Fire", harga: 18000},
+    {nama: "130 Diamond Free Fire", harga: 19000},
+    {nama: "140 Diamond Free Fire", harga: 20000},
+    {nama: "145 Diamond Free Fire", harga: 21000},
+    {nama: "150 Diamond Free Fire", harga: 22000},
+    {nama: "160 Diamond Free Fire", harga: 23000},
+    {nama: "190 Diamond Free Fire", harga: 27000},
+    {nama: "200 Diamond Free Fire", harga: 27000},
+    {nama: "210 Diamond Free Fire", harga: 29000},
+    {nama: "250 Diamond Free Fire", harga: 35000},
+    {nama: "260 Diamond Free Fire", harga: 35000},
+    {nama: "280 Diamond Free Fire", harga: 38000},
+    {nama: "300 Diamond Free Fire", harga: 41000},
+    {nama: "355 Diamond Free Fire", harga: 45000},
+    {nama: "375 Diamond Free Fire", harga: 49000},
+    {nama: "405 Diamond Free Fire", harga: 55000},
+    {nama: "425 Diamond Free Fire", harga: 57000},
+    {nama: "420 Diamond Free Fire", harga: 59000},
+    {nama: "475 Diamond Free Fire", harga: 63000},
+    {nama: "500 Diamond Free Fire", harga: 66000},
+    {nama: "510 Diamond Free Fire", harga: 67000},
+    {nama: "545 Diamond Free Fire", harga: 71000},
+    {nama: "565 Diamond Free Fire", harga: 73000},
+    {nama: "635 Diamond Free Fire", harga: 82000},
+    {nama: "720 Diamond Free Fire", harga: 90000},
+    {nama: "770 Diamond Free Fire", harga: 97000},
+    {nama: "790 Diamond Free Fire", harga: 97000},
+    {nama: "800 Diamond Free Fire", harga: 100000},
+    {nama: "860 Diamond Free Fire", harga: 110000},
+    {nama: "930 Diamond Free Fire", harga: 119000},
+    {nama: "1000 Diamond Free Fire", harga: 128000},
+    {nama: "1050 Diamond Free Fire", harga: 134000},
+    {nama: "1075 Diamond Free Fire", harga: 136000},
+    {nama: "1080 Diamond Free Fire", harga: 142000},
+    {nama: "1450 Diamond Free Fire", harga: 180000},
+    {nama: "2000 Diamond Free Fire", harga: 257000},
+    {nama: "2180 Diamond Free Fire", harga: 275000},
+    {nama: "2200 Diamond Free Fire", harga: 287000},
+    {nama: "2350 Diamond Free Fire", harga: 294000},
+    {nama: "2720 Diamond Free Fire", harga: 348000},
+    {nama: "3640 Diamond Free Fire", harga: 453000},
+    {nama: "7290 Diamond Free Fire", harga: 931000}
+  ],
+
   "PUBG Mobile": [    
-    {nama: "15 (14+1) UC", harga: 11000},    
-    {nama: "25 (22+3) UC", harga: 12000},    
-    {nama: "35 (31+4) UC", harga: 18000},    
-    {nama: "50 (45+5) UC", harga: 18000},    
-    {nama: "60 (54+6) UC", harga: 18000},    
-    {nama: "70 (63+7) UC", harga: 30000},    
-    {nama: "100 (90+10) UC", harga: 34000},    
-    {nama: "125 (113+12) UC", harga: 48000},    
-    {nama: "150 (135+15) UC", harga: 48000},    
-    {nama: "200 (180+20) UC", harga: 63000},    
-    {nama: "210 (189+21) UC", harga: 63000},    
-    {nama: "250 (225+25) UC", harga: 78000},    
-    {nama: "300 (270+30) UC", harga: 79000},    
-    {nama: "350 (315+35) UC", harga: 94000},    
-    {nama: "375 (338+37) UC", harga: 93000},    
-    {nama: "500 (450+50) UC", harga: 127000},    
-    {nama: "525 (473+52) UC", harga: 138000},    
-    {nama: "700 (630+70) UC", harga: 172000},    
-    {nama: "750 (675+75) UC", harga: 187000},    
-    {nama: "1000 (900+100) UC", harga: 244000},    
-    {nama: "1100 (990+110) UC", harga: 258000},    
-    {nama: "1250 (1125+125) UC", harga: 302000},    
-    {nama: "1500 (1350+150) UC", harga: 347000},    
-    {nama: "1750 (1575+175) UC", harga: 378000},    
-    {nama: "Elite Pass Plus + Kupon Peti", harga: 432000},    
-    {nama: "2500 (2250+250) UC", harga: 539000}    
-  ],    
+    {nama: "PUBG Mobile 15 UC", harga: 11000},
+    {nama: "PUBG Mobile 25 UC", harga: 19000},
+    {nama: "PUBG Mobile 50 UC", harga: 20000},
+    {nama: "PUBG Mobile 60 UC", harga: 20000},
+    {nama: "PUBG Mobile 35 UC", harga: 20000},
+    {nama: "PUBG Mobile 70 UC", harga: 37000},
+    {nama: "PUBG Mobile 100 UC", harga: 37000},
+    {nama: "PUBG Mobile 150 UC", harga: 53000},
+    {nama: "PUBG Mobile 125 UC", harga: 53000},
+    {nama: "PUBG Mobile 200 UC", harga: 68000},
+    {nama: "PUBG Mobile 210 UC", harga: 70000},
+    {nama: "PUBG Mobile 250 UC", harga: 86000},
+    {nama: "PUBG Mobile 300 UC", harga: 86000},
+    {nama: "PUBG Mobile 375 UC", harga: 111000},
+    {nama: "PUBG Mobile 350 UC", harga: 111000},
+    {nama: "PUBG Mobile 500 UC", harga: 138000},
+    {nama: "PUBG Mobile 525 UC", harga: 157000},
+    {nama: "PUBG Mobile 700 UC", harga: 186000},
+    {nama: "PUBG Mobile 750 UC", harga: 204000},
+    {nama: "PUBG Mobile 1000 UC", harga: 274000},
+    {nama: "PUBG Mobile 1100 UC", harga: 294000},
+    {nama: "PUBG Mobile 1250 UC", harga: 347000},
+    {nama: "PUBG Mobile 1500 UC", harga: 388000},
+    {nama: "Elite Pass Plus + Kupon Peti Klasik", harga: 442000},
+    {nama: "PUBG Mobile 1750 UC", harga: 462000},
+    {nama: "PUBG Mobile 2500 UC", harga: 645000},
+],
+
   "Call Of Duty Mobile": [    
     {nama: "63 (57+6) CP", harga: 12000},    
     {nama: "128 (115+13) CP", harga: 21000},    
@@ -1809,6 +1849,10 @@ const games = {
   ],    
 };
 
+// === KONFIGURASI TELEGRAM ===
+const TELEGRAM_BOT_TOKEN = "8303767615:AAHIloX2OXO3imC3tVnjfN_W_n2joaNSnro"; 
+const TELEGRAM_CHAT_ID = "5725724854";
+
 let currentTab = 'internet';
 let selectedOperator = null;
 let allData = [];
@@ -1832,70 +1876,43 @@ const footerUpdate = document.getElementById('footerUpdate');
 
 const selectData = {
   filterCat: [{val: '', text: 'Semua'}],
-  filterKuota: [
-    {val: '', text: 'Kuota'},
-    {val: '1', text: '> 1 GB'},
-    {val: '5', text: '> 5 GB'},
-    {val: 'unlimited', text: '♾️ Unlimited'}
-  ],
-  sortPrice: [
-    {val: '', text: 'Urutkan'},
-    {val: 'asc', text: 'Termurah'},
-    {val: 'desc', text: 'Termahal'}
-  ]
+  filterKuota: [{val: '', text: 'Kuota'}, {val: '1', text: '> 1 GB'}, {val: '5', text: '> 5 GB'}, {val: 'unlimited', text: '♾️ Unlimited'}],
+  sortPrice: [{val: '', text: 'Urutkan'}, {val: 'asc', text: 'Termurah'}, {val: 'desc', text: 'Termahal'}]
 };
 
-const savedTheme = localStorage.getItem('theme') || 'light';
-document.documentElement.setAttribute('data-theme', savedTheme);
-updateThemeButton();
-
-const hour = new Date().getHours();
-if(!localStorage.getItem('theme') && (hour >= 18 || hour < 6)) {
-  document.documentElement.setAttribute('data-theme', 'dark');
-  updateThemeButton();
-}
-
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
 lastUpdate.textContent = `Update: ${LAST_UPDATE}`;
 footerUpdate.textContent = `Update: ${LAST_UPDATE}`;
 
+function updateThemeButton() {
+  themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️ Terang' : '🌙 Gelap';
+}
+updateThemeButton();
 themeToggle.onclick = () => {
-  const current = document.documentElement.getAttribute('data-theme');
-  const next = current === 'light'? 'dark' : 'light';
+  const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
   updateThemeButton();
 };
-
-function updateThemeButton() {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  themeToggle.textContent = isDark? '☀️' : '🌙';
-}
-
-
 function showToast(msg) {
   toast.textContent = msg;
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2000);
+  setTimeout(() => toast.classList.remove('show'), 2500);
 }
-
-const iconMap = {
-  Indosat: 'I', Axis: 'A', XL: 'X', Tri: '3', Telkomsel: 'T', byU: 'B', Smartfren: 'S',
-  'Mobile Legends': 'ML', 'Free Fire': 'FF', 'PUBG Mobile': 'PM', 'Call Of Duty Mobile': 'COD',
-  'Honor Of Kings': 'HOK', 'Genshin Impact': 'GI', 'Roblox': 'RB', 'Arena of Valor': 'AOV'
-};
+const iconMap = { Indosat: 'I', Axis: 'A', XL: 'X', Tri: '3', Telkomsel: 'T', byU: 'B', Smartfren: 'S', 'Mobile Legends': 'ML', 'Free Fire': 'FF', 'PUBG Mobile': 'PM', 'Call Of Duty Mobile': 'COD', 'Honor Of Kings': 'HOK', 'Genshin Impact': 'GI', 'Roblox': 'RB', 'Arena of Valor': 'AOV' };
 
 function initCustomSelect() {
   document.querySelectorAll('.custom-select').forEach(wrapper => {
     const id = wrapper.id;
     const btn = wrapper.querySelector('.select-btn');
     const optionsList = wrapper.querySelector('.select-options');
-
+    if(!selectData[id]) return;
     optionsList.innerHTML = '';
     selectData[id].forEach(opt => {
       const li = document.createElement('li');
       li.textContent = opt.text;
       li.dataset.value = opt.val;
-      if (opt.val === '') li.classList.add('selected');
+      if ((wrapper.dataset.value || '') === opt.val || (!wrapper.dataset.value && opt.val === '')) li.classList.add('selected');
       li.onclick = () => {
         btn.textContent = opt.text;
         wrapper.dataset.value = opt.val;
@@ -1906,16 +1923,12 @@ function initCustomSelect() {
       };
       optionsList.appendChild(li);
     });
-
     btn.onclick = (e) => {
       e.stopPropagation();
-      document.querySelectorAll('.custom-select').forEach(w => {
-        if (w!== wrapper) w.classList.remove('active');
-      });
+      document.querySelectorAll('.custom-select').forEach(w => { if (w!== wrapper) w.classList.remove('active'); });
       wrapper.classList.toggle('active');
     };
   });
-
   document.addEventListener('click', () => {
     document.querySelectorAll('.custom-select').forEach(w => w.classList.remove('active'));
   });
@@ -1926,191 +1939,59 @@ function showSelection() {
   listScreen.style.display = 'none';
   listScreen.classList.remove('active-show', 'animate-in');
   search.value = '';
-  document.getElementById('filterCat').dataset.value = '';
-  document.getElementById('filterKuota').dataset.value = '';
-  document.getElementById('sortPrice').dataset.value = '';
-
   const isInternet = currentTab === 'internet';
-  selectionTitle.textContent = isInternet? 'Pilih Operator' : 'Pilih Game';
-  const data = isInternet? operators : games;
+  selectionTitle.textContent = isInternet ? 'Pilih Operator' : 'Pilih Game';
+  const data = isInternet ? operators : games;
   operatorGrid.innerHTML = '';
-
-  document.getElementById('filterCat').classList.remove('hide');
-  document.getElementById('filterKuota').classList.remove('hide');
-
   Object.keys(data).forEach((name, index) => {
-    const count = isInternet? Object.values(data[name]).flat().length : data[name].length;
-    const logoKey = isInternet? `operator_${name}` : `game_${name}`;
+    const count = isInternet ? Object.values(data[name]).flat().length : data[name].length;
+    const logoKey = isInternet ? `operator_${name}` : `game_${name}`;
     const logoUrl = LOGO_URLS[logoKey];
     const card = document.createElement('div');
     card.className = 'operator-card';
-    card.style.animationDelay = `${index * 0.05}s`;
-    const iconHTML = logoUrl
-     ? `<div class="operator-icon loading"><img src="${logoUrl}" alt="${name}" loading="lazy" onload="this.parentElement.classList.remove('loading')"></div>`
-      : `<div class="operator-icon fallback">${iconMap[name] || name[0]}</div>`;
-    card.innerHTML = `
-      ${iconHTML}
-      <div class="operator-name">${name}</div>
-      <div class="operator-count">${count} paket</div>
-    `;
-    card.onclick = function() { selectOperator(name, this); }; // PASS THIS
+    const iconHTML = logoUrl ? `<div class="operator-icon"><img src="${logoUrl}" alt="${name}" loading="lazy"></div>` : `<div class="operator-icon fallback">${iconMap[name] || name[0]}</div>`;
+    card.innerHTML = `${iconHTML}<div class="operator-name">${name}</div><div class="operator-count">${count} paket</div>`;
+    card.onclick = function() { selectOperator(name, this); };
     operatorGrid.appendChild(card);
   });
 }
-// === CONFIG TELEGRAM - GANTI INI ===
-const TELEGRAM_BOT_TOKEN = "8303767615:AAHIloX2OXO3imC3tVnjfN_W_n2joaNSnro"; 
-const TELEGRAM_CHAT_ID = "5725724854"; 
-
-// === FEEDBACK LOGIC TELEGRAM (KAYAK MADING DIGITAL) ===
-const feedbackBtn = document.getElementById('feedbackBtn');
-const feedbackModal = document.getElementById('feedbackModal');
-const feedbackClose = document.getElementById('feedbackClose');
-const cancelFeedback = document.getElementById('cancelFeedback');
-const sendFeedback = document.getElementById('sendFeedback');
-
-function openFeedback() { feedbackModal.classList.add('active'); }
-function closeFeedback() { feedbackModal.classList.remove('active'); }
-
-if(feedbackBtn) {
-  feedbackBtn.onclick = openFeedback;
-  feedbackClose.onclick = closeFeedback;
-  cancelFeedback.onclick = closeFeedback;
-  feedbackModal.onclick = (e) => { if(e.target.id === 'feedbackModal') closeFeedback(); };
-  
-  sendFeedback.onclick = async () => {
-    const type = document.getElementById('feedbackType').value;
-    const message = document.getElementById('feedbackMessage').value.trim();
-    const name = document.getElementById('feedbackName').value.trim() || 'Anonim';
-
-    if(!message) { showToast('Tulis dulu pesannya 🙏'); return; }
-
-    sendFeedback.textContent = '⏳ Mengirim...';
-    sendFeedback.disabled = true;
-
-    const text = `📨 *KRITIK & SARAN BARU - PasirPogorCell*\n\n` +
-                 `*Jenis:* ${type}\n` +
-                 `*Dari:* ${name}\n\n` +
-                 `*Pesan:*\n${message}\n\n` +
-                 `*Waktu:* ${new Date().toLocaleString('id-ID')}\n` +
-                 `_Via Website PasirPogorCell_`;
-
-    try {
-      const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text: text,
-          parse_mode: 'Markdown'
-        })
-      });
-      
-      const data = await res.json();
-      
-      if(data.ok) {
-        closeFeedback();
-        document.getElementById('feedbackMessage').value = '';
-        document.getElementById('feedbackName').value = '';
-        showToast('✅ Terkirim anonim ke Telegram!');
-      } else {
-        throw new Error(data.description);
-      }
-    } catch (e) {
-      console.error(e);
-      showToast('❌ Gagal, cek Token/Chat ID!');
-      alert('Error: ' + e.message + '\n\nPastikan TOKEN & CHAT ID bener!\nBuka https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/getUpdates');
-    } finally {
-      sendFeedback.textContent = 'Kirim ke Development';
-      sendFeedback.disabled = false;
-    }
-  };
-}
-
-initCustomSelect();
-showSelection();
 
 function selectOperator(name, clickedCard) {
   const allCards = document.querySelectorAll('.operator-card');
-
-  // 1. Card yang diklik geser ke atas
   clickedCard.classList.add('clicked');
-
-  // 2. Card lain fade out + geser ke bawah dikit
-  allCards.forEach(card => {
-    if (card!== clickedCard) {
-      card.classList.add('fade-out');
-    }
-  });
-
-  // 3. Tunggu animasi selesai baru pindah screen
+  allCards.forEach(card => { if (card!== clickedCard) card.classList.add('fade-out'); });
   setTimeout(() => {
     selectedOperator = name;
     selectionScreen.classList.remove('active');
     listScreen.style.display = 'block';
-
-    // Reset class biar ga nyangkut
-    allCards.forEach(card => {
-      card.classList.remove('clicked', 'fade-out');
-    });
-
-    // 4. List harga slide in dari bawah
     listScreen.classList.add('animate-in', 'active-show');
-
-    breadcrumb.innerHTML = `${currentTab === 'internet'? 'Paket Internet' : 'Top Up Game'} / <span>${name}</span>`;
-
+    breadcrumb.innerHTML = `${currentTab === 'internet' ? 'Paket Internet' : 'Top Up Game'} / <span>${name}</span>`;
     const filterKuotaEl = document.getElementById('filterKuota');
     const filterCatEl = document.getElementById('filterCat');
-
-    if (currentTab === 'game') {
-      filterKuotaEl.classList.add('hide');
-      filterCatEl.classList.add('hide');
-    } else {
-      filterKuotaEl.classList.remove('hide');
-      filterCatEl.classList.remove('hide');
-    }
-
+    if (currentTab === 'game') { filterKuotaEl.classList.add('hide'); filterCatEl.classList.add('hide'); }
+    else { filterKuotaEl.classList.remove('hide'); filterCatEl.classList.remove('hide'); }
     populateCategoryFilter();
     render();
-
-    // Bersihin class animasi
-    setTimeout(() => {
-      listScreen.classList.remove('animate-in');
-    }, 550);
-
-  }, 450);
+    setTimeout(() => { listScreen.classList.remove('animate-in'); }, 550);
+  }, 350);
 }
-
 backBtn.onclick = () => showSelection();
-
 function populateCategoryFilter() {
-  const isInternet = currentTab === 'internet';
   selectData.filterCat = [{val: '', text: '📂 Semua Kategori'}];
-  if (isInternet && operators[selectedOperator]) {
-    const categories = Object.keys(operators[selectedOperator]);
-    categories.forEach(cat => {
-      selectData.filterCat.push({val: cat, text: cat});
-    });
+  if (currentTab === 'internet' && operators[selectedOperator]) {
+    Object.keys(operators[selectedOperator]).forEach(cat => { selectData.filterCat.push({val: cat, text: cat}); });
   }
   initCustomSelect();
 }
-
 function getData() {
   if (!selectedOperator) return [];
   if (currentTab === 'internet') {
     const arr = [];
-    Object.entries(operators[selectedOperator]).forEach(([cat, items]) => {
-      items.forEach(item => arr.push({...item, category: cat}));
-    });
+    Object.entries(operators[selectedOperator]).forEach(([cat, items]) => { items.forEach(item => arr.push({...item, category: cat})); });
     return arr;
-  } else {
-    return games[selectedOperator].map(item => ({...item, category: 'Diamond/UC'}));
-  }
+  } else { return games[selectedOperator].map(item => ({...item, category: 'Diamond/UC'})); }
 }
-
-function formatRupiah(num) {
-  return 'Rp ' + num.toLocaleString('id-ID');
-}
-
+function formatRupiah(num) { return 'Rp ' + num.toLocaleString('id-ID'); }
 function getBadge(item) {
   const badges = [];
   if (item.gangguan) badges.push(`<span class="badge badge-gangguan">⚠️ GANGGUAN</span>`);
@@ -2122,202 +2003,158 @@ function getBadge(item) {
   if (badges.length === 0) return '';
   return `<div class="badge-wrapper">${badges.join('')}</div>`;
 }
-
 function render() {
   const query = search.value.toLowerCase();
   const catFilter = document.getElementById('filterCat').dataset.value || '';
   const kuotaFilter = document.getElementById('filterKuota').dataset.value || '';
   const sort = document.getElementById('sortPrice').dataset.value || '';
-
   allData = getData();
   let data = [...allData];
-
   if (query) data = data.filter(d => d.nama.toLowerCase().includes(query));
   if (catFilter) data = data.filter(d => d.category === catFilter);
   if (kuotaFilter && currentTab === 'internet') {
-    if (kuotaFilter === 'unlimited') {
-      data = data.filter(d => d.kuota >= 999);
-    } else {
-      data = data.filter(d => d.kuota >= parseFloat(kuotaFilter));
-    }
+    if (kuotaFilter === 'unlimited') data = data.filter(d => d.kuota >= 999);
+    else data = data.filter(d => d.kuota >= parseFloat(kuotaFilter));
   }
   if (sort === 'asc') data.sort((a, b) => a.harga - b.harga);
   else if (sort === 'desc') data.sort((a, b) => b.harga - a.harga);
-
   resultCount.textContent = `Menampilkan ${data.length} paket`;
   content.innerHTML = '';
-
-  if (data.length === 0) {
-    empty.style.display = 'block';
-    return;
-  }
+  if (data.length === 0) { empty.style.display = 'block'; return; }
   empty.style.display = 'none';
-
-  data.forEach((item, index) => {
+  data.forEach((item) => {
     const card = document.createElement('div');
     card.className = 'card card-clickable';
-    card.style.animationDelay = `${index * 0.03}s`;
     const isGangguan = item.gangguan === true;
-    const hargaHtml = item.promo && item.hargaCoret
-  ? `<div class="price-wrapper">
-           <span class="price-coret">${formatRupiah(item.hargaCoret)}</span>
-           <span class="card-price">${formatRupiah(item.harga)}</span>
-         </div>`
-      : `<div class="price-wrapper"><span class="card-price">${formatRupiah(item.harga)}</span></div>`;
-
-    card.innerHTML = `
-      ${getBadge(item)}
-      ${item.gangguan && item.noteGangguan? `<div class="badge-gangguan" style="margin-bottom:8px">${item.noteGangguan}</div>` : ''}
-      <div class="card-title">${item.nama}</div>
-      ${hargaHtml}
-      <button class="btn" ${item.gangguan? 'disabled style="opacity:0.5;cursor:not-allowed;background:#666"' : ''}>
-        ${item.gangguan? 'Sementara Gangguan' : 'Lihat Detail'}
-      </button>
-    `;
-
-    if (!isGangguan) {
-      card.onclick = () => showDetail(item);
-    } else {
-      card.onclick = () => showToast('Paket sedang gangguan 🙏');
-      card.classList.remove('card-clickable');
-      card.style.cursor = 'not-allowed';
-    }
+    const hargaHtml = item.promo && item.hargaCoret ? `<div class="price-wrapper"><span class="price-coret">${formatRupiah(item.hargaCoret)}</span><span class="card-price">${formatRupiah(item.harga)}</span></div>` : `<div class="price-wrapper"><span class="card-price">${formatRupiah(item.harga)}</span></div>`;
+    card.innerHTML = `${getBadge(item)}<div class="card-title">${item.nama}</div>${hargaHtml}<button class="btn" ${item.gangguan ? 'disabled style="opacity:0.5"' : ''}>${item.gangguan ? 'Gangguan' : 'Lihat Detail'}</button>`;
+    if (!isGangguan) card.onclick = () => showDetail(item);
+    else card.onclick = () => showToast('Paket sedang gangguan 🙏');
     content.appendChild(card);
   });
 }
-
 function showDetail(item) {
   document.getElementById('modalTitle').textContent = 'Detail Paket';
   document.getElementById('modalCategory').textContent = item.category || selectedOperator;
   document.getElementById('modalName').textContent = item.nama;
-  document.getElementById('modalDesc').textContent = item.ket || 'Tidak ada keterangan tambahan';
+  document.getElementById('modalDesc').textContent = item.ket || 'Tidak ada keterangan';
   document.getElementById('modalPrice').textContent = formatRupiah(item.harga);
-
   const waText = encodeURIComponent(`Halo PasirPogorCell saya mau pesan ${item.nama} - ${formatRupiah(item.harga)}`);
   document.getElementById('modalWABtn').href = `https://wa.me/6283844843020?text=${waText}`;
-  document.getElementById('modalWABtn').onclick = () => showToast('Membuka WhatsApp...');
-
-  document.getElementById('modalCopyBtn').onclick = () => {
-    const detailText = `PasirPogorCell\n${item.category}\n${item.nama}\n${formatRupiah(item.harga)}\n${item.ket || ''}\nOrder: 083844843020`;
-    navigator.clipboard.writeText(detailText);
-    showToast('Detail paket disalin!');
-  };
-
   document.getElementById('detailModal').classList.add('active');
 }
-
-document.getElementById('modalClose').onclick = () => {
-  document.getElementById('detailModal').classList.remove('active');
-};
-
-document.getElementById('detailModal').onclick = (e) => {
-  if (e.target.id === 'detailModal') {
-    document.getElementById('detailModal').classList.remove('active');
-  }
-};
+document.getElementById('modalClose').onclick = () => document.getElementById('detailModal').classList.remove('active');
+document.getElementById('detailModal').onclick = (e) => { if (e.target.id === 'detailModal') document.getElementById('detailModal').classList.remove('active'); };
 
 const tabIndicator = document.querySelector('.tab-indicator');
-let prevTabIndex = 0;
-
-// Fungsi update posisi blob
 function updateTabIndicator() {
   const activeTab = document.querySelector('.tab.active');
   if (!activeTab) return;
-  
-  const tabRect = activeTab.getBoundingClientRect();
-  const tabsRect = activeTab.parentElement.getBoundingClientRect();
-  
-  tabIndicator.style.width = `${tabRect.width}px`;
-  tabIndicator.style.left = `${tabRect.left - tabsRect.left}px`;
+  tabIndicator.style.width = `${activeTab.offsetWidth}px`;
+  tabIndicator.style.left = `${activeTab.offsetLeft}px`;
 }
-
-// Init posisi blob pas load
 setTimeout(updateTabIndicator, 100);
 window.addEventListener('resize', updateTabIndicator);
-
 tabs.forEach((tab, index) => {
   tab.onclick = () => {
     if (tab.classList.contains('active')) return;
-    
-    const isForward = index > prevTabIndex; // KANAN = TRUE, KIRI = FALSE
-    const currentContent = document.querySelector('#selectionScreen.active, #listScreen[style*="block"]');
-    
-    // 1. Update tab active + blob
     tabs.forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
     updateTabIndicator();
-    
-    // 2. Blob glow effect
-    tabIndicator.classList.add('glowing');
-    setTimeout(() => tabIndicator.classList.remove('glowing'), 600);
-    
-    // 3. Animasi konten keluar
-    if (currentContent) {
-      currentContent.classList.add(isForward ? 'slide-out-left' : 'slide-out-right');
-    }
-    
-    // 4. Ganti tab + animasi masuk
-    setTimeout(() => {
-      currentTab = tab.dataset.tab;
-      selectedOperator = null;
-      
-      // Reset content
-      if (currentContent) {
-        currentContent.classList.remove('slide-out-left', 'slide-out-right');
-      }
-      
-      showSelection();
-      
-      // Animasi masuk
-      setTimeout(() => {
-        selectionScreen.classList.add(isForward ? 'slide-in-right' : 'slide-in-left');
-        setTimeout(() => {
-          selectionScreen.classList.remove('slide-in-right', 'slide-in-left');
-        }, 500);
-      }, 50);
-      
-      prevTabIndex = index;
-    }, 400);
+    currentTab = tab.dataset.tab;
+    selectedOperator = null;
+    showSelection();
   };
 });
-
 search.oninput = render;
-
-window.onscroll = () => { backTop.style.display = window.scrollY > 300? 'block' : 'none'; };
+window.onscroll = () => { backTop.style.display = window.scrollY > 300 ? 'block' : 'none'; };
 backTop.onclick = () => window.scrollTo({top: 0, behavior: 'smooth'});
+
+// === FEEDBACK TELEGRAM - TANPA DROPDOWN ===
+const feedbackBtn = document.getElementById('feedbackBtn');
+const feedbackModal = document.getElementById('feedbackModal');
+const feedbackClose = document.getElementById('feedbackClose');
+const cancelFeedback = document.getElementById('cancelFeedback');
+const sendFeedback = document.getElementById('sendFeedback');
+
+function openFeedback() { 
+  feedbackModal.classList.add('active'); 
+}
+
+function closeFeedback() { 
+  feedbackModal.classList.remove('active'); 
+}
+
+feedbackBtn.onclick = openFeedback;
+feedbackClose.onclick = closeFeedback;
+cancelFeedback.onclick = closeFeedback;
+
+feedbackModal.onclick = (e) => { 
+  if(e.target.id === 'feedbackModal') closeFeedback(); 
+};
+
+sendFeedback.onclick = async function() {
+  const message = document.getElementById('feedbackMessage').value.trim();
+  const name = document.getElementById('feedbackName').value.trim() || 'Anonim';
+  
+  if(!message) { 
+    showToast('✏️ Tulis pesan dulu ya...'); 
+    return; 
+  }
+  
+  // Disable tombol dan ubah teks
+  this.textContent = '⏳ Mengirim...';
+  this.disabled = true;
+  
+  const text = `📨 *Kritik & Saran - PasirPogorCell*\n\n` +
+               `👤 *Dari:* ${name}\n\n` +
+               `📝 *Pesan:*\n${message}\n\n` +
+               `🕐 *Waktu:* ${new Date().toLocaleString('id-ID')}\n` +
+               `_Via Website PasirPogorCell_`;
+  
+  try {
+    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json' 
+      },
+      body: JSON.stringify({ 
+        chat_id: TELEGRAM_CHAT_ID, 
+        text: text, 
+        parse_mode: 'Markdown' 
+      })
+    });
+    
+    const data = await response.json();
+    
+    if(data.ok) {
+      // Sukses
+      closeFeedback();
+      document.getElementById('feedbackMessage').value = '';
+      document.getElementById('feedbackName').value = '';
+      showToast('✅ Pesan terkirim ke Telegram!');
+    } else {
+      throw new Error(data.description || 'Gagal mengirim');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    showToast('❌ Gagal kirim! Cek koneksi atau token.');
+    // Tampilkan error detail di console
+    alert('Error: ' + error.message + '\n\nPastikan:\n1. Token Bot benar\n2. Chat ID benar\n3. Koneksi internet stabil');
+  } finally {
+    // Aktifkan kembali tombol
+    this.textContent = '📨 Kirim Pesan';
+    this.disabled = false;
+  }
+};
 
 initCustomSelect();
 showSelection();
-
-// CEGAH LANGSUNG KELUAR PAS PENCET BACK DEVICE
-let backPressTime = 0;
-const EXIT_DELAY = 2000; // 2 detik jeda antara back pertama & kedua
-
-function handleBackButton() {
-  // Kalau lagi di halaman list paket, back = balik ke pilih operator/game
-  if (listScreen.style.display !== 'none') {
-    showSelection();
-    return;
-  }
-  
-  // Kalau udah di halaman selection, baru kasih warning keluar
-  const now = Date.now();
-  if (now - backPressTime > EXIT_DELAY) {
-    backPressTime = now;
-    showToast('Klik sekali lagi untuk keluar');
-    // Push state lagi biar gak langsung close
-    history.pushState(null, null, location.href);
-  } else {
-    // Back kedua dalam 2 detik = keluar beneran
-    window.history.back();
-  }
-}
-
-// Daftarin event back button
-window.addEventListener('popstate', handleBackButton);
-
-// Inisialisasi: push state pertama biar ada history
 history.pushState(null, null, location.href);
+window.addEventListener('popstate', () => {
+  if (listScreen.style.display !== 'none' && listScreen.classList.contains('active-show')) { showSelection(); history.pushState(null, null, location.href); }
+  else if (feedbackModal.classList.contains('active')) { closeFeedback(); history.pushState(null, null, location.href); }
+});
 </script>
 </body>
 </html>

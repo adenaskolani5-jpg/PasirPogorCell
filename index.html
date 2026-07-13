@@ -1367,6 +1367,24 @@ body::before {
 [data-theme="light"] .modal-price {
   color: var(--accent) !important; /* hijau muda untuk harga */
 }
+/* ============================================================
+   BREADCRUMB - NAMA OPERATOR/GAME HITAM PENTING DI MODE TERANG
+   ============================================================ */
+[data-theme="light"] .breadcrumb span {
+  color: #0A0A0A !important; /* hitam pekat, bukan hijau */
+  font-weight: 700;
+}
+/* ============================================================
+   TICKER - TEKS BERJALAN WARNA PUTIH DI MODE TERANG
+   ============================================================ */
+[data-theme="light"] .ticker-content {
+  color: #FFFFFF !important;
+}
+
+[data-theme="light"] .ticker {
+  background: rgba(0, 0, 0, 0.25) !important; /* background lebih gelap agar teks putih terbaca */
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
 </style>
 </head>
 <body>

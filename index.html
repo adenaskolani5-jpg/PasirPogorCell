@@ -15,15 +15,15 @@
    ============================================================ */
 :root {
   --bg: #F5FFF9;
-  --bg-card: rgba(232, 255, 243, 0.7);
-  --bg-glass: rgba(232, 255, 243, 0.5);
+  --bg-card: rgba(220, 248, 235, 0.85);       /* lebih pekat */
+  --bg-glass: rgba(220, 248, 235, 0.6);       /* lebih pekat */
   --text: #0A2E1A;
-  --text-muted: #4A6B5A;
-  --border: rgba(0, 196, 106, 0.25);
-  --accent: #00C46A;
-  --accent-hover: #00A85A;
-  --accent-glow: #00FF88;
-  --shadow: rgba(0, 196, 106, 0.15);
+  --text-muted: #3A5A4A;                       /* lebih gelap dari sebelumnya (#4A6B5A) */
+  --border: rgba(0, 150, 80, 0.5);             /* lebih tebal & lebih gelap */
+  --accent: #00A85A;                           /* sedikit lebih gelap agar kontras */
+  --accent-hover: #008F4A;
+  --accent-glow: #00CC77;
+  --shadow: rgba(0, 150, 80, 0.25);
   --badge: #FF3B30;
   --badge-new: #007AFF;
   --badge-hot: #FF9500;
@@ -771,6 +771,235 @@ textarea.feedback-input { resize: none; }
 @keyframes trailUp {
   0% { opacity: 0.6; transform: translateX(-50%) scaleY(0); }
   100% { opacity: 0; transform: translateX(-50%) scaleY(1.5); }
+}
+.tabs::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--border);
+}
+/* ============================================================
+   PERJELAS GARIS TAB (tanpa merusak animasi)
+   ============================================================ */
+.tab {
+  /* Tambahkan border dan background agar terlihat kotak */
+  border: 2px solid var(--border) !important;
+  background: var(--bg-card) !important;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 4px var(--shadow);
+}
+
+/* Saat hover, tetap pertahankan animasi yang sudah ada */
+.tab:hover {
+  border-color: var(--accent) !important;
+  background: var(--bg-glass) !important;
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+/* Saat aktif, biarkan indikator dan animasi berjalan */
+.tab.active {
+  /* Jangan timpa background atau border agar indikator tetap terlihat */
+  /* Biarkan aturan dari CSS sebelumnya yang mengatur .tab.active */
+  /* Jika perlu, tambahkan sedikit efek tambahan */
+  border-color: transparent !important; /* agar indikator terlihat jelas */
+  background: transparent !important;
+  box-shadow: none !important;
+}
+/* ============================================================
+   GRADIEN BIRU MUDA HANYA UNTUK MODE TERANG
+   ============================================================ */
+[data-theme="light"] body {
+  background: linear-gradient(135deg, #11998e, #38ef7d) !important;
+  background-attachment: fixed !important;
+}
+
+/* Mode gelap tetap menggunakan background dari variabel --bg */
+[data-theme="dark"] body {
+  background: var(--bg) !important;
+}
+
+/* Opsional: kurangi opasitas efek radial di background agar tidak mengganggu */
+body::before {
+  opacity: 0.4;
+}
+/* ============================================================
+   MODE TERANG - WARNA HIJAU MUDA UNTUK AKSEN
+   ============================================================ */
+[data-theme="light"] {
+  /* Warna aksen hijau muda/terang */
+  --accent: #00B86B;
+  --accent-hover: #009955;
+  --accent-glow: #33D98F;
+  --border: rgba(0, 184, 107, 0.4);
+  --shadow: rgba(0, 184, 107, 0.2);
+  
+  /* Teks utama tetap hitam pekat */
+  --text: #0A0A0A;
+  --text-muted: #1A1A1A;
+}
+
+/* Judul "Paket Data & Top Up Game" - Hitam pekat */
+[data-theme="light"] .hero h1 {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+  color: #0A0A0A !important;
+  text-shadow: 0 2px 8px rgba(255,255,255,0.4);
+}
+
+/* Tombol dan elemen aksen lainnya */
+[data-theme="light"] .btn {
+  background: var(--accent) !important;
+  color: #0A0A0A !important; /* teks hitam di tombol */
+}
+[data-theme="light"] .btn:hover {
+  background: var(--accent-hover) !important;
+}
+
+[data-theme="light"] .btn-secondary {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: var(--border) !important;
+  color: #0A0A0A !important;
+}
+
+[data-theme="light"] .tab {
+  border-color: var(--border) !important;
+  color: #0A0A0A !important;
+  background: rgba(255,255,255,0.7) !important;
+}
+[data-theme="light"] .tab.active {
+  background: var(--accent) !important;
+  color: #0A0A0A !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+[data-theme="light"] .tab-indicator {
+  background: linear-gradient(135deg, var(--accent), var(--accent-glow)) !important;
+}
+
+[data-theme="light"] .operator-card,
+[data-theme="light"] .lainnya-card,
+[data-theme="light"] .card {
+  background: rgba(255,255,255,0.75) !important;
+  border-color: var(--border) !important;
+}
+[data-theme="light"] .operator-card:hover,
+[data-theme="light"] .lainnya-card:hover,
+[data-theme="light"] .card:hover {
+  border-color: var(--accent) !important;
+  box-shadow: 0 8px 24px var(--shadow);
+}
+
+/* Harga tetap hijau muda */
+[data-theme="light"] .card-price {
+  color: var(--accent) !important;
+}
+
+[data-theme="light"] .price-coret {
+  color: #555 !important;
+}
+
+[data-theme="light"] .badge-promo,
+[data-theme="light"] .badge-hot,
+[data-theme="light"] .badge-populer,
+[data-theme="light"] .badge-rekomend,
+[data-theme="light"] .badge-baru {
+  /* Biarkan badge dengan warna aslinya, tidak diubah */
+}
+
+[data-theme="light"] .modal-content {
+  background: rgba(255,255,255,0.9) !important;
+  border-color: var(--border) !important;
+}
+[data-theme="light"] .modal-title {
+  color: var(--accent) !important;
+}
+
+[data-theme="light"] .sticky-wa {
+  background: var(--accent) !important;
+}
+[data-theme="light"] .sticky-wa a {
+  color: #0A0A0A !important;
+}
+
+[data-theme="light"] .back-btn {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: var(--border) !important;
+  color: #0A0A0A !important;
+}
+[data-theme="light"] .back-btn:hover {
+  background: var(--accent) !important;
+  color: #0A0A0A !important;
+}
+
+[data-theme="light"] .breadcrumb span {
+  color: var(--accent) !important;
+}
+
+[data-theme="light"] .custom-select.compact .select-btn {
+  background: rgba(255,255,255,0.8) !important;
+  border-color: var(--border) !important;
+  color: #0A0A0A !important;
+}
+[data-theme="light"] .custom-select.compact .select-options {
+  background: rgba(255,255,255,0.95) !important;
+  border-color: var(--border) !important;
+}
+[data-theme="light"] .custom-select.compact .select-options li:hover {
+  background: var(--accent) !important;
+  color: #0A0A0A !important;
+}
+[data-theme="light"] .custom-select.compact .select-options li.selected {
+  background: var(--accent) !important;
+  color: #0A0A0A !important;
+}
+/* ============================================================
+   LOGO "PasirPogorCell" HIJAU TUA (hanya mode terang)
+   ============================================================ */
+[data-theme="light"] .logo {
+  color: #006644 !important;
+  text-shadow: 0 0 12px rgba(0, 102, 68, 0.4) !important;
+}
+/* ============================================================
+   MODAL DETAIL PAKET - PUTIH SOLID UNTUK MODE TERANG
+   ============================================================ */
+[data-theme="light"] .modal-content {
+  background: #FFFFFF !important; /* putih solid, bukan transparan */
+  border: 2px solid var(--border) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 40px var(--shadow) !important;
+}
+
+[data-theme="light"] .modal-close {
+  background: #F5F5F5 !important;
+  border-color: var(--border) !important;
+  color: #333 !important;
+}
+[data-theme="light"] .modal-close:hover {
+  background: var(--accent) !important;
+  color: #0A0A0A !important;
+}
+
+[data-theme="light"] .modal-title {
+  color: var(--accent) !important; /* hijau muda untuk judul */
+}
+
+[data-theme="light"] .modal-row {
+  border-bottom-color: var(--border) !important;
+}
+[data-theme="light"] .modal-label {
+  color: var(--text-muted) !important;
+}
+[data-theme="light"] .modal-value {
+  color: var(--text) !important; /* hitam pekat */
+}
+
+[data-theme="light"] .modal-price {
+  color: var(--accent) !important; /* hijau muda untuk harga */
 }
 </style>
 </head>

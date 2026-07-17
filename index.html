@@ -10,6 +10,7 @@
 <link rel="icon" href="https://i.ibb.co/tft6S9w/IMG-20260620-072917.jpg">
 
 <style>
+/* ===== SEMUA CSS ANDA (TIDAK SAYA UBAH) ===== */
 :root {
   --bg: #F5FFF9;
   --bg-card: rgba(232, 255, 243, 0.7);
@@ -1385,6 +1386,145 @@ body::before {
   background: rgba(0, 0, 0, 0.25) !important; /* background lebih gelap agar teks putih terbaca */
   border-color: rgba(255, 255, 255, 0.3) !important;
 }
+/* ===== MENU FITUR - POSISI KIRI (JARAK RAPAT) ===== */
+.feature-menu-wrapper {
+  margin: 6px 0 4px; /* DIPERKECIL: dari 12px menjadi 6px top, 4px bottom */
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  padding: 0 16px;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.feature-toggle-btn {
+  padding: 4px 12px; /* DIPERKECIL: padding tombol lebih ramping */
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.3s;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.3px;
+}
+
+.feature-toggle-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #050D08;
+  box-shadow: 0 0 1px var(--shadow);
+  transform: translateY(-1px);
+}
+
+.feature-toggle-btn .arrow {
+  font-size: 9px;
+  transition: transform 0.3s;
+}
+
+.feature-toggle-btn.active .arrow {
+  transform: rotate(180deg);
+}
+
+.feature-dropdown {
+  position: absolute;
+  top: calc(100% + 2px); /* DIPERKECIL: dari 4px menjadi 2px */
+  left: 16px;
+  min-width: 190px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+}
+
+.feature-dropdown.open {
+  max-height: 400px;
+  opacity: 1;
+  overflow-y: auto;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px; /* DIPERKECIL: padding item lebih ramping */
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.feature-item:last-child {
+  border-bottom: none;
+}
+
+.feature-item:hover {
+  background: var(--accent);
+  color: #050D08;
+  padding-left: 18px;
+}
+
+.feature-item .icon {
+  font-size: 14px;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.feature-item .label {
+  font-weight: 500;
+  flex: 1;
+}
+
+.feature-item .badge {
+  font-size: 8px;
+  background: var(--accent);
+  color: #050D08;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.feature-item:hover .badge {
+  background: #050D08;
+  color: var(--accent);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .feature-menu-wrapper {
+    padding: 0 20px;
+    margin: 4px 0 3px; /* DIPERKECIL untuk HP */
+  }
+  .feature-dropdown {
+    left: 12px;
+  }
+}
+/* ===== SEMBUNYIKAN BUBBLE CHAT TAWK.TO ===== */
+.tawk-container,
+.tawk-min-chat,
+.tawk-min-chat-container,
+#tawk-widget,
+iframe[src*="tawk.to"] {
+  display: none !important;
+}
 </style>
 </head>
 <body>
@@ -1408,6 +1548,26 @@ body::before {
     </div>
   </div>
 </section>
+
+<!-- ===== MENU - POSISI KIRI ===== -->
+<div class="feature-menu-wrapper">
+  <button class="feature-toggle-btn" id="featureToggleBtn">
+    MENU <span class="arrow">▾</span>
+  </button>
+  <div class="feature-dropdown" id="featureDropdown">
+    <!-- Hitung Voucher → LANGSUNG KE URL EKSTERNAL -->
+    <a href="https://adenaskolani5-jpg.github.io/Kalkulator-Voucher/" target="_blank" class="feature-item">
+      <span class="icon">🧮</span>
+      <span class="label">Hitung Voucher</span>
+    </a>
+    <!-- ===== TAMBAHAN: LIVE CHAT ===== -->
+    <div class="feature-item" onclick="openChat()">
+      <span class="icon">💬</span>
+      <span class="label">Contact Developer</span>
+    </div>
+    <!-- ===== END TAMBAHAN ===== -->
+  </div>
+</div>
 
 <main class="container">
 <div class="tabs">
@@ -2673,6 +2833,74 @@ initCustomSelect();
 showSelection();
 setTimeout(updateTabIndicator, 100);
 window.addEventListener('resize', updateTabIndicator);
+// ===== MENU FITUR TOGGLE =====
+document.addEventListener('DOMContentLoaded', function() {
+  const toggleBtn = document.getElementById('featureToggleBtn');
+  const dropdown = document.getElementById('featureDropdown');
+  
+  if (toggleBtn && dropdown) {
+    toggleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.classList.toggle('active');
+      dropdown.classList.toggle('open');
+    });
+    
+    document.addEventListener('click', function(e) {
+      const wrapper = document.querySelector('.feature-menu-wrapper');
+      if (wrapper && !wrapper.contains(e.target)) {
+        toggleBtn.classList.remove('active');
+        dropdown.classList.remove('open');
+      }
+    });
+  }
+});
+
+function showToast(msg) {
+  let toast = document.getElementById('toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.className = 'toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// ===== TAMBAHAN: FUNGSI OPEN CHAT =====
+function openChat() {
+  if (typeof Tawk_API !== 'undefined') {
+    Tawk_API.maximize();
+  } else {
+    showToast('💬 Chat sedang dimuat, tunggu sebentar...');
+  }
+}
 </script>
+
+<!-- ===== TAMBAHAN: Tawk.to Live Chat ===== -->
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API = Tawk_API || {};
+Tawk_API.hideWidget = true; // MATIKAN BUBBLE MENGAMBANG
+var Tawk_LoadStart = new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/6a59c82403ec7a1d4cd02974/default';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+
+// FALLBACK: pastikan bubble tetap hilang
+setTimeout(function() {
+  if (typeof Tawk_API !== 'undefined') {
+    try { Tawk_API.hideWidget(); } catch(e) {}
+  }
+}, 1500);
+</script>
+<!--End of Tawk.to Script-->
 </body>
 </html>

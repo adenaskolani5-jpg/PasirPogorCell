@@ -1571,32 +1571,237 @@ iframe[src*="tawk.to"] {
   position: relative;
   display: inline-block;
 }
+/* ===== IKON DI KANAN (CHAT & CEK HARGA) ===== */
+.menu-right {
+  display: flex;
+  align-items: center;
+  gap: 2px; /* jarak antar ikon */
+}
 
-/* Ikon CEK HARGA - polos tanpa border/background */
-.cek-harga-icon {
+.icon-btn {
   background: none !important;
   border: none !important;
-  font-size: 22px;
+  font-size: 24px;
   cursor: pointer;
   color: var(--text);
   transition: all 0.3s;
-  padding: 4px;
+  padding: 4px 6px;
   line-height: 1;
   font-family: 'Inter', sans-serif;
 }
 
-.cek-harga-icon:hover {
+.icon-btn:hover {
   color: var(--accent);
   transform: scale(1.15);
 }
 
-/* Responsive */
+/* Responsive kecil: ukuran ikon sedikit lebih besar di HP */
 @media (max-width: 640px) {
-  .feature-menu-wrapper {
-    padding: 0 15px;
+  .icon-btn {
+    font-size: 26px;
+    padding: 4px 2 0px;
   }
-  .cek-harga-icon {
-    font-size: 22px;
+  .menu-right {
+    gap: 0px;
+  }
+}
+/* ===== TOMBOL SETTING BULAT ===== */
+.menu-toggle-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;              
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--text);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+/* Efek hover: rotasi + scale + perubahan warna border */
+.menu-toggle-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 0 16px var(--shadow);
+}
+
+/* Efek saat diklik (active) */
+.menu-toggle-btn:active {
+  transform: rotate(180deg) scale(0.9);
+  transition-duration: 0.1s;
+}
+
+/* Saat dropdown terbuka (tombol aktif), beri efek berbeda */
+.menu-toggle-btn.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #050D08;
+  transform: rotate(180deg);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+/* ===== OVERLAY (LATAR GELAP) ===== */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s ease;
+}
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ===== SIDEBAR PANEL (MUNCUL DARI KIRI) ===== */
+.sidebar-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  max-width: 80%;
+  height: 100%;
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border);
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  transform: translateX(-110%);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.sidebar-panel.open {
+  transform: translateX(0);
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+.sidebar-close {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-muted);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sidebar-close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: rotate(90deg);
+}
+
+.sidebar-body {
+  padding: 12px 8px;
+  flex: 1;
+  overflow-y: auto;
+}
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.sidebar-item:hover {
+  background: var(--accent);
+  color: #050D08;
+  padding-left: 22px;
+}
+.sidebar-item .icon {
+  font-size: 20px;
+  width: 30px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .sidebar-panel {
+  background: var(--bg-card);
+  border-color: var(--border);
+}
+@media (max-width: 480px) {
+  .sidebar-panel { width: 85%; max-width: 85%; }
+}
+/* ===== WRAPPER IKON (KIRI & KANAN) ===== */
+.icon-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  margin: 4px 0 8px 0;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.icon-left,
+.icon-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Gaya tombol ikon (tetap sama) */
+.icon-btn {
+  background: none !important;
+  border: none !important;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text);
+  transition: all 0.3s;
+  padding: 4px 6px;
+  line-height: 1;
+  font-family: 'Inter', sans-serif;
+}
+.icon-btn:hover {
+  color: var(--accent);
+  transform: scale(1.15);
+}
+
+/* Responsif HP */
+@media (max-width: 640px) {
+  .icon-btn {
+    font-size: 26px;
+    padding: 4px 8px;
   }
 }
 </style>
@@ -1607,11 +1812,34 @@ iframe[src*="tawk.to"] {
     <div class="header-content">
       <div class="logo">PasirPogorCell</div>
       <div class="header-right">
+        <!-- TOMBOL MENU (PENGATURAN) - PINDAHKAN KE SINI -->
+        <div class="menu-wrapper">
+          <button class="menu-toggle-btn" id="featureToggleBtn" aria-label="Pengaturan">
+            ⚙️
+          </div>
+        </div>
+        <!-- TOMBOL GELAP/TERANG -->
         <button class="theme-toggle" id="themeToggle">🌙 Gelap</button>
       </div>
     </div>
   </div>
 </header>
+
+<!-- ===== OVERLAY & SIDEBAR SETTING ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="sidebar-panel" id="sidebarPanel">
+  <div class="sidebar-header">
+    <span class="sidebar-title">⚙️ Pengaturan</span>
+    <button class="sidebar-close" id="sidebarClose">✕</button>
+  </div>
+  <div class="sidebar-body">
+    <a href="https://adenaskolani5-jpg.github.io/Kalkulator-Voucher/" target="_blank" class="sidebar-item">
+      <span class="icon">🧮</span>
+      <span class="label">Hitung Voucher</span>
+    </a>
+    <!-- Tambahkan item lain di sini jika diperlukan -->
+  </div>
+</div>
 
 <section class="hero">
   <div class="container">
@@ -1623,30 +1851,19 @@ iframe[src*="tawk.to"] {
   </div>
 </section>
 
-<!-- ===== MENU - KIRI & CEK HARGA - KANAN ===== -->
-<!-- ===== MENU - KIRI & CEK HARGA - KANAN ===== -->
-<div class="feature-menu-wrapper">
-  <!-- KIRI: Tombol MENU + Dropdown -->
-  <div class="menu-left">
-    <button class="feature-toggle-btn" id="featureToggleBtn">
-      MENU <span class="arrow">▾</span>
+  <!-- KANAN: Ikon Cek Harga & Chat -->
+<!-- ===== IKON CHAT (KIRI) & BELANJA (KANAN) ===== -->
+<div class="icon-wrapper">
+  <div class="icon-left">
+    <button class="icon-btn" onclick="openChat()" title="Chat penjual" aria-label="Chat penjual">
+      💬
     </button>
-    <div class="feature-dropdown" id="featureDropdown">
-      <a href="https://adenaskolani5-jpg.github.io/Kalkulator-Voucher/" target="_blank" class="feature-item">
-        <span class="icon">🧮</span>
-        <span class="label">Hitung Voucher</span>
-      </a>
-      <div class="feature-item" onclick="openChat()">
-        <span class="icon">💬</span>
-        <span class="label">Contact Developer</span>
-      </div>
-    </div>
   </div>
-
-  <!-- KANAN: Ikon Cek Harga (tanpa teks, border, background) -->
-<button class="cek-harga-icon" onclick="openDaftarHarga()" title="Cek Harga Barang">
-  🛍️
-</button>
+  <div class="icon-right">
+    <button class="icon-btn" onclick="openDaftarHarga()" title="Cek Harga Barang" aria-label="Cek Harga">
+      🛍️
+    </button>
+  </div>
 </div>
 
 <main class="container">
@@ -2987,6 +3204,45 @@ setTimeout(function() {
     try { Tawk_API.hideWidget(); } catch(e) {}
   }
 }, 1500);
+// ===== SIDEBAR SETTING (GANTI DROPDOWN) =====
+const sidebarToggle = document.getElementById('featureToggleBtn');
+const sidebarPanel = document.getElementById('sidebarPanel');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+const sidebarClose = document.getElementById('sidebarClose');
+
+function openSidebar() {
+  sidebarPanel.classList.add('open');
+  sidebarOverlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeSidebar() {
+  sidebarPanel.classList.remove('open');
+  sidebarOverlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Klik tombol ⚙️ → buka/tutup sidebar
+sidebarToggle.addEventListener('click', function(e) {
+  e.stopPropagation();
+  if (sidebarPanel.classList.contains('open')) {
+    closeSidebar();
+  } else {
+    openSidebar();
+  }
+});
+
+// Tombol close (✕)
+sidebarClose.addEventListener('click', closeSidebar);
+
+// Klik overlay → tutup
+sidebarOverlay.addEventListener('click', closeSidebar);
+
+// Tekan ESC → tutup
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && sidebarPanel.classList.contains('open')) {
+    closeSidebar();
+  }
+});
 </script>
 <!--End of Tawk.to Script-->
 </body>

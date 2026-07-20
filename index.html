@@ -2137,7 +2137,7 @@ lastUpdate.textContent = `Update: ${LAST_UPDATE}`;
 footerUpdate.textContent = `Update: ${LAST_UPDATE}`;
 
 function updateThemeButton() {
-  themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️ Terang' : '🌙 Gelap';
+  themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
 }
 updateThemeButton();
 themeToggle.onclick = () => {

@@ -1156,10 +1156,246 @@ iframe[src*="tawk.to"] {
 @media (max-width: 640px) {
   .icon-btn { font-size: 26px; padding: 4px 8px; }
 }
+/* ===== MODAL PEMBAYARAN ===== */
+.payment-modal .modal-content { max-width: 420px; }
+.payment-option { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+  padding: 14px 16px; 
+  border: 2px solid var(--border); 
+  border-radius: 12px; 
+  cursor: pointer; 
+  transition: all 0.3s; 
+  margin-bottom: 10px; 
+  background: var(--bg-card);
+}
+.payment-option:hover { 
+  border-color: var(--accent); 
+  transform: translateX(4px); 
+  box-shadow: 0 4px 12px var(--shadow); 
+}
+.payment-option.selected { 
+  border-color: var(--accent); 
+  background: rgba(0, 196, 106, 0.08); 
+}
+.payment-option .icon { font-size: 24px; }
+.payment-option .label { font-weight: 600; font-size: 14px; }
+.payment-option .desc { font-size: 12px; color: var(--text-muted); }
+.qr-container { 
+  text-align: center; 
+  padding: 16px; 
+  background: white; 
+  border-radius: 12px; 
+  margin: 12px 0; 
+}
+.qr-container img { max-width: 220px; width: 100%; height: auto; border-radius: 8px; }
+.payment-summary { 
+  background: var(--bg); 
+  border-radius: 10px; 
+  padding: 12px 16px; 
+  margin: 12px 0; 
+  font-size: 14px; 
+}
+.payment-summary .row { display: flex; justify-content: space-between; padding: 4px 0; }
+.payment-summary .total { font-weight: 700; font-size: 16px; color: var(--accent); }
+.btn-confirm { 
+  width: 100%; 
+  padding: 14px; 
+  background: var(--accent); 
+  color: #050D08; 
+  border: none; 
+  border-radius: 10px; 
+  font-size: 16px; 
+  font-weight: 700; 
+  cursor: pointer; 
+  font-family: 'Orbitron', sans-serif; 
+  transition: all 0.3s; 
+}
+.btn-confirm:hover { 
+  background: var(--accent-hover); 
+  box-shadow: 0 0 24px var(--accent-glow); 
+  transform: scale(1.02); 
+}
+.btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+/* ===== FULLSCREEN QR OVERLAY ===== */
+.qr-fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(12px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 24px;
+}
+.qr-fullscreen-overlay.active {
+  display: flex;
+}
+.qr-fullscreen-overlay .close-btn {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  background: rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qr-fullscreen-overlay .close-btn:hover {
+  background: rgba(255,255,255,0.2);
+  transform: rotate(90deg);
+}
+.qr-fullscreen-overlay .qr-wrapper {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(0,255,136,0.2);
+}
+.qr-fullscreen-overlay .qr-wrapper img {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 12px;
+}
+.qr-fullscreen-overlay .qr-wrapper .label {
+  font-size: 14px;
+  color: #333;
+  margin-top: 12px;
+  font-weight: 600;
+}
+.qr-fullscreen-overlay .action-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.qr-fullscreen-overlay .action-btn {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Inter', sans-serif;
+}
+.qr-fullscreen-overlay .action-btn.download {
+  background: var(--accent);
+  color: #050D08;
+}
+.qr-fullscreen-overlay .action-btn.download:hover {
+  background: var(--accent-hover);
+  transform: scale(1.04);
+  box-shadow: 0 0 24px var(--accent-glow);
+}
+.qr-fullscreen-overlay .action-btn.close-qr {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+.qr-fullscreen-overlay .action-btn.close-qr:hover {
+  background: rgba(255,255,255,0.25);
+}
+/* ===== MODAL KONFIRMASI PEMBAYARAN ===== */
+.confirm-modal .modal-content { max-width: 400px; text-align: center; }
+.confirm-modal .icon-big { font-size: 56px; margin-bottom: 12px; display: block; }
+.confirm-modal .instruction { 
+  font-size: 15px; 
+  color: var(--text); 
+  line-height: 1.6; 
+  margin: 12px 0 20px; 
+  background: var(--bg); 
+  padding: 16px; 
+  border-radius: 10px; 
+  border-left: 4px solid var(--accent);
+}
+.confirm-modal .instruction strong { color: var(--accent); }
+.confirm-modal .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.confirm-modal .btn-row .btn-confirm-kirim {
+  padding: 14px 32px;
+  background: var(--accent);
+  color: #050D08;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
+  transition: all 0.3s;
+  flex: 1;
+  min-width: 140px;
+}
+.confirm-modal .btn-row .btn-confirm-kirim:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 0 24px var(--accent-glow);
+  transform: scale(1.02);
+}
+.confirm-modal .btn-row .btn-batal {
+  padding: 14px 24px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  flex: 1;
+  min-width: 100px;
+}
+.confirm-modal .btn-row .btn-batal:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 </style>
 </head>
 <body>
+<!-- FULLSCREEN QR OVERLAY -->
+<div class="qr-fullscreen-overlay" id="qrFullscreen">
+  <button class="close-btn" id="qrFullscreenClose">✕</button>
+  <div class="qr-wrapper">
+    <img id="qrFullscreenImg" src="" alt="QRIS Code" loading="lazy">
+    <div class="label">Scan QRIS di atas untuk pembayaran</div>
+    <div class="action-row">
+      <button class="action-btn download" id="qrDownloadBtn">📥 Download QR</button>
+      <button class="action-btn close-qr" id="qrFullscreenCloseBtn">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL KONFIRMASI PEMBAYARAN NON-TUNAI -->
+<div class="modal confirm-modal" id="confirmModal">
+  <div class="modal-content">
+    <button class="modal-close" id="confirmModalClose">✕</button>
+    <span class="icon-big">📱</span>
+    <div class="modal-title" style="font-size:20px;">Konfirmasi Pembayaran</div>
+    <div class="instruction">
+      <strong>Silahkan kirim bukti pembayaran kepada penjual!</strong><br>
+      Setelah Anda melakukan transfer/QRIS, kirimkan bukti screenshot ke WhatsApp kami agar pesanan segera diproses.
+    </div>
+    <div class="btn-row">
+      <button class="btn-confirm-kirim" id="confirmSendBtn">📤 Kirim Bukti</button>
+      <button class="btn-batal" id="confirmCancelBtn">Batal</button>
+    </div>
+  </div>
+</div>
 <header>
   <div class="container">
     <div class="header-content">
@@ -1315,6 +1551,54 @@ iframe[src*="tawk.to"] {
     <button class="btn btn-secondary" id="modalCopyBtn">📋 Salin Detail</button>
   </div>
 </div>
+
+<!-- MODAL PEMBAYARAN -->
+<div class="modal payment-modal" id="paymentModal">
+  <div class="modal-content">
+    <button class="modal-close" id="paymentClose">✕</button>
+    <div class="modal-title" id="paymentTitle">💳 Pilih Metode Pembayaran</div>
+    
+    <div class="payment-summary" id="paymentSummary">
+      <div class="row"><span>Produk</span><span id="payProductName">-</span></div>
+      <div class="row"><span>Harga</span><span id="payProductPrice" class="total">-</span></div>
+      <div class="row"><span>ID Pelanggan</span><span id="payCustomerId">-</span></div>
+    </div>
+    
+    <div id="paymentOptions">
+      <div class="payment-option" data-method="tunai" onclick="selectPayment('tunai')">
+        <span class="icon">💵</span>
+        <div><div class="label">Tunai</div><div class="desc">Bayar langsung di toko</div></div>
+      </div>
+      <div class="payment-option" data-method="non-tunai" onclick="selectPayment('non-tunai')">
+        <span class="icon">📱</span>
+        <div><div class="label">Non-Tunai (QRIS)</div><div class="desc">Bayar via QRIS / Transfer</div></div>
+      </div>
+    </div>
+    
+<div id="qrContainer" style="display:none;">
+  <div class="qr-container">
+    <img src="https://raw.githubusercontent.com/adenaskolani5-jpg/PasirPogorCell/1eb3d5fd0ce82f3e05fb36249765cdbb38722f05/QRIS.png" 
+         alt="QRIS Code" 
+         loading="lazy"
+         id="qrImage"
+         onerror="this.style.display='none'; document.getElementById('qrFallback').style.display='block';">
+    <div id="qrFallback" style="display:none; color:var(--text-muted); font-size:13px; padding:12px;">
+      ⚠️ Gagal memuat QRIS. Silahkan minta QRIS ke admin via chat.
+    </div>
+    <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">Scan QRIS di atas untuk pembayaran</p>
+    <!-- TOMBOL PERBESAR -->
+    <button onclick="toggleFullscreenQR()" style="margin-top:10px; padding:8px 20px; background:var(--accent); color:#050D08; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; transition:all 0.3s;">
+      🔍 Perbesar QR
+    </button>
+  </div>
+</div>
+    
+    <button class="btn-confirm" id="confirmPaymentBtn" disabled onclick="confirmPayment()">
+      ✅ Konfirmasi & Kirim ke WA
+    </button>
+  </div>
+</div>
+
 
 <div class="toast" id="toast"></div>
 
@@ -2271,15 +2555,508 @@ function render() {
 }
 
 function showDetail(item) {
+  // Tentukan kategori
+  const category = item.category || selectedOperator;
+  const isGame = currentTab === 'game';
+  const gameType = isGame ? selectedOperator : '';
+  const isKvision = category === 'K-Vision TV';
+  
+  // Tampilkan modal detail dulu
   document.getElementById('modalTitle').textContent = 'Detail Paket';
-  document.getElementById('modalCategory').textContent = item.category || selectedOperator;
+  document.getElementById('modalCategory').textContent = category;
   document.getElementById('modalName').textContent = item.nama;
   document.getElementById('modalDesc').textContent = item.ket || 'Tidak ada keterangan';
   document.getElementById('modalPrice').textContent = formatRupiah(item.harga);
-  const waText = encodeURIComponent(`Halo PasirPogorCell saya mau pesan ${item.nama} - ${formatRupiah(item.harga)}`);
-  document.getElementById('modalWABtn').href = `https://wa.me/6283844843020?text=${waText}`;
+  
+  // Ubah tombol WA menjadi "Pesan Sekarang"
+  const waBtn = document.getElementById('modalWABtn');
+  waBtn.textContent = '🛒 Pesan Sekarang';
+  waBtn.href = '#';
+  waBtn.onclick = (e) => {
+    e.preventDefault();
+    document.getElementById('detailModal').classList.remove('active');
+    // Mulai proses pemesanan
+    startOrder(item, category, isGame, gameType);
+  };
+  
+  // Tombol copy tetap
+  document.getElementById('modalCopyBtn').onclick = () => {
+    const text = `${item.nama} - ${formatRupiah(item.harga)}\n${item.ket || ''}`;
+    navigator.clipboard.writeText(text).then(() => showToast('📋 Detail disalin!'));
+  };
+  
   document.getElementById('detailModal').classList.add('active');
 }
+
+function showDetailKVision(item) {
+  document.getElementById('modalTitle').textContent = 'Detail Paket K-Vision';
+  document.getElementById('modalCategory').textContent = 'K-Vision TV';
+  document.getElementById('modalName').textContent = item.nama;
+  document.getElementById('modalDesc').textContent = item.ket || 'Tidak ada keterangan';
+  document.getElementById('modalPrice').textContent = formatRupiah(item.harga);
+  
+  const waBtn = document.getElementById('modalWABtn');
+  waBtn.textContent = '🛒 Pesan Sekarang';
+  waBtn.href = '#';
+  waBtn.onclick = (e) => {
+    e.preventDefault();
+    document.getElementById('detailModal').classList.remove('active');
+    startOrder(item, 'K-Vision TV', false, '');
+  };
+  
+  document.getElementById('modalCopyBtn').onclick = () => {
+    const text = `${item.nama} - ${formatRupiah(item.harga)}\n${item.ket || ''}`;
+    navigator.clipboard.writeText(text).then(() => showToast('📋 Detail disalin!'));
+  };
+  
+  document.getElementById('detailModal').classList.add('active');
+}
+
+// ============================================================
+//  SISTEM PEMESANAN DENGAN VALIDASI & PEMBAYARAN
+// ============================================================
+
+// --- STATE ---
+let currentOrder = {
+  productName: '',
+  price: 0,
+  category: '',
+  customerId: '',
+  paymentMethod: null,
+  isGame: false,
+  gameType: '',
+  operator: ''
+};
+
+// --- FORMAT VALIDASI ---
+
+// 1. DAFTAR PREFIX OPERATOR (untuk validasi nomor HP)
+const VALID_PREFIXES = {
+  telkomsel: ['0811', '0812', '0813', '0821', '0822', '0823', '0851', '0852', '0853'],
+  indosat: ['0814', '0815', '0816', '0855', '0856', '0857', '0858'],
+  xl: ['0817', '0818', '0819', '0859', '0877', '0878'],
+  axis: ['0831', '0832', '0833', '0838'],
+  tri: ['0895', '0896', '0897', '0898', '0899'],
+  smartfren: ['0881', '0882', '0883', '0884', '0885', '0886', '0887', '0888', '0889']
+};
+const ALL_PREFIXES = Object.values(VALID_PREFIXES).flat();
+
+// 2. FORMAT ID GAME
+function validateGameId(id, gameName) {
+  const clean = id.trim().replace(/\s/g, '');
+  if (!clean) return { valid: false, message: '❌ ID tidak boleh kosong!' };
+
+  switch(gameName) {
+    case 'Mobile Legends':
+      // Format: 12345678(1011) atau 123456781011
+      // User ID: 4-10 digit, Zone ID: 4-5 digit
+      if (/^\d{4,10}\(\d{4,5}\)$/.test(clean)) {
+        return { valid: true, clean: clean };
+      }
+      // Format tanpa kurung: 123456781011 (userID + zoneID)
+      if (/^\d{8,15}$/.test(clean)) {
+        // Coba pisahkan: 4 digit terakhir sebagai zone
+        if (clean.length > 7) {
+          const zone = clean.slice(-4);
+          const user = clean.slice(0, -4);
+          if (user.length >= 4 && user.length <= 10) {
+            return { valid: true, clean: `${user}(${zone})` };
+          }
+        }
+      }
+      return { valid: false, message: '❌ Format ID MLBB: 12345678(1011) atau 123456781011' };
+      
+    case 'Free Fire':
+      // 8-11 digit angka, tidak diawali 0
+      if (/^[1-9]\d{7,10}$/.test(clean)) {
+        return { valid: true, clean: clean };
+      }
+      return { valid: false, message: '❌ ID Free Fire harus 8-11 digit angka (tidak diawali 0)' };
+      
+    case 'PUBG Mobile':
+      // 9-10 digit, diawali 5/6/7
+      if (/^[5-7]\d{8,9}$/.test(clean)) {
+        return { valid: true, clean: clean };
+      }
+      return { valid: false, message: '❌ ID PUBG harus 9-10 digit, diawali 5, 6, atau 7' };
+      
+    case 'Call Of Duty Mobile':
+      // 19 digit angka
+      if (/^\d{19}$/.test(clean)) {
+        return { valid: true, clean: clean };
+      }
+      return { valid: false, message: '❌ UID CODM harus 19 digit angka' };
+      
+    case 'Honor Of Kings':
+      // 11-12 digit angka
+      if (/^\d{11,12}$/.test(clean)) {
+        return { valid: true, clean: clean };
+      }
+      return { valid: false, message: '❌ ID HOK harus 11-12 digit angka' };
+      
+    case 'Genshin Impact':
+      // 9 digit, diawali 7
+      if (/^7\d{8}$/.test(clean)) {
+        return { valid: true, clean: clean };
+      }
+      return { valid: false, message: '❌ UID Genshin Impact harus 9 digit, diawali 7 (Server Asia)' };
+      
+    case 'Roblox':
+      // 1-10 digit angka
+      if (/^\d{1,10}$/.test(clean)) {
+        return { valid: true, clean: clean };
+      }
+      return { valid: false, message: '❌ User ID Roblox harus 1-10 digit angka' };
+      
+    case 'Arena of Valor':
+      // 8-12 digit angka
+      if (/^\d{8,12}$/.test(clean)) {
+        return { valid: true, clean: clean };
+      }
+      return { valid: false, message: '❌ ID AOV harus 8-12 digit angka' };
+      
+    default:
+      // Untuk game lain: minimal 5 karakter alfanumerik
+      if (/^[A-Za-z0-9]{5,30}$/.test(clean)) {
+        return { valid: true, clean: clean };
+      }
+      return { valid: false, message: '❌ ID game tidak valid (minimal 5 karakter alfanumerik)' };
+  }
+}
+
+// 3. VALIDASI NOMOR HP
+function validatePhoneNumber(phone) {
+  const clean = phone.replace(/[\s\-()]/g, '');
+  if (!/^\d+$/.test(clean)) {
+    return { valid: false, message: '❌ Nomor HP hanya boleh berisi angka!' };
+  }
+  if (clean.length < 10 || clean.length > 13) {
+    return { valid: false, message: '❌ Nomor HP harus 10-13 digit!' };
+  }
+  // Cek prefix
+  const isValidPrefix = ALL_PREFIXES.some(prefix => clean.startsWith(prefix));
+  if (!isValidPrefix) {
+    return { valid: false, message: '❌ Awalan nomor tidak valid! Gunakan nomor operator Indonesia.' };
+  }
+  return { valid: true, clean: clean };
+}
+
+// 4. VALIDASI NOMOR K-VISION
+function validateKvisionId(id) {
+  const clean = id.trim().replace(/\s/g, '');
+  // Format: 9-12 digit angka (bisa dengan atau tanpa tanda hubung)
+  if (/^\d{9,12}$/.test(clean)) {
+    return { valid: true, clean: clean };
+  }
+  return { valid: false, message: '❌ Nomor Pelanggan K-Vision harus 9-12 digit angka' };
+}
+
+// --- FUNGSI UTAMA PEMESANAN ---
+
+function startOrder(item, category, isGame = false, gameType = '') {
+  // Simpan data pesanan
+  currentOrder.productName = item.nama;
+  currentOrder.price = item.harga;
+  currentOrder.category = category;
+  currentOrder.isGame = isGame;
+  currentOrder.gameType = gameType;
+  currentOrder.operator = isGame ? gameType : category;
+  currentOrder.paymentMethod = null;
+  
+  // Tentukan jenis input yang diminta
+  const isKvision = category === 'K-Vision TV';
+  const isInternet = !isGame && !isKvision;
+  
+  let title, placeholder, validator, infoText;
+  
+  if (isKvision) {
+    title = '📺 Masukkan Nomor Pelanggan K-Vision';
+    placeholder = 'Contoh: 123456789 (9-12 digit)';
+    validator = validateKvisionId;
+    infoText = 'Masukkan nomor pelanggan K-Vision Anda (9-12 digit angka).';
+  } else if (isGame) {
+    const gameNames = {
+      'Mobile Legends': 'MLBB',
+      'Free Fire': 'FF',
+      'PUBG Mobile': 'PUBG',
+      'Call Of Duty Mobile': 'CODM',
+      'Honor Of Kings': 'HOK',
+      'Genshin Impact': 'Genshin',
+      'Roblox': 'Roblox',
+      'Arena of Valor': 'AOV'
+    };
+    const shortName = gameNames[gameType] || gameType;
+    title = `🎮 Masukkan ID ${gameType}`;
+    placeholder = `Contoh ID ${gameType}`;
+    validator = (val) => validateGameId(val, gameType);
+    infoText = `Masukkan ID ${gameType} Anda dengan benar. ID tidak bisa diubah setelah dikirim.`;
+  } else {
+    // Internet / Paket Data
+    title = '📱 Masukkan Nomor HP';
+    placeholder = 'Contoh: 081234567890';
+    validator = validatePhoneNumber;
+    infoText = 'Masukkan nomor HP aktif yang akan diisi paket internet.';
+  }
+  
+  // Tampilkan modal input
+  showInputModal(title, placeholder, validator, infoText, (result) => {
+    if (result) {
+      currentOrder.customerId = result.clean || result;
+      // Lanjut ke pemilihan pembayaran
+      showPaymentModal();
+    }
+  });
+}
+
+// --- MODAL INPUT ---
+
+function showInputModal(title, placeholder, validator, infoText, callback) {
+  // Buat modal input jika belum ada
+  let modal = document.getElementById('inputModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'inputModal';
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <div class="modal-content">
+        <button class="modal-close" id="inputClose">✕</button>
+        <div class="modal-title" id="inputTitle">Masukkan Data</div>
+        <p id="inputInfo" style="font-size:13px; color:var(--text-muted); margin-bottom:12px;"></p>
+        <input type="text" id="inputField" placeholder="" style="width:100%; padding:12px 16px; border:2px solid var(--border); border-radius:10px; background:var(--bg); color:var(--text); font-size:14px; outline:none; transition:all 0.3s; box-sizing:border-box;">
+        <p id="inputError" style="font-size:12px; color:#FF3B30; margin-top:8px; display:none;"></p>
+        <div style="display:flex; gap:10px; margin-top:16px;">
+          <button id="inputCancel" style="flex:1; padding:12px; border:1px solid var(--border); border-radius:10px; background:transparent; color:var(--text); cursor:pointer; font-weight:600;">Batal</button>
+          <button id="inputConfirm" style="flex:2; padding:12px; background:var(--accent); border:none; border-radius:10px; color:#050D08; font-weight:700; cursor:pointer; font-family:'Orbitron',sans-serif;">Lanjutkan →</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+  
+  const titleEl = document.getElementById('inputTitle');
+  const infoEl = document.getElementById('inputInfo');
+  const field = document.getElementById('inputField');
+  const errorEl = document.getElementById('inputError');
+  const confirmBtn = document.getElementById('inputConfirm');
+  const cancelBtn = document.getElementById('inputCancel');
+  const closeBtn = document.getElementById('inputClose');
+  
+  titleEl.textContent = title;
+  field.placeholder = placeholder;
+  field.value = '';
+  infoEl.textContent = infoText || '';
+  errorEl.style.display = 'none';
+  field.style.borderColor = 'var(--border)';
+  
+  modal.classList.add('active');
+  setTimeout(() => field.focus(), 200);
+  
+  function handleConfirm() {
+    const val = field.value.trim();
+    const result = validator(val);
+    if (!result.valid) {
+      errorEl.textContent = result.message;
+      errorEl.style.display = 'block';
+      field.style.borderColor = '#FF3B30';
+      return;
+    }
+    errorEl.style.display = 'none';
+    field.style.borderColor = 'var(--border)';
+    modal.classList.remove('active');
+    callback(result);
+  }
+  
+  function handleCancel() {
+    modal.classList.remove('active');
+    callback(null);
+  }
+  
+  // Event listeners
+  confirmBtn.onclick = handleConfirm;
+  cancelBtn.onclick = handleCancel;
+  closeBtn.onclick = handleCancel;
+  field.onkeydown = (e) => { if (e.key === 'Enter') handleConfirm(); if (e.key === 'Escape') handleCancel(); };
+  field.oninput = () => {
+    errorEl.style.display = 'none';
+    field.style.borderColor = 'var(--border)';
+  };
+  
+  // Klik di luar modal
+  modal.onclick = (e) => { if (e.target === modal) handleCancel(); };
+}
+
+// --- MODAL PEMBAYARAN ---
+
+function showPaymentModal() {
+  const modal = document.getElementById('paymentModal');
+  if (!modal) return;
+  
+  // Update summary
+  document.getElementById('payProductName').textContent = currentOrder.productName;
+  document.getElementById('payProductPrice').textContent = formatRupiah(currentOrder.price);
+  document.getElementById('payCustomerId').textContent = currentOrder.customerId;
+  
+  // Reset state
+  document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+  document.getElementById('qrContainer').style.display = 'none';
+  document.getElementById('confirmPaymentBtn').disabled = true;
+  currentOrder.paymentMethod = null;
+  
+  modal.classList.add('active');
+}
+
+function selectPayment(method) {
+  currentOrder.paymentMethod = method;
+  
+  // Update UI
+  document.querySelectorAll('.payment-option').forEach(el => {
+    el.classList.toggle('selected', el.dataset.method === method);
+  });
+  
+  const qrContainer = document.getElementById('qrContainer');
+  if (method === 'non-tunai') {
+    qrContainer.style.display = 'block';
+  } else {
+    qrContainer.style.display = 'none';
+  }
+  
+  document.getElementById('confirmPaymentBtn').disabled = false;
+}
+
+function confirmPayment() {
+  if (!currentOrder.paymentMethod) {
+    showToast('⚠️ Pilih metode pembayaran terlebih dahulu!');
+    return;
+  }
+  
+  const isTunai = currentOrder.paymentMethod === 'tunai';
+  const methodText = isTunai ? 'TUNAI (Bayar di Toko)' : 'NON-TUNAI (QRIS/Transfer)';
+  const paymentInstruction = isTunai 
+    ? 'Pembayaran secara tunai. Silahkan bayar langsung kepada penjual untuk memproses pesanan.'
+    : 'Pembayaran via QRIS/Transfer. Silahkan kirim bukti transfer setelah pembayaran.';
+  
+  // Tutup modal pembayaran
+  document.getElementById('paymentModal').classList.remove('active');
+  
+  // Buat pesan WhatsApp
+  const isGame = currentOrder.isGame;
+  const idLabel = isGame ? 'ID Game' : (currentOrder.category === 'K-Vision TV' ? 'Nomor Pelanggan K-Vision' : 'Nomor HP');
+  
+  let pesan = `Assalamualaikum, saya ingin memesan:\n`;
+  pesan += `📦 ${currentOrder.productName}\n`;
+  pesan += `💰 Harga: ${formatRupiah(currentOrder.price)}\n`;
+  pesan += `🆔 ${idLabel}: ${currentOrder.customerId}\n`;
+  pesan += `💳 Metode: ${methodText}\n`;
+  pesan += `📝 ${paymentInstruction}\n\n`;
+  pesan += `Terima kasih.`;
+  
+  // Buka WhatsApp
+  const nomorToko = '6283844843020';
+  window.open(`https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`, '_blank');
+  
+  // Reset order
+  currentOrder = {
+    productName: '',
+    price: 0,
+    category: '',
+    customerId: '',
+    paymentMethod: null,
+    isGame: false,
+    gameType: '',
+    operator: ''
+  };
+  
+  showToast('✅ Pesanan dikirim ke WhatsApp!');
+}
+
+// --- TOMBOL CLOSE MODAL PEMBAYARAN ---
+document.getElementById('paymentClose')?.addEventListener('click', () => {
+  document.getElementById('paymentModal').classList.remove('active');
+});
+document.getElementById('paymentModal')?.addEventListener('click', (e) => {
+  if (e.target.id === 'paymentModal') document.getElementById('paymentModal').classList.remove('active');
+});
+
+function confirmPayment() {
+  if (!currentOrder.paymentMethod) {
+    showToast('⚠️ Pilih metode pembayaran terlebih dahulu!');
+    return;
+  }
+  
+  const isTunai = currentOrder.paymentMethod === 'tunai';
+  
+  // Jika tunai → langsung kirim ke WA
+  if (isTunai) {
+    sendOrderToWA();
+    return;
+  }
+  
+  // Jika non-tunai → tampilkan modal konfirmasi
+  document.getElementById('paymentModal').classList.remove('active');
+  document.getElementById('confirmModal').classList.add('active');
+}
+
+// Fungsi untuk mengirim pesanan ke WA
+function sendOrderToWA() {
+  const isTunai = currentOrder.paymentMethod === 'tunai';
+  const methodText = isTunai ? 'TUNAI (Bayar di Toko)' : 'NON-TUNAI (QRIS/Transfer)';
+  const paymentInstruction = isTunai 
+    ? 'Pembayaran secara tunai. Saya akan membayar secara langsung kepada penjual untuk memproses pesanan.'
+    : 'Saya akan mengirim bukti pembayaran (screenshot transfer/QRIS) ke chat ini untuk memproses pesanan.';
+  
+  const isGame = currentOrder.isGame;
+  const idLabel = isGame ? 'ID Game' : (currentOrder.category === 'K-Vision TV' ? 'Nomor Pelanggan K-Vision' : 'Nomor HP');
+  
+  let pesan = `Assalamualaikum, saya ingin memesan:\n`;
+  pesan += `📦 ${currentOrder.productName}\n`;
+  pesan += `💰 Harga: ${formatRupiah(currentOrder.price)}\n`;
+  pesan += `🆔 ${idLabel}: ${currentOrder.customerId}\n`;
+  pesan += `💳 Metode: ${methodText}\n`;
+  pesan += `📝 ${paymentInstruction}\n\n`;
+  pesan += `Terima kasih.`;
+  
+  const nomorToko = '6283844843020';
+  window.open(`https://wa.me/${nomorToko}?text=${encodeURIComponent(pesan)}`, '_blank');
+  
+  // Reset order
+  currentOrder = {
+    productName: '',
+    price: 0,
+    category: '',
+    customerId: '',
+    paymentMethod: null,
+    isGame: false,
+    gameType: '',
+    operator: ''
+  };
+  
+  showToast('✅ Pesanan dikirim ke WhatsApp!');
+}
+
+// ===== MODAL KONFIRMASI =====
+document.getElementById('confirmSendBtn')?.addEventListener('click', () => {
+  document.getElementById('confirmModal').classList.remove('active');
+  // Kirim ke WA
+  sendOrderToWA();
+});
+
+document.getElementById('confirmCancelBtn')?.addEventListener('click', () => {
+  document.getElementById('confirmModal').classList.remove('active');
+  // Kembali ke modal pembayaran
+  document.getElementById('paymentModal').classList.add('active');
+});
+
+document.getElementById('confirmModalClose')?.addEventListener('click', () => {
+  document.getElementById('confirmModal').classList.remove('active');
+  document.getElementById('paymentModal').classList.add('active');
+});
+
+document.getElementById('confirmModal')?.addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) {
+    document.getElementById('confirmModal').classList.remove('active');
+    document.getElementById('paymentModal').classList.add('active');
+  }
+});
 
 // ============================================================
 // K-VISION SPECIFIC
@@ -2307,8 +3084,21 @@ function showDetailKVision(item) {
   document.getElementById('modalName').textContent = item.nama;
   document.getElementById('modalDesc').textContent = item.ket || 'Tidak ada keterangan';
   document.getElementById('modalPrice').textContent = formatRupiah(item.harga);
-  const waText = encodeURIComponent(`Halo PasirPogorCell saya mau pesan ${item.nama} - ${formatRupiah(item.harga)}`);
-  document.getElementById('modalWABtn').href = `https://wa.me/6283844843020?text=${waText}`;
+  
+  const waBtn = document.getElementById('modalWABtn');
+  waBtn.textContent = '🛒 Pesan Sekarang';
+  waBtn.href = '#';
+  waBtn.onclick = (e) => {
+    e.preventDefault();
+    document.getElementById('detailModal').classList.remove('active');
+    startOrder(item, 'K-Vision TV', false, '');
+  };
+  
+  document.getElementById('modalCopyBtn').onclick = () => {
+    const text = `${item.nama} - ${formatRupiah(item.harga)}\n${item.ket || ''}`;
+    navigator.clipboard.writeText(text).then(() => showToast('📋 Detail disalin!'));
+  };
+  
   document.getElementById('detailModal').classList.add('active');
 }
 
@@ -2593,6 +3383,73 @@ sidebarOverlay.addEventListener('click', closeSidebar);
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape' && sidebarPanel.classList.contains('open')) {
     closeSidebar();
+  }
+});
+// ===== FULLSCREEN QR =====
+function toggleFullscreenQR() {
+  const overlay = document.getElementById('qrFullscreen');
+  const img = document.getElementById('qrFullscreenImg');
+  const sourceImg = document.getElementById('qrImage');
+  
+  if (!sourceImg) {
+    showToast('⚠️ Gambar QR tidak tersedia');
+    return;
+  }
+  
+  // Gunakan src dari gambar utama, atau fallback ke URL
+  const src = sourceImg.src || 'https://raw.githubusercontent.com/adenaskolani5-jpg/PasirPogorCell/1eb3d5fd0ce82f3e05fb36249765cdbb38722f05/QRIS.png';
+  img.src = src;
+  
+  overlay.classList.toggle('active');
+  document.body.style.overflow = overlay.classList.contains('active') ? 'hidden' : '';
+}
+
+// Tutup fullscreen QR
+document.getElementById('qrFullscreenClose')?.addEventListener('click', () => {
+  document.getElementById('qrFullscreen').classList.remove('active');
+  document.body.style.overflow = '';
+});
+document.getElementById('qrFullscreenCloseBtn')?.addEventListener('click', () => {
+  document.getElementById('qrFullscreen').classList.remove('active');
+  document.body.style.overflow = '';
+});
+document.getElementById('qrFullscreen')?.addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) {
+    document.getElementById('qrFullscreen').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+});
+
+// ===== DOWNLOAD QR =====
+function downloadQR() {
+  const img = document.getElementById('qrFullscreenImg');
+  if (!img || !img.src) {
+    showToast('⚠️ Tidak ada gambar QR untuk diunduh');
+    return;
+  }
+  
+  // Buat link download
+  const link = document.createElement('a');
+  link.download = 'QRIS_PasirPogorCell.png';
+  link.href = img.src;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  showToast('📥 QR Code sedang diunduh...');
+}
+
+// Event listener untuk tombol download di fullscreen
+document.getElementById('qrDownloadBtn')?.addEventListener('click', downloadQR);
+
+// Keyboard: ESC untuk tutup fullscreen
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('qrFullscreen');
+    if (overlay && overlay.classList.contains('active')) {
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
   }
 });
 </script>

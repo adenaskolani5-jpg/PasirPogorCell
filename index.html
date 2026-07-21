@@ -2431,6 +2431,21 @@ themeToggle.onclick = () => {
   updateThemeButton();
 };
 
+// ===== SINKRONISASI TEMA ANTAR TAB =====
+window.addEventListener('storage', function(e) {
+    if (e.key === 'theme') {
+        const newTheme = e.newValue;
+        if (newTheme) {
+            document.documentElement.setAttribute('data-theme', newTheme);
+            // Update tombol toggle
+            const toggleBtn = document.getElementById('themeToggle');
+            if (toggleBtn) {
+                toggleBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            }
+        }
+    }
+});
+
 // ============================================================
 // CUSTOM SELECT
 // ============================================================

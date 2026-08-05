@@ -1364,6 +1364,25 @@ iframe[src*="tawk.to"] {
   border-color: var(--accent);
   color: var(--accent);
 }
+/* ===== SIDEBAR ICON GAMBAR ===== */
+.sidebar-icon-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 3px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.05);
+  padding: 1px;
+  transition: transform 0.3s ease;
+  display: inline-block;
+  vertical-align: middle;
+}
+.sidebar-item:hover .sidebar-icon-img {
+  transform: scale(1.1) rotate(5deg);
+}
+[data-theme="dark"] .sidebar-icon-img {
+  background: rgba(255,255,255,0.08);
+}
 </style>
 </head>
 <body>
@@ -1421,10 +1440,15 @@ iframe[src*="tawk.to"] {
     <button class="sidebar-close" id="sidebarClose">✕</button>
   </div>
   <div class="sidebar-body">
-    <a href="https://adenaskolani5-jpg.github.io/Kalkulator-Voucher/" target="_blank" class="sidebar-item">
-      <span class="icon">🔄</span>
-      <span class="label">WarungKu</span>
-    </a>
+<a href="https://adenaskolani5-jpg.github.io/Kalkulator-Voucher/" target="_blank" class="sidebar-item">
+  <img src="https://i.ibb.co.com/PGP6jF25/IMG-20260620-072987.jpg" 
+       alt="WarungKu" 
+       class="sidebar-icon-img" 
+       loading="lazy" 
+       onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+  <span class="label">WarungKu</span>
+  <span class="icon-fallback" style="display:none;">🔄</span>
+</a>
     <a href="https://maps.app.goo.gl/CpmKnABu16B89yK88?g_st=ac" target="_blank" class="sidebar-item">
       <span class="icon">📍</span>
       <span class="label">Lokasi Toko</span>
